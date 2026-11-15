@@ -88,13 +88,13 @@ export function parseStationQc(source) {
   const lookup=new Map(records.map(r=>[r.station+"|"+r.date,r]));
   const jointFullDays=calendar.filter(day=>STATIONS.every(s=>{
     const r=lookup.get(s+"|"+day.date);
-    return r&&r.epochs===2880&&r.longGaps===0&&r.first.endsWith("00:00:00")&&r.last.endsWith("23:59:30");
+    return isCompleteDay(r);
   })).map(day=>day.date);
   const totals=STATIONS.map(station=>{
     const selected=records.filter(r=>r.station===station);
     return {
       station,files:selected.length,epochs:selected.reduce((a,r)=>a+r.epochs,0),
-      complete:selected.filter(r=>r.epochs===2880&&r.longGaps===0).length,
+      complete:selected.filter(isCompleteDay).length,
       gaps:selected.reduce((a,r)=>a+r.longGaps,0),
       observed:{G:selected.some(r=>r.systems.G>0),R:selected.some(r=>r.systems.R>0),
         E:selected.some(r=>r.systems.E>0),S:selected.some(r=>r.systems.S>0)}
@@ -106,11 +106,17 @@ export function parseStationQc(source) {
     sourceDisclaimer:typeof source.disposition==="string"?source.disposition:"Private source: verify BIG data-sharing permissions."
   };
 }
+function isCompleteDay(record){
+  return !!record && record.epochs===2880 && record.longGaps===0 &&
+    record.first.startsWith(record.date+" ") &&
+    record.last.startsWith(record.date+" ") &&
+    record.first.endsWith("00:00:00") && record.last.endsWith("23:59:30");
+}
 function cell(record){
   if(!record){
     return '<div class="cors-day-cell is-missing"><div class="cors-meter"><span style="width:0"></span></div><strong>No file</strong><small>Not available in this import</small></div>';
   }
-  const full=record.epochs===2880 && record.longGaps===0;
+  const full=isCompleteDay(record);
   const cls=full?"is-complete":"is-partial";
   const coverage=record.coverage.toFixed(record.coverage===100?0:1)+"%";
   const gap=record.longGaps?" · "+record.longGaps+" interval gaps":"";
