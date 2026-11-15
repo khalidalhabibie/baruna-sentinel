@@ -131,7 +131,11 @@
             <span class="form-label">MULTI-GNSS OBSERVATION AUDIT · RINEX</span>
             <label for="rinex-file" class="upload-btn" role="button" tabindex="0" aria-describedby="rinex-upload-help">↑ Inspect RINEX observation file</label>
             <input id="rinex-file" type="file" accept=".rnx,.obs,.o,.txt,text/plain" hidden>
+            <label for="qc-report-file" class="upload-btn" role="button" tabindex="0" aria-describedby="qc-import-help">↑ Import GeoRinex QC JSON (BIG / local)</label>
+            <input id="qc-report-file" type="file" accept=".json,application/json" hidden>
+            <button id="load-bako" type="button" class="secondary-link">↺ Restore verified BAKO fallback</button>
             <button id="rinex-demo" class="secondary-link" type="button">Use illustrative RINEX v3 fixture</button>
+            <p class="hint" id="qc-import-help"><b>Two paths:</b> Plan A: process a legitimate Ina-CORS RINEX locally using <code>scripts/verify_igs_rinex.py --file … --station CSMG</code>, then import its QC JSON here. Plan B: use the existing verified BAKO IGS sample. An uploaded station name is user-declared, not automatically validated by BIG.</p>
             <p class="hint" id="rinex-upload-help">Browser inspection is limited. The authentic BAKO multi-GNSS QC was calculated separately with GeoRinex; this interface does not solve GNSS positions.</p>
           </div>
           <div class="control-block source-meta">
