@@ -1270,3 +1270,18 @@ body[data-view="analyst"] .cors-qc-section{margin:20px clamp(20px,4vw,72px)}
  body[data-view="analyst"] .workspace{padding:14px 13px}
  body[data-view="analyst"] .cors-qc-section{margin:14px 13px}
 }
+
+
+/* Mobile first impression: show the useful handoff before the full source list. */
+.change-sector-link{display:none}
+@media(max-width:780px){
+ body[data-view="decision"] .case-workspace-outcome{grid-row:2}
+ body[data-view="decision"] .case-sites-column{grid-row:3}
+ body[data-view="decision"] .map-disclosure{grid-row:4}
+ body[data-view="decision"] .change-sector-link{
+   display:inline-flex;font-size:11px;font-weight:750;
+   color:#176d66;text-decoration:underline;text-underline-offset:3px;
+   margin-top:8px;
+ }
+ #field-evidence{scroll-margin-top:22px}
+}
