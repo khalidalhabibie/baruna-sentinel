@@ -74,7 +74,7 @@ function renderReal(){
       button("analyst","Open GNSS Lab")+'</div>'+
      '<div class="as-source-header"><span>SOURCE</span><span>STATION / SITE</span><span>RELATION</span><span>WHAT IT MEANS</span></div>'+
      sourceRows()+
-     '<p>CSEM and BAKO are evidence sources, not independent operator projects. Neither has been linked geodetically to an individual 2005 survey sector in this prototype.</p></section>';
+     '<p>CSEM and BAKO are evidence sources, not independent operator projects. Neither has been linked geodetically to an individual 2005 survey sector in this prototype. The descriptive CSEM 2010–2021 OLS result must not be equated with the 2021–2023 station rates cited in the proposal: periods and processing differ.</p></section>';
 }
 function renderSimulation(){
  const scenario=assessSyntheticScenario();
