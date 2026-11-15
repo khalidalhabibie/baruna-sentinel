@@ -99,6 +99,7 @@ try {
     "Missing CSMG date is made explicit instead of treated as zero data");
   assert.ok((await page.locator("#cors-qc-notice").textContent()).includes("3 station-day files"),
     "Locally imported QC reports its exact record count");
+  await page.locator("#view-analyst").click();
   await page.locator("#station-qc").screenshot({
     path:"reports/sentinel-judge-demo-cors-qc-synthetic.png"
   });
@@ -112,6 +113,7 @@ try {
   await page.setViewportSize({width:1440,height:1000});
 
   await page.locator("#cors-qc-reset").click();
+  await page.locator("#view-decision").click();
   assert.equal(await page.locator("#cors-qc-result .cors-qc-empty").count(),1,
     "Local QC can be purged from application memory");
 
