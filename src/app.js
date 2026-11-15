@@ -68,6 +68,35 @@ async function runPublished() {
     notify("Could not open local CSEM data. Illustrative fallback loaded. " + error.message, true);
   }
 }
+async function loadVerifiedRinexQC() {
+  try {
+    const response = await fetch("./data/BAKO_IGS_2025-001_20min_qc_summary.json");
+    if (!response.ok) throw new Error("Verified QC summary is missing from this build.");
+    const qc = await response.json();
+    if (qc.status !== "VERIFIED_REAL_RINEX_OBSERVATIONS" || qc.audit.epochs < 2 || qc.audit.constellationsObservedWithPseudorange.length < 2) {
+      throw new Error("Verified QC report is invalid.");
+    }
+    rinexResult = {
+      status: "MULTI_GNSS_RECORDS_SEEN",
+      version: "3.x",
+      marker: qc.source.station,
+      epochCount: qc.audit.epochs,
+      observedSystems: qc.audit.constellationsObservedWithPseudorange.map(name => ({ name, lines: null })),
+      declaredSystems: [],
+      averageGpsPseudorangeSatellitesPerEpoch: qc.audit.gpsOnlyAveragePseudorangeSatellitesPerEpoch,
+      averageAllPseudorangeSatellitesPerEpoch: qc.audit.multiGnssAveragePseudorangeSatellitesPerEpoch,
+      sourceUrl: qc.source.originalArchive,
+      verifiedRun: qc.verifiedRun,
+      verifiedObservationDate: qc.source.observationDate,
+      warnings: qc.limitations,
+      linkedToCsemMovement: false
+    };
+    rinexMeta = { mode: "real-qc", name: qc.source.filename, verifiedRun: qc.verifiedRun };
+    renderRinex();
+  } catch (error) {
+    notify("GeoRinex-verified QC summary unavailable: " + (error instanceof Error ? error.message : String(error)), true);
+  }
+}
 function inspect(content, meta) {
   try {
     rinexResult = inspectRinex(content);
@@ -120,7 +149,7 @@ function drawPlot() {
 }
 function renderRinex() {
   if (!rinexResult) return;
-  const modeText = rinexMeta.mode === "synthetic" ? " · illustrative fixture" : " · user-supplied, not independently verified";
+  const modeText = rinexMeta.mode === "real-qc" ? " · REAL ARCHIVE, VERIFIED VIA GEORINEX" : rinexMeta.mode === "synthetic" ? " · illustrative fixture" : " · user-supplied, not independently verified";
   const systems = rinexResult.observedSystems;
   if (rinexResult.status === "MULTI_GNSS_RECORDS_SEEN" || rinexResult.status === "MULTI_GNSS_EPOCH_IDS_SEEN") {
     $("rinex-status").textContent = systems.length + (rinexResult.status === "MULTI_GNSS_EPOCH_IDS_SEEN" ? " GNSS systems in RINEX 2 epoch satellite lists" : " GNSS systems identified in observation records") + modeText;
@@ -129,12 +158,16 @@ function renderRinex() {
   } else {
     $("rinex-status").textContent = "Multi-GNSS observation evidence not established" + modeText;
   }
-  $("rinex-caption").textContent = "RINEX " + (rinexResult.version || "unknown") + " · "
-    + rinexResult.epochCount + " epoch markers · Station: " + rinexResult.marker
-    + ". This is a separate audit; it is not linked to station displacement without matching processing provenance.";
+  $("rinex-caption").textContent = rinexMeta.mode === "real-qc"
+    ? "IGS BAKO · 1 Jan 2025 · " + rinexResult.epochCount + " epochs · GPS-only " + rinexResult.averageGpsPseudorangeSatellitesPerEpoch
+      + " vs multi-GNSS " + rinexResult.averageAllPseudorangeSatellitesPerEpoch
+      + " average satellites with pseudorange per epoch. NOT Semarang movement or positioning accuracy."
+    : "RINEX " + (rinexResult.version || "unknown") + " · "
+      + rinexResult.epochCount + " epoch markers · Station: " + rinexResult.marker
+      + ". This is a separate audit; it is not linked to station displacement without matching processing provenance.";
   const shown = systems.length ? systems : rinexResult.declaredSystems;
   $("rinex-systems").innerHTML = shown.length
-    ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + (s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
+    ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + (rinexMeta.mode === "real-qc" ? "pseudorange observed" : s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
     : '<span class="system muted">No verifiable GNSS systems found</span>';
 }
 function renderAssets() {
@@ -206,5 +239,7 @@ $("export-json").addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
-// Default to authentic historical GPS observations. Multi-GNSS remains unverified until a separate real RINEX is inspected.
+// Separate authentic sources: CSEM historical positions versus archived BAKO multi-GNSS QC.
+// BAKO QC is verified by GeoRinex, but NEVER merged into the CSEM movement solution.
 runPublished();
+loadVerifiedRinexQC();
