@@ -63,7 +63,7 @@ function privateStationQcPanel(){
     '<input id="as-qc-file" class="ai-file-input" type="file" accept=".json,application/json" aria-label="Pilih berkas JSON QC CSEM dan CSMG">'+
     (local?'<button type="button" id="as-qc-clear" class="pw-btn pw-btn-secondary">Hapus dari sesi</button>':"")+
     '</div></div>'+
-    '<p class="as-qc-privacy">Data lokal tidak dikirim ke server atau disimpan permanen oleh halaman ini. Format: <code>baruna-private-cors-qc-v1</code>; alat pemroses: <code>scripts/local_cors_qc.py</code>.</p>'+
+    '<p class="as-qc-privacy">Data lokal tidak dikirim ke server atau disimpan permanen oleh halaman ini. Format: <code>baruna-private-cors-qc-v1</code>; alat pemroses: <a href="https://github.com/khalidalhabibie/baruna-sentinel/blob/main/scripts/local_cors_qc.py" target="_blank" rel="noopener noreferrer">skrip RINEX lokal ↗</a> · <a href="https://github.com/khalidalhabibie/baruna-sentinel/blob/main/docs/P1_SEMARANG_CORS_TO_BRIEF.md" target="_blank" rel="noopener noreferrer">panduan P1 ↗</a>.</p>'+
     (privateQcError?'<p class="as-qc-bridge-error" role="alert">QC tidak diterima: '+e(privateQcError)+'</p>':"")+
     (local?'<p class="as-qc-local-file">Berkas lokal: '+e(localQcFileName)+' · status sumber: dideklarasikan pengguna, belum diverifikasi BIG</p>':"")+
     details+'</section>';
