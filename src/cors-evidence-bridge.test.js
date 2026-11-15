@@ -37,7 +37,7 @@ test("QC pairs CSEM & CSMG same date but cannot set asset risk",()=>{
  assert.equal(v.onAssetMovementMeasured,false);
  assert.equal(v.decision,"REQUEST_UPDATED_SITE_EVIDENCE");
  const page=localStationEvidencePrint(v);
- assert.match(page,/PRIVATE LOCAL STATION/);
+ assert.match(page,/LOCAL STATION OBSERVATION QC/);
  assert.match(page,/NOT BIG CERTIFIED/);
  assert.match(page,/CSEM \/ CSMG/);
  assert.match(page,/site evidence/i);
