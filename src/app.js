@@ -2,7 +2,7 @@ import {
   ASSETS, DEMO_RNEU, DEMO_RINEX, parseRneu, analyzeSeries,
   inspectRinex, rankAssets, evaluateEvidenceLink, evidenceBundle
 } from "./engine.js";
-import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows} from "./geo.js";
+import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows,geoPointDetails,GEO_VIEWS,LANDMARKS} from "./geo.js";
 import {buildEvidenceReportMarkup} from "./report.js";
 import {parseLocalQcReport} from "./qc-source.js";
 import {resolveFeatureFlags} from "./feature-flags.js";
@@ -22,6 +22,29 @@ let selectedSectorId = null;
 let labEnabled = new URLSearchParams(window.location.search).get("lab") === "1";
 const currentFlags = () => resolveFeatureFlags(labEnabled ? "?lab=1" : "");
 const geoLayers = {station:true,landmarks:true,fictional:currentFlags().fictionalMapMarkers};
+let geoView = "all";
+let geoSelectedId = "port-terminal";
+function setGeoFocus(view) {
+  if (!GEO_VIEWS[view]) return;
+  geoView = view;
+  if(view==="port") geoSelectedId="port-terminal";
+  if(view==="station") geoSelectedId="csem";
+  renderGeographicContext();
+  $("live-region").textContent = "Map view: "+(view==="all"?"Semarang":view==="port"?"Tanjung Emas":"CSEM station")+
+    ". Select a public reference point for coordinates and source.";
+}
+function selectGeoPoint(id) {
+  const point=LANDMARKS.find(p=>p.id===id);
+  if(!point) return;
+  geoSelectedId=id;
+  if (point.type==="station") geoLayers.station=true;
+  else geoLayers.landmarks=true;
+  const bounds=GEO_VIEWS[geoView];
+  if(point.lon<bounds.west || point.lon>bounds.east || point.lat<bounds.south || point.lat>bounds.north)
+    geoView = point.id==="csem" ? "station" : "port";
+  renderGeographicContext();
+  $("live-region").textContent = point.title + ": public reference coordinate selected; not an infrastructure condition measurement.";
+}
 
 function applyFeatureFlags() {
   const flags = currentFlags();
@@ -275,11 +298,13 @@ function showLiveOsmMap(show) {
   $("osm-toggle").textContent = show ? "Return to coordinate plot" : "Show live street map (OSM)";
   if (show && !$("osm-iframe").getAttribute("src")) {
     // Only on explicit click. Never prefetch OSM tiles and never imply geodetic survey status.
-    const bbox = [110.355,-7.010,110.505,-6.925].join(",");
+    const bounds=GEO_VIEWS[geoView];
+    const bbox = [bounds.west,bounds.south,bounds.east,bounds.north].join(",");
     const url = new URL("https://www.openstreetmap.org/export/embed.html");
     url.searchParams.set("bbox", bbox);
     url.searchParams.set("layer", "mapnik");
-    url.searchParams.set("marker", "-6.94776,110.4243");
+    const location=geoPointDetails(geoSelectedId);
+    url.searchParams.set("marker",location.latitude+","+location.longitude);
     $("osm-iframe").src = url.href;
   }
 }
@@ -288,7 +313,20 @@ function renderGeographicContext() {
   const geo = geoContextSummary();
   // Competition decision view never displays invented scenario markers, even when the lab is enabled.
   const visibleLayers = { ...geoLayers, fictional: geoLayers.fictional && document.body.dataset.view === "analyst" };
-  $("geo-map").innerHTML = renderGeoSvg(visibleLayers);
+  $("geo-map").innerHTML = renderGeoSvg(visibleLayers,{view:geoView,selectedId:geoSelectedId});
+  const selectedPoint=geoPointDetails(geoSelectedId);
+  $("geo-selected-category").textContent = selectedPoint.category;
+  $("geo-selected-title").textContent = selectedPoint.title;
+  $("geo-selected-coordinates").textContent = selectedPoint.latitude.toFixed(6)+", "+selectedPoint.longitude.toFixed(6);
+  $("geo-selected-distance").textContent = selectedPoint.fromCsemKm.toFixed(1)+" km";
+  $("geo-selected-limitation").textContent = selectedPoint.limitation;
+  $("geo-selected-source").href = selectedPoint.sourceUrl;
+  for(const button of document.querySelectorAll("[data-geo-view]")){
+    button.setAttribute("aria-pressed",String(button.dataset.geoView===geoView));
+  }
+  for(const button of document.querySelectorAll("[data-geo-point]")){
+    button.setAttribute("aria-pressed",String(button.dataset.geoPoint===geoSelectedId));
+  }
   $("geo-audit-rows").innerHTML = renderSpatialAuditRows();
   const available = currentFlags().fictionalMapMarkers ? 3 : 2;
   $("geo-layer-summary").textContent = Object.values(geoLayers).filter(Boolean).length + " / " + available + " layers visible";
@@ -516,6 +554,23 @@ document.querySelectorAll('label[role="button"][for]').forEach(label => {
       $(label.htmlFor).click();
     }
   });
+});
+document.querySelector(".geo-focus-toolbar").addEventListener("click",event=>{
+  const button=event.target.closest("button[data-geo-view]");
+  if(button) setGeoFocus(button.dataset.geoView);
+});
+document.querySelector(".geo-reference-choices").addEventListener("click",event=>{
+  const button=event.target.closest("button[data-geo-point]");
+  if(button) selectGeoPoint(button.dataset.geoPoint);
+});
+$("geo-map").addEventListener("click",event=>{
+  const node=event.target.closest("[data-point-id]");
+  if(node) selectGeoPoint(node.dataset.pointId);
+});
+$("geo-map").addEventListener("keydown",event=>{
+  if(event.key!=="Enter" && event.key!==" ") return;
+  const node=event.target.closest("[data-point-id]");
+  if(node){event.preventDefault();selectGeoPoint(node.dataset.pointId);}
 });
 $("osm-toggle").addEventListener("click", () => showLiveOsmMap($("geo-osm-embed").hidden));
 $("osm-close").addEventListener("click", () => showLiveOsmMap(false));
