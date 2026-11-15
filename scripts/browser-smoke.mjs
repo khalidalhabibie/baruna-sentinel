@@ -12,6 +12,11 @@ try {
   page.on("console", message => {
     if (message.type() === "error") errors.push("console: " + message.text());
   });
+  // Keep third-party OSM tile infrastructure out of deterministic CI while
+  // checking the *real* Leaflet UI, marker wiring and licensed attribution.
+  const tilePixel=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLttAAAAABJRU5ErkJggg==","base64");
+  await page.route("https://tile.openstreetmap.org/**", route =>
+    route.fulfill({status:200,contentType:"image/png",body:tilePixel}));
   const response = await page.goto(BASE, { waitUntil: "networkidle", timeout: 30000 });
   assert.equal(response.status(), 200, "Site root serves 200");
   assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"), "true", "Decision mode is default");
@@ -36,6 +41,19 @@ try {
   await page.evaluate(() => document.activeElement?.blur?.());
   await page.screenshot({ path:"reports/sentinel-judge-demo-first-impression.png", fullPage:true });
   await page.locator("#case-workspace").screenshot({path:"reports/sentinel-judge-evidence-workspace.png"});
+  assert.equal(await page.locator("#geo-osm-embed").isVisible(),true,
+    "Real street basemap is default, not an opt-in secondary iframe");
+  assert.equal(await page.locator("#street-map .leaflet-container").count(),0,
+    "Map div is the Leaflet container itself");
+  assert.ok(await page.locator("#street-map .leaflet-tile-pane").count()===1,
+    "Leaflet initializes a true slippy tile-map pane");
+  assert.equal(await page.locator("#street-map .leaflet-interactive").count(),3,
+    "Three actual public reference markers overlay the live street map");
+  assert.ok((await page.locator("#geo-osm-embed").textContent()).includes("OpenStreetMap contributors"),
+    "OpenStreetMap attribution is visible");
+  await page.locator("#osm-toggle").click();
+  assert.equal(await page.locator("#geo-map").isVisible(),true,
+    "Explicit offline toggle displays the WGS84 plot");
   const geoMap = await page.locator("#geo-map").innerHTML();
   assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Offline geographic map works");
   assert.equal(await page.locator("#geo-map .geo-marker").count(), 3,
@@ -103,16 +121,15 @@ try {
   assert.equal(await page.locator("#case-workspace-brief").isVisible(),true,
     "Selected sector has a real report action in the evidence workspace");
 
-  // Intercept third-party tiles during CI. A user explicitly enables the map,
-  // while default/offline mode never requires an external tile server.
-  await page.route("https://www.openstreetmap.org/**", async route => route.fulfill({
-    status:200, contentType:"text/html", body:"<html><body>OSM context placeholder for CI</body></html>"
-  }));
-  await page.getByRole("button", { name: /show live street map/i }).click();
-  assert.equal(await page.locator("#geo-osm-embed").isVisible(),true, "Interactive third-party OSM iframe is opt-in");
-  assert.ok((await page.locator("#osm-iframe").getAttribute("src")).includes("openstreetmap.org/export/embed.html"), "Official OSM embed URL used");
-  await page.getByRole("button", { name: /back to offline coordinate plot/i }).click();
-  assert.equal(await page.locator("#geo-map").isVisible(),true, "Offline coordinate view remains available");
+  // Live and offline map controls must be reversible without losing selection.
+  await page.locator("#osm-toggle").click();
+  assert.equal(await page.locator("#geo-osm-embed").isVisible(),true,
+    "The primary map is a real Leaflet basemap");
+  assert.ok((await page.locator("#street-map .leaflet-control-attribution").textContent())
+    .includes("OpenStreetMap"),"Basemap credits OSM contributors");
+  await page.locator("#osm-close").click();
+  assert.equal(await page.locator("#geo-map").isVisible(),true,
+    "Offline coordinate view remains available when tile access is unavailable");
 
   mkdirSync("reports", { recursive: true });
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
