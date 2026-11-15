@@ -7,6 +7,9 @@ on:
       - "styles.css"
       - "data/**"
       - "scripts/browser-smoke.mjs"
+      - "scripts/build-static.mjs"
+      - "vercel.json"
+      - "package.json"
       - ".github/workflows/browser-smoke.yml"
   workflow_dispatch:
 permissions:
@@ -26,7 +29,8 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Start offline-capable static app
         run: |
-          python3 -m http.server 4173 --bind 127.0.0.1 > /tmp/sentinel-server.log 2>&1 &
+          npm run build
+          python3 -m http.server 4173 --directory dist --bind 127.0.0.1 > /tmp/sentinel-server.log 2>&1 &
           sleep 2
           curl --fail http://127.0.0.1:4173/ > /dev/null
       - name: Verify authentic data, UI, evidence export and mobile layout
