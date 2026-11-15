@@ -1,16 +1,16 @@
 /* BARUNA product navigation. Route workspaces without conflating independent datasets. */
 (function(){
   "use strict";
-  const PAGES=new Set(["projects","overview","detail","assessment","compare","analyst"]);
-  const LABELS={projects:"Projects",overview:"Overview",detail:"Project detail",assessment:"Inspection assessment",compare:"Evidence compare",analyst:"GNSS Lab"};
+  const PAGES=new Set(["why","projects","overview","detail","assessment","compare","analyst"]);
+  const LABELS={why:"Why Sentinel",projects:"Projects",overview:"Overview",detail:"Project detail",assessment:"Inspection assessment",compare:"Evidence compare",analyst:"GNSS Lab"};
   const $=id=>document.getElementById(id);
   const pageFromLegacy=view=>view==="analyst"?"analyst":"detail";
   let selectedProject="semarang-port";
 
   function readRoute(){
     const query=new URLSearchParams(window.location.search);
-    const desired=query.get("page")||(query.get("view")==="analyst"?"analyst":"projects");
-    return {page:PAGES.has(desired)?desired:"projects",project:query.get("project")||"semarang-port"};
+    const desired=query.get("page")||(query.get("view")==="analyst"?"analyst":"why");
+    return {page:PAGES.has(desired)?desired:"why",project:query.get("project")||"semarang-port"};
   }
   function setPage(page,{updateUrl=false,scroll=false,replace=false}={}){
     if(!PAGES.has(page))return false;
@@ -31,7 +31,7 @@
     if(updateUrl){
       const url=new URL(window.location.href);
       url.searchParams.delete("view");
-      if(page==="projects")url.searchParams.delete("page");
+      if(page==="why")url.searchParams.delete("page");
       else url.searchParams.set("page",page);
       if(selectedProject==="semarang-port")url.searchParams.delete("project");
       else url.searchParams.set("project",selectedProject);

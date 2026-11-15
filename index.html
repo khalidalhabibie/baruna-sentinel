@@ -4,27 +4,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0c2030">
-  <meta name="description" content="BARUNA Sentinel by Ourdo Indonesia — select a historical sector, review available evidence, and prepare a field verification brief.">
+  <meta name="description" content="BARUNA Sentinel — dari bukti Multi-GNSS menjadi keputusan verifikasi infrastruktur pesisir yang dapat ditelusuri.">
   <title>BARUNA Sentinel | Bhumireka 2026</title>
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./project-ui.css">
+  <link rel="stylesheet" href="./why-sentinel.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script defer src="./src/navigation.js"></script>
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/project-workspace.js"></script>
   <script type="module" src="./src/assessment-ui.js"></script>
+  <script type="module" src="./src/why-sentinel.js"></script>
 </head>
-<body data-view="decision" data-page="projects" data-project="semarang-port" data-lab-tab="movement" data-inacors="off" data-sandbox="off" data-fictional="off">
+<body data-view="decision" data-page="why" data-project="semarang-port" data-lab-tab="movement" data-inacors="off" data-sandbox="off" data-fictional="off">
   <a href="#pw-shell" class="skip-link">Skip to project workspace</a>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="?page=projects" data-pw-page="projects" aria-label="BARUNA Sentinel project home">
+      <a class="brand" href="?page=why" data-pw-page="why" aria-label="BARUNA Sentinel introduction">
         <span class="brand-mark"><span></span></span>
         <span><strong>BARUNA</strong><small>SENTINEL</small></span>
       </a>
       <span class="event-label">Infrastructure evidence / Ourdo Indonesia</span>
       <nav class="workspace-switch pw-primary-nav" aria-label="Workspace pages">
+        <button type="button" data-pw-page="why" aria-current="page">Why Sentinel</button>
         <button type="button" data-pw-page="projects" aria-current="page">Projects</button>
         <button type="button" data-pw-page="overview">Overview</button>
         <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false" aria-label="Open project detail">Detail</button>
@@ -44,6 +47,7 @@
 
     <main id="top">
       <section class="pw-shell" id="pw-shell" aria-label="BARUNA project management and evidence review">
+        <div id="pw-page-why" class="pw-page" data-pw-screen="why"></div>
         <div id="pw-page-projects" class="pw-page" data-pw-screen="projects"></div>
         <div id="pw-page-overview" class="pw-page" data-pw-screen="overview"></div>
         <div id="pw-page-detail" class="pw-page" data-pw-screen="detail"></div>
