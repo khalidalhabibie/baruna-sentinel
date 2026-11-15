@@ -35,6 +35,8 @@ try {
   assert.equal(await storyPage.locator(".pw-primary-nav button:visible").count(),4,"First-time visitor sees only four primary actions");
   assert.ok((await storyPage.locator(".ws-fact-strip").textContent()).includes("Keluaran"),"Hero explains what the product produces");
   assert.ok((await storyPage.locator(".ws-evidence-detail").textContent()).includes("100–120 mm/tahun"),"Regional InSAR evidence stays in its contextual step rather than the hero");
+  assert.equal(await storyPage.locator('a[href^="mailto:official@ourdo.id"]').count(),1,
+    "Official Ourdo contact path is discoverable without inventing pricing or product readiness");
   await storyPage.screenshot({path:"reports/sentinel-judge-demo-why-sentinel-desktop.png",fullPage:true});
   await storyPage.locator('[data-ws-index="1"]').click();
   assert.ok((await storyPage.locator("#ws-step-detail h3").textContent()).includes("biaya operasi"),
@@ -94,9 +96,21 @@ try {
     "Six real published sectors are assessed through evidence sufficiency gates");
   assert.equal(await assessmentPage.locator(".as-decision-status").textContent(),"DATA INSUFFICIENT",
     "No unsupported real asset-risk ranking is produced");
+  assert.ok((await assessmentPage.locator(".as-executive-decision").textContent()).includes("verifikasi pengukuran"),
+    "Decision summary leads with a concrete next action instead of source acronyms");
+  assert.ok((await assessmentPage.locator(".as-readiness-status").textContent()).includes("BELUM CUKUP"),
+    "Data sufficiency is qualitative; no pseudo-precise confidence percentage");
+  await assessmentPage.locator("#as-preview").click();
+  assert.equal(await assessmentPage.locator("#as-preview").getAttribute("aria-expanded"),"true");
+  assert.ok((await assessmentPage.locator("#as-brief-preview").textContent()).includes("West breakwater"),
+    "One-click sector brief is accessible without printing or completing a technical workflow");
+  assert.ok((await assessmentPage.locator("#as-brief-preview").textContent()).includes("74–140"),
+    "Brief preview uses the selected published source and preserves its year");
   assert.ok((await assessmentPage.locator(".as-workflow").textContent()).includes("station-to-asset link absent"),
     "Assessment shows the disconnected GNSS and asset evidence chain");
   await assessmentPage.locator('[data-as-sector="north-breakwater"]').click();
+  assert.ok((await assessmentPage.locator("#as-brief-preview").textContent()).includes("North breakwater"),
+    "Preview re-renders with the newly selected sector");
   assert.ok((await assessmentPage.locator(".as-decision-top").textContent()).includes("64–79"),
     "Published cumulative measurements follow the selected sector");
   assert.ok((await assessmentPage.locator(".as-cors-contrast").textContent()).includes("-94.03"),
@@ -120,6 +134,9 @@ try {
   await assessmentPage.locator("#as-export").click();
   assert.equal(await assessmentPage.evaluate(()=>window.__assessmentPrintInvoked),true,
     "Assessment delivers a real printable evidence report");
+  assert.equal(await assessmentPage.locator("#print-report .simulation-annex").count(),1,
+    "Fictional scheduling stays in a visually isolated and printable marked annex");
+  assert.ok((await assessmentPage.locator("#print-report .simulation-annex").textContent()).includes("BUKAN HASIL ASET NYATA"));
   assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("fictional"),
     "Printed simulation remains explicitly separated from source-backed observations");
   // User-uploaded real GeoJSON is rendered in Leaflet but does not turn CSEM
