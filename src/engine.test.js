@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -53,4 +54,17 @@ test("review engine never permits operational decisions from regional station", 
   const bundle = evidenceBundle({ mode: "synthetic" }, movement, inspectRinex(DEMO_RINEX), ranked);
   assert.equal(bundle.source.mode, "synthetic");
   assert.ok(bundle.scientificLimitations.some(x => x.includes("NOT silently linked")));
+});
+
+test("published CSEM series has authenticated historic rows and does not escalate a weak endpoint difference", () => {
+  const text = readFileSync(new URL("../data/CSEM_clean_Noff1site.source-derived.rneu", import.meta.url), "utf8");
+  const analysis = analyzeSeries(parseRneu(text, {station: "CSEM", unit: "meters", referenceFrame: "IGb14"}));
+  assert.equal(analysis.epochCount, 3561);
+  assert.equal(analysis.start, "2010-01-13");
+  assert.equal(analysis.end, "2021-12-31");
+  assert.equal(analysis.quality, "SCREENING_READY");
+  assert.ok(analysis.verticalSlopeMmYr < 0);
+  assert.ok(analysis.verticalSlopeMmYr > -2);
+  assert.ok(analysis.endpointPrecisionRatio < 3);
+  assert.ok(rankAssets(analysis).every(x => x.priority === "ROUTINE_REVIEW"));
 });
