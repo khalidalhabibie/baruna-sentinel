@@ -168,6 +168,7 @@
                 <button type="button" data-map-layer="station" aria-pressed="true">CSEM station</button>
                 <button type="button" data-map-layer="landmarks" aria-pressed="true">Public landmarks</button>
                 <button type="button" data-map-layer="fictional" aria-pressed="true">Scenario markers</button>
+                <span class="layer-count" id="geo-layer-summary" role="status" aria-live="polite">3 / 3 layers visible</span>
               </div>
               <div class="geo-map-tools">
                 <span><b>Choose map context</b> · the street map is third-party geographic context, not field-survey evidence</span>
@@ -185,7 +186,12 @@
                 <div><small>CSEM → Tanjung Emas terminal</small><strong id="geo-distance">—</strong><span>Straight-line geographic distance; NOT proof of asset displacement</span></div>
                 <div><small>Independent observation QC</small><strong id="geo-bako-distance">—</strong><span>BAKO / Cibinong · entirely separate GNSS evidence source</span></div>
               </div>
-              <p class="geo-disclaimer">This is a WGS84 point-context plot, not an authoritative shoreline, DEMNAS elevation, exposure raster or asset register. Fictional asset pins have invented coordinates. Distance cannot validate shared deformation. Sources: <a target="_blank" rel="noopener" href="https://big.go.id/assets/download/InaCORS/InaCORS%20BIG%202018_compressed.pdf">BIG InaCORS catalogue</a>, <a target="_blank" rel="noopener" href="https://network.igs.org/BAKO00IDN">IGS BAKO</a>, <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/node/2085925705">OSM port terminal</a>, <a target="_blank" rel="noopener" href="https://dataspasial.semarangkota.go.id/detail_kantor/38">Semarang GIS</a>.</p>
+              <div class="gis-audit analyst-only" id="gis-audit">
+                <div class="gis-audit-heading"><div><span class="section-index">GIS PROVENANCE / EPSG:4326</span><h3>Spatial linkage & coordinate audit</h3><p>Haversine distance from CSEM is approximate geographic separation. It does not validate shared ground movement or asset proximity thresholds.</p></div><span class="gis-audit-status">SITE LINKAGE UNVERIFIED</span></div>
+                <div class="gis-table-wrap"><table class="gis-audit-table"><thead><tr><th scope="col">REFERENCE</th><th scope="col">LAT, LON · WGS84</th><th scope="col">FROM CSEM</th><th scope="col">ROLE / SOURCE</th><th scope="col">EVIDENCE RELATION</th></tr></thead><tbody id="geo-audit-rows"></tbody></table></div>
+                <p class="gis-audit-footer">Only publicly sourced reference points are represented. Six historical infrastructure sectors have no verified exact survey geometries in this MVP; no sector is given a fabricated coordinate, hazard buffer or DEMNAS exposure.</p>
+              </div>
+                            <p class="geo-disclaimer">This is a WGS84 point-context plot, not an authoritative shoreline, DEMNAS elevation, exposure raster or asset register. Fictional asset pins have invented coordinates. Distance cannot validate shared deformation. Sources: <a target="_blank" rel="noopener" href="https://big.go.id/assets/download/InaCORS/InaCORS%20BIG%202018_compressed.pdf">BIG InaCORS catalogue</a>, <a target="_blank" rel="noopener" href="https://network.igs.org/BAKO00IDN">IGS BAKO</a>, <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/node/2085925705">OSM port terminal</a>, <a target="_blank" rel="noopener" href="https://dataspasial.semarangkota.go.id/detail_kantor/38">Semarang GIS</a>.</p>
             </article>
           </div>
 
