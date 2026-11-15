@@ -249,3 +249,23 @@ body[data-view="analyst"] .analyst-intro{display:flex}
 @media(max-width:820px){body[data-view="analyst"] .analyst-intro{display:block}.analyst-provenance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-width:0;margin-top:15px}.analyst-provenance span{padding:9px}.analyst-provenance small{font-size:10px}.journey-actions{padding:10px 14px;gap:7px}.journey-step{padding:10px;gap:9px}.journey-step strong{font-size:12px}.journey-step small{font-size:11px}.journey-step .journey-num{font-size:19px}.geo-layer-toolbar{padding:10px 13px}.topbar{justify-content:space-between}}
 @media(max-width:620px){.workspace-switch{order:2;margin-left:auto}.workspace-switch button{font-size:11px;padding:8px 9px}.topbar .event-label{order:3}.journey-actions{grid-template-columns:1fr}.journey-step{min-height:62px;padding:11px 13px}.journey-step strong{font-size:14px}.journey-step small{font-size:12px}.journey-selection{padding:12px 14px}.journey-intro{padding:17px 15px 7px}.inline-feedback,.product-help summary{padding-left:15px;padding-right:15px}.help-content{grid-template-columns:1fr;padding:0 15px 15px}.analyst-intro{margin:14px 5% 0!important;padding:16px}.analyst-provenance{grid-template-columns:1fr}.geo-layer-toolbar>div{width:100%}.geo-layer-toolbar button{flex:1 1 auto;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.journey-step:hover{transform:none}}
+
+/* GIS spatial audit */
+.layer-count{background:#eaf7f3;color:#1a6b69;border-radius:4px;border:1px solid #cde5dd;font-size:11px;font-weight:850;padding:9px 11px;white-space:nowrap}
+.gis-audit{border-top:1px solid #dfebe6;margin-top:13px;background:#f8fbfa}
+.gis-audit-heading{display:flex;justify-content:space-between;align-items:start;gap:14px;padding:18px 20px 12px}
+.gis-audit-heading h3{font-size:18px;color:#183c4a;letter-spacing:-.025em;margin:7px 0}
+.gis-audit-heading p{font-size:12px;line-height:1.65;color:#5f7b83;max-width:660px;margin:0}
+.gis-audit-status{background:#fff3e0;border:1px solid #e4cea9;color:#805827;font-weight:850;font-size:11px;white-space:nowrap;padding:9px 11px;border-radius:5px}
+.gis-table-wrap{overflow-x:auto;margin:0 20px}
+.gis-audit-table{border-collapse:collapse;width:100%;min-width:780px;font-variant-numeric:tabular-nums;background:white}
+.gis-audit-table thead{background:#eaf4f1}
+.gis-audit-table tr{border-bottom:1px solid #dcebe7}
+.gis-audit-table th,.gis-audit-table td{text-align:left;padding:12px 11px;vertical-align:top;color:#365b62;font-size:12px;line-height:1.5}
+.gis-audit-table th{color:#254d56;font-weight:850}
+.gis-audit-table thead th{color:#536f77;font-size:11px;letter-spacing:.065em}
+.gis-audit-table small{display:block;color:#65828b;font-size:11px;margin-top:3px}
+.gis-monospace{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px!important;white-space:nowrap}
+.gis-link-status{display:inline-block;background:#e5f2f0;color:#2f6f6c;border-radius:4px;font-weight:850;font-size:10px;padding:4px 6px}
+.gis-audit-footer{margin:0;padding:12px 20px;font-size:11px;line-height:1.6;color:#6a7f86}
+@media(max-width:620px){.gis-audit-heading{display:block;padding:15px}.gis-audit-status{display:inline-block;margin-top:10px}.gis-table-wrap{margin:0 10px}.gis-audit-footer{padding:12px}}
