@@ -1,19 +1,32 @@
 # Bhumireka Demo Day Playbook — 19 November 2026
 
+## Scientific narrative (freeze)
+
+**One specific use case:** A Semarang–Genuk/Tanjung Emas coastal logistics O&M team wants to identify where *field verification* should be planned, and whether geodetic evidence is reliable enough to interpret. It is NOT an engineering-validated asset safety score.
+
+**Two separate authentic sources:**
+- CSEM historical GPS-processed station coordinates (2010–2021), for station movement calculation.
+- IGS BAKO original multi-GNSS RINEX (1 Jan 2025) from Cibinong, decoded by GeoRinex, for constellation/pseudorange availability QC. Six constellations; 41 epochs; GPS-only 8.951 vs all 44.634 mean satellites with populated pseudorange per epoch. This is **not** positioning-accuracy improvement and is **not** Semarang movement evidence.
+
+The software displays an **INDEPENDENT_SOURCES_NOT_LINKED** provenance gate and never issues operational asset decisions from regional CORS. Three asset scenarios are *fictional*; their scheduling tiers are from fictional metadata only.
+
 ## 60-second video outline
 
-- **0–10s**: Open the independent BARUNA Sentinel application. The point is not "another subsidence map" but a traceable review queue.
-- **10–23s**: Show published CSEM historical time series, source (Susilo et al., Zenodo), date range (2010–2021), and parsed 3,561 daily observations. The data was processed using GPS, NOT established multi-GNSS.
-- **23–35s**: Show actual descriptive slope and the precision check. A small negative slope must NOT be a high-risk asset alarm.
-- **35–45s**: Show synthetic asset-review outcomes and provenance/limitations. No real-asset movement claim.
-- **45–55s**: Import an **authentic multi-constellation RINEX from organizers** if obtained. Do not substitute illustrative fixture without labelling it visibly.
-- **55–60s**: Show JSON evidence export. End with "From measurement to a reviewable decision."
+- **0–10s:** State problem: coastal infrastructure inspection planning needs documented evidence, not just a subsidence heat map.
+- **10–22s:** Show authentic CSEM historic positions, original citation, 2010–2021, 3,561 epochs and descriptive vertical trend.
+- **22–37s:** Show real BAKO GeoRinex multi-GNSS QC: 41 epochs, six observed systems, GPS-only vs all observation availability.
+- **37–49s:** Show evidence gate visibly refusing to link BAKO QC to CSEM movement. Highlight 'not direct asset movement'.
+- **49–57s:** Show *fictional* asset verification workflow, `VERIFY_LOCAL_EVIDENCE` and explanation.
+- **57–60s:** Export evidence JSON, close with 'From measurement to a reviewable next step.'
 
-### HARD BLOCKER before calling this a genuine multi-GNSS demonstration
+### Optional improvement if organizers provide Semarang RINEX
 
-The historical source is GPS-processed. A synthetic RINEX fixture does not satisfy the real-observation proof. Obtain Ina-CORS data, confirm station/date/receiver/constellation records, and keep the RINEX audit separate until actual solution-level relationship is verified.
+Request a relevant CSMG or CSEM RINEX via `kerjasama@big.go.id`, subject `Akses data GNSS_BIGBhumireka`. Do NOT wait for this to submit the existing, truthful separate-source demo. A CSEM RINEX file alone does not mean the 2010–2021 position series was processed multi-GNSS.
 
-Use the competition organizer's data-access route: kerjasama@big.go.id, subject `Akses data GNSS_BIGBhumireka`. Provide registered nrtk.big.go.id account reference (never disclose passwords), target station and requested Day of Year; ask for a useful RINEX observation sample. Organizer technical doc says RINEX 2.11 at 30-second cadence is available through SRGI when access is authorized.
+## Automated checks
+
+- `npm run check` verifies parsing, quality, asset guardrails and evidence gate.
+- `Browser demo smoke check` GitHub Actions validates UI, real CSEM source loading, GeoRinex QC summary, browser JSON export and desktop/mobile screenshot.
 
 ## Suggested 5-minute deck
 
@@ -38,7 +51,7 @@ Use the competition organizer's data-access route: kerjasama@big.go.id, subject 
 ## Operational checklist
 
 - [ ] Confirm member Sulthan Bransyah added to official team record
-- [ ] Obtain authentic RINEX multi-GNSS sample or clearly mark proof outstanding
+- [x] Original BAKO multi-GNSS archive decoded and QC summary verified (independent from Semarang)
 - [ ] Run `npm run check` and browser smoke test
 - [ ] Test all buttons, uploads, plot and evidence JSON export
 - [ ] Capture 60-second MP4 and 5-minute PDF/PPT presentation
