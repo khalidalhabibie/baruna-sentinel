@@ -298,3 +298,8 @@ body[data-page="analyst"] .pw-page[data-pw-screen="analyst"]{display:block}
  .pw-dialog form{padding:20px}
  body[data-page] footer{padding:20px 14px}
 }
+
+/* Footer contrast: legacy dark-theme typography must not become white-on-light. */
+body[data-page] footer strong{color:#4a6970!important;font-size:10px!important;letter-spacing:.09em}
+body[data-page] footer p{color:#81949a!important}
+body[data-page] footer .footer-links a{color:#35716e!important}
