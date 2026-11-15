@@ -37,6 +37,11 @@ try {
   assessmentPage.on("pageerror",error=>assessmentErrors.push(error.message));
   await assessmentPage.goto(BASE+"/?page=assessment&project=semarang-port",{waitUntil:"networkidle",timeout:30000});
   await assessmentPage.locator(".as-sector").first().waitFor({state:"visible",timeout:15000});
+  await assessmentPage.waitForFunction(()=>document.querySelector(".as-source-panel")?.textContent?.includes("OLS"),{timeout:15000});
+  assert.ok((await assessmentPage.locator(".as-source-panel").textContent()).includes("3,561 positions"),
+    "Assessment computes real CSEM historical station positions, not a decorative claim");
+  assert.ok((await assessmentPage.locator(".as-source-panel").textContent()).includes("41 epochs"),
+    "Assessment reports verified BAKO observation QC, explicitly independently sourced");
   assert.equal(await assessmentPage.locator(".as-sector").count(),6,
     "Six real published sectors are assessed through evidence sufficiency gates");
   assert.equal(await assessmentPage.locator(".as-decision-status").textContent(),"DATA INSUFFICIENT",
@@ -65,6 +70,10 @@ try {
     "Printed simulation remains explicitly separated from source-backed observations");
   await assessmentPage.locator("#as-real-mode").click();
   await assessmentPage.setViewportSize({width:390,height:844});
+  await assessmentPage.evaluate(()=>{
+    document.activeElement?.blur?.();
+    window.scrollTo({top:0,left:0,behavior:"instant"});
+  });
   const assessmentOverflow=await assessmentPage.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+3);
   assert.equal(assessmentOverflow,false,"Assessment fits a narrow mobile viewport");
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment-mobile.png",fullPage:true});
