@@ -317,13 +317,15 @@ try {
 
   await page.locator("#view-analyst").click();
   assert.equal(await page.locator("#view-analyst").getAttribute("aria-pressed"), "true", "Analyst view is selected");
-  assert.equal(await page.locator(".controls").isVisible(), true, "Analyst view reveals original GNSS controls");
   assert.equal(await page.locator(".pw-lab-context").isVisible(), true, "GNSS Lab has its own technical page heading");
-  assert.equal(await page.locator("#gis-audit").isVisible(), true, "Expanded geographic context preserves the technical GIS provenance audit");
+  await page.locator('[data-pw-lab="gis"]').click();
+  assert.equal(await page.locator(".controls").isVisible(), false, "Dedicated GIS tab does not stack GNSS import tools");
+  assert.equal(await page.locator("#gis-audit").isVisible(), true, "Expanded GIS tab preserves the technical spatial provenance audit");
   assert.equal(await page.locator("#geo-audit-rows tr").count(), 4, "GIS table contains CSEM, landmarks and independent BAKO");
   assert.ok((await page.locator("#geo-audit-rows").textContent()).includes("Different station and time"),
     "GIS table flags that BAKO is not a local movement solution");
   await page.locator('[data-pw-lab="movement"]').click();
+  assert.equal(await page.locator(".controls").isVisible(),true, "Position history exposes actual GNSS data controls");
   assert.equal(await page.locator(".chart-panel").isVisible(),true,
     "Historical CSEM position chart is visible without stacking QC and GIS");
   assert.equal(await page.locator("#station-qc").isVisible(),false,
