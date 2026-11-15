@@ -11,5 +11,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Python CLI syntax preflight
+        run: python3 -m py_compile scripts/verify_igs_rinex.py
       - name: Syntax and scientific guardrail tests
         run: npm run check
