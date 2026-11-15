@@ -6,7 +6,9 @@
   <meta name="theme-color" content="#0c2030">
   <meta name="description" content="BARUNA Sentinel — independent GNSS evidence and coastal inspection screening prototype for BIG Bhumireka 2026.">
   <title>BARUNA Sentinel | Bhumireka 2026</title>
+  <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
+  <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script type="module" src="./src/app.js"></script>
 </head>
 <body data-view="decision" data-inacors="off" data-sandbox="off" data-fictional="off">
@@ -213,15 +215,14 @@
                 <span class="layer-count" id="geo-layer-summary" role="status" aria-live="polite">3 / 3 layers visible</span>
               </div>
               <div class="geo-map-tools">
-                <span>Map context</span>
-                <button id="osm-toggle" class="geo-basemap-toggle" type="button" aria-expanded="false">Show live street map (OSM)</button>
+                <span id="basemap-status" role="status" aria-live="polite">Loading Semarang street map…</span>
+                <button id="osm-toggle" class="geo-basemap-toggle" type="button" aria-pressed="true">Coordinate grid / Offline</button>
               </div>
               <div id="geo-osm-embed" class="geo-osm-embed" hidden>
-                <div class="geo-online-note"><span>LIVE STREET MAP · OpenStreetMap · internet required</span><button id="osm-close" type="button">Back to offline coordinate plot</button></div>
-                <iframe id="osm-iframe" title="OpenStreetMap live view of Tanjung Emas and Genuk — public map context only" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                <div class="geo-online-foot"><span>Map © <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap contributors</a> · map features are contextual and do not validate inspection risk</span></div>
+                <div id="street-map" class="street-map" aria-label="Interactive OpenStreetMap of Semarang with source-backed station and landmark markers"></div>
+                <div class="geo-online-foot"><span>Street basemap © <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap contributors</a> · reference locations only · no surveyed infrastructure polygons</span><button id="osm-close" type="button">Coordinate grid / Offline</button></div>
               </div>
-              <div id="geo-map" class="geo-map" aria-label="WGS84 context plot for Semarang">Loading geographic references…</div>
+              <div id="geo-map" class="geo-map" aria-label="Offline WGS84 point-reference plot for Semarang">Loading geographic references…</div>
               <div class="geo-reference-desk">
                 <div class="geo-reference-choices" role="group" aria-label="Select a public geographic reference">
                   <button type="button" data-geo-point="port-terminal" aria-pressed="true"><span class="geo-choice-type">PORT REFERENCE</span><strong>Tanjung Emas terminal</strong><small>OpenStreetMap</small></button>
