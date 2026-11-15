@@ -846,3 +846,21 @@ body[data-page="assessment"] .pw-page[data-pw-screen="assessment"]{display:block
  .as-qc-bridge{display:none!important}
  .print-station-qc{page-break-before:auto;break-inside:avoid-page}
 }
+
+/* P1 mobile control size and progressive QC disclosure */
+.as-qc-daily{margin:12px 0;background:#fff;border:1px solid #dbe9e4;border-radius:6px}
+.as-qc-daily summary{padding:13px 15px;cursor:pointer;font-size:11px;font-weight:770;color:#286e62;min-height:44px;line-height:1.5}
+.as-qc-daily summary:hover{background:#f3faf6}
+.as-qc-daily-inner{padding:15px;overflow-x:auto}
+.as-qc-bridge .as-qc-privacy a{color:#226d66;text-decoration:underline}
+@media(max-width:560px){
+ .as-qc-import label,.as-qc-import .pw-btn{
+  flex:none!important;
+  width:100%;
+  min-height:42px;
+  max-height:54px;
+  padding:9px 12px;
+ }
+ .as-qc-daily-inner{padding:8px}
+ .as-qc-daily-inner .cors-day-row,.as-qc-daily-inner .cors-day-header{min-width:550px}
+}
