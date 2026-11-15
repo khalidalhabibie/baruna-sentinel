@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0c2030">
+  <meta name="description" content="BARUNA Sentinel — independent GNSS evidence and coastal inspection screening prototype for BIG Bhumireka 2026.">
+  <title>BARUNA Sentinel | Bhumireka 2026</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="BARUNA Sentinel home">
+        <span class="brand-mark"><span></span></span>
+        <span><strong>BARUNA</strong><small>SENTINEL</small></span>
+      </a>
+      <span class="event-label">BIG BHUMIREKA <span class="event-year">2026</span> / RGPD CHALLENGE</span>
+      <div class="top-actions"><span class="offline-status"><span class="status-dot"></span> Static · offline-capable</span><a href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener">Source ↗</a></div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow"><span class="mini-line"></span> COASTAL INFRASTRUCTURE / EVIDENCE-LED SCREENING</div>
+          <h1>Ground movement is a signal.<br><em>Inspection priority is a decision.</em></h1>
+          <p>Turn documented GNSS time series and declared asset context into a traceable review queue—without pretending a regional station measures every structure.</p>
+          <div class="hero-pills"><span>01 · Observe</span><span>02 · Validate</span><span>03 · Prioritize</span><span>04 · Explain</span></div>
+        </div>
+        <div class="hero-aside">
+          <div class="orbit"><div class="orbit-2"></div><div class="orbit-3"></div><i class="orbit-dot one"></i><i class="orbit-dot two"></i><i class="orbit-dot three"></i><span class="orbit-center">GNSS<br><small>→ ACTION</small></span></div>
+          <div class="aside-note">A standalone competition demonstrator<br>No dependency on BARUNA WebGIS</div>
+        </div>
+      </section>
+
+      <div class="notice" role="note"><strong>Scientific boundary</strong> <span id="boundary-notice">Initial dataset is SYNTHETIC. Historical GPS displacement and multi-GNSS observation records are separate sources unless independently validated.</span></div>
+
+      <section class="workspace">
+        <aside class="controls">
+          <div class="control-header"><span class="section-index">01 / INPUT</span><h2>Observation desk</h2><p>Import a station time series and inspect its provenance.</p></div>
+          <div class="control-block">
+            <span class="form-label">TIME SERIES · CLEAN .RNEU</span>
+            <button id="sample-btn" class="primary-btn" type="button">▶ Run illustrative scenario</button>
+            <label for="series-file" class="upload-btn">↑ Import real .rneu time series</label>
+            <input id="series-file" type="file" accept=".rneu,.txt,text/plain" hidden>
+            <p class="hint">For authentic data, download a cleaned GNSS time series from the cited Zenodo record and import it locally.</p>
+          </div>
+          <div class="form-grid">
+            <label class="form-field"><span class="form-label">Station identifier</span><input id="station" maxlength="16" value="CSEM" spellcheck="false"></label>
+            <label class="form-field"><span class="form-label">Input units</span><select id="unit"><option value="meters">Meters</option><option value="millimeters">Millimeters</option></select></label>
+          </div>
+          <div class="control-block secondary-block">
+            <span class="form-label">MULTI-GNSS OBSERVATION AUDIT · RINEX</span>
+            <label for="rinex-file" class="upload-btn">↑ Inspect RINEX observation file</label>
+            <input id="rinex-file" type="file" accept=".rnx,.obs,.o,.txt,text/plain" hidden>
+            <button id="rinex-demo" class="secondary-link" type="button">Use illustrative RINEX v3 fixture</button>
+            <p class="hint">Separate pipeline. Counts observable constellation records; does not compute station positions.</p>
+          </div>
+          <div class="control-block source-meta">
+            <span class="form-label">DATA PROVENANCE</span>
+            <div class="source-meta-row"><span>Series status</span><strong id="source-badge">SIMULATED</strong></div>
+            <div class="source-meta-row"><span>Station</span><strong id="source-title">CSEM · illustrative</strong></div>
+            <div class="source-meta-row"><span>Association</span><strong>Regional reference</strong></div>
+            <div class="source-meta-row"><span>Asset register</span><strong>Illustrative</strong></div>
+          </div>
+          <div id="status-note" class="status-note" role="status" aria-live="polite">Ready to run the illustrative scenario.</div>
+          <button id="export-json" type="button" class="export-btn">↓ Download evidence JSON</button>
+        </aside>
+
+        <div class="dashboard">
+          <div class="dashboard-heading"><div><span class="section-index">02 / ANALYZE</span><h2>Movement evidence</h2></div><span id="mode-movement" class="mode-chip">ILLUSTRATIVE MODE</span></div>
+          <div class="metrics">
+            <article class="metric"><span>VERTICAL TREND</span><strong id="stat-trend">—</strong><small>mm/year · descriptive OLS</small></article>
+            <article class="metric"><span>OBSERVATION EPOCHS</span><strong id="stat-epochs">—</strong><small>Parsed daily/sample positions</small></article>
+            <article class="metric"><span>SCREENING QUALITY</span><strong id="stat-quality">—</strong><small>Duration / sample continuity</small></article>
+          </div>
+          <article class="panel chart-panel">
+            <div class="panel-top"><div><h3>Vertical displacement</h3><p id="plot-caption">Station-level data, not direct asset movement</p></div><span class="legend"><i></i> Up · mm</span></div>
+            <div id="plot" class="chart" aria-label="Time series chart"></div>
+            <div class="chart-footer"><span id="audit-series">Series not loaded</span><span>NOT STRUCTURAL SAFETY ADVICE</span></div>
+          </article>
+
+          <div class="section-row"><div><span class="section-index">03 / VERIFY</span><h2>Multi-GNSS evidence</h2></div><span class="subtle-pill">Independent observation source</span></div>
+          <article class="panel gnss-panel">
+            <div class="gnss-icon" aria-hidden="true">◎</div>
+            <div class="gnss-content"><h3 id="rinex-status">No RINEX observation file examined</h3><p id="rinex-caption">A historical GPS solution alone is not proof of multi-constellation observations.</p><div id="rinex-systems" class="systems"><span class="system muted">Awaiting observation records</span></div></div>
+          </article>
+
+          <div class="section-row"><div><span class="section-index">04 / DECIDE</span><h2>Inspection review queue</h2></div><span class="subtle-pill">All assets illustrative</span></div>
+          <article class="panel assets-panel">
+            <div class="asset-head"><span>ASSET SCENARIO</span><span>DECISION &amp; REASON</span></div>
+            <div id="asset-rows" class="asset-rows"></div>
+            <div class="asset-footnote">Priority is a screening workflow suggestion, never an asset failure probability. A regional CORS signal does not justify an on-asset safety claim.</div>
+          </article>
+
+          <div class="explain-box">
+            <div class="explain-number">05</div>
+            <div><h3>Explain before you escalate.</h3><p>Every output includes provenance, observation coverage, analysis assumptions, station-to-asset relationship and reason codes. Missing evidence remains missing evidence—it is never treated as stability.</p></div>
+            <span class="explain-arrow">↗</span>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <div><strong>BARUNA SENTINEL</strong><p>Independent RGPD competition prototype · Ourdo Indonesia</p></div>
+        <div class="footer-links"><a href="https://doi.org/10.1038/s41597-023-02274-0" target="_blank" rel="noopener">Scientific Data source ↗</a><a href="https://doi.org/10.5281/zenodo.7775016" target="_blank" rel="noopener">Zenodo GNSS dataset ↗</a></div>
+      </footer>
+    </main>
+  </div>
+  <div id="live-region" class="sr-only" aria-live="polite"></div>
+</body>
+</html>
