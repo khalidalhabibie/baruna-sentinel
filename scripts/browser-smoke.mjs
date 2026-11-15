@@ -74,7 +74,7 @@ try {
   assert.ok(reportText.includes("West breakwater"), "Real research sector appears in A4 evidence dossier");
   assert.ok(reportText.includes("HISTORICAL SETTLEMENT"), "Published measurements are labeled historic, not risk");
   assert.ok(reportText.includes("Selected documented sector:"), "Printable brief identifies the chosen actual research sector");
-  assert.ok(reportText.includes("Request updated"), "Executive evidence action is included");
+  assert.ok(reportText.includes("REQUEST UPDATED"), "Executive evidence action is included");
   assert.ok(reportText.includes("To be assigned by operator"), "Responsible owner never fabricated");
 
   assert.equal(await page.evaluate(() => window.__reportPrintCalled), true, "Print action invoked");
