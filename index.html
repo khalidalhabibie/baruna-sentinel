@@ -28,10 +28,10 @@
     <main id="top">
       <section class="hero">
         <div class="hero-content">
-          <div class="eyebrow"><span class="mini-line"></span> SEMARANG–GENUK CASE STUDY / COASTAL LOGISTICS</div>
-          <h1>Know what to<br><em>verify next.</em></h1>
-          <p>Evidence for smarter coastal infrastructure inspections.</p>
-          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Explore case study</button><span id="demo-status">Published research · verified GNSS QC</span></div>
+          <div class="eyebrow"><span class="mini-line"></span> SEMARANG COAST · RESEARCH-BASED FIELD CASE</div>
+          <h1>Coastal infrastructure.<br><em>Decisions backed by evidence.</em></h1>
+          <p>Explore documented ground movement, inspect the supporting GNSS evidence, and identify what needs verifying before deciding where to inspect.</p>
+          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Explore Semarang evidence</button><span id="demo-status">Published research · verified GNSS QC</span></div>
         </div>
         <div class="hero-aside">
           <div class="orbit"><div class="orbit-2"></div><div class="orbit-3"></div><i class="orbit-dot one"></i><i class="orbit-dot two"></i><i class="orbit-dot three"></i><span class="orbit-center">GNSS<br><small>→ ACTION</small></span></div>
@@ -158,7 +158,20 @@
             <div class="chart-footer"><span id="audit-series">Series not loaded</span><span>NOT STRUCTURAL SAFETY ADVICE</span></div>
           </article>
 
-          <div class="section-row" id="field-evidence"><div><span class="section-index">01 / SITE</span><h2>Choose a port sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
+          <section class="case-workspace" id="case-workspace" aria-label="Coastal evidence exploration workspace">
+            <header class="case-workspace-header">
+              <div>
+                <span class="section-index">EXPLORE THE EVIDENCE / SEMARANG COAST</span>
+                <h2>Explore the sites. Understand the evidence.</h2>
+                <p>Select a documented port sector, explore the geographic references, and see what remains unknown today.</p>
+              </div>
+              <div class="case-workspace-header-meta">
+                <span><strong>6</strong> historic sectors</span><span><strong>3</strong> public map references</span>
+              </div>
+            </header>
+            <div class="case-workspace-layout">
+              <div class="case-sites-column">
+                          <div class="section-row" id="field-evidence"><div><span class="section-index">01 / SITE</span><h2>Choose a port sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
           <article class="panel historical-panel">
             <div class="historical-head">
               <div><div class="historical-head-badge">HISTORICAL FIELD STUDY</div>
@@ -179,7 +192,9 @@
           </article>
 
 
-          <div id="geo-context" class="geo-section">
+              </div>
+              <div class="case-map-column">
+                          <div id="geo-context" class="geo-section">
             <div class="section-row"><div><span class="section-index">02 / MAP</span><h2>Where is the evidence?</h2></div><span class="subtle-pill">Reference points · WGS84</span></div>
             <article class="panel geo-panel">
               <div class="geo-panel-top"><div><strong>Semarang / Genuk</strong><p>Public reference points, not asset measurements.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
@@ -238,7 +253,39 @@
             </article>
           </div>
 
-          <div class="section-row analyst-only"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
+              </div>
+            </div>
+            <div class="case-workspace-outcome" id="case-workspace-outcome" aria-label="Selected site evidence assessment">
+              <div class="case-outcome-heading">
+                <span class="section-index">EVIDENCE ASSESSMENT</span>
+                <h3 id="case-outcome-name">Select a sector to review its evidence</h3>
+                <p>Historical observations are useful context, but current conditions must be verified.</p>
+              </div>
+              <div class="case-outcome-metrics">
+                <div class="case-outcome-metric">
+                  <small>PUBLISHED FIELD RECORD</small>
+                  <strong id="case-outcome-history">—</strong>
+                  <span>2005 cumulative settlement · not an annual rate</span>
+                </div>
+                <div class="case-outcome-metric">
+                  <small>CURRENT ON-ASSET DATA</small>
+                  <strong class="case-outcome-unknown">Not available</strong>
+                  <span>No verified 2026 measurement on this structure</span>
+                </div>
+                <div class="case-outcome-metric">
+                  <small>NEXT ACTION</small>
+                  <strong>Verify on site</strong>
+                  <span>Confirm asset geometry, criticality and updated measurements</span>
+                </div>
+              </div>
+              <div class="case-outcome-actions">
+                <span>Evidence status: <strong>insufficient for operational inspection ranking</strong></span>
+                <button id="case-workspace-brief" type="button">Prepare verification brief <span aria-hidden="true">↗</span></button>
+              </div>
+            </div>
+          </section>
+
+                    <div class="section-row analyst-only"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
           <article class="panel gnss-panel analyst-only">
             <div class="gnss-icon" aria-hidden="true">◎</div>
             <div class="gnss-content"><h3 id="rinex-status">No RINEX observation file examined</h3><p id="rinex-caption">A historical GPS solution alone is not proof of multi-constellation observations.</p><div id="rinex-systems" class="systems"><span class="system muted">Awaiting observation records</span></div></div>
