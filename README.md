@@ -18,6 +18,16 @@ Feature switches are defined in [`src/feature-flags.js`](src/feature-flags.js):
 
 For an intentionally experimental share link, append `?lab=1`. **This is UI feature gating, not authentication or access control.** Plan B verified BAKO evidence remains available without logging in or enabling the lab. Plan A remains an offline QC import, not a live stream or BIG-verified data certificate.
 
+## Interactive geospatial reference map (offline-first)
+
+The Decision and Analyst views now share a source-grounded **WGS84 point map** (EPSG:4326) with three inspectable public geographic references. Choose between **Semarang**, **Tanjung Emas**, and **CSEM station** focus presets, select a map marker using mouse or keyboard, or use the reference cards below the map. The inspector shows original lat/lon, citation/source link, and approximate great-circle distance from CSEM. Its 2 km / 5 km scale bar uses a latitude-adjusted Haversine approximation.
+
+**Map caveat:** this is an accurately projected point-reference diagram, *not an authoritative street basemap*. The optional OpenStreetMap embed (user-initiated and requiring internet) gives real-world street context, updating its focus and marker to the current selected reference. The SVG works with zero network access.
+
+**No invented asset boundary:** the six sector names and historic settlement measurements originate from published field research but their precise survey geometry is not available. Therefore they are displayed as a research register, not exact map pins. BAKO remains geographically separate and is never drawn as a Semarang station.
+
+No external GIS runtime, map credentials, remote JavaScript dependency, or backend was added. The three data point coordinates, sources, and distance calculations remain tested in `src/geo.test.js`; mouse/map selections, view changes, evidence report, and mobile overflow are covered by browser QA.
+
 ## Demo (software-only)
 1. Auto-load an **authentic historical CSEM GPS-derived series** from a locally bundled source-derived numeric extract (2010–2021), an explicitly illustrative fixture, or a user-supplied cleaned `.rneu` time series.
 2. Validate dates, units, duplicate epochs, completeness, and observation duration.
