@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./src/app.js"></script>
 </head>
-<body data-view="decision">
+<body data-view="decision" data-inacors="off" data-sandbox="off" data-fictional="off">
   <a href="#executive-desk" class="skip-link">Skip to decision desk</a>
   <div class="app-shell">
     <header class="topbar">
@@ -17,7 +17,7 @@
         <span class="brand-mark"><span></span></span>
         <span><strong>BARUNA</strong><small>SENTINEL</small></span>
       </a>
-      <span class="event-label">BIG BHUMIREKA <span class="event-year">2026</span> / RGPD CHALLENGE</span>
+      <span class="event-label">BHUMIREKA 2026 · PROTOTYPE</span>
       <div class="workspace-switch" role="group" aria-label="Choose dashboard view">
         <button type="button" id="view-decision" aria-pressed="true">Decision view</button>
         <button type="button" id="view-analyst" aria-pressed="false">GIS / Analyst</button>
@@ -29,69 +29,64 @@
       <section class="hero">
         <div class="hero-content">
           <div class="eyebrow"><span class="mini-line"></span> SEMARANG–GENUK CASE STUDY / COASTAL LOGISTICS</div>
-          <h1>Before the next site inspection,<br><em>know what the evidence can prove.</em></h1>
-          <p>An evidence-readiness desk for coastal infrastructure teams: bring together documented land-movement history, multi-GNSS observation QC, and the next field verification required—without claiming regional stations measure individual assets.</p>
-          <div class="hero-pills"><span>01 · Observe</span><span>02 · Verify</span><span>03 · Locate</span><span>04 · Explain</span></div>
-          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">▶ Run Semarang case study</button><span id="demo-status">Real CSEM movement + verified BAKO observation QC · independent sources</span></div>
+          <h1>Know what to<br><em>verify next.</em></h1>
+          <p>Evidence for smarter coastal infrastructure inspections.</p>
+          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Explore case study</button><span id="demo-status">Published research · verified GNSS QC</span></div>
         </div>
         <div class="hero-aside">
           <div class="orbit"><div class="orbit-2"></div><div class="orbit-3"></div><i class="orbit-dot one"></i><i class="orbit-dot two"></i><i class="orbit-dot three"></i><span class="orbit-center">GNSS<br><small>→ ACTION</small></span></div>
-          <div class="aside-note">A standalone competition demonstrator<br>No dependency on BARUNA WebGIS</div>
+          <div class="aside-note">GIS + GNSS evidence</div>
         </div>
       </section>
 
       <section class="executive" id="executive-desk" aria-label="Inspection evidence readiness desk">
         <div class="executive-heading">
           <div>
-            <span class="section-index">DECISION DESK / SEMARANG–GENUK CASE STUDY</span>
-            <h2>The immediate decision is whether evidence is sufficient—not whether an asset is safe.</h2>
-            <p>Operators need defensible reasons to commission field verification before assigning actual inspection priority. This research-backed prototype makes the evidence gap explicit.</p>
+            <span class="section-index">EVIDENCE OVERVIEW</span>
+            <h2>What do we know about this site?</h2>
+            <p>See what is documented, what is missing, and what to check next.</p>
           </div>
-          <span class="executive-state">RE-VALIDATION REQUIRED</span>
+          <span class="executive-state">NEW MEASUREMENTS NEEDED</span>
         </div>
         <div class="executive-kpis">
-          <div class="executive-kpi"><small>DOCUMENTED INFRASTRUCTURE SECTORS</small><strong id="exec-sectors">—</strong><span>From 2005 levelling research · historical</span></div>
-          <div class="executive-kpi"><small>INDEPENDENT EVIDENCE STREAMS LOADED</small><strong id="exec-streams">— / 3</strong><span>Field study · GPS series · multi-GNSS QC</span></div>
-          <div class="executive-kpi"><small>CURRENT ASSET MEASUREMENTS IN DEMO</small><strong id="exec-current">0</strong><span>No representative 2026 measurements supplied</span></div>
+          <div class="executive-kpi"><small>HISTORIC SITES</small><strong id="exec-sectors">—</strong><span>2005 field study</span></div>
+          <div class="executive-kpi"><small>EVIDENCE SOURCES</small><strong id="exec-streams">— / 3</strong><span>Separate datasets</span></div>
+          <div class="executive-kpi"><small>CURRENT SITE READINGS</small><strong id="exec-current">0</strong><span>Not available in demo</span></div>
         </div>
         <div class="executive-bottom">
           <div class="executive-action">
-            <span class="mini-category">OPERATIONAL NEXT STEP</span>
-            <h3>Request updated, asset-linked measurements before ranking inspections.</h3>
-            <p>Start with documented field locations, confirm asset criticality with the operator, obtain a current survey and verify the station-to-asset relationship. No fabricated “high-risk” labels or savings figures.</p>
-            <div class="executive-cta"><button id="executive-brief" type="button">Prepare evidence brief</button><a href="#field-evidence">Examine six documented sectors</a></div>
+            <span class="mini-category">RECOMMENDED NEXT STEP</span>
+            <h3>Verify the site with new measurements.</h3>
+            <p>Existing studies identify evidence gaps—not current asset safety.</p>
+            <div class="executive-cta"><button id="executive-brief" type="button">Create verification brief</button><a href="#field-evidence">Choose a site</a></div>
           </div>
-          <div class="executive-urgency">
-            <span class="mini-category">WHY THIS MATTERS · DOCUMENTED CONTEXT</span>
-            <h3>Historical ground movement. Recurring coastal alerts. A missing current baseline.</h3>
-            <p>The six-sector field measurements are from <b>2005</b>. BMKG listed Semarang's coast in a rob-potential bulletin for <b>1–6 November 2026</b>. That window has passed; it is not an active alert and does not establish asset movement.</p>
-            <div class="executive-provenance"><span>Archived context, not live status</span><a href="https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf" target="_blank" rel="noopener">BMKG bulletin ↗</a><a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener">Field study ↗</a></div>
-          </div>
-        </div>
-        <div class="executive-strip">
-          <span><b>PILOT PATH</b></span><span>01 · Audit existing evidence</span><span>02 · Obtain updated site measurements</span><span>03 · Produce a reviewable inspection brief</span><span class="executive-pilot-note">Proposed workflow — not a contracted deployment</span>
+          <details class="executive-urgency">
+            <summary>Why this matters <span>Historic research and coastal context</span></summary>
+            <div class="executive-urgency-content"><p>The six-sector field measurements are from <b>2005</b>. BMKG listed Semarang's coast in a rob-potential bulletin for <b>1–6 November 2026</b>. That window has passed; it is not an active alert and does not establish asset movement.</p>
+            <div class="executive-provenance"><span>Archived context, not live status</span><a href="https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf" target="_blank" rel="noopener">BMKG source</a><a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener">Field study</a></div></div>
+          </details>
         </div>
       </section>
 
       <section class="case-journey" id="case-journey" aria-label="Three-step verification workflow">
         <div class="journey-intro">
-          <span class="section-index">GUIDED WORKFLOW / THREE STEPS</span>
-          <h2>From field record to verification brief</h2>
-          <p>Use the real published case to identify an evidence gap. Detailed GNSS diagnostics remain available in GIS / Analyst.</p>
+          <span class="section-index">YOUR WORKFLOW</span>
+          <h2>Three steps. One clear outcome.</h2>
+          
         </div>
         <div class="journey-actions">
-          <button id="step-sector" type="button" class="journey-step"><span class="journey-num">01</span><span><strong>Choose infrastructure</strong><small>Six documented historical sectors</small></span><span aria-hidden="true">↗</span></button>
-          <button id="step-evidence" type="button" class="journey-step"><span class="journey-num">02</span><span><strong>Review spatial evidence</strong><small>See station coverage and its limitations</small></span><span aria-hidden="true">↗</span></button>
-          <button id="step-report" type="button" class="journey-step journey-primary"><span class="journey-num">03</span><span><strong>Prepare verification brief</strong><small>Document missing measurements</small></span><span aria-hidden="true">↗</span></button>
+          <button id="step-sector" type="button" class="journey-step"><span class="journey-num">01</span><span><strong>Select site</strong><small>Historic port sectors</small></span><span aria-hidden="true">↗</span></button>
+          <button id="step-evidence" type="button" class="journey-step"><span class="journey-num">02</span><span><strong>Check evidence</strong><small>Map and sources</small></span><span aria-hidden="true">↗</span></button>
+          <button id="step-report" type="button" class="journey-step journey-primary"><span class="journey-num">03</span><span><strong>Get report</strong><small>Next verification steps</small></span><span aria-hidden="true">↗</span></button>
         </div>
         <div class="journey-selection" aria-live="polite" aria-atomic="true">
-          <span><b>SELECTED HISTORICAL SECTOR</b> <strong id="selected-sector-title">Loading research record…</strong></span>
-          <span id="selected-sector-range">Historical measurement · no current condition established</span>
-          <span class="journey-gap">Site-level GNSS validation: not available</span>
+          <span><b>SELECTED SITE</b> <strong id="selected-sector-title">Loading research record…</strong></span>
+          <span id="selected-sector-range">Historical data only</span>
+          <span class="journey-gap">No current asset measurements</span>
         </div>
         <div class="inline-feedback" id="inline-feedback" role="status" aria-live="polite" aria-atomic="true">Loading published evidence…</div>
         <details class="product-help" id="evidence-help">
-          <summary>How to read the evidence and the map</summary>
+          <summary>What do these data mean?</summary>
           <div class="help-content">
             <p><strong>Historical settlement:</strong> published cumulative measurements in 2005, not 2026 asset conditions or a yearly rate.</p>
             <p><strong>CSEM GPS:</strong> historic station coordinates from 2010–2021. A regional station is not an instrument on the selected port structure.</p>
@@ -101,8 +96,8 @@
         </details>
       </section>
       <section class="analyst-intro" id="analyst-intro" aria-label="GIS and geodetic analyst workspace">
-        <div><span class="section-index">ANALYST WORKSPACE / TECHNICAL EVIDENCE</span><h2>Inspect the measurement chain, not just its conclusion.</h2>
-          <p>Independent real datasets and a coordinate-based study area. Geodetic processing and QC do not establish on-asset deformation without a valid spatial and temporal linkage.</p></div>
+        <div><span class="section-index">TECHNICAL WORKSPACE</span><h2>Inspect the underlying GNSS and GIS evidence.</h2>
+          <p>Inspect observation quality, station history and source limitations.</p></div>
         <div class="analyst-provenance">
           <span><b>GPS · CSEM</b><small>2010–2021 historic solution</small></span>
           <span><b>Multi-GNSS · BAKO</b><small>2025 authentic RINEX QC</small></span>
@@ -110,7 +105,7 @@
         </div>
       </section>
 
-      <div class="notice" role="note"><strong>Scientific boundary</strong> <span id="boundary-notice">Verifying dataset provenance. Historic port measurements, CSEM GPS history, and BAKO multi-GNSS QC are separate sources; none establishes a current asset condition.</span></div>
+      <details class="notice analyst-only" role="note"><summary>Scientific limitations</summary><p id="boundary-notice">Verifying dataset provenance. Historic port measurements, CSEM GPS history, and BAKO multi-GNSS QC are separate sources; none establishes a current asset condition.</p></details>
 
       <section class="workspace">
         <aside class="controls">
