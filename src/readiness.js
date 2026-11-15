@@ -38,7 +38,9 @@ export function evidenceReadiness({fieldEvidence, movement, movementMeta, rinex,
     availableAction: "PREPARE_UPDATED_EVIDENCE_REQUEST",
     unsupportedConclusions: [
       "No current 2026 structural condition of the documented sectors is established.",
-      "BAKO observations from Cibinong are not a multi-GNSS-derived CSEM displacement solution.",
+      rinexMeta?.mode === "local-qc"
+        ? "Imported GeoRinex QC is from a user-declared station; BIG source identity is unverified and no matching CSEM movement solution exists."
+        : "BAKO observations from Cibinong are not a multi-GNSS-derived CSEM displacement solution.",
       "BMKG tidal-flood context does not supply asset deformation, flood probability or current alarm."
     ],
     commercialHypothesis: "Make missing evidence and required field verification visible before operators commit survey/inspection resources; not a proven time or cost saving."
