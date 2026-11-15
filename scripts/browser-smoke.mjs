@@ -454,6 +454,7 @@ try {
     mimeType:"application/json",
     buffer:Buffer.from(JSON.stringify(operatorQc))
   });
+  await page.waitForFunction(() => document.querySelector("#rinex-status")?.textContent?.includes("LOCALLY DECODED"),{timeout:10000});
   assert.ok((await page.locator("#rinex-status").textContent()).includes("LOCALLY DECODED"),
     "Plan A user QC is openly marked as user-declared, not BIG verified");
   assert.ok((await page.locator("#rinex-caption").textContent()).includes("operator-declared identity"),
