@@ -1,0 +1,78 @@
+{
+  "schema": "baruna-published-field-survey-context-v1",
+  "region": "Tanjung Emas Harbour, Semarang, Indonesia",
+  "recordType": "PUBLISHED_HISTORICAL_FIELD_STUDY",
+  "method": "Levelling measurements and Ground Penetrating Radar (GPR) context",
+  "reportedSurveyYear": 2005,
+  "periodContext": "Reported as settlement over approximately a ten-year period associated with harbour infrastructure built in 1995; see original paper for study methodology.",
+  "publication": {
+    "title": "The Identification of Land Subsidance by Levelling Measurement and GPR Data at Tanjung Emas Harbour, Semarang",
+    "authors": [
+      "Purnomo Raharjo",
+      "Mira Yosi"
+    ],
+    "journal": "Bulletin of the Marine Geology",
+    "year": 2017,
+    "doi": "10.32693/bomg.32.1.2017.351",
+    "url": "https://journal.esdm.go.id/bomg/article/view/12755"
+  },
+  "units": "cumulative_cm",
+  "geometriesAvailable": false,
+  "limitations": [
+    "Historic study reports sector-level measurements, not modern GNSS observation records.",
+    "These ranges are historical cumulative quantities, not annual subsidence rates and not 2026 asset conditions.",
+    "No survey-quality coordinates for individual measured sectors are supplied in this MVP. Do not map sector locations as exact points.",
+    "Not linked to CSEM GPS time series or BAKO multi-GNSS QC as a common geodetic solution.",
+    "Not engineering thresholds, structural safety judgements or current inspection priorities."
+  ],
+  "sectors": [
+    {
+      "id": "coaster-street",
+      "name": "Coaster Street",
+      "type": "Road access",
+      "minCm": 21,
+      "maxCm": 41,
+      "locationStatus": "GEOMETRY_NOT_SUPPLIED"
+    },
+    {
+      "id": "container-wharf",
+      "name": "Container wharf",
+      "type": "Quay / wharf",
+      "minCm": 62,
+      "maxCm": 94,
+      "locationStatus": "GEOMETRY_NOT_SUPPLIED"
+    },
+    {
+      "id": "north-breakwater",
+      "name": "North breakwater",
+      "type": "Coastal defence",
+      "minCm": 64,
+      "maxCm": 79,
+      "locationStatus": "GEOMETRY_NOT_SUPPLIED"
+    },
+    {
+      "id": "west-breakwater",
+      "name": "West breakwater",
+      "type": "Coastal defence",
+      "minCm": 74,
+      "maxCm": 140,
+      "locationStatus": "GEOMETRY_NOT_SUPPLIED"
+    },
+    {
+      "id": "east-groin",
+      "name": "East groin",
+      "type": "Coastal protection",
+      "minCm": 76,
+      "maxCm": 89,
+      "locationStatus": "GEOMETRY_NOT_SUPPLIED"
+    },
+    {
+      "id": "stacking-area",
+      "name": "Stacking area",
+      "type": "Port operations",
+      "minCm": 77,
+      "maxCm": 109,
+      "locationStatus": "GEOMETRY_NOT_SUPPLIED"
+    }
+  ]
+}
