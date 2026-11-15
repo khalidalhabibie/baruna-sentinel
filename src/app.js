@@ -122,8 +122,8 @@ function renderRinex() {
   if (!rinexResult) return;
   const modeText = rinexMeta.mode === "synthetic" ? " · illustrative fixture" : " · user-supplied, not independently verified";
   const systems = rinexResult.observedSystems;
-  if (rinexResult.status === "MULTI_GNSS_RECORDS_SEEN") {
-    $("rinex-status").textContent = systems.length + " GNSS systems identified in observation records" + modeText;
+  if (rinexResult.status === "MULTI_GNSS_RECORDS_SEEN" || rinexResult.status === "MULTI_GNSS_EPOCH_IDS_SEEN") {
+    $("rinex-status").textContent = systems.length + (rinexResult.status === "MULTI_GNSS_EPOCH_IDS_SEEN" ? " GNSS systems in RINEX 2 epoch satellite lists" : " GNSS systems identified in observation records") + modeText;
   } else if (rinexResult.status === "MULTI_GNSS_HEADER_ONLY") {
     $("rinex-status").textContent = "Multiple systems declared; observations not verified" + modeText;
   } else {
@@ -136,7 +136,6 @@ function renderRinex() {
   $("rinex-systems").innerHTML = shown.length
     ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + (s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
     : '<span class="system muted">No verifiable GNSS systems found</span>';
-  $("audit-rinex").textContent = rinexResult.status;
 }
 function renderAssets() {
   $("asset-rows").innerHTML = ranks.map((asset, i) => {
@@ -164,7 +163,7 @@ function renderAll() {
   $("stat-quality").textContent = movement.quality === "SCREENING_READY" ? "SCREENING" : "LIMITED";
   $("stat-quality").className = movement.quality === "SCREENING_READY" ? "quality-good" : "quality-warn";
   $("plot-caption").textContent = movement.station + " · " + (isSynthetic ? "invented observations" : isPublished ? "published GPS historical positions" : "uploaded observations (not verified)") + " · OLS trend is descriptive";
-  $("audit-series").textContent = movement.start + " → " + movement.end + " · max gap " + movement.maxGapDays + " days";
+  $("audit-series").textContent = movement.start + " → " + movement.end + " · max gap " + movement.maxGapDays + " days · endpoint precision ratio " + (movement.endpointPrecisionRatio === null ? "n/a" : number(movement.endpointPrecisionRatio, 1) + "×");
   $("boundary-notice").textContent = isSynthetic
     ? "All plotted numbers are SYNTHETIC, not Semarang GNSS observations. RINEX constellation audit is a separate source."
     : isPublished
