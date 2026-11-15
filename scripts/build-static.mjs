@@ -9,6 +9,7 @@ const publicAssets=[
   "src/geo.js",
   "src/report.js",
   "src/historical.js",
+  "src/readiness.js",
   "data/CSEM_clean_Noff1site.source-derived.rneu",
   "data/BAKO_IGS_2025-001_20min_qc_summary.json",
   "data/tanjung-emas-historical-field-evidence.json"
