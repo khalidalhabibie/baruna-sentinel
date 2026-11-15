@@ -13,6 +13,7 @@ export function buildEvidenceReportMarkup(bundle) {
     throw new TypeError("Evidence report requires a parsed movement series and provenance");
   }
   const m=bundle.movement,src=bundle.source,qc=bundle.rinexInspection,g=bundle.evidenceGate||{},geo=bundle.geospatialContext||{};
+  const executive = bundle.executiveReadiness || {}, verification = bundle.verificationRequest || null;
   const isPublished=src.mode==="published";
   const audited=src.rinexSource?.mode==="real-qc" && qc?.verifiedRun && qc?.linkedToCsemMovement===false;
   const mode=isPublished?"REAL GPS-DERIVED HISTORICAL SERIES":src.mode==="synthetic"?"SYNTHETIC DEMONSTRATION":"USER-SUPPLIED · UNVERIFIED";
@@ -33,7 +34,8 @@ export function buildEvidenceReportMarkup(bundle) {
     +'<div style="text-align:right"><b>DEMO EVIDENCE DOSSIER</b><small>Generated '+esc(bundle.generatedAt?.slice(0,19)?.replace("T"," ")||"local")+' UTC</small></div></div>'
     +'<h1>Semarang–Genuk coastal infrastructure</h1>'
     +'<p>Decision question: what should a coastal infrastructure maintenance team verify before scheduling a field inspection, and which observations are actually credible?</p>'
-    +'<div class="print-callout"><b>Decision boundary:</b> data readiness and an illustrative verification workflow only. Not a certified asset-risk model, direct structural measurement, flood prediction, or operator recommendation.</div>'
+    +'<div class="print-callout"><b>Executive decision:</b> REQUEST UPDATED, ASSET-LINKED EVIDENCE before assigning actual inspection priority. '+safeText(executive.sectorCount??"Unknown")+' historical sectors documented; '+safeText(executive.currentInstrumentedAssetMeasurementsInDemo??0)+' current on-asset measurements available in the prototype. This is not a certified asset-risk model or operator recommendation.</div>'
+    +'<p class="print-tiny"><b>Urgency context (dated, not live):</b> BMKG included Pesisir Kota Semarang in a rob-potential bulletin for 1–6 November 2026; the interval has ended. This coastal alert does not measure ground displacement. Source: https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf</p>'
     +'<h2>01 / Historic GNSS movement evidence</h2>'
     +'<p><b>Series provenance:</b> '+safeText(src.name||src.provider||m.station)+' · '+mode+'. '
     +(isPublished?"Published GPS-processed historical station coordinate data, NOT proof of multi-GNSS displacement.":"Series source, physical station and data processing must not be assumed authentic.")+'</p>'
@@ -67,7 +69,14 @@ export function buildEvidenceReportMarkup(bundle) {
         +'<p class="print-tiny">Source DOI: '+safeText(bundle.publishedFieldEvidence.source?.doi)
         +'. These are not interpolated to CSEM/GNSS; sector positions are not asserted without survey coordinates.</p>'
       : '<p>Published field-sector extract unavailable; do not interpret missing records as stability.</p>')
-    +'<h2>06 / Necessary next validation</h2>'
+    +'<h2>06 / Sector-specific verification brief</h2>'
+    +(verification
+      ? '<p><b>Selected documented sector:</b> '+safeText(verification.sectorName)+' · historic field survey in '+safeText(verification.historicMeasurementYear)+' ('+safeText(verification.historicCumulativeSettlementCm.join("–"))+' cm cumulative). Current asset condition remains <b>UNKNOWN</b>. This is a request to gather evidence, not a field inspection order.</p>'
+        +'<table><thead><tr><th>VERIFICATION REQUEST</th><th>OWNER</th></tr></thead><tbody>'
+        +verification.request.map((item,i)=>'<tr><td>'+safeText(item)+'</td><td>To be assigned by operator</td></tr>').join("")
+        +'</tbody></table><p class="print-tiny">No site cost estimate, ROI or probability of structural failure is available.</p>'
+      : '<p>Select a documented sector in the dashboard to produce a specific evidence request.</p>')
+    +'<h2>07 / Necessary next validation</h2>'
     +'<p>Acquire representative on-asset or scientifically linked geodetic evidence; verify station, period, reference frame and processing solution; incorporate a trustworthy asset register; validate exposure criteria, inspection triggers and engineering outcomes with the responsible operator.</p>'
     +'<p class="print-tiny"><b>Evidence sources:</b><br>'+refs.map(s=>safeText(s)).join('<br>')+'</p>'
     +'<div class="print-footer">BARUNA Sentinel · Ourdo Indonesia · Responsible screening demonstrator. Public reference positions and historical observations are not equivalent to an operational asset safety certificate.</div>';
