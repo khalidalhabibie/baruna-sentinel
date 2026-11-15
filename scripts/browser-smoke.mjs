@@ -73,6 +73,7 @@ try {
     path:"reports/sentinel-judge-demo-cors-qc-synthetic.png"
   });
   await page.setViewportSize({width:390,height:844});
+  await page.evaluate(()=>document.activeElement?.blur?.());
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3),false,
     "Local QC comparison has no mobile horizontal overflow");
   await page.locator("#station-qc").screenshot({
