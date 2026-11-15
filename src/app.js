@@ -2,7 +2,7 @@ import {
   ASSETS, DEMO_RNEU, DEMO_RINEX, parseRneu, analyzeSeries,
   inspectRinex, rankAssets, evaluateEvidenceLink, evidenceBundle
 } from "./engine.js";
-import {renderGeoSvg, geoContextSummary} from "./geo.js";
+import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows} from "./geo.js";
 import {buildEvidenceReportMarkup} from "./report.js";
 import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
 import {evidenceReadiness, verificationRequestForSector} from "./readiness.js";
@@ -270,6 +270,8 @@ function showLiveOsmMap(show) {
 function renderGeographicContext() {
   const geo = geoContextSummary();
   $("geo-map").innerHTML = renderGeoSvg(geoLayers);
+  $("geo-audit-rows").innerHTML = renderSpatialAuditRows();
+  $("geo-layer-summary").textContent = Object.values(geoLayers).filter(Boolean).length + " / 3 layers visible";
   $("geo-distance").textContent = geo.landmarkDistanceKm.toFixed(1) + " km";
   $("geo-bako-distance").textContent = "≈ " + geo.externalObservationQcStationDistanceKm + " km apart";
   for (const button of document.querySelectorAll("[data-map-layer]")) {
