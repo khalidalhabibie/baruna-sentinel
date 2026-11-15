@@ -3,6 +3,7 @@ import {validateHistoricalFieldEvidence} from "./historical.js";
 import {parseRneu,analyzeSeries} from "./engine.js";
 import {publishedCorsComparison} from "./published-cors.js";
 import {inspectLocalStationEvidence,localStationEvidencePrint} from "./cors-evidence-bridge.js";
+import {renderStationQc} from "./station-qc.js";
 import {renderAssetIntake,loadSyntheticAssetExample,importGeoJSONFile,selectImportedAsset,clearImportedAssets,downloadAssetTemplate,printableImportedAssetReport,disposeIntakeMap,renderImportedAssetMap} from "./asset-intake-ui.js";
 import {
   ASSESSMENT_POLICY,assessRealProject,assessSyntheticScenario,buildAssessmentPrint
@@ -52,7 +53,7 @@ function privateStationQcPanel(){
       '</b>. '+e(decision.explanation)+'</p>'+
     '<div class="as-qc-next"><strong>Keputusan untuk '+e(decision.sectorName)+
       ': minta pengukuran lapangan terbaru</strong><span>Data CORS pada tanggal yang sama membantu pemeriksaan observasi, tetapi belum mengukur sektor pelabuhan.</span></div>'+
-    '<button type="button" id="as-qc-brief" class="pw-btn pw-btn-primary">Cetak brief dengan lampiran QC lokal</button>':
+    '<details class="as-qc-daily"><summary>Lihat rincian QC per tanggal dan konstelasi</summary><div class="as-qc-daily-inner">'+renderStationQc(decision.parsed)+'</div></details>'+'<button type="button" id="as-qc-brief" class="pw-btn pw-btn-primary">Cetak brief dengan lampiran QC lokal</button>':
     '<div class="as-qc-bridge-empty"><strong>Data CSEM–CSMG belum diimpor.</strong>'+
     '<span>Gunakan JSON hasil pemrosesan RINEX lokal. Contoh kasus Tanjung Emas dan laporan historis tetap dapat dijalankan tanpa file tersebut.</span></div>';
   return '<section class="as-qc-bridge" id="as-csem-csmg-qc" aria-label="Rangkaian QC stasiun Semarang ke brief">'+
@@ -94,7 +95,7 @@ function executiveDecisionCard(){
    '</div><div class="as-executive-actions">'+status+
    '<button type="button" class="pw-btn pw-btn-primary" id="as-preview" aria-expanded="'+showBriefPreview+'" aria-controls="as-brief-preview">'+
    (showBriefPreview?"Tutup contoh brief":"Lihat contoh brief verifikasi")+'</button>'+
-   '<a class="as-print-link" href="#as-export">Cetak laporan lengkap ↓</a></div>'+
+   '<a class="as-print-link" href="#as-export">Cetak laporan lengkap ↓</a><a class="as-print-link" href="#as-csem-csmg-qc">Lihat QC Semarang ↓</a></div>'+
    preview+'</section>';
 }
 function renderReal(){
