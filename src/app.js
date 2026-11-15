@@ -557,6 +557,7 @@ $("lab-toggle").addEventListener("click", async () => {
     "Data lab closed. Verified evidence restored when experimental data had been selected.");
 });
 // View switching is owned by independent navigation.js, not by this analytics module.
+window.addEventListener("baruna:viewchange",()=>renderGeographicContext());
 $("step-sector").addEventListener("click", () => reviewStep("field-evidence"));
 $("step-evidence").addEventListener("click", () => reviewStep("geo-context"));
 $("step-report").addEventListener("click", printEvidenceReport);
