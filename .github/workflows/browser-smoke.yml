@@ -35,6 +35,10 @@ jobs:
           curl --fail http://127.0.0.1:4173/ > /dev/null
       - name: Verify authentic data, UI, evidence export and mobile layout
         run: node scripts/browser-smoke.mjs
+      - name: Exercise live production view switching (non-blocking diagnostic)
+        if: always()
+        continue-on-error: true
+        run: node scripts/production-check.mjs
       - name: Inspect public deployment assets (non-blocking diagnostic)
         if: always()
         run: |
