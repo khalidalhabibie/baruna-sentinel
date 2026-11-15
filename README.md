@@ -18,6 +18,17 @@ Feature switches are defined in [`src/feature-flags.js`](src/feature-flags.js):
 
 For an intentionally experimental share link, append `?lab=1`. **This is UI feature gating, not authentication or access control.** Plan B verified BAKO evidence remains available without logging in or enabling the lab. Plan A remains an offline QC import, not a live stream or BIG-verified data certificate.
 
+## Local CSEM / CSMG multi-day RINEX observation QC
+
+**New in Decision View:** scroll to **GNSS Observation Readiness** and click **Select QC JSON**. Choose the locally generated QC summary file (for example a baruna_private_cors_qc_*.json on your computer). The browser displays:
+- side-by-side daily **CSEM / CSMG** 30-second epoch coverage and unavailable station-days;
+- common complete-day count, per-station epoch totals, observed GPS/GLONASS/Galileo/SBAS pseudorange C1 presence, and interval gaps;
+- scientific limitations: the chart **does not** calculate CORS displacement, annual subsidence, hazard or asset inspection priority.
+
+**Privacy:** the input is parsed entirely in the current browser tab. It is never sent to a server, saved to localStorage or included in the public static build. Click **Clear local comparison** to remove it from the UI. Make sure applicable BIG/SRGI rights permit any distribution of resulting charts or screenshots.
+
+The schema is validated and intentionally limited to two station identities with one calendar year, 30-second (2,880 epoch/day) RINEX2-derived summaries. Keep raw RINEX and private QC artifacts off GitHub. For the next data-collection gates (30-day monitoring, same-epoch GPS-vs-multi-GNSS positioning, long-term position solutions and surveyed infrastructure), see [CORS QC evidence & future-data decisions](docs/CORS_QC_EVIDENCE_AND_NEXT_DATA.md).
+
 ## Real Semarang basemap + offline GIS fallback
 
 BARUNA Sentinel now opens with a **real interactive OpenStreetMap street basemap**, powered by **locally packaged Leaflet 1.9.4**. Drag/pan, zoom, scale and three selectable source-referenced points (BIG CSEM, OSM Tanjung Emas terminal and Semarang city GIS Genuk office) work in both Decision and Analyst modes. No account, paid API key, or remote JavaScript CDN is needed. Each reference marker opens the existing station/location inspector with lat/lon, source URL and approximate great-circle distance from CSEM.
