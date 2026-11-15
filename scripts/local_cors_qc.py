@@ -17,6 +17,7 @@ import argparse
 from collections import defaultdict
 from datetime import date, datetime
 import gzip
+import io
 import hashlib
 import json
 from pathlib import Path
@@ -74,7 +75,8 @@ def read_header(buffer: bytes, filename: str):
     """Inspect actual RINEX header; never trust station name from ZIP basename."""
     if filename.lower().endswith(".gz"):
         try:
-            buffer = gzip.decompress(buffer)
+            with gzip.GzipFile(fileobj=io.BytesIO(buffer)) as stream:
+                buffer = stream.read(MAX_UNCOMPRESSED_MEMBER + 1)
         except OSError as exc:
             raise ValueError("Invalid gzip observation member") from exc
     if len(buffer) > MAX_UNCOMPRESSED_MEMBER:
