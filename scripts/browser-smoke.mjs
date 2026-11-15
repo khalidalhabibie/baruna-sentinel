@@ -28,18 +28,24 @@ try {
     "Default entry shows concise Why Sentinel story rather than a dense dashboard");
   assert.equal(await storyPage.locator("#ws-node-track [role='tab']").count(),5,
     "Five connected, accessible evidence-to-decision nodes exist");
-  assert.ok((await storyPage.locator(".ws-headline h1").textContent()).includes("Keputusan inspeksi"));
-  assert.ok((await storyPage.locator(".ws-fact-strip").textContent()).includes("100–120 mm/tahun"),
-    "Published regional InSAR finding is shown with its period and caveat");
+  assert.ok((await storyPage.locator(".ws-headline h1").textContent()).includes("Mana yang perlu diperiksa"),"A novice sees a concrete operational question");
+  assert.equal((await storyPage.locator(".ourdo-wordmark strong").textContent()).trim(),"OURDO");
+  assert.equal((await storyPage.locator(".ourdo-wordmark small").textContent()).trim(),"INDONESIA");
+  assert.equal(await storyPage.locator(".brand-mark").count(),0,"BARUNA symbol no longer masquerades as the company logo");
+  assert.equal(await storyPage.locator(".pw-primary-nav button:visible").count(),4,"First-time visitor sees only four primary actions");
+  assert.ok((await storyPage.locator(".ws-fact-strip").textContent()).includes("Keluaran"),"Hero explains what the product produces");
+  assert.ok((await storyPage.locator(".ws-evidence-detail").textContent()).includes("100–120 mm/tahun"),"Regional InSAR evidence stays in its contextual step rather than the hero");
   await storyPage.screenshot({path:"reports/sentinel-judge-demo-why-sentinel-desktop.png",fullPage:true});
   await storyPage.locator('[data-ws-index="1"]').click();
-  assert.ok((await storyPage.locator("#ws-step-detail h3").textContent()).includes("biaya operasional"),
+  assert.ok((await storyPage.locator("#ws-step-detail h3").textContent()).includes("biaya operasi"),
     "Clicking the second node reveals economic implications");
+  assert.equal(await storyPage.locator("#ws-econ-result").textContent(),"Masukkan dua asumsi",
+    "Unknown operator costs start blank, not with fabricated default rupiah estimates");
   await storyPage.locator("#ws-hours").fill("6");
   await storyPage.locator("#ws-hourly").fill("1000000");
   assert.equal(await storyPage.locator("#ws-econ-result").textContent(),"Rp6.000.000",
     "Economic calculator changes only on user-defined hypothetical inputs");
-  assert.ok((await storyPage.locator(".ws-econ-model").textContent()).includes("Bukan nilai kerugian aktual"),
+  assert.ok((await storyPage.locator(".ws-econ-model").textContent()).includes("bukan kerugian aktual"),
     "Economic scenario never masquerades as verified port loss");
   await storyPage.locator('[data-ws-index="2"]').click();
   assert.ok((await storyPage.locator(".ws-dataset-lines").textContent()).includes("BAKO"),
@@ -48,8 +54,8 @@ try {
   assert.equal(await storyPage.locator('[data-ws-index="3"]').getAttribute("aria-selected"),"true",
     "Node navigation supports keyboard arrow keys");
   await storyPage.locator('[data-ws-index="4"]').click();
-  assert.ok((await storyPage.locator("#ws-step-detail").textContent()).includes("Data Insufficient") ||
-    (await storyPage.locator("#ws-step-detail").textContent()).includes("DATA INSUFFICIENT"));
+  assert.ok((await storyPage.locator(".ws-case-status").textContent()).includes("bukti belum cukup"),"Concrete historic case blocks unsupported operational ranking");
+  assert.ok((await storyPage.locator(".ws-outcome").textContent()).includes("74–140 cm"),"Concrete West breakwater historical record is visible");
   await storyPage.locator(".ws-stage-actions [data-pw-page='assessment']").click();
   assert.equal(await storyPage.locator("#pw-page-assessment").isVisible(),true,
     "Final node opens a functioning Inspection Assessment");
