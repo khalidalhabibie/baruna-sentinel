@@ -16,10 +16,13 @@ export function buildEvidenceReportMarkup(bundle) {
   const executive = bundle.executiveReadiness || {}, verification = bundle.verificationRequest || null;
   const isPublished=src.mode==="published";
   const audited=src.rinexSource?.mode==="real-qc" && qc?.verifiedRun && qc?.linkedToCsemMovement===false;
+  const decodedButUserDeclared=src.rinexSource?.mode==="local-qc" &&
+    qc?.status==="MULTI_GNSS_RECORDS_SEEN" && qc?.stationIdentityVerifiedByBig===false &&
+    qc?.linkedToCsemMovement===false;
   const mode=isPublished?"REAL GPS-DERIVED HISTORICAL SERIES":src.mode==="synthetic"?"SYNTHETIC DEMONSTRATION":"USER-SUPPLIED · UNVERIFIED";
-  const meta=audited
-    ?'<div class="print-metrics"><div><small>BAKO EPOCHS (20 MIN)</small><strong>'+safeText(qc.epochCount)+'</strong></div><div><small>GPS-ONLY MEAN SATELLITES</small><strong>'+fmt(qc.averageGpsPseudorangeSatellitesPerEpoch,2)+'</strong></div><div><small>ALL SYSTEMS MEAN SATELLITES</small><strong>'+fmt(qc.averageAllPseudorangeSatellitesPerEpoch,2)+'</strong></div></div>'
-    :'<p>Independently verified RINEX QC has not been established for the current selection.</p>';
+  const meta=(audited || decodedButUserDeclared)
+    ?'<div class="print-metrics"><div><small>'+ (audited?'BAKO ARCHIVE':'LOCAL RINEX') +' EPOCHS</small><strong>'+safeText(qc.epochCount)+'</strong></div><div><small>GPS-ONLY MEAN SATELLITES</small><strong>'+fmt(qc.averageGpsPseudorangeSatellitesPerEpoch,2)+'</strong></div><div><small>ALL SYSTEMS MEAN SATELLITES</small><strong>'+fmt(qc.averageAllPseudorangeSatellitesPerEpoch,2)+'</strong></div></div>'
+    :'<p>Independent multi-GNSS observation QC has not been established for the current selection.</p>';
   const rows=(bundle.illustrativeAssetReview||[]).map(a=>'<tr><td>'+safeText(a.name)+'</td><td>'+label(a.scenarioTier||"BLOCKED")+'</td><td>'+label(a.priority)+'</td><td>NO — fictional input only</td></tr>').join("");
   const refs = [
     "https://doi.org/10.1038/s41597-023-02274-0",
@@ -45,9 +48,11 @@ export function buildEvidenceReportMarkup(bundle) {
     +'<div><small>SCREENING COMPLETENESS</small><strong>'+label(m.quality)+'</strong></div></div>'
     +'<p class="print-tiny">Period '+safeText(m.start)+' to '+safeText(m.end)
     +' · maximum gap '+safeText(m.maxGapDays)+' days · station-level descriptive OLS only, without autocorrelation / seasonal / discontinuity modeling. This is not asset displacement.</p>'
-    +'<h2>02 / Authentic multi-GNSS observation quality</h2>'
+    +'<h2>02 / Multi-GNSS observation quality (source-labelled)</h2>'
     +'<p><b>Independent station:</b> '+safeText(qc?.marker||"unavailable")+' (Cibinong when BAKO). '
-    +(audited?"Archived 1 January 2025 IGS observation data decoded by GeoRinex; verified CI evidence.":"No independent authenticated QC for the current RINEX choice.")+'</p>'
+    +(audited?"Archived 1 January 2025 IGS observation data decoded by GeoRinex; verified CI evidence."
+      :decodedButUserDeclared?"Local RINEX decoded using GeoRinex; the file source and station identity were declared by the uploader and have NOT been verified by BIG. NO verified position solution."
+      :"No independently authenticated QC for the current RINEX choice.")+'</p>'
     +meta
     +'<p class="print-tiny">QC compares populated pseudorange availability within the same epoch window. No PPP/RTK position solution, no quantified accuracy improvement, and no claim this BAKO QC produced the CSEM historical coordinates.</p>'
     +'<h2>03 / Geographic provenance</h2>'
