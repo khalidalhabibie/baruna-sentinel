@@ -702,3 +702,20 @@ body[data-page="assessment"] .pw-page[data-pw-screen="assessment"]{display:block
  .ai-asset-sidebar{padding:13px}
  .ai-select-asset{flex:1 1 100%}
 }
+
+
+/* Asset geolocation still readable when map tiles are unavailable (offline demo). */
+#ai-map{
+ background-color:#edf3f2;
+ background-image:
+  linear-gradient(rgba(108,143,141,.10) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(108,143,141,.10) 1px,transparent 1px);
+ background-size:54px 54px;
+}
+.ai-map-label{
+ background:#fff!important;border:1px solid #c4d9d4!important;
+ border-radius:4px!important;box-shadow:0 2px 8px rgba(25,65,67,.08)!important;
+ color:#315e60!important;font-size:10px!important;font-weight:750!important;
+ padding:4px 7px!important;
+}
+.ai-map-distance{font-size:10px;color:#2e6864;font-weight:690}
