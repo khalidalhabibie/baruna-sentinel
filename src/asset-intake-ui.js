@@ -13,6 +13,8 @@ let selectedAssetId=null;
 let intakeFileName="";
 let error=null;
 let leafletMap=null;
+let persistentMapNode=null;
+let assetShapeLayer=null;
 const csem=LANDMARKS.find(x=>x.id==="csem");
 
 export function loadSyntheticAssetExample(){
@@ -112,46 +114,71 @@ export function renderAssetIntake(){
         '<div class="ai-asset-result">'+(chosen?displayAssetRecord(chosen):"")+'</div></div></div></div>')+
    '<div class="ai-interpretation"><strong>Published comparison available:</strong> CSMG and CSEM 2021–2023 show different station vertical trends in the same PPP study. Differences between stations do not assign a motion rate to any imported asset.</div>';
 }
+/**
+ * Preserve the same Leaflet map through tab/asset re-renders instead of
+ * rapidly destroying and recreating SVG renderers and tile layers.
+ * An unmounted map node remains in memory only for this page session.
+ */
 export function disposeIntakeMap(){
-  if(leafletMap){try{leafletMap.stop();leafletMap.remove();}catch{}leafletMap=null;}
+  if(persistentMapNode?.parentNode)persistentMapNode.parentNode.removeChild(persistentMapNode);
 }
 export function renderImportedAssetMap(){
-  disposeIntakeMap();
-  const node=document.getElementById("ai-map");
-  if(!node||!documentRecord||!window.L||document.body.dataset.page!=="assessment")return;
-  leafletMap=L.map(node,{scrollWheelZoom:false,zoomControl:true,preferCanvas:false,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom:19
-  }).addTo(leafletMap);
+  const slot=document.getElementById("ai-map");
+  if(!slot||!documentRecord||!window.L||document.body.dataset.page!=="assessment")return;
+  if(!leafletMap){
+    persistentMapNode=slot;
+    leafletMap=L.map(persistentMapNode,{
+      scrollWheelZoom:false,zoomControl:true,preferCanvas:false,
+      zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false,
+      trackResize:false
+    });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom:19
+    }).addTo(leafletMap);
+    assetShapeLayer=L.geoJSON(null,{
+      style:feature=>({
+        color:feature.properties.id===selectedAssetId?"#0d6d61":"#448a85",
+        weight:feature.properties.id===selectedAssetId?4:2,
+        fillColor:"#4b9e95",fillOpacity:.16
+      }),
+      pointToLayer:(feature,latlng)=>L.circleMarker(latlng,{
+        radius:feature.properties.id===selectedAssetId?10:7,color:"#0d6d61",
+        weight:2,fillColor:"#51ae9e",fillOpacity:.75
+      }),
+      onEachFeature:(feature,layer)=>{
+        const info=assessment?.records.find(x=>x.id===feature.properties.id);
+        layer.bindPopup('<strong>'+esc(info?.name||"Asset")+'</strong><p>Location context only · rank unavailable</p>');
+      }
+    }).addTo(leafletMap);
+    L.circleMarker([csem.lat,csem.lon],{
+      radius:6,color:"#314b7d",fillColor:"#5c7fc0",fillOpacity:.95
+    }).bindPopup("CSEM reference station · not linked to imported assets").addTo(leafletMap);
+  }else{
+    // The prior layout detached the map container but did not destroy its
+    // overlays. Keep those objects stable through rapid user interactions.
+    slot.replaceWith(persistentMapNode);
+    leafletMap.invalidateSize({pan:false,debounceMoveend:true});
+  }
   const collection={
     type:"FeatureCollection",
     features:documentRecord.features.map(f=>({
-      type:"Feature",properties:{id:f.id},
-      geometry:f.geometry
+      type:"Feature",properties:{id:f.id},geometry:f.geometry
     }))
   };
-  const shapeLayer=L.geoJSON(collection,{
-    style:feature=>({
-      color:feature.properties.id===selectedAssetId?"#0d6d61":"#448a85",
-      weight:feature.properties.id===selectedAssetId?4:2,
-      fillColor:"#4b9e95",fillOpacity:.16
-    }),
-    pointToLayer:(feature,latlng)=>L.circleMarker(latlng,{
-      radius:feature.properties.id===selectedAssetId?10:7,color:"#0d6d61",
-      weight:2,fillColor:"#51ae9e",fillOpacity:.75
-    }),
-    onEachFeature:(feature,layer)=>{
-      const info=assessment?.records.find(x=>x.id===feature.properties.id);
-      layer.bindPopup('<strong>'+esc(info?.name||"Asset")+'</strong><p>Location context only · rank unavailable</p>');
-    }
-  }).addTo(leafletMap);
-  const csemMarker=L.circleMarker([csem.lat,csem.lon],{
-    radius:6,color:"#314b7d",fillColor:"#5c7fc0",fillOpacity:.95
-  }).addTo(leafletMap);
-  csemMarker.bindPopup('CSEM reference station · not linked to imported assets');
-  const b=shapeLayer.getBounds();
-  if(b?.isValid())leafletMap.fitBounds(b.extend([csem.lat,csem.lon]).pad(.22),{maxZoom:13,animate:false});
-  else leafletMap.setView([csem.lat,csem.lon],11);
-  requestAnimationFrame(()=>leafletMap?.invalidateSize());
+  leafletMap.stop();
+  assetShapeLayer.clearLayers();
+  assetShapeLayer.addData(collection);
+  const bounds=assetShapeLayer.getBounds();
+  if(bounds?.isValid()){
+    leafletMap.fitBounds(bounds.extend([csem.lat,csem.lon]).pad(.22),{
+      maxZoom:13,animate:false
+    });
+  }else{
+    leafletMap.setView([csem.lat,csem.lon],11,{animate:false});
+  }
+  requestAnimationFrame(()=>{
+    if(leafletMap&&persistentMapNode?.isConnected)
+      leafletMap.invalidateSize({pan:false,debounceMoveend:true});
+  });
 }
