@@ -3,7 +3,7 @@ import {
   inspectRinex, rankAssets, evaluateEvidenceLink, evidenceBundle
 } from "./engine.js";
 import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows,geoPointDetails,GEO_VIEWS,LANDMARKS} from "./geo.js";
-import {buildEvidenceReportMarkup} from "./report.js";
+import {buildEvidenceReportMarkup, buildVerificationBriefMarkup} from "./report.js";
 import {parseLocalQcReport} from "./qc-source.js";
 import {resolveFeatureFlags} from "./feature-flags.js";
 import {makeStreetMap} from "./live-map.js";
@@ -385,6 +385,22 @@ function printEvidenceReport() {
   }
 }
 
+function printVerificationBrief() {
+  if(!historicalDoc || !selectedSectorId) {
+    return notify("Historical sector data are not available yet. Cannot prepare a source-backed verification brief.", true);
+  }
+  try {
+    const verification = verificationRequestForSector(historicalDoc, selectedSectorId);
+    $("print-report").innerHTML = buildVerificationBriefMarkup({
+      verification, source: historicalDoc, generatedAt: new Date().toISOString()
+    });
+    window.print();
+    notify("Sector verification brief prepared. Select Print / Save as PDF in your browser.");
+  } catch (error) {
+    notify("Could not prepare verification brief: " + (error instanceof Error ? error.message : String(error)), true);
+  }
+}
+
 async function runCaseStudy() {
   const button = $("case-study-btn");
   button.disabled = true;
@@ -560,7 +576,7 @@ $("lab-toggle").addEventListener("click", async () => {
 window.addEventListener("baruna:viewchange",()=>renderGeographicContext());
 $("step-sector").addEventListener("click", () => reviewStep("field-evidence"));
 $("step-evidence").addEventListener("click", () => reviewStep("geo-context"));
-$("step-report").addEventListener("click", printEvidenceReport);
+$("step-report").addEventListener("click", printVerificationBrief);
 document.querySelector(".geo-layer-toolbar").addEventListener("click", event => {
   const button = event.target.closest("button[data-map-layer]");
   if (!button) return;
@@ -616,8 +632,8 @@ $("historical-sector-list").addEventListener("click", e => {
   notify("Selected "+ historicalDoc.sectors.find(s => s.id === selectedSectorId).name + ". Historical study only; current condition unknown.");
 });
 $("report-btn").addEventListener("click", printEvidenceReport);
-$("executive-brief").addEventListener("click", printEvidenceReport);
-$("case-workspace-brief").addEventListener("click",printEvidenceReport);
+$("executive-brief").addEventListener("click", printVerificationBrief);
+$("case-workspace-brief").addEventListener("click",printVerificationBrief);
 $("cors-qc-file").addEventListener("change", async event=>{
   const file=event.target.files?.[0];
   if(!file)return;
