@@ -20,6 +20,9 @@ try {
   const response = await page.goto(BASE, { waitUntil: "networkidle", timeout: 30000 });
   assert.equal(response.status(), 200, "Site root serves 200");
   assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"), "true", "Decision mode is default");
+  await page.keyboard.press("Tab");
+  assert.equal(await page.evaluate(() => document.activeElement.classList.contains("skip-link")), true,
+    "First keyboard tab reaches the skip link");
   assert.equal(await page.locator("#station-qc").isVisible(),false,
     "Full GNSS QC screen is not stacked into the buyer Overview");
   assert.equal(await page.locator(".decision-data-bridge").isVisible(),true,
@@ -50,9 +53,6 @@ try {
   await navOnly.close();
 
   assert.equal(await page.locator(".controls").isVisible(), false, "Decision mode hides technical controls");
-  await page.keyboard.press("Tab");
-  assert.equal(await page.evaluate(() => document.activeElement.classList.contains("skip-link")), true,
-    "First keyboard tab reaches the skip link");
   assert.equal(await page.locator("#case-journey").isVisible(), true, "Guided 3-step journey shown");
   await page.waitForFunction(() => document.querySelector("#stat-epochs")?.textContent.includes("3,561"), { timeout: 15000 });
   const epochCount = await page.locator("#stat-epochs").textContent();
