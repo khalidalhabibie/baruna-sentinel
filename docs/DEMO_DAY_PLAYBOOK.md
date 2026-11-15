@@ -1,5 +1,35 @@
 # Bhumireka Demo Day Playbook — 19 November 2026
 
+## Commercial positioning and evidence-readiness decision demo (15 Nov 2026)
+
+**Positioning:** BARUNA Sentinel is a source-traceable **inspection evidence-readiness workspace** for port and coastal infrastructure operations teams. It does not diagnose asset safety, predict disaster, or promise validated cost savings.
+
+**Buyer / job:** asset integrity or infrastructure maintenance lead, deciding which historical references are useful, what is missing, which site survey must be commissioned, and how to document the decision before scheduling a field inspection.
+
+**Source-backed urgency — do not exaggerate:**
+- Raharjo & Yosi (2017) reports 2005 levelling measurements on **six real Tanjung Emas sectors**, including 74–140 cm cumulative historical settlement at West breakwater. These are **not current asset readings**. DOI: https://doi.org/10.32693/bomg.32.1.2017.351
+- BMKG's archived November 2026 rob bulletin included **Pesisir Kota Semarang for 1–6 November 2026**. This interval has passed. It is **not an active warning** and **does not measure land movement**. Source: https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf
+- CSEM 2010–2021 historical GPS-derived position series is a different method, station and era from the 2005 field study and BAKO 2025 multi-GNSS observation QC. No integrated local asset displacement solution exists.
+
+**30-second spoken opener, technically honest:**
+
+> Coastal operators have to decide where to verify infrastructure condition, but the evidence is scattered and not always current. This published study records historical settlement at six Tanjung Emas infrastructure sectors. We can reproduce the CSEM station movement series and verify a real multi-GNSS observation file — but those datasets are not an asset safety assessment. BARUNA Sentinel shows exactly what each source proves, flags the missing asset-level baseline, and produces a specific verification brief. The goal is to make the next inspection decision defensible.
+
+**Walkthrough order in app:**
+1. Top decision desk: six historically documented sectors, **three independent evidence streams**, **zero current asset-level measurements in this prototype**.
+2. Select **West breakwater** in the real field-evidence section; explain that 74–140 cm refers to historical cumulative values, not a rate or present condition.
+3. Show CSEM movement and BAKO multi-constellation QC as **separate sources**, including the non-linkage evidence gate.
+4. Click **Prepare evidence brief** to show a report naming the selected sector and requesting an updated site survey, asset register, and operator-approved validation.
+5. Distinguish the proposed commercial pilot from verified production features. No commercial customer, validation study, actual savings, or performance advantage is claimed.
+
+**Pilot hypothesis (future):** ingest operator-approved asset inventory and new on-site/representative measurements; configure review criteria with geodesy and asset engineers; generate audited evidence reviews. Success metrics to test: percentage of asset reviews with traceable source/provenance, time spent preparing verification requests, and expert-rated action quality. None of these has been measured in the prototype.
+
+**Judge challenge:** “What makes this multi-GNSS instead of a historical port study?”
+
+**Correct reply:** The genuine BAKO RINEX observation QC verifies multiple GNSS constellation observations, but does not yield Semarang movement estimates. The CSEM trajectory is GPS-derived historic positioning. The prototype demonstrates the evidence chain and its limits, not yet a local asset-specific multi-GNSS deformation solution. An operator pilot needs a co-located/local monitoring baseline or scientifically defensible GNSS integration.
+
+---
+
 ## Real local sector evidence (historical, NOT current)
 
 A public study by Raharjo & Yosi (2017; levelling measurements in 2005) reports **six real Tanjung Emas infrastructure sectors** with cumulative historical settlement ranges. The visible report cards reproduce their data, identify the method/year and provide the paper source. Their locations are NOT pinned as exact field sites because no authoritative sector survey geometry has been verified.
