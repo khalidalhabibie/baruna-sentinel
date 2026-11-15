@@ -183,6 +183,13 @@
             <div class="section-row"><div><span class="section-index">02 / MAP</span><h2>Where is the evidence?</h2></div><span class="subtle-pill">Reference points · WGS84</span></div>
             <article class="panel geo-panel">
               <div class="geo-panel-top"><div><strong>Semarang / Genuk</strong><p>Public reference points, not asset measurements.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
+              <div class="geo-focus-toolbar" role="group" aria-label="Map area">
+                <span class="geo-focus-label">View area</span>
+                <button type="button" data-geo-view="all" aria-pressed="true">Semarang</button>
+                <button type="button" data-geo-view="port" aria-pressed="false">Tanjung Emas</button>
+                <button type="button" data-geo-view="station" aria-pressed="false">CSEM station</button>
+                <span class="geo-trust-pill">3 public references · no asset polygons</span>
+              </div>
               <div class="geo-layer-toolbar analyst-only" role="group" aria-label="Toggle geographic evidence layers">
                 <div><span class="geo-layer-caption">GIS layers · WGS84 / EPSG:4326</span><small>Toggle point categories on the offline coordinate plot</small></div>
                 <button type="button" data-map-layer="station" aria-pressed="true">CSEM station</button>
@@ -200,6 +207,22 @@
                 <div class="geo-online-foot"><span>Map © <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap contributors</a> · map features are contextual and do not validate inspection risk</span></div>
               </div>
               <div id="geo-map" class="geo-map" aria-label="WGS84 context plot for Semarang">Loading geographic references…</div>
+              <div class="geo-reference-desk">
+                <div class="geo-reference-choices" role="group" aria-label="Select a public geographic reference">
+                  <button type="button" data-geo-point="port-terminal" aria-pressed="true"><span class="geo-choice-type">PORT REFERENCE</span><strong>Tanjung Emas terminal</strong><small>OpenStreetMap</small></button>
+                  <button type="button" data-geo-point="csem" aria-pressed="false"><span class="geo-choice-type">GPS STATION</span><strong>CSEM · Semarang</strong><small>BIG Ina-CORS</small></button>
+                  <button type="button" data-geo-point="genuk-office" aria-pressed="false"><span class="geo-choice-type">LOCAL REFERENCE</span><strong>Genuk district office</strong><small>Semarang city GIS</small></button>
+                </div>
+                <div class="geo-selected-panel" aria-live="polite" aria-atomic="true">
+                  <div class="geo-selected-kicker" id="geo-selected-category">PUBLIC LANDMARK</div>
+                  <h3 id="geo-selected-title">Tanjung Emas terminal</h3>
+                  <div class="geo-coordinate-group"><span>WGS84 · LAT, LON</span><code id="geo-selected-coordinates">—</code></div>
+                  <div class="geo-coordinate-group"><span>FROM CSEM · STRAIGHT LINE</span><strong id="geo-selected-distance">—</strong></div>
+                  <p id="geo-selected-limitation">Geographic context only.</p>
+                  <a id="geo-selected-source" href="https://www.openstreetmap.org/node/2085925705" target="_blank" rel="noopener noreferrer">View original source ↗</a>
+                </div>
+              </div>
+              <p class="geo-map-compact-note">Only verified reference locations are mapped. The six researched port sectors are listed separately because their exact survey geometries are not available.</p>
               <div class="geo-legend"><span><i class="geo-marker-dot real"></i> CSEM station · BIG</span><span><i class="geo-marker-dot landmark"></i> Public landmarks</span><span data-feature="fictionalMapMarkers"><i class="geo-marker-dot fictional"></i> Fictional scenario markers</span></div>
               <div class="geo-insights analyst-only">
                 <div><small>Reference station</small><strong>CSEM · Semarang</strong><span>Historical GPS-derived position series</span></div>
