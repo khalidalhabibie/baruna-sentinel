@@ -401,3 +401,200 @@ body[data-view="decision"] [data-feature="fictionalMapMarkers"]{display:none!imp
 .geo-legend{padding:12px 20px}
 @media(max-width:880px){.geo-reference-desk{grid-template-columns:1fr}.geo-reference-choices{grid-template-columns:repeat(3,minmax(0,1fr))}.geo-reference-choices button{min-height:100px}.geo-selected-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}.geo-selected-panel h3{grid-column:span 2}.geo-selected-panel p{grid-column:span 2}.geo-selected-panel a{grid-column:span 2}.geo-trust-pill{margin-left:0}}
 @media(max-width:580px){.geo-focus-toolbar{padding:10px;gap:5px}.geo-focus-label{width:100%;margin-bottom:2px}.geo-focus-toolbar button{padding:9px;flex:1 1 auto;font-size:11px;min-height:43px}.geo-trust-pill{width:100%;text-align:center;font-size:10px}.geo-reference-desk{margin:10px 10px 0;gap:9px}.geo-reference-choices{grid-template-columns:1fr;gap:5px}.geo-reference-choices button{min-height:52px;padding:10px 13px;gap:2px}.geo-selected-panel{display:flex;padding:16px;gap:9px}.geo-selected-panel h3{font-size:17px}.geo-map-compact-note{margin:11px 12px 0}.geo-legend{padding:10px 12px}}
+
+/* Evidence Workspace 2.0 — spacious field-research layout (CARTO/ArcGIS-informed patterns) */
+body[data-view="decision"] main{display:flex;flex-direction:column}
+body[data-view="decision"] main>.hero{order:1}
+body[data-view="decision"] main>.workspace{order:2}
+body[data-view="decision"] main>.executive{order:3}
+body[data-view="decision"] main>.case-journey{order:4}
+body[data-view="decision"] main>footer{order:5}
+body[data-view="decision"] .workspace{
+  width:100%;max-width:1800px;margin:0 auto;
+  padding:35px clamp(20px,4vw,76px) 28px;
+}
+body[data-view="decision"] .hero{
+  padding:46px clamp(24px,6vw,96px) 51px;
+  min-height:305px;
+  background:linear-gradient(112deg,#0a2434 0%,#0b3947 64%,#126b6c 100%);
+}
+body[data-view="decision"] .hero-content{max-width:1020px}
+body[data-view="decision"] .hero h1{
+  max-width:1000px;font-size:clamp(37px,4.15vw,62px);
+  line-height:1.08;letter-spacing:-.055em;margin:21px 0 19px;
+}
+body[data-view="decision"] .hero p{max-width:800px;font-size:16px;line-height:1.65;color:#c4e0e0;margin:0}
+body[data-view="decision"] .hero-cta{margin-top:27px}
+body[data-view="decision"] .hero-cta button{min-height:50px;font-size:14px;padding:12px 21px}
+body[data-view="decision"] .hero-cta>span{font-size:12px;color:#b0cbcb}
+.case-workspace{min-width:0;width:100%;scroll-margin-top:20px}
+.case-workspace-header{
+  display:flex;align-items:end;justify-content:space-between;
+  gap:24px;margin-bottom:27px;padding:0 3px;
+}
+.case-workspace-header .section-index{font-size:11px;color:#238577;letter-spacing:.13em}
+.case-workspace-header h2{
+  color:#133b4a;font-size:clamp(25px,2.45vw,35px);
+  line-height:1.2;letter-spacing:-.05em;margin:9px 0 10px;font-weight:850;
+}
+.case-workspace-header p{font-size:14px;line-height:1.65;max-width:800px;margin:0;color:#5c7d83}
+.case-workspace-header-meta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;flex:none}
+.case-workspace-header-meta span{background:#fff;color:#47736f;border:1px solid #d7e9e2;border-radius:7px;padding:12px 16px;font-size:12px;white-space:nowrap}
+.case-workspace-header-meta strong{font-size:17px;color:#166c66;margin-right:4px;font-weight:900}
+.case-workspace-layout{display:grid;grid-template-columns:minmax(315px,.86fr) minmax(0,1.95fr);gap:23px;align-items:start}
+.case-sites-column,.case-map-column{min-width:0}
+.case-sites-column>.section-row,.case-map-column .section-row{
+  min-height:45px;display:flex;align-items:center;gap:12px;margin:0 0 12px;flex-wrap:wrap;
+}
+.case-sites-column .section-row h2,.case-map-column .section-row h2{
+  font-size:21px;line-height:1.3;margin:0;letter-spacing:-.035em;
+}
+.case-sites-column .section-row .subtle-pill,.case-map-column .section-row .subtle-pill{
+  margin-left:auto;font-size:10px;letter-spacing:.04em;padding:8px 10px;
+}
+.case-sites-column .historical-panel,.case-map-column .geo-panel{
+  border:1px solid #d5e8e3;border-radius:11px;background:#fff;
+  box-shadow:0 10px 35px rgba(18,63,65,.045);
+}
+.case-sites-column .historical-head{padding:20px 20px 17px;gap:10px;flex-wrap:wrap}
+.case-sites-column .historical-head h3{font-size:19px;line-height:1.32;margin:3px 0 7px}
+.case-sites-column .historical-head p{font-size:13px;line-height:1.55;margin:0}
+.case-sites-column .historical-source{font-size:12px;white-space:nowrap}
+.case-sites-column .historical-filters{padding:14px 15px;gap:8px;display:flex;flex-wrap:wrap}
+.case-sites-column .historical-filters button{min-height:40px;font-size:12px;padding:10px 12px;flex:1 1 auto}
+.case-sites-column .historical-sector-list{padding:0 11px 12px}
+.case-sites-column .historical-sector{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  grid-template-rows:auto auto;gap:7px 10px;
+  min-height:90px;margin:4px 0;border:1px solid #e3eeeb;
+  padding:16px 15px;border-radius:7px;align-items:center;background:#fff;
+}
+.case-sites-column .historical-sector:hover{
+  border-color:#6fb7a9;background:#f2faf6;
+}
+.case-sites-column .historical-sector[aria-current="true"]{
+  background:#eaf7f0;border-color:#4d9c89;box-shadow:inset 4px 0 #188678;
+}
+.case-sites-column .historical-sector-left{grid-column:1;grid-row:1/span 2;min-width:0}
+.case-sites-column .historical-sector-left strong{font-size:14px;line-height:1.4;display:block;color:#184653}
+.case-sites-column .historical-sector-left small{font-size:12px;line-height:1.35;margin-top:5px;color:#678890}
+.case-sites-column .historical-range{grid-column:2;grid-row:1;font-size:14px;font-weight:900;white-space:nowrap;text-align:right;color:#205958}
+.case-sites-column .historical-range small{display:block;font-size:11px;margin-top:5px;font-weight:600;color:#749092}
+.case-sites-column .historical-next{grid-column:2;grid-row:2;justify-self:end;text-align:right;font-size:10px;font-weight:900;letter-spacing:.04em;color:#8a6034}
+.case-sites-column .historical-next small{display:none}
+.case-sites-column .sector-detail-wrap{margin:7px 14px 16px}
+.case-sites-column .sector-detail-wrap summary{font-size:13px;padding:13px 14px}
+.case-sites-column .historical-detail p{font-size:13px;line-height:1.65}
+.case-sites-column .historical-detail-grid{grid-template-columns:1fr!important;gap:9px}
+.case-sites-column .historical-footer summary{font-size:12px}
+.case-map-column .geo-panel-top{padding:23px 25px 17px}
+.case-map-column .geo-panel-top strong{font-size:20px;letter-spacing:-.02em}
+.case-map-column .geo-panel-top p{font-size:13px;margin-top:7px}
+.case-map-column .geo-focus-toolbar{padding:15px 22px;gap:10px}
+.case-map-column .geo-focus-label{font-size:11px;letter-spacing:.07em}
+.case-map-column .geo-focus-toolbar button{min-height:44px;font-size:13px;padding:10px 17px}
+.case-map-column .geo-map-tools{padding:15px 24px}
+.case-map-column .geo-map-tools span{font-size:13px}
+.case-map-column .geo-basemap-toggle{font-size:12px;min-height:44px}
+.case-map-column .geo-map{margin:0 21px;border-radius:9px;min-height:0}
+.case-map-column .geo-map .geo-plot{min-height:0;height:auto;width:100%}
+.case-map-column .geo-reference-desk{margin:19px 21px 0;gap:14px}
+.case-map-column .geo-reference-choices{gap:10px}
+.case-map-column .geo-reference-choices button{min-height:78px;padding:15px 17px}
+.case-map-column .geo-reference-choices button strong{font-size:14px;line-height:1.4}
+.case-map-column .geo-selected-panel{padding:23px}
+.case-map-column .geo-selected-panel h3{font-size:20px}
+.case-map-column .geo-map-compact-note{font-size:12px;line-height:1.6;margin:17px 22px 8px}
+.case-map-column .geo-legend{padding:15px 22px;gap:19px}
+.case-map-column .geo-legend span{font-size:12px}
+.case-workspace-outcome{
+  margin-top:27px;border:1px solid #cfe3dc;border-radius:12px;overflow:hidden;
+  background:#fff;box-shadow:0 10px 35px rgba(13,47,55,.04);
+}
+.case-outcome-heading{padding:26px 30px 20px;border-bottom:1px solid #e3eeea}
+.case-outcome-heading .section-index{color:#238579;font-size:11px}
+.case-outcome-heading h3{font-size:25px;line-height:1.25;color:#153f4f;letter-spacing:-.045em;margin:9px 0 7px}
+.case-outcome-heading p{color:#5e7c85;font-size:14px;line-height:1.5;margin:0}
+.case-outcome-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.case-outcome-metric{padding:26px 27px 29px;border-right:1px solid #e3eeea;display:flex;flex-direction:column;gap:9px}
+.case-outcome-metric:last-child{border-right:0}
+.case-outcome-metric small{font-size:11px;font-weight:900;letter-spacing:.065em;color:#5e8585}
+.case-outcome-metric strong{font-size:23px;line-height:1.25;letter-spacing:-.025em;color:#153f4b;font-weight:900}
+.case-outcome-metric strong.case-outcome-unknown{color:#926736}
+.case-outcome-metric span{font-size:13px;line-height:1.6;color:#5d7a83}
+.case-outcome-actions{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:17px 28px;background:#edf7f2;border-top:1px solid #d7e9e0}
+.case-outcome-actions>span{color:#476c71;font-size:13px;line-height:1.5}
+.case-outcome-actions>span strong{color:#155655}
+.case-outcome-actions button{border:0;border-radius:7px;background:#164f55;color:white;min-height:46px;padding:12px 20px;font-size:13px;font-weight:850;white-space:nowrap}
+.case-outcome-actions button:hover{background:#0b6c67}
+body[data-view="decision"] .executive{margin:6px clamp(20px,4vw,76px) 0;box-shadow:none;border-radius:11px}
+body[data-view="decision"] .executive-heading{padding:26px 31px 24px}
+body[data-view="decision"] .executive-heading h2{font-size:25px}
+body[data-view="decision"] .executive-heading p{font-size:14px}
+body[data-view="decision"] .executive-kpi{padding:27px 30px}
+body[data-view="decision"] .executive-kpi strong{font-size:34px}
+body[data-view="decision"] .executive-action{padding:26px 31px}
+body[data-view="decision"] .case-journey{margin:28px clamp(20px,4vw,76px) 60px;border-radius:11px}
+body[data-view="decision"] .case-journey .journey-intro{padding:26px 29px 7px}
+body[data-view="decision"] .case-journey .journey-intro h2{font-size:24px}
+body[data-view="decision"] .case-journey .journey-actions{padding:15px 24px 24px;gap:14px}
+body[data-view="decision"] .case-journey .journey-step{min-height:84px;padding:15px 17px}
+body[data-view="decision"] .case-journey .journey-step strong{font-size:14px}
+body[data-view="decision"] .case-journey .journey-step small{font-size:12px}
+body[data-view="analyst"] .case-workspace{margin-top:31px}
+body[data-view="analyst"] .case-workspace-layout{grid-template-columns:minmax(280px,.9fr) minmax(0,1.45fr);gap:18px}
+body[data-view="analyst"] .case-workspace-header h2{font-size:27px}
+body[data-view="analyst"] .case-workspace-header-meta{display:none}
+@media(max-width:1150px){
+  .case-workspace-header{display:block}
+  .case-workspace-header-meta{margin-top:15px}
+  .case-workspace-layout,body[data-view="analyst"] .case-workspace-layout{grid-template-columns:1fr}
+  .case-sites-column{order:1}
+  .case-map-column{order:2}
+  .case-sites-column .historical-sector-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .case-sites-column .historical-sector{margin:0}
+  .case-sites-column .historical-sector[aria-current="true"]{box-shadow:inset 4px 0 #188678}
+}
+@media(max-width:760px){
+  body[data-view="decision"] .hero{padding:35px 6% 39px;min-height:260px}
+  body[data-view="decision"] .hero h1{font-size:clamp(32px,6vw,43px)}
+  body[data-view="decision"] .hero p{font-size:14px}
+  .case-workspace-header h2{font-size:26px}
+  .case-workspace-header p{font-size:13px}
+  .case-outcome-metrics{grid-template-columns:1fr}
+  .case-outcome-metric{border-right:0;border-bottom:1px solid #e1ede7;padding:17px 22px}
+  .case-outcome-metric:last-child{border-bottom:0}
+  .case-outcome-metric strong{font-size:21px}
+  .case-outcome-actions{flex-direction:column;align-items:stretch;padding:17px 21px}
+  .case-outcome-actions button{width:100%}
+  .case-map-column .geo-reference-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:560px){
+  body[data-view="decision"] .workspace{padding:26px 14px 15px}
+  .case-workspace-header{padding:0 5px;margin-bottom:21px}
+  .case-workspace-header-meta{gap:6px}
+  .case-workspace-header-meta span{font-size:11px;padding:9px 11px}
+  .case-workspace-header-meta strong{font-size:14px}
+  .case-sites-column .historical-sector-list{grid-template-columns:1fr}
+  .case-sites-column .historical-sector{min-height:76px;padding:14px 13px}
+  .case-sites-column .historical-head{padding:17px}
+  .case-map-column .geo-panel-top{padding:17px}
+  .case-map-column .geo-focus-toolbar{padding:11px}
+  .case-map-column .geo-focus-toolbar button{padding:10px;font-size:11px}
+  .case-map-column .geo-map{margin:0 10px}
+  .case-map-column .geo-map-tools{padding:11px}
+  .case-map-column .geo-reference-desk{margin:12px 10px 0}
+  .case-map-column .geo-reference-choices{grid-template-columns:1fr}
+  .case-map-column .geo-reference-choices button{min-height:57px}
+  .case-map-column .geo-selected-panel{padding:17px}
+  .case-map-column .geo-map-compact-note{margin:14px 11px 8px}
+  .case-map-column .geo-legend{padding:12px}
+  .case-outcome-heading{padding:21px}
+  .case-outcome-heading h3{font-size:22px}
+  .case-workspace-outcome{margin-top:19px}
+  body[data-view="decision"] .executive{margin:10px 14px 0}
+  body[data-view="decision"] .executive-heading{padding:20px}
+  body[data-view="decision"] .executive-heading h2{font-size:22px}
+  body[data-view="decision"] .executive-kpi{padding:19px}
+  body[data-view="decision"] .case-journey{margin:20px 14px 42px}
+}
