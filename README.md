@@ -27,6 +27,14 @@ node --test
 
 The source also supports static hosting on Vercel. Automated Chromium desktop/mobile and JSON export checks are provided in `.github/workflows/browser-smoke.yml`. The default bundled CSEM file contains all 3,561 numeric observation rows extracted from the public cleaned Zenodo time series; original header comments were replaced with explicit source attribution. The alternative fixture is invented for UI testing and prominently labelled **illustrative / not a real GNSS observation**. Neither stream is proof of multi-constellation observations.
 
+## Official Ina-CORS vs fallback — two independently labelled paths
+
+Read [the two-lane BIG data plan](docs/INACORS_DUAL_DATA_PLAN.md) before the 16 Nov submission freeze.
+
+- **Plan A / optional local RINEX:** after receiving authorized original Ina-CORS observations, run the existing Python GeoRinex pipeline using `--file`, `--station`, `--source-url` and `--output`. In **GIS / Analyst**, import the generated QC JSON. Station identity is **user-declared, NOT independently certified by BIG**. No recent positioning/subsidence or measured structural state is inferred.
+- **Plan B / already validated:** click **Restore verified BAKO fallback**. Pinned IGS BAKO multi-GNSS QC still works without any Ina-CORS account; historical CSEM and Tanjung Emas sectors remain independent reference sources.
+- **No new API or backend dependency:** an unanswered access request never prevents video, presentation or offline demonstrations.
+
 ## Event readiness
 - [x] Verify authentic multi-constellation RINEX via GeoRinex (BAKO IGS, independent from CSEM); Semarang-local equivalent remains future work
 - [x] Bundle historically processed CSEM Semarang time series with original source citation; verify no implied multi-GNSS solution
