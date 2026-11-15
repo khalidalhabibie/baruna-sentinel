@@ -790,3 +790,13 @@ body[data-page="assessment"] .pw-page[data-pw-screen="assessment"]{display:block
   margin-bottom:16px;padding:11px;border:1px solid #b48e56;
  }
 }
+
+@media(max-width:520px){
+ .as-executive-actions .pw-btn{
+  flex:none!important;
+  width:100%;
+  min-height:43px;
+  max-height:52px;
+  padding:10px 14px;
+ }
+}
