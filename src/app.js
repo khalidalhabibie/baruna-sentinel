@@ -5,6 +5,7 @@ import {
 import {renderGeoSvg, geoContextSummary} from "./geo.js";
 import {buildEvidenceReportMarkup} from "./report.js";
 import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
+import {evidenceReadiness, verificationRequestForSector} from "./readiness.js";
 
 const $ = id => document.getElementById(id);
 let seriesInput = "";
@@ -15,6 +16,7 @@ let rinexMeta = { mode: "none", name: "No RINEX" };
 let ranks = [];
 let historicalDoc = null;
 let historicalFilter = "all";
+let selectedSectorId = null;
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, ch => ({
@@ -152,17 +154,32 @@ function drawPlot() {
     + '<text class="axis-label" text-anchor="end" x="' + (w-r) + '" y="' + (h-8) + '">' + escapeHtml(source[source.length - 1].date) + '</text>'
     + '</svg>';
 }
+function renderExecutiveDesk() {
+  const snapshot = evidenceReadiness({
+    fieldEvidence: historicalDoc,
+    movement, movementMeta: seriesMeta,
+    rinex: rinexResult, rinexMeta
+  });
+  $("exec-sectors").textContent = snapshot.sectorCount === null ? "—" : String(snapshot.sectorCount);
+  $("exec-streams").textContent = snapshot.loadedEvidenceStreams + " / 3";
+  $("exec-current").textContent = String(snapshot.currentInstrumentedAssetMeasurementsInDemo);
+}
+
 function renderHistoricalResearch() {
   if (!historicalDoc) return;
   $("historical-sector-list").innerHTML = renderHistoricalSectorCards(historicalDoc, historicalFilter);
   const selected = $("historical-sector-list").querySelector(".historical-sector");
   if (selected) {
-    $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selected.dataset.sector);
-    selected.setAttribute("aria-current", "true");
+    const chosen = [...$("historical-sector-list").querySelectorAll("button[data-sector]")]
+      .find(row => row.dataset.sector === selectedSectorId) || selected;
+    selectedSectorId = chosen.dataset.sector;
+    $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selectedSectorId);
+    chosen.setAttribute("aria-current", "true");
   }
   for (const button of $("historical-filters").querySelectorAll("button[data-filter]")) {
     button.setAttribute("aria-pressed", String(button.dataset.filter === historicalFilter));
   }
+  renderExecutiveDesk();
 }
 
 async function loadHistoricalResearch() {
@@ -204,7 +221,14 @@ function renderGeographicContext() {
 function currentEvidenceBundle() {
   const bundle = evidenceBundle({ ...seriesMeta, rinexSource: rinexMeta }, movement, rinexResult, ranks);
   return { ...bundle, geospatialContext: geoContextSummary(),
-    publishedFieldEvidence: historicalDoc ? historicalEvidenceSummary(historicalDoc) : null };
+    publishedFieldEvidence: historicalDoc ? historicalEvidenceSummary(historicalDoc) : null,
+    executiveReadiness: evidenceReadiness({
+      fieldEvidence: historicalDoc,
+      movement, movementMeta: seriesMeta, rinex: rinexResult, rinexMeta
+    }),
+    verificationRequest: historicalDoc && selectedSectorId ?
+      verificationRequestForSector(historicalDoc, selectedSectorId) : null
+  };
 }
 
 function printEvidenceReport() {
@@ -228,7 +252,7 @@ async function runCaseStudy() {
     ? "Case ready · authentic CSEM + real BAKO QC · explicitly independent"
     : "Case incomplete · check local data source and provenance notices";
   if (complete) {
-    $("geo-context").scrollIntoView({behavior:"smooth",block:"start"});
+    $("field-evidence").scrollIntoView({behavior:"smooth",block:"start"});
     notify("Semarang case ready. WGS84 context markers are referenced; fictional assets are not surveyed.");
   }
 }
@@ -256,6 +280,7 @@ function renderRinex() {
     ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + (rinexMeta.mode === "real-qc" ? "pseudorange observed" : s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
     : '<span class="system muted">No verifiable GNSS systems found</span>';
   renderEvidenceGate();
+  renderExecutiveDesk();
 }
 
 function renderEvidenceGate() {
@@ -303,6 +328,7 @@ function renderAll() {
   drawPlot();
   renderAssets();
   renderEvidenceGate();
+  renderExecutiveDesk();
 }
 $("sample-btn").addEventListener("click", runDemo);
 $("published-btn").addEventListener("click", runPublished);
@@ -353,10 +379,13 @@ $("historical-sector-list").addEventListener("click", e => {
   if(!button || !historicalDoc) return;
   for (const row of $("historical-sector-list").querySelectorAll("button[data-sector]")) row.removeAttribute("aria-current");
   button.setAttribute("aria-current", "true");
-  $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, button.dataset.sector);
+  selectedSectorId = button.dataset.sector;
+  $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selectedSectorId);
 });
 $("report-btn").addEventListener("click", printEvidenceReport);
+$("executive-brief").addEventListener("click", printEvidenceReport);
 renderGeographicContext();
+renderExecutiveDesk();
 loadHistoricalResearch();
 // Separate authentic sources: CSEM historical positions versus archived BAKO multi-GNSS QC.
 // BAKO QC is verified by GeoRinex, but NEVER merged into the CSEM movement solution.
