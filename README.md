@@ -30,7 +30,7 @@ The source also supports static hosting on Vercel. Automated Chromium desktop/mo
 ## Event readiness
 - [x] Verify authentic multi-constellation RINEX via GeoRinex (BAKO IGS, independent from CSEM); Semarang-local equivalent remains future work
 - [x] Bundle historically processed CSEM Semarang time series with original source citation; verify no implied multi-GNSS solution
-- [ ] Complete test and browser smoke check
+- [x] Complete Node regression tests, static dist build and Chromium browser smoke test (including PDF)
 - [ ] Record 60-second UI demonstration
 - [ ] Prepare 5-minute slide deck
 - [ ] Submit material to kerjasama@big.go.id by **16 Nov 2026, 23:59 WIB**
