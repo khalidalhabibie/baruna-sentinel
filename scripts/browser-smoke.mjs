@@ -20,6 +20,35 @@ try {
   const response = await page.goto(BASE, { waitUntil: "networkidle", timeout: 30000 });
   assert.equal(response.status(), 200, "Site root serves 200");
   assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"), "true", "Decision mode is default");
+  assert.equal(await page.locator("#station-qc").isVisible(),false,
+    "Full GNSS QC screen is not stacked into the buyer Overview");
+  assert.equal(await page.locator(".decision-data-bridge").isVisible(),true,
+    "Overview has a meaningful CTA into GNSS data analysis");
+  await page.locator("#view-analyst").click();
+  assert.equal(await page.locator("#station-qc").isVisible(),true,
+    "GNSS Analyst opens on its real daily QC workstation");
+  assert.equal(await page.locator(".controls").isVisible(),true,
+    "Analyst provides the technical GNSS data tools");
+  assert.equal(await page.locator(".decision-data-bridge").isVisible(),false,
+    "Overview-specific upsell is hidden in Analyst");
+  assert.ok(page.url().includes("view=analyst"),"Analyst mode is URL-shareable");
+  await page.locator("#view-decision").click();
+  assert.equal(await page.locator("#station-qc").isVisible(),false,"Overview hides technical QC workbench");
+  assert.equal(await page.locator(".decision-data-bridge").isVisible(),true,"Overview restores its evidence CTA");
+  assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"),"true");
+  // Fail-safe contract: the two mode switches must continue to work
+  // even if app.js has a production loading or runtime import error.
+  const navOnly=await browser.newPage({viewport:{width:1280,height:800}});
+  await navOnly.route("**/src/app.js",route=>route.abort());
+  await navOnly.goto(BASE+"/?view=analyst",{waitUntil:"domcontentloaded",timeout:30000});
+  await navOnly.waitForFunction(()=>document.body.dataset.view==="analyst",{timeout:10000});
+  assert.equal(await navOnly.locator("#station-qc").isVisible(),true,
+    "GNSS Analyst tab works independently of the GIS analysis JavaScript module");
+  await navOnly.locator("#view-decision").click();
+  assert.equal(await navOnly.locator("#case-workspace").isVisible(),true,
+    "Overview navigation survives missing GIS analysis module");
+  await navOnly.close();
+
   assert.equal(await page.locator(".controls").isVisible(), false, "Decision mode hides technical controls");
   await page.keyboard.press("Tab");
   assert.equal(await page.evaluate(() => document.activeElement.classList.contains("skip-link")), true,
