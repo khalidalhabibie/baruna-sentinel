@@ -1,5 +1,6 @@
 import {safeHtml as e} from "./projects.js";
 import {validateHistoricalFieldEvidence} from "./historical.js";
+import {parseRneu,analyzeSeries} from "./engine.js";
 import {
   ASSESSMENT_POLICY,assessRealProject,assessSyntheticScenario,buildAssessmentPrint
 } from "./assessment.js";
@@ -9,16 +10,23 @@ let real=null;
 let sourceError=null;
 let selectedId="west-breakwater";
 let showSimulation=false;
+const measuredSources={csem:null,bako:null};
 const nav=window.BarunaNavigation;
 const button=(page,label,secondary=true)=>
   '<button type="button" class="pw-btn '+(secondary?'pw-btn-secondary':'pw-btn-primary')+'" data-pw-page="'+page+'">'+e(label)+'</button>';
 const cell=(value,highlight=false)=>'<span'+(highlight?' class="as-accent"':'')+'>'+e(value)+'</span>';
 const stateName=s=>String(s||"").replace(/_/g," ");
 function sourceRows(){
+ const csem=measuredSources.csem;
+ const bako=measuredSources.bako;
  return [
    ["2005 field study","Tanjung Emas","Available","Historical sector observations; not current rates"],
-   ["2010–2021 GPS","CSEM","Reference only","Station position history; not linked to sector measurements"],
-   ["2025 Multi-GNSS QC","BAKO","Reference only","Independent Cibinong station; not a CSEM position solution"]
+   ["2010–2021 GPS","CSEM","Reference only",csem?
+     csem.epochCount.toLocaleString("en-US")+" positions · OLS "+csem.verticalSlopeMmYr+" mm/year · descriptive station trend only":
+     "Station position history; not linked to sector measurements"],
+   ["2025 Multi-GNSS QC","BAKO","Reference only",bako?
+     bako.epochCount+" epochs · "+bako.constellations+" constellations with pseudorange · no position solution":
+     "Independent Cibinong station; not a CSEM position solution"]
  ].map(x=>'<div class="as-source-row"><strong>'+e(x[0])+'</strong><span>'+e(x[1])+'</span><em>'+e(x[2])+'</em><small>'+e(x[3])+'</small></div>').join("");
 }
 function renderReal(){
@@ -133,6 +141,32 @@ root?.addEventListener("click",event=>{
  }
 });
 window.addEventListener("baruna:pagechange",render);
+async function loadSourceMetrics(){
+ const tasks=[
+  async()=>{
+   const r=await fetch("./data/CSEM_clean_Noff1site.source-derived.rneu");
+   if(!r.ok)throw Error("CSEM source unavailable");
+   const positions=parseRneu(await r.text(),{station:"CSEM",unit:"meters",referenceFrame:"user-declared"});
+   const result=analyzeSeries(positions);
+   if(result.station!=="CSEM"||result.epochCount<100)throw Error("CSEM source mismatch");
+   measuredSources.csem=result;
+  },
+  async()=>{
+   const r=await fetch("./data/BAKO_IGS_2025-001_20min_qc_summary.json");
+   if(!r.ok)throw Error("BAKO QC source unavailable");
+   const qc=await r.json();
+   if(qc.status!=="VERIFIED_REAL_RINEX_OBSERVATIONS"||
+      qc.source?.station!=="BAKO00IDN"||
+      qc.relationshipToSemarang?.linkedToCsemMovement!==false||
+      qc.audit?.epochs!==41)throw Error("BAKO QC provenance mismatch");
+   measuredSources.bako={
+    epochCount:qc.audit.epochs,
+    constellations:qc.audit.constellationsObservedWithPseudorange.length
+   };
+  }
+ ];
+ await Promise.allSettled(tasks.map(task=>task()));
+}
 async function init(){
  render();
  try{
@@ -141,6 +175,7 @@ async function init(){
   const doc=validateHistoricalFieldEvidence(await response.json());
   real=assessRealProject(doc);
  }catch(error){sourceError=error instanceof Error?error.message:String(error);}
+ await loadSourceMetrics();
  render();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
