@@ -28,7 +28,8 @@ function selector(){
  if(all().some(p=>p.id===selected))select.value=selected;
 }
 function renderIndex(){
- const list=all();
+ const list=all().filter(p=>p.sourceKind==="field"||p.sourceKind==="draft");
+ const references=all().filter(p=>p.sourceKind==="movement"||p.sourceKind==="qc");
  const rows=list.map(p=>'<article class="pw-list-item" role="listitem">'+
   '<div class="pw-list-main"><span class="pw-project-code">'+e(p.code)+'</span>'+
   '<button class="pw-project-name" data-pw-open="'+e(p.id)+'" type="button">'+e(p.name)+'</button>'+
@@ -42,6 +43,7 @@ function renderIndex(){
   '<div class="pw-index-status"><span><strong>'+list.length+'</strong> workspaces</span><span><strong>1</strong> field-study case</span><span><strong>0</strong> live asset feeds</span><span>Research and demonstration — not customer deployments</span></div>'+
   '<div class="pw-list" role="list" aria-label="Research workspaces">'+
     '<div class="pw-list-head"><span>WORKSPACE</span><span>EVIDENCE</span><span>PERIOD</span><span></span></div>'+rows+'</div>'+
+  '<section class="pw-reference-library"><div><h2>GNSS reference library</h2><p>Independent station datasets for provenance and quality review. These are not infrastructure projects or client deployments.</p></div><div class="pw-reference-links">'+references.map(p=>'<button type="button" data-pw-open="'+e(p.id)+'"><span>'+e(p.name)+'</span><small>'+e(p.evidence)+' · '+e(p.period)+'</small></button>').join("")+'</div></section>'+
   '<div class="pw-index-foot"><div><strong>Research versus deployment</strong><p>The Tanjung Emas study has published sector records. CSEM and BAKO are independent reference studies, not customer projects or asset feeds.</p></div>'+
   '<div><strong>Local drafts</strong><p>New workspaces are stored only in this browser session. No collaboration, data import, backend, or assessment is enabled for drafts.</p></div></div>';
  $("pw-new-project-btn")?.addEventListener("click",()=>$("pw-new-project-dialog").showModal());
@@ -58,7 +60,7 @@ function renderOverview(p){
   crumb("Overview",p)+
   '<div class="pw-heading-row"><div><span class="pw-kicker">'+e(p.code)+' / '+e(p.area)+'</span><h1>'+e(p.name)+'</h1>'+
   '<div class="pw-under-heading">'+tag(p)+'<span>'+e(p.period)+'</span></div></div>'+
-  '<div class="pw-heading-actions">'+action("detail","Open details")+action("compare","Compare",true)+'</div></div>'+
+  '<div class="pw-heading-actions">'+(isPort?action("assessment","Assess inspection evidence"):"")+action("detail","Open details",true)+action("compare","Compare",true)+'</div></div>'+
   '<div class="pw-overview-grid">'+
    '<section class="pw-panel pw-main-summary"><div class="pw-panel-heading">Purpose <span>01 / CONTEXT</span></div>'+
     '<h2>'+(isPort?"Historic evidence, not a live risk score":draft?"Draft awaiting evidence":p.sourceKind==="movement"?"Historical station position review":"Independent GNSS observation audit")+'</h2>'+
@@ -84,7 +86,7 @@ function renderDetail(p){
   crumb("Detail",p)+
   '<div class="pw-heading-row pw-detail-head"><div><span class="pw-kicker">'+e(p.code)+' / DETAIL</span><h1>'+e(p.name)+'</h1>'+
    '<p>'+(isPort?"Inspect one documented sector and prepare an updated field-verification request.":e(p.subject))+'</p></div>'+
-   '<div class="pw-heading-actions">'+action("overview","Overview",true)+action("compare","Compare",true)+'</div></div>'+
+   '<div class="pw-heading-actions">'+action("overview","Overview",true)+(isPort?action("assessment","Assessment"):"")+action("compare","Compare",true)+'</div></div>'+
   (isPort?'<div class="pw-detail-intro"><span class="pw-led"></span><span>2005 published field record</span><span>·</span><span>Current on-asset data unavailable</span><span>·</span><span>Verification brief ready</span></div>':
    '<div class="pw-overview-grid pw-reference-grid">'+
     '<section class="pw-panel"><div class="pw-panel-heading">Dataset <span>01 / SOURCE</span></div>'+
