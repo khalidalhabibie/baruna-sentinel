@@ -1,4 +1,5 @@
 import {chromium} from "playwright";
+import {mkdirSync} from "node:fs";
 const target=process.env.PRODUCTION_URL||"https://baruna-sentinel.vercel.app";
 const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
 const page=await browser.newPage({viewport:{width:1440,height:900}});
@@ -30,6 +31,16 @@ try {
     selected:await page.locator("#view-decision").getAttribute("aria-pressed"),
     mode:await page.locator("body").getAttribute("data-view")
   };
+  // Public, fresh browser session; no private QC data is ever imported.
+  if(status===200 && overview.visible) {
+    mkdirSync("reports",{recursive:true});
+    await page.evaluate(()=>{document.activeElement?.blur?.();window.scrollTo({top:0,behavior:"instant"});});
+    await page.locator("#street-map .leaflet-tile-loaded").first().waitFor({state:"attached",timeout:6000}).catch(()=>{});
+    await page.waitForTimeout(350);
+    await page.locator("#case-workspace").screenshot({
+      path:"reports/sentinel-judge-demo-production-map.png",timeout:15000
+    }).catch(error=>issues.push("Production screenshot: "+String(error.message).slice(0,120)));
+  }
   const resultData={target,status,analyst,overview,assets,issues};
   console.log("PRODUCTION_BROWSER_DIAGNOSTIC",JSON.stringify(resultData));
   if(!(status===200&&analyst.visible&&analyst.selected==="true"&&analyst.mode==="analyst"&&
