@@ -137,6 +137,36 @@ try {
 
   assert.ok(json.geospatialContext.assets.every(a => a.locationType === "FICTIONAL_SCENARIO_POINT"));
 
+  // Plan A: operator supplies a locally processed RINEX QC JSON, never an authenticated BIG claim.
+  const operatorQc={
+    schema:"baruna-sentinel-real-multignss-qc-v1",
+    source:{type:"user_supplied_rinex",station:"CSMG",station_evidence:"operator_declared_unverified",
+      archive_url:"https://srgi.big.go.id",filename:"CSMG_sample.26o",sha256_compressed:"a".repeat(64)},
+    sample:{first_epoch:"2026-11-14T00:00:00",last_epoch:"2026-11-14T00:19:30",epochs:40},
+    constellations_with_actual_pseudorange:{
+      GPS:{pseudorange_observation_cells:340},Galileo:{pseudorange_observation_cells:180}
+    },
+    same_epochs_comparison:{gps_only_mean_satellites_with_measurements:8.5,
+      multi_gnss_mean_satellites_with_measurements:13,
+      epochs_with_additional_non_gps_observations:40}
+  };
+  await page.locator("#qc-report-file").setInputFiles({
+    name:"operator-declared-csmg.json",
+    mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify(operatorQc))
+  });
+  assert.ok((await page.locator("#rinex-status").textContent()).includes("LOCALLY DECODED"),
+    "Plan A user QC is openly marked as user-declared, not BIG verified");
+  assert.ok((await page.locator("#rinex-caption").textContent()).includes("operator-declared identity"),
+    "Plan A instrument identity remains unverified");
+  assert.equal(await page.locator("#exec-streams").textContent(), "2 / 3",
+    "User-declared QC is not counted as independently verified data");
+  await page.locator("#load-bako").click();
+  await page.waitForFunction(() => document.querySelector("#rinex-caption")?.textContent?.includes("IGS BAKO"),{timeout:10000});
+  assert.equal(await page.locator("#exec-streams").textContent(), "3 / 3",
+    "Plan B returns to already validated IGS BAKO fallback");
+
+
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: "reports/sentinel-judge-demo-mobile.png", fullPage: true });
   await page.locator("#view-decision").click();
@@ -164,7 +194,7 @@ try {
   await page.locator("#published-btn").click();
   await page.waitForFunction(() => document.querySelector("#stat-epochs")?.textContent?.includes("3,561"), {timeout:10000});
   assert.deepEqual(errors, [], "No unexpected runtime JS errors");
-  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, layeredGIS: true, keyboardSkip: true, views: 2, realResearchSectors: 6, executiveReadiness: "3 streams, no current measurements", printPdf: true, errors: errors.length }, null, 2));
+  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, layeredGIS: true, sourceFallback: true, keyboardSkip: true, views: 2, realResearchSectors: 6, executiveReadiness: "3 streams, no current measurements", printPdf: true, errors: errors.length }, null, 2));
 } finally {
   await browser.close();
 }
