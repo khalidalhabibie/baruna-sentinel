@@ -303,3 +303,62 @@ body[data-page="analyst"] .pw-page[data-pw-screen="analyst"]{display:block}
 body[data-page] footer strong{color:#4a6970!important;font-size:10px!important;letter-spacing:.09em}
 body[data-page] footer p{color:#81949a!important}
 body[data-page] footer .footer-links a{color:#35716e!important}
+
+
+/* GNSS Lab: purposeful subviews, not a 7-section scientific scrolling page. */
+.pw-lab-tabs{
+ display:flex;align-items:center;flex-wrap:wrap;gap:5px;
+ border-bottom:1px solid #d7e2e3;margin:22px 0 8px;padding:0;
+}
+.pw-lab-tabs button{
+ border:0;border-bottom:2px solid transparent;
+ background:transparent;color:#657c81;cursor:pointer;
+ font-weight:720;font-size:12px;padding:12px 16px;
+ margin-bottom:-1px;min-height:43px;
+}
+.pw-lab-tabs button:hover{color:#175f59;background:#eef5f3}
+.pw-lab-tabs button[aria-selected="true"]{color:#125f58;border-bottom-color:#16786b}
+body[data-page="analyst"] .workspace{padding-top:4px!important}
+body[data-page="analyst"] .analyst-proof{max-width:1400px}
+body[data-page="analyst"] .analyst-proof-card{background:#fff;box-shadow:none}
+body[data-page="analyst"] .dashboard .metrics,
+body[data-page="analyst"] .dashboard .chart-panel,
+body[data-page="analyst"] .dashboard .dashboard-heading,
+body[data-page="analyst"] .case-workspace,
+body[data-page="analyst"] .dashboard .gnss-panel,
+body[data-page="analyst"] .dashboard .assets-panel,
+body[data-page="analyst"] .dashboard .explain-box,
+body[data-page="analyst"] .cors-qc-section,
+body[data-page="analyst"] .workspace .section-row.analyst-only{display:none!important}
+body[data-page="analyst"][data-lab-tab="movement"] .dashboard .metrics,
+body[data-page="analyst"][data-lab-tab="movement"] .dashboard .chart-panel,
+body[data-page="analyst"][data-lab-tab="movement"] .dashboard .dashboard-heading{display:grid!important}
+body[data-page="analyst"][data-lab-tab="movement"] .dashboard .chart-panel{display:block!important}
+body[data-page="analyst"][data-lab-tab="movement"] .dashboard .dashboard-heading{display:flex!important}
+body[data-page="analyst"][data-lab-tab="qc"] .dashboard .gnss-panel{display:flex!important}
+body[data-page="analyst"][data-lab-tab="qc"] .cors-qc-section{display:block!important}
+body[data-page="analyst"][data-lab-tab="qc"] .workspace .section-row.analyst-only{display:flex!important}
+body[data-page="analyst"][data-lab-tab="gis"] .case-workspace{display:block!important}
+body[data-page="analyst"][data-lab-tab="gis"] .workspace{
+ grid-template-columns:1fr!important;
+}
+body[data-page="analyst"][data-lab-tab="gis"] .workspace .controls{display:none!important}
+body[data-page="analyst"][data-lab-tab="sandbox"] .dashboard .assets-panel{display:block!important}
+body[data-page="analyst"][data-lab-tab="sandbox"] .dashboard .explain-box{display:flex!important}
+body[data-page="analyst"][data-lab-tab="sandbox"] .workspace .section-row[data-feature="syntheticSandbox"]{display:flex!important}
+body[data-page="analyst"][data-lab-tab="qc"] .controls .control-block:not(.secondary-block),
+body[data-page="analyst"][data-lab-tab="qc"] .controls .form-grid,
+body[data-page="analyst"][data-lab-tab="qc"] .controls .source-meta{display:none!important}
+body[data-page="analyst"][data-lab-tab="sandbox"] .dashboard .metrics,
+body[data-page="analyst"][data-lab-tab="sandbox"] .dashboard .chart-panel{display:none!important}
+body[data-page="analyst"][data-lab-tab="gis"] .case-workspace-header,
+body[data-page="analyst"][data-lab-tab="gis"] .case-sites-column,
+body[data-page="analyst"][data-lab-tab="gis"] .case-workspace-outcome{display:none!important}
+body[data-page="analyst"][data-lab-tab="gis"] .case-workspace-layout{display:block!important}
+body[data-page="analyst"] .workspace .dashboard{min-width:0}
+body[data-page="analyst"] .controls{box-shadow:none}
+@media(max-width:820px){
+ .pw-lab-tabs{flex-wrap:nowrap;overflow-x:auto}
+ .pw-lab-tabs button{white-space:nowrap;flex:none;padding:11px 12px}
+ body[data-page="analyst"][data-lab-tab="gis"] .case-workspace{padding:0}
+}
