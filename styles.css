@@ -549,8 +549,9 @@ body[data-view="analyst"] .case-workspace-header-meta{display:none}
   .case-workspace-header{display:block}
   .case-workspace-header-meta{margin-top:15px}
   .case-workspace-layout,body[data-view="analyst"] .case-workspace-layout{grid-template-columns:1fr}
-  .case-sites-column{order:1}
-  .case-map-column{order:2}
+  /* Small screens lead with geographic context; the historic sector register follows. */
+  .case-sites-column{order:2}
+  .case-map-column{order:1}
   .case-sites-column .historical-sector-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
   .case-sites-column .historical-sector{margin:0}
   .case-sites-column .historical-sector[aria-current="true"]{box-shadow:inset 4px 0 #188678}
