@@ -1,0 +1,29 @@
+name: Validate real IGS multi-GNSS RINEX
+on:
+  push:
+    paths:
+      - "scripts/verify_igs_rinex.py"
+      - ".github/workflows/real-rinex-qc.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rinex-qc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install established GNSS parser and Hatanaka support
+        run: python -m pip install --disable-pip-version-check "georinex>=1.16,<2" "hatanaka>=2,<3"
+      - name: Download original IGS BAKO observation archive and verify real signals
+        run: python scripts/verify_igs_rinex.py --minutes 20
+      - name: Publish QC report, if generated
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: actual-igs-rinex-qc
+          path: reports/real_multignss_qc.json
+          if-no-files-found: ignore
