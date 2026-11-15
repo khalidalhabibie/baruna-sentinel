@@ -53,11 +53,11 @@ try {
   await page.locator("#pw-project-switch").selectOption("csem-history");
   assert.ok((await page.locator("#pw-page-overview").textContent()).includes("3,561"),
     "Project selector opens the correct CSEM source overview");
-  await page.locator("[data-pw-screen='overview'] [data-pw-page='detail']").click();
+  await page.locator("#pw-page-overview .pw-heading-actions [data-pw-page='detail']").click();
   assert.equal(await page.locator(".case-workspace").isVisible(),false,
     "CSEM technical study does not inherit unrelated Semarang field sectors");
   await page.locator("#pw-project-switch").selectOption("semarang-port");
-  await page.locator("[data-pw-screen='overview'] [data-pw-page='detail']").click();
+  await page.locator("#pw-page-overview .pw-heading-actions [data-pw-page='detail']").click();
   assert.equal(await page.locator("#pw-page-detail").isVisible(),true);
   assert.equal(await page.locator(".case-workspace").isVisible(),true);
   const response={status:()=>200};
