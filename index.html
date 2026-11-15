@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0c2030">
-  <meta name="description" content="BARUNA Sentinel by Ourdo Indonesia. Review historical coastal evidence, understand what it cannot prove, and prepare defensible next verification steps.">
+  <meta name="description" content="BARUNA Sentinel by Ourdo Indonesia — select a historical sector, review available evidence, and prepare a field verification brief.">
   <title>BARUNA Sentinel | Bhumireka 2026</title>
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
@@ -22,7 +22,7 @@
       </a>
       <span class="event-label">SEMARANG CASE · EVIDENCE WORKSPACE</span>
       <div class="workspace-switch" role="group" aria-label="Choose dashboard view">
-        <button type="button" id="view-decision" aria-pressed="true" aria-current="page" aria-label="Open Overview">Overview</button>
+        <button type="button" id="view-decision" aria-pressed="true" aria-current="page" aria-label="Open Evidence Review">Evidence Review</button>
         <button type="button" id="view-analyst" aria-pressed="false" aria-label="Open GNSS Analyst">GNSS Analyst</button>
       </div>
       <div class="top-actions"><span class="ourdo-signature">BUILT BY <b>OURDO</b></span><span class="offline-status"><span class="status-dot"></span> Source-backed · Read-only</span><a href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener">Source ↗</a></div>
@@ -31,10 +31,10 @@
     <main id="top">
       <section class="hero">
         <div class="hero-content">
-          <div class="eyebrow"><span class="mini-line"></span> EVIDENCE REVIEW · SEMARANG COAST</div>
-          <h1>Evidence before assumptions.<br><em>Know what to verify next.</em></h1>
-          <p>Understand what historical studies and GNSS observations actually show, what they cannot prove about an asset today, and what to check before making an inspection decision.</p>
-          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Review the evidence</button><button type="button" class="hero-secondary-cta" data-switch-view="analyst">Inspect GNSS sources <span aria-hidden="true">↗</span></button><span id="demo-status">Evidence: historical · not a live risk model</span></div>
+          <div class="eyebrow"><span class="mini-line"></span> SEMARANG · RESEARCH DEMO</div>
+          <h1>Know what to verify<br><em>before the next survey.</em></h1>
+          <p>Choose a historical sector, check the evidence gap, and generate a practical field-verification brief.</p>
+          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Explore case</button><button type="button" class="hero-secondary-cta" data-switch-view="analyst">View GNSS analysis <span aria-hidden="true">↗</span></button><span id="demo-status">Research case · not a live monitoring system</span></div>
         </div>
         <div class="hero-aside">
           <div class="orbit"><div class="orbit-2"></div><div class="orbit-3"></div><i class="orbit-dot one"></i><i class="orbit-dot two"></i><i class="orbit-dot three"></i><span class="orbit-center">GNSS<br><small>→ ACTION</small></span></div>
@@ -42,7 +42,8 @@
         </div>
       </section>
 
-      <section class="executive" id="executive-desk" aria-label="Inspection evidence readiness desk">
+      <details class="executive" id="executive-desk" aria-label="Expanded evidence sources and limitations">
+        <summary class="executive-brief-toggle"><span><strong>Source notes &amp; limitations</strong><small>2005 field study · 2010–2021 CSEM · 2025 BAKO</small></span><span aria-hidden="true">+</span></summary><div class="executive-details-inner">
         <div class="executive-heading">
           <div>
             <span class="section-index">EVIDENCE OVERVIEW</span>
@@ -93,7 +94,8 @@
             <div class="executive-provenance"><span>Archived context, not live status</span><a href="https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf" target="_blank" rel="noopener">BMKG source</a><a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener">Field study</a></div></div>
           </details>
         </div>
-      </section>
+        </div>
+      </details>
 
       <section class="case-journey" id="case-journey" aria-label="Three-step verification workflow">
         <div class="journey-intro">
@@ -123,8 +125,8 @@
         </details>
       </section>
       <section class="analyst-intro" id="analyst-intro" aria-label="GIS and geodetic analyst workspace">
-        <div><span class="section-index">TECHNICAL WORKSPACE</span><h2>Inspect each source before drawing conclusions.</h2>
-          <p>Review archived GNSS observations and historical station positions separately. Neither dataset establishes the condition of an individual port asset.</p></div>
+        <div><span class="section-index">TECHNICAL WORKSPACE</span><h2>GNSS Evidence Lab</h2>
+          <p>Explore authentic historical GPS positions and independent multi-GNSS observation quality.</p></div>
         <div class="analyst-provenance">
           <span><b>GPS · CSEM</b><small>2010–2021 historic solution</small></span>
           <span><b>Multi-GNSS · BAKO</b><small>2025 authentic RINEX QC</small></span>
@@ -136,16 +138,16 @@
       <section class="analyst-proof analyst-only" aria-label="Independent GNSS evidence explained">
         <article class="analyst-proof-card">
           <span class="source-type">Source A · Historical station positions</span>
-          <h3>CSEM / Semarang · 2010–2021</h3>
-          <p>Published GPS-derived station position time series. The workbench visualizes historical vertical movement and observation coverage.</p>
-          <div class="source-detail"><strong>What it can show:</strong> descriptive historic station-position trends.<br><strong>What it cannot show:</strong> current movement or safety of a particular port structure.</div>
+          <h3>CSEM · 2010–2021</h3>
+          <p>Historical GPS station positions · Semarang</p>
+          <div class="source-detail"><strong>Scope:</strong> station trend only · not asset safety</div>
           <a href="#plot">Inspect the station chart</a>
         </article>
         <article class="analyst-proof-card">
           <span class="source-type">Source B · Independent observation QC</span>
-          <h3>BAKO / Cibinong · 1 Jan 2025</h3>
-          <p>Authentic archived RINEX quality check: 41 observation epochs in a 20-minute window, with pseudorange records from six satellite systems.</p>
-          <div class="source-detail"><strong>What it can show:</strong> GNSS observation availability and source-audit capability.<br><strong>What it cannot show:</strong> Semarang displacement or an improvement in positioning accuracy.</div>
+          <h3>BAKO · 1 Jan 2025</h3>
+          <p>Verified observation QC · Cibinong · 41 epochs</p>
+          <div class="source-detail"><strong>Scope:</strong> observation availability · not Semarang displacement</div>
           <a href="#rinex-status">Inspect the observation audit</a>
         </article>
       </section>
@@ -153,7 +155,7 @@
             <div class="cors-qc-heading">
               <div>
                 <span class="section-index">GNSS OBSERVATION READINESS</span>
-                <h2>Optional / Compare local station-day coverage</h2>
+                <h2>Optional station QC import</h2>
                 <p>If you have authorized local CSEM/CSMG QC data, inspect daily epoch coverage and missing station-days. The public demo does not distribute these private station files.</p>
               </div>
               <span class="cors-local-pill">LOCAL QC · NOT UPLOADED</span>
@@ -237,15 +239,17 @@
             <header class="case-workspace-header">
               <div>
                 <span class="section-index">EXPLORE THE EVIDENCE / SEMARANG COAST</span>
-                <h2>Select a record. Identify the missing evidence.</h2>
-                <p>Review a published historical sector, inspect nearby geographic references, and generate a site-verification request. The map is context, not a survey of these assets.</p>
+                <h2>Choose a sector. Get a clear next step.</h2>
+                <p>Historical data · current asset condition unknown · no risk score</p>
               </div>
               <div class="case-workspace-header-meta">
                 <span><strong>6</strong> historic sectors</span><span><strong>3</strong> public map references</span>
               </div>
             </header>
             <div class="case-workspace-layout">
-              <div class="case-map-column">
+              <details class="map-disclosure" id="map-disclosure">
+            <summary><span class="map-disclosure-icon">⌖</span><span class="map-disclosure-title"><strong>Location context</strong><small>Three public reference points · no surveyed sector polygons</small></span><span class="map-disclosure-action">Show map <span aria-hidden="true">+</span></span></summary>
+            <div class="case-map-column">
                           <div id="geo-context" class="geo-section">
             <div class="section-row"><div><span class="section-index">SPATIAL CONTEXT</span><h2>Geographic context, not an asset-risk map</h2></div><span class="subtle-pill">Reference points · WGS84</span></div>
             <article class="panel geo-panel">
@@ -304,13 +308,13 @@
             </article>
           </div>
 
-              </div><div class="case-sites-column">
-                          <div class="section-row" id="field-evidence"><div><span class="section-index">FIELD EVIDENCE</span><h2>Choose a port sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
+              </div></details><div class="case-sites-column">
+                          <div class="section-row" id="field-evidence"><div><span class="section-index">FIELD EVIDENCE</span><h2>1. Select a sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
           <article class="panel historical-panel">
             <div class="historical-head">
               <div><div class="historical-head-badge">HISTORICAL FIELD STUDY</div>
-                <h3>Historic settlement records</h3>
-                <p>Select a sector to see the historic measurement and data gap.</p>
+                <h3>Published field records</h3>
+                <p>2005 cumulative settlement · not current asset readings</p>
               </div>
               <a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener" class="historical-source">Research source</a>
             </div>
@@ -331,36 +335,50 @@
             </div>
             <div class="case-workspace-outcome" id="case-workspace-outcome" aria-label="Selected site evidence assessment">
               <div class="case-outcome-heading">
-                <span class="section-index">EVIDENCE ASSESSMENT</span>
-                <h3 id="case-outcome-name">Select a sector to review its evidence</h3>
-                <p>Historical observations are useful context, but current conditions must be verified.</p>
+                <span class="section-index">2. VERIFICATION DECISION</span>
+                <h3 id="case-outcome-name">Select a research sector</h3>
+                <p>What the source supports—and what needs checking next.</p>
               </div>
               <div class="case-outcome-metrics">
                 <div class="case-outcome-metric">
-                  <small>PUBLISHED FIELD RECORD</small>
+                  <small>RECORDED IN 2005</small>
                   <strong id="case-outcome-history">—</strong>
-                  <span>2005 cumulative settlement · not an annual rate</span>
+                  <span>Cumulative settlement · not a rate</span>
                 </div>
                 <div class="case-outcome-metric">
-                  <small>CURRENT ON-ASSET DATA</small>
+                  <small>ON-ASSET MEASUREMENT</small>
                   <strong class="case-outcome-unknown">Not available</strong>
-                  <span>No verified 2026 measurement on this structure</span>
+                  <span>No contemporary on-asset reading in this demo</span>
                 </div>
                 <div class="case-outcome-metric">
-                  <small>NEXT ACTION</small>
-                  <strong>Verify on site</strong>
-                  <span>Confirm asset geometry, criticality and updated measurements</span>
+                  <small>DECISION</small>
+                  <strong>Request a survey</strong>
+                  <span>Verify geometry, measurements and methods</span>
                 </div>
               </div>
+              <div class="verification-checklist" aria-label="Evidence request checklist">
+                <div><span class="check-index">01</span> Verify site geometry &amp; asset identity</div>
+                <div><span class="check-index">02</span> Obtain current representative measurements</div>
+                <div><span class="check-index">03</span> Request expert assessment before ranking</div>
+              </div>
               <div class="case-outcome-actions">
-                <span>Evidence status: <strong>insufficient for operational inspection ranking</strong></span>
-                <button id="case-workspace-brief" type="button">Prepare verification brief <span aria-hidden="true">↗</span></button>
+                <span><span class="decision-caution">No defensible asset-risk score</span></span>
+                <button id="case-workspace-brief" type="button">Export verification brief <span aria-hidden="true">↗</span></button>
               </div>
             </div>
           </section>
 
           
 
+          <div class="evidence-strip" aria-label="Historical evidence timeline">
+            <div class="evidence-strip-title"><span class="section-index">SOURCE CHAIN</span><strong>Three sources. Different questions.</strong></div>
+            <div class="evidence-strip-items">
+              <div><b>2005</b><span>Port field study</span><small>Sector records</small></div>
+              <div><b>2010–21</b><span>CSEM / Semarang</span><small>Station positions</small></div>
+              <div><b>2025</b><span>BAKO / Cibinong</span><small>Independent GNSS QC</small></div>
+            </div>
+            <button type="button" data-switch-view="analyst">Inspect GNSS sources <span aria-hidden="true">↗</span></button>
+          </div>
           <article class="decision-data-bridge decision-only" aria-label="Review GNSS evidence quality">
             <div class="decision-bridge-icon" aria-hidden="true">◎</div>
             <div class="decision-bridge-copy"><span class="section-index">OBSERVATION QUALITY</span>
