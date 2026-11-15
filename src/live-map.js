@@ -38,6 +38,7 @@ export function makeStreetMap({element,onSelect,onTileFailure,onTileSuccess}={})
   }).addTo(map);
   const markers=L.layerGroup().addTo(map);
   let previousView="";
+  let previousSelectedId="";
   function redraw({view="all",selectedId="port-terminal",layers={},includeScenarios=false}={}){
     markers.clearLayers();
     const visible=LANDMARKS.filter(p=>p.type==="station"?layers.station!==false:layers.landmarks!==false);
@@ -68,10 +69,13 @@ export function makeStreetMap({element,onSelect,onTileFailure,onTileSuccess}={})
         padding:[24,24],animate:false,maxZoom:15
       });
       previousView=view;
-    }else{
-      // Changing the selected reference updates its marker without forcing
-      // the map to zoom away from user-directed exploration.
+    }else if(previousSelectedId!==selectedId){
+      // A location selected from the inspector must be brought on screen
+      // even when the user previously dragged the basemap elsewhere.
+      const point=LANDMARKS.find(item=>item.id===selectedId);
+      if(point) map.panTo([point.lat,point.lon],{animate:false});
     }
+    previousSelectedId=selectedId;
     map.invalidateSize({pan:false});
   }
   function resize(){map.invalidateSize({pan:false});}
