@@ -49,6 +49,12 @@ try {
     "Leaflet initializes a true slippy tile-map pane");
   assert.equal(await page.locator("#street-map .leaflet-interactive").count(),3,
     "Three actual public reference markers overlay the live street map");
+  await page.locator("#street-map .leaflet-interactive").first().click();
+  assert.equal(await page.locator("#geo-selected-title").textContent(),"CSEM (Ina-CORS)",
+    "A real Leaflet marker selects the source-inspector record");
+  await page.locator('[data-geo-point="port-terminal"]').click();
+  assert.equal(await page.locator("#geo-selected-title").textContent(),"Tanjung Emas terminal",
+    "A reference card can change the active street map marker");
   assert.ok((await page.locator("#geo-osm-embed").textContent()).includes("OpenStreetMap contributors"),
     "OpenStreetMap attribution is visible");
   await page.locator("#osm-toggle").click();
