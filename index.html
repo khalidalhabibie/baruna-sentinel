@@ -26,7 +26,8 @@
           <div class="eyebrow"><span class="mini-line"></span> SEMARANG–GENUK CASE STUDY / COASTAL LOGISTICS</div>
           <h1>Ground movement is a signal.<br><em>Inspection priority is a decision.</em></h1>
           <p>For the illustrative Semarang–Genuk coastal logistics case, connect station-level movement context and observation quality to transparent next-step verification—without claiming a regional station measures every asset.</p>
-          <div class="hero-pills"><span>01 · Observe</span><span>02 · Validate</span><span>03 · Prioritize</span><span>04 · Explain</span></div>
+          <div class="hero-pills"><span>01 · Observe</span><span>02 · Verify</span><span>03 · Locate</span><span>04 · Explain</span></div>
+          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">▶ Run Semarang case study</button><span id="demo-status">Real CSEM movement + verified BAKO observation QC · independent sources</span></div>
         </div>
         <div class="hero-aside">
           <div class="orbit"><div class="orbit-2"></div><div class="orbit-3"></div><i class="orbit-dot one"></i><i class="orbit-dot two"></i><i class="orbit-dot three"></i><span class="orbit-center">GNSS<br><small>→ ACTION</small></span></div>
@@ -66,6 +67,7 @@
             <div class="source-meta-row"><span>Asset register</span><strong>Illustrative</strong></div>
           </div>
           <div id="status-note" class="status-note" role="status" aria-live="polite">Ready to run the illustrative scenario.</div>
+          <button id="report-btn" type="button" class="report-btn">↗ Print evidence dossier / Save PDF</button>
           <button id="export-json" type="button" class="export-btn">↓ Download evidence JSON</button>
         </aside>
 
@@ -82,7 +84,22 @@
             <div class="chart-footer"><span id="audit-series">Series not loaded</span><span>NOT STRUCTURAL SAFETY ADVICE</span></div>
           </article>
 
-          <div class="section-row"><div><span class="section-index">03 / VERIFY</span><h2>Multi-GNSS evidence</h2></div><span class="subtle-pill">Independent observation source</span></div>
+          <div id="geo-context" class="geo-section">
+            <div class="section-row"><div><span class="section-index">03 / LOCATE</span><h2>Coastal geospatial context</h2></div><span class="subtle-pill">Georeferenced points · WGS84</span></div>
+            <article class="panel geo-panel">
+              <div class="geo-panel-top"><div><strong>Semarang / Genuk · inspection planning scenario</strong><p>Coordinate-based context. Only green/white markers are public reference locations; amber A–C are fictional examples.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
+              <div id="geo-map" class="geo-map" aria-label="WGS84 context plot for Semarang">Loading geographic references…</div>
+              <div class="geo-legend"><span><i class="geo-marker-dot real"></i> CSEM station · BIG</span><span><i class="geo-marker-dot landmark"></i> Public landmarks</span><span><i class="geo-marker-dot fictional"></i> Fictional asset placements A–C</span></div>
+              <div class="geo-insights">
+                <div><small>Reference station</small><strong>CSEM · Semarang</strong><span>Historical GPS-derived position series</span></div>
+                <div><small>CSEM → Tanjung Emas terminal</small><strong id="geo-distance">—</strong><span>Straight-line geographic distance; NOT proof of asset displacement</span></div>
+                <div><small>Independent observation QC</small><strong id="geo-bako-distance">—</strong><span>BAKO / Cibinong · entirely separate GNSS evidence source</span></div>
+              </div>
+              <p class="geo-disclaimer">This is a WGS84 point-context plot, not an authoritative shoreline, DEMNAS elevation, exposure raster or asset register. Fictional asset pins have invented coordinates. Distance cannot validate shared deformation. Sources: <a target="_blank" rel="noopener" href="https://big.go.id/assets/download/InaCORS/InaCORS%20BIG%202018_compressed.pdf">BIG InaCORS catalogue</a>, <a target="_blank" rel="noopener" href="https://network.igs.org/BAKO00IDN">IGS BAKO</a>, <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/node/2085925705">OSM port terminal</a>, <a target="_blank" rel="noopener" href="https://dataspasial.semarangkota.go.id/detail_kantor/38">Semarang GIS</a>.</p>
+            </article>
+          </div>
+
+          <div class="section-row"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
           <article class="panel gnss-panel">
             <div class="gnss-icon" aria-hidden="true">◎</div>
             <div class="gnss-content"><h3 id="rinex-status">No RINEX observation file examined</h3><p id="rinex-caption">A historical GPS solution alone is not proof of multi-constellation observations.</p><div id="rinex-systems" class="systems"><span class="system muted">Awaiting observation records</span></div></div>
@@ -97,7 +114,7 @@
             </div>
           </article>
 
-          <div class="section-row"><div><span class="section-index">04 / DECIDE</span><h2>Site-verification workflow</h2></div><span class="subtle-pill">Illustrative scheduling tiers only</span></div>
+          <div class="section-row"><div><span class="section-index">05 / DECIDE</span><h2>Site-verification workflow</h2></div><span class="subtle-pill">Illustrative scheduling tiers only</span></div>
           <article class="panel assets-panel">
             <div class="asset-head"><span>ASSET SCENARIO</span><span>DECISION &amp; REASON</span></div>
             <div id="asset-rows" class="asset-rows"></div>
@@ -105,7 +122,7 @@
           </article>
 
           <div class="explain-box">
-            <div class="explain-number">05</div>
+            <div class="explain-number">06</div>
             <div><h3>Explain before you escalate.</h3><p>Every output includes provenance, observation coverage, analysis assumptions, station-to-asset relationship and reason codes. Missing evidence remains missing evidence—it is never treated as stability.</p></div>
             <span class="explain-arrow">↗</span>
           </div>
@@ -118,6 +135,7 @@
       </footer>
     </main>
   </div>
+  <section id="print-report" aria-label="Printable GNSS evidence dossier"></section>
   <div id="live-region" class="sr-only" aria-live="polite"></div>
 </body>
 </html>
