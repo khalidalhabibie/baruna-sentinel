@@ -13,6 +13,7 @@ let sourceError=null;
 let selectedId="west-breakwater";
 let showSimulation=false;
 let assetMode=false;
+let showBriefPreview=false;
 const measuredSources={csem:null,bako:null};
 const nav=window.BarunaNavigation;
 const button=(page,label,secondary=true)=>
@@ -36,6 +37,31 @@ function publishedCorsCard(){
  const p=publishedCorsComparison();
  return '<section class="as-cors-contrast"><div class="as-cors-intro"><span class="as-pane-label">2021–2023 / PEER-REVIEWED PPP SOURCE</span><h2>Why one CORS rate cannot describe every asset</h2><p>Independent station rates from <a href="'+e(p.url)+'" target="_blank" rel="noopener noreferrer">Sitaningrum &amp; Widjajanti (2024) ↗</a>. These are published geodetic results, not live monitoring or BARUNA calculations.</p></div><div class="as-cors-metrics"><div><small>CSMG · SEMARANG GENUK</small><strong>'+p.csmg.verticalMmYr.toFixed(2)+' <span>mm/year</span></strong><em>Downward vertical movement</em></div><div><small>CSEM · SEMARANG</small><strong>+'+p.csem.verticalMmYr.toFixed(2)+' <span>mm/year</span></strong><em>Upward vertical movement</em></div></div><p class="as-cors-warning">Same study and period, different reference stations. This difference is not a velocity gradient or asset-specific risk. Do not mix these 2021–2023 PPP results with CSEM 2010–2021 descriptive OLS or BAKO 2025 QC.</p></section>';
 }
+function executiveDecisionCard(){
+ if(sourceError||!real)return "";
+ const chosen=real.records.find(x=>x.id===selectedId)||real.records[0];
+ const status='<span class="as-readiness-status">Bukti untuk keputusan aset: BELUM CUKUP</span>';
+ const preview=showBriefPreview?
+   '<div id="as-brief-preview" class="as-brief-preview" aria-label="Contoh ringkasan verifikasi sektor historis">'+
+   '<div class="as-brief-preview-head"><strong>Contoh ringkasan permintaan verifikasi</strong><span>SUMBER HISTORIS / TIDAK MENUNJUKKAN KONDISI 2026</span></div>'+
+   '<dl><div><dt>Sektor</dt><dd>'+e(chosen.name)+'</dd></div>'+
+   '<div><dt>Temuan sumber</dt><dd>'+e(chosen.historicRangeCm.join("–"))+' cm · penurunan kumulatif pada studi tahun 2005</dd></div>'+
+   '<div><dt>Hasil pemeriksaan</dt><dd>Bukti belum cukup untuk menetapkan prioritas inspeksi operasional</dd></div></dl>'+
+   '<strong class="as-brief-next-label">Tindakan yang dapat dilakukan sekarang</strong>'+
+   '<ol><li>Konfirmasi ID aset, batas resmi, dan lokasi titik survei historis bersama pengelola.</li>'+'<li>Minta pengukuran ulang yang mewakili aset, lengkap dengan tanggal, datum, metode, dan ketidakpastian.</li>'+'<li>Periksa keterkaitan data stasiun GNSS dengan aset, paparan pesisir, dan tingkat penting aset.</li></ol>'+
+   '<p>Ringkasan ini bersumber dari penelitian historis. Cetak laporan lengkap untuk daftar enam sektor, provenance, dan batas interpretasi.</p>'+
+   '</div>':"";
+ return '<section class="as-executive-decision" aria-label="Ringkasan keputusan untuk tim operasional">'+
+   '<div class="as-decision-copy"><span class="as-pane-label">RINGKASAN HASIL / TANJUNG EMAS</span>'+
+   '<h2>Langkah berikutnya: verifikasi pengukuran pada aset.</h2>'+
+   '<p>Penelitian mencatat <strong>6 sektor historis</strong>. Untuk <strong>'+e(chosen.name)+'</strong>, terdapat catatan penurunan kumulatif '+e(chosen.historicRangeCm.join("–"))+' cm pada studi 2005. Tanpa pengukuran terbaru dan geometri terverifikasi, belum ada dasar untuk menentukan urutan inspeksi aset.</p>'+
+   '<div class="as-readiness-checks"><span><b>✓</b> Catatan historis tersedia</span><span><b>!</b> Kondisi aset terbaru belum tersedia</span><span><b>!</b> Hubungan GNSS–aset belum terbukti</span></div>'+
+   '</div><div class="as-executive-actions">'+status+
+   '<button type="button" class="pw-btn pw-btn-primary" id="as-preview" aria-expanded="'+showBriefPreview+'" aria-controls="as-brief-preview">'+
+   (showBriefPreview?"Tutup contoh brief":"Lihat contoh brief verifikasi")+'</button>'+
+   '<a class="as-print-link" href="#as-export">Cetak laporan lengkap ↓</a></div>'+
+   preview+'</section>';
+}
 function renderReal(){
  if(sourceError)return '<div class="as-error">The published source could not be validated. Assessment unavailable: '+e(sourceError)+'</div>';
  if(!real)return '<div class="as-empty">Validating published research records…</div>';
@@ -51,7 +77,7 @@ function renderReal(){
    '<span class="as-state as-state-'+(x.state==="MISSING"?"missing":x.state==="AVAILABLE"?"ready":"reference")+'">'+e(stateName(x.state))+'</span></div>').join("");
  const actions=chosen.requiredActions.map((s,i)=>
    '<li><span>'+String(i+1).padStart(2,"0")+'</span>'+e(s)+'</li>').join("");
- return '<div class="as-overview-stats">'+
+ return executiveDecisionCard()+'<div class="as-overview-stats">'+
    '<div><small>PUBLISHED SECTORS</small><strong>'+real.records.length+'</strong><span>2005 field study</span></div>'+
    '<div><small>ASSET PRIORITIES PERMITTED</small><strong>0</strong><span>No on-asset evidence</span></div>'+
    '<div><small>VERIFICATION REQUESTS</small><strong>'+real.needsUpdatedEvidence+'</strong><span>Data gaps identified</span></div></div>'+
@@ -152,6 +178,7 @@ root?.addEventListener("click",event=>{
   printRegion.innerHTML=printableImportedAssetReport();
   window.print();return;
  }
+ if(target.id==="as-preview"){showBriefPreview=!showBriefPreview;render();return;}
  if(target.dataset.asSector){
   selectedId=target.dataset.asSector;render();return;
  }

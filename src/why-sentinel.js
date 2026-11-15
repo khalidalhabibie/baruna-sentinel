@@ -130,7 +130,7 @@ function render(){
     '<div class="ws-bottom-cta"><div><strong>Bukti bukan hanya untuk dilihat, tetapi untuk membantu tindakan.</strong>'+
     '<p>Coba enam catatan historis Tanjung Emas: pilih sektor, lihat data yang kurang, dan siapkan laporan verifikasi.</p></div>'+
     '<div class="ws-bottom-actions"><button type="button" class="pw-btn pw-btn-primary" data-pw-page="assessment">Coba penilaian</button>'+
-    '<button type="button" class="pw-btn pw-btn-secondary" data-pw-page="projects">Lihat proyek</button></div></div>'+
+    '<button type="button" class="pw-btn pw-btn-secondary" data-pw-page="projects">Lihat proyek</button>'+'<a class="ws-contact-link" href="mailto:official@ourdo.id?subject=Diskusi%20Pilot%20BARUNA%20Sentinel">Diskusikan pilot verifikasi →</a></div></div>'+
     '<footer class="ws-sources"><strong>SUMBER & BATAS PROTOTIPE</strong>'+
     '<div>'+officialLinks.map(l=>'<a href="'+esc(l.url)+'" rel="noopener noreferrer" target="_blank">'+esc(l.title)+' ↗</a>').join("")+'</div>'+
     '<p>Temuan historis tidak menunjukkan kondisi aset saat ini. Contoh biaya adalah asumsi pengguna, bukan kerugian aktual. BARUNA mendukung screening dan perencanaan verifikasi, bukan prediksi kegagalan struktur atau sertifikasi keselamatan.</p></footer></div>';

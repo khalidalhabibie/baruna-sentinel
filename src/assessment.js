@@ -159,9 +159,9 @@ export function buildAssessmentPrint({real,scenario=null,generatedAt=new Date().
   const esc=asText;
   const rows=real.records.map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+r.historicRangeCm.join('–')+' cm</td><td>'+esc(r.operationalPriority)+'</td><td>Geometry + current representative data + criticality</td></tr>').join("");
   const simulations=scenario?.mode==="SYNTHETIC_POLICY_EXERCISE"
-    ?'<h2>Separate invented demonstration (NOT REAL)</h2>'+
+    ?'<section class="simulation-annex" aria-label="Simulasi fiktif terpisah dari hasil penelitian"><h2>SIMULASI / DATA FIKTIF — BUKAN HASIL ASET NYATA</h2>'+
       '<p>All scenario inputs are fictional; these are not operational recommendations.</p><table><thead><tr><th>FICTIONAL EXAMPLE</th><th>ILLUSTRATIVE TIER</th><th>EXPLANATION</th></tr></thead><tbody>'+
-      scenario.records.map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+esc(r.screeningTier)+'</td><td>'+esc(r.explanation)+'</td></tr>').join("")+'</tbody></table>':'';
+      scenario.records.map(r=>'<tr><td>'+esc(r.name)+' (FICTIONAL)</td><td>'+esc(r.screeningTier)+'</td><td>'+esc(r.explanation)+'</td></tr>').join("")+'</tbody></table><p>Setiap baris di lampiran ini menggunakan input fiktif dan bukan rekomendasi inspeksi nyata.</p></section>':'';
   return '<div class="brief-sheet"><div class="print-head"><div><div class="print-brand">BARUNA / SENTINEL</div><small>OURDO INDONESIA · RGPD 2026 · PROTOTYPE</small></div><div><b>INSPECTION EVIDENCE ASSESSMENT</b><small>'+esc(generatedAt.slice(0,10))+'</small></div></div>'+
     '<h1>'+esc(real.project)+'</h1><div class="print-callout"><b>Decision: DATA INSUFFICIENT.</b> Six historical sectors have no verified current representative on-asset observations or exact surveyed geometry. Do not issue operational inspection priorities.</div>'+
     '<div class="print-metrics"><div><small>PUBLISHED SECTORS</small><strong>'+real.records.length+'</strong></div><div><small>ASSET RANKINGS PERMITTED</small><strong>0</strong></div><div><small>FOLLOW-UP REQUESTS</small><strong>'+real.needsUpdatedEvidence+'</strong></div></div>'+
