@@ -41,6 +41,16 @@ try {
     "Competition default shows only genuine station and landmark points");
   assert.equal(await page.locator("#geo-layer-summary").textContent(), "2 / 2 layers visible");
   assert.ok((await page.locator("#geo-distance").textContent()).includes("km"));
+  assert.equal(await page.locator("#geo-selected-title").textContent(),"Tanjung Emas terminal");
+  await page.locator('[data-geo-view="port"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(),2);
+  await page.locator('[data-geo-point="csem"]').click();
+  assert.equal(await page.locator("#geo-selected-title").textContent(),"CSEM (Ina-CORS)");
+  assert.equal(await page.locator('[data-geo-view="station"]').getAttribute("aria-pressed"),"true");
+  await page.locator('[data-geo-view="all"]').click();
+  await page.locator('#geo-map [data-point-id="port-terminal"]').click();
+  assert.equal(await page.locator("#geo-selected-title").textContent(),"Tanjung Emas terminal");
+  await page.locator("#geo-context").screenshot({path:"reports/sentinel-judge-interactive-gis-map.png"});
 
   await page.locator("#view-analyst").click();
   assert.equal(await page.locator("#lab-toggle").getAttribute("aria-pressed"), "false");
