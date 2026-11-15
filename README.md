@@ -185,3 +185,11 @@ A dated BMKG coastal-flood bulletin records Semarang as included **1–6 Nov 202
 **Commercial hypothesis, not validated result:** a maintenance/asset-integrity team may benefit from consolidating provenance and requests for necessary site verification. A paid pilot would require an operator partner, a real asset register, local surveys and agreed metrics before any savings or operational impact claim.
 
 Test coverage: `src/readiness.test.js` and `scripts/browser-smoke.mjs`. Vercel remains the same static `dist/` package; **no backend, account, DB or live GNSS feed** has been introduced.
+
+
+## P1: CSEM–CSMG observation QC → Tanjung Emas verification brief (16 November 2026)
+
+For locally held, authorized CSEM and CSMG RINEX observations, use the read-only converter at [scripts/local_cors_qc.py](scripts/local_cors_qc.py) to generate **private JSON**, then open **Assessment → Published evidence → P1 / GNSS observation** to compare same-calendar-day epoch coverage and print the selected-sector verification brief with a private QC annex. See [the exact processing guide, data status, and limits](docs/P1_SEMARANG_CORS_TO_BRIEF.md).
+
+This is **not** automatic subsidence monitoring, multi-GNSS position estimation, a BIG-issued result, an operational asset-risk score or proof that an individual port structure moved. Raw/private BIG archives must not be committed to GitHub or sent to the public app. The previously referenced ZIPs have not been read in this change; test fixtures are explicitly fictional.
+

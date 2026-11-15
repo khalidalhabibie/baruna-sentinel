@@ -2,6 +2,8 @@ import {safeHtml as e} from "./projects.js";
 import {validateHistoricalFieldEvidence} from "./historical.js";
 import {parseRneu,analyzeSeries} from "./engine.js";
 import {publishedCorsComparison} from "./published-cors.js";
+import {inspectLocalStationEvidence,localStationEvidencePrint} from "./cors-evidence-bridge.js";
+import {renderStationQc} from "./station-qc.js";
 import {renderAssetIntake,loadSyntheticAssetExample,importGeoJSONFile,selectImportedAsset,clearImportedAssets,downloadAssetTemplate,printableImportedAssetReport,disposeIntakeMap,renderImportedAssetMap} from "./asset-intake-ui.js";
 import {
   ASSESSMENT_POLICY,assessRealProject,assessSyntheticScenario,buildAssessmentPrint
@@ -14,6 +16,9 @@ let selectedId="west-breakwater";
 let showSimulation=false;
 let assetMode=false;
 let showBriefPreview=false;
+let privateStationQc=null;
+let privateQcError=null;
+let localQcFileName="";
 const measuredSources={csem:null,bako:null};
 const nav=window.BarunaNavigation;
 const button=(page,label,secondary=true)=>
@@ -32,6 +37,37 @@ function sourceRows(){
      bako.epochCount+" epochs · "+bako.constellations+" constellations with pseudorange · no position solution":
      "Independent Cibinong station; not a CSEM position solution"]
  ].map(x=>'<div class="as-source-row"><strong>'+e(x[0])+'</strong><span>'+e(x[1])+'</span><em>'+e(x[2])+'</em><small>'+e(x[3])+'</small></div>').join("");
+}
+function privateStationQcPanel(){
+  if(!real)return "";
+  const local=privateStationQc;
+  const decision=local?inspectLocalStationEvidence(local,real,selectedId):null;
+  const state=decision?.stationCoverageState||"NOT_IMPORTED";
+  const details=decision?
+    '<div class="as-qc-bridge-summary">'+
+      '<div><small>CSEM · file-days</small><strong>'+decision.stationDays.CSEM+'</strong></div>'+
+      '<div><small>CSMG · file-days</small><strong>'+decision.stationDays.CSMG+'</strong></div>'+
+      '<div><small>Matching dates</small><strong>'+decision.calendarDayPairs+'</strong></div>'+
+      '<div><small>Both full days</small><strong>'+decision.full30sDayPairs+'</strong></div></div>'+
+    '<p class="as-qc-bridge-conclusion">Observation readiness: <b>'+e(state.replaceAll("_"," "))+
+      '</b>. '+e(decision.explanation)+'</p>'+
+    '<div class="as-qc-next"><strong>Keputusan untuk '+e(decision.sectorName)+
+      ': minta pengukuran lapangan terbaru</strong><span>Data CORS pada tanggal yang sama membantu pemeriksaan observasi, tetapi belum mengukur sektor pelabuhan.</span></div>'+
+    '<details class="as-qc-daily"><summary>Lihat rincian QC per tanggal dan konstelasi</summary><div class="as-qc-daily-inner">'+renderStationQc(decision.parsed)+'</div></details>'+'<button type="button" id="as-qc-brief" class="pw-btn pw-btn-primary">Cetak brief dengan lampiran QC lokal</button>':
+    '<div class="as-qc-bridge-empty"><strong>Data CSEM–CSMG belum diimpor.</strong>'+
+    '<span>Gunakan JSON hasil pemrosesan RINEX lokal. Contoh kasus Tanjung Emas dan laporan historis tetap dapat dijalankan tanpa file tersebut.</span></div>';
+  return '<section class="as-qc-bridge" id="as-csem-csmg-qc" aria-label="Rangkaian QC stasiun Semarang ke brief">'+
+    '<div class="as-qc-bridge-title"><div><span class="as-pane-label">P1 / GNSS OBSERVATION → ASSET VERIFICATION</span>'+
+    '<h2>Cek kualitas observasi CSEM–CSMG sebelum meminta survei aset.</h2>'+
+    '<p>Langkah 1. Proses file RINEX asli secara lokal. Langkah 2. Impor JSON QC ke sini. Langkah 3. Periksa tanggal pengamatan yang cocok dan cetak laporan untuk sektor pilihan.</p></div>'+
+    '<div class="as-qc-import"><label class="pw-btn pw-btn-primary" for="as-qc-file">Pilih JSON QC lokal</label>'+
+    '<input id="as-qc-file" class="ai-file-input" type="file" accept=".json,application/json" aria-label="Pilih berkas JSON QC CSEM dan CSMG">'+
+    (local?'<button type="button" id="as-qc-clear" class="pw-btn pw-btn-secondary">Hapus dari sesi</button>':"")+
+    '</div></div>'+
+    '<p class="as-qc-privacy">Data lokal tidak dikirim ke server atau disimpan permanen oleh halaman ini. Format: <code>baruna-private-cors-qc-v1</code>; alat pemroses: <a href="https://github.com/khalidalhabibie/baruna-sentinel/blob/main/scripts/local_cors_qc.py" target="_blank" rel="noopener noreferrer">skrip RINEX lokal ↗</a> · <a href="https://github.com/khalidalhabibie/baruna-sentinel/blob/main/docs/P1_SEMARANG_CORS_TO_BRIEF.md" target="_blank" rel="noopener noreferrer">panduan P1 ↗</a>.</p>'+
+    (privateQcError?'<p class="as-qc-bridge-error" role="alert">QC tidak diterima: '+e(privateQcError)+'</p>':"")+
+    (local?'<p class="as-qc-local-file">Berkas lokal: '+e(localQcFileName)+' · status sumber: dideklarasikan pengguna, belum diverifikasi BIG</p>':"")+
+    details+'</section>';
 }
 function publishedCorsCard(){
  const p=publishedCorsComparison();
@@ -59,7 +95,7 @@ function executiveDecisionCard(){
    '</div><div class="as-executive-actions">'+status+
    '<button type="button" class="pw-btn pw-btn-primary" id="as-preview" aria-expanded="'+showBriefPreview+'" aria-controls="as-brief-preview">'+
    (showBriefPreview?"Tutup contoh brief":"Lihat contoh brief verifikasi")+'</button>'+
-   '<a class="as-print-link" href="#as-export">Cetak laporan lengkap ↓</a></div>'+
+   '<a class="as-print-link" href="#as-export">Cetak laporan lengkap ↓</a><a class="as-print-link" href="#as-csem-csmg-qc">Lihat QC Semarang ↓</a></div>'+
    preview+'</section>';
 }
 function renderReal(){
@@ -103,6 +139,7 @@ function renderReal(){
        '<div class="as-action-row"><button type="button" class="pw-btn pw-btn-primary" id="as-export">Export assessment brief</button>'+
          button("detail","View field records")+'</div></section>'+
    '</div>'+
+   privateStationQcPanel()+
    publishedCorsCard()+
    '<section class="as-source-panel"><div class="as-source-title"><h2>GNSS and source provenance</h2>'+
       button("analyst","Open GNSS Lab")+'</div>'+
@@ -178,6 +215,15 @@ root?.addEventListener("click",event=>{
   printRegion.innerHTML=printableImportedAssetReport();
   window.print();return;
  }
+ if(target.id==="as-qc-clear"){privateStationQc=null;privateQcError=null;localQcFileName="";render();return;}
+ if(target.id==="as-qc-brief"){
+  if(!privateStationQc||!real)return;
+  const bridge=inspectLocalStationEvidence(privateStationQc,real,selectedId);
+  const printRegion=document.getElementById("print-report");
+  const report=buildAssessmentPrint({real});
+  printRegion.innerHTML=report.replace(/<\/div>\s*$/,localStationEvidencePrint(bridge)+"</div>");
+  window.print();return;
+ }
  if(target.id==="as-preview"){showBriefPreview=!showBriefPreview;render();return;}
  if(target.dataset.asSector){
   selectedId=target.dataset.asSector;render();return;
@@ -190,6 +236,23 @@ root?.addEventListener("click",event=>{
  }
 });
 root?.addEventListener("change",async event=>{
+ if(event.target.id==="as-qc-file"){
+  const file=event.target.files?.[0];
+  if(!file)return;
+  try{
+   if(file.size>3*1024*1024)throw new RangeError("QC JSON harus lebih kecil dari 3 MB");
+   const obj=JSON.parse(await file.text());
+   // Strict station/date/epoch validation happens in this bridge.
+   inspectLocalStationEvidence(obj,real,selectedId);
+   privateStationQc=obj;
+   privateQcError=null;
+   localQcFileName=file.name.slice(0,120);
+  }catch(error){
+   privateQcError=error instanceof Error?error.message:String(error);
+  }
+  render();
+  return;
+ }
  if(event.target.id!=="ai-file")return;
  const file=event.target.files?.[0];
  if(!file)return;
