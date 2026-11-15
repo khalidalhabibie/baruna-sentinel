@@ -25,7 +25,8 @@ export function buildEvidenceReportMarkup(bundle) {
     "https://doi.org/10.5281/zenodo.7775016",
     "https://big.go.id/assets/download/InaCORS/InaCORS%20BIG%202018_compressed.pdf",
     "https://network.igs.org/BAKO00IDN",
-    "https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/43690104506"
+    "https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/43690104506",
+    "https://doi.org/10.32693/bomg.32.1.2017.351"
   ];
   return '<div class="print-head"><div><div class="print-brand">BARUNA / SENTINEL</div>'
     +'<small>OURDO INDONESIA · BIG BHUMIREKA 2026 · COMPETITION PROTOTYPE</small></div>'
@@ -55,7 +56,18 @@ export function buildEvidenceReportMarkup(bundle) {
     +'<h2>04 / Evidence linkage and illustrative review</h2>'
     +'<div class="print-callout print-warning"><b>'+label(g.status)+'</b><p>'+safeText(g.explanation||"Evidence sources cannot be assumed linked.")+'</p><b>Asset-level operational decision allowed:</b> NO</div>'
     +'<table><thead><tr><th>FICTIONAL SCENARIO</th><th>DEMO TIER</th><th>NEXT STEP</th><th>OPERATIONAL ADVICE?</th></tr></thead><tbody>'+rows+'</tbody></table>'
-    +'<h2>05 / Necessary next validation</h2>'
+    +'<h2>05 / Published Tanjung Emas field evidence (historic only)</h2>'
+    +(bundle.publishedFieldEvidence
+      ? '<p>Independent levelling / GPR research context: '+safeText(bundle.publishedFieldEvidence.source?.title)
+        +' (published '+safeText(bundle.publishedFieldEvidence.source?.year)+', measurements reported in '
+        +safeText(bundle.publishedFieldEvidence.reportedSurveyYear)+'). Figures below are cumulative historic centimetres; NOT rates, present-day asset displacement or inspection priorities.</p>'
+        +'<table><thead><tr><th>DOCUMENTED SECTOR</th><th>HISTORICAL SETTLEMENT</th><th>STATUS</th></tr></thead><tbody>'
+        +bundle.publishedFieldEvidence.sectors.map(s=>'<tr><td>'+safeText(s.name)+'</td><td>'+safeText(s.minCm)+'–'+safeText(s.maxCm)+' cm (historic)</td><td>2026 UNKNOWN · no exact sector geometry</td></tr>').join('')
+        +'</tbody></table>'
+        +'<p class="print-tiny">Source DOI: '+safeText(bundle.publishedFieldEvidence.source?.doi)
+        +'. These are not interpolated to CSEM/GNSS; sector positions are not asserted without survey coordinates.</p>'
+      : '<p>Published field-sector extract unavailable; do not interpret missing records as stability.</p>')
+    +'<h2>06 / Necessary next validation</h2>'
     +'<p>Acquire representative on-asset or scientifically linked geodetic evidence; verify station, period, reference frame and processing solution; incorporate a trustworthy asset register; validate exposure criteria, inspection triggers and engineering outcomes with the responsible operator.</p>'
     +'<p class="print-tiny"><b>Evidence sources:</b><br>'+refs.map(s=>safeText(s)).join('<br>')+'</p>'
     +'<div class="print-footer">BARUNA Sentinel · Ourdo Indonesia · Responsible screening demonstrator. Public reference positions and historical observations are not equivalent to an operational asset safety certificate.</div>';
