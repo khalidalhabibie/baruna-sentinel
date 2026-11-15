@@ -364,3 +364,6 @@ body[data-view="decision"] .hero p{font-size:13px}
 .geo-map .geo-plot{min-height:0}
 .geo-legend{padding:10px 12px}
 }
+
+/* A buyer-facing view never displays fictional markers, even with experimental flags on. */
+body[data-view="decision"] [data-feature="fictionalMapMarkers"]{display:none!important}
