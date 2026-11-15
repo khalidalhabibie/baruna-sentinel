@@ -137,12 +137,25 @@ function createProject(event){
   window.BarunaNavigation.selectProject(draft.id,{page:"overview"});
  }catch(err){error.textContent=err.message;error.hidden=false;}
 }
+function setLabTab(tab){
+ if(!["movement","qc","gis","sandbox"].includes(tab))return;
+ if(tab==="sandbox"&&document.body.dataset.sandbox!=="on")return;
+ document.body.dataset.labTab=tab;
+ for(const button of document.querySelectorAll("[data-pw-lab]")){
+  button.setAttribute("aria-selected",String(button.dataset.pwLab===tab));
+ }
+ if(tab==="gis")window.dispatchEvent(new CustomEvent("baruna:viewchange",{detail:{view:"analyst"}}));
+}
 function init(){
  restore();render();
  window.addEventListener("baruna:pagechange",render);
  $("pw-new-project-form")?.addEventListener("submit",createProject);
  for(const id of ["pw-dialog-close","pw-dialog-cancel"])
   $(id)?.addEventListener("click",()=>$("pw-new-project-dialog").close());
+ document.addEventListener("click",event=>{
+  const tab=event.target.closest("[data-pw-lab]");
+  if(tab)setLabTab(tab.dataset.pwLab);
+ });
  document.addEventListener("change",event=>{
   const id=event.target?.dataset?.pwCompare;
   if(!id)return;
@@ -154,5 +167,6 @@ function init(){
  if(!all().some(p=>p.id===project))
   window.BarunaNavigation?.selectProject?.("semarang-port",{page:"projects",updateUrl:true,scroll:false});
 }
+window.BarunaWorkspace=Object.freeze({setLabTab});
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
 else init();
