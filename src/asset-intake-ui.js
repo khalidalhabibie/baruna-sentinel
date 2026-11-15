@@ -119,7 +119,7 @@ export function renderImportedAssetMap(){
   disposeIntakeMap();
   const node=document.getElementById("ai-map");
   if(!node||!documentRecord||!window.L||document.body.dataset.page!=="assessment")return;
-  leafletMap=L.map(node,{scrollWheelZoom:false,zoomControl:true,preferCanvas:true});
+  leafletMap=L.map(node,{scrollWheelZoom:false,zoomControl:true,preferCanvas:false});
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom:19
