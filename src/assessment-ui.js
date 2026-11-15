@@ -219,7 +219,8 @@ root?.addEventListener("click",event=>{
   if(!privateStationQc||!real)return;
   const bridge=inspectLocalStationEvidence(privateStationQc,real,selectedId);
   const printRegion=document.getElementById("print-report");
-  printRegion.innerHTML=buildAssessmentPrint({real})+localStationEvidencePrint(bridge);
+  const report=buildAssessmentPrint({real});
+  printRegion.innerHTML=report.replace(/<\/div>\s*$/,localStationEvidencePrint(bridge)+"</div>");
   window.print();return;
  }
  if(target.id==="as-preview"){showBriefPreview=!showBriefPreview;render();return;}
