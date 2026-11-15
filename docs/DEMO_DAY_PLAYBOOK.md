@@ -1,5 +1,19 @@
 # Bhumireka Demo Day Playbook — 19 November 2026
 
+## Real local sector evidence (historical, NOT current)
+
+A public study by Raharjo & Yosi (2017; levelling measurements in 2005) reports **six real Tanjung Emas infrastructure sectors** with cumulative historical settlement ranges. The visible report cards reproduce their data, identify the method/year and provide the paper source. Their locations are NOT pinned as exact field sites because no authoritative sector survey geometry has been verified.
+
+**Demo sequence, 60 sec:**
+- 0–12s: Real operational problem, Semarang/Tanjung Emas context.
+- 12–24s: Open *Published Tanjung Emas infrastructure evidence*; pick West breakwater (74–140 cm historic cumulative) and emphasize **2005 data / 2026 status unknown**.
+- 24–35s: Show source-grounded WGS84 context; optionally open live OSM, but don't rely on internet.
+- 35–45s: Show historical CSEM GPS time series and QC on genuine IGS BAKO RINEX; the sources remain independent.
+- 45–55s: Show evidence gate refusing unsafe conclusions; historical sector measurements cannot certify current assets.
+- 55–60s: Save concise evidence PDF/JSON. Call to action: field-survey and matched measurement inputs for real inspection prioritization.
+
+The 2017 historical study is **not** a direct GNSS-measured asset-status input and is not evidence of active subsidence today. No false 2026 risk labels. No actual DEMNAS hazard model.
+
 ## Fast judge walkthrough — latest independently built static MVP
 
 1. Deploy and open the Vercel URL with `vercel.json` using `npm run build` and `dist/`.
