@@ -11,6 +11,7 @@ const publicAssets=[
   "src/historical.js",
   "src/readiness.js",
   "src/qc-source.js",
+  "src/feature-flags.js",
   "data/CSEM_clean_Noff1site.source-derived.rneu",
   "data/BAKO_IGS_2025-001_20min_qc_summary.json",
   "data/tanjung-emas-historical-field-evidence.json"
