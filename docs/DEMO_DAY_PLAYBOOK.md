@@ -1,5 +1,16 @@
 # Bhumireka Demo Day Playbook — 19 November 2026
 
+## Fast judge walkthrough — latest independently built static MVP
+
+1. Deploy and open the Vercel URL with `vercel.json` using `npm run build` and `dist/`.
+2. Click **Run Semarang case study**. The real historical CSEM and independently checked BAKO QC should reload with a 'Case ready' status.
+3. Read the WGS84 context: CSEM / Tanjung Emas / Genuk reference coordinates are source-grounded. Amber A–C asset points are fictitious; this is not an official basemap or DEMNAS raster.
+4. Show the actual CSEM station trend and 41-epoch BAKO GNSS availability comparison. **The two datasets are not linked into one displacement solution.**
+5. Show the evidence gate and illustrative `VERIFY_LOCAL_EVIDENCE` statuses, then click **Print evidence dossier / Save PDF**.
+6. Confirm file/PDF includes independent-source limitations, sample coordinates, declared scenario and sources. Retain one PDF copy as demo fallback.
+
+The browser-based printable dossier is a report capability, not a certified GNSS processing report. A static map/plot is not the missing full geospatial exposure analysis. Prioritize completed video, slides and an onsite-tested deploy before further features.
+
 ## Scientific narrative (freeze)
 
 **One specific use case:** A Semarang–Genuk/Tanjung Emas coastal logistics O&M team wants to identify where *field verification* should be planned, and whether geodetic evidence is reliable enough to interpret. It is NOT an engineering-validated asset safety score.
