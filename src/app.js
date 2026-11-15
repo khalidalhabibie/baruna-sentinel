@@ -5,6 +5,7 @@ import {
 import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows} from "./geo.js";
 import {buildEvidenceReportMarkup} from "./report.js";
 import {parseLocalQcReport} from "./qc-source.js";
+import {resolveFeatureFlags} from "./feature-flags.js";
 import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
 import {evidenceReadiness, verificationRequestForSector} from "./readiness.js";
 
@@ -18,7 +19,21 @@ let ranks = [];
 let historicalDoc = null;
 let historicalFilter = "all";
 let selectedSectorId = null;
-const geoLayers = {station:true,landmarks:true,fictional:true};
+let labEnabled = new URLSearchParams(window.location.search).get("lab") === "1";
+const currentFlags = () => resolveFeatureFlags(labEnabled ? "?lab=1" : "");
+const geoLayers = {station:true,landmarks:true,fictional:currentFlags().fictionalMapMarkers};
+
+function applyFeatureFlags() {
+  const flags = currentFlags();
+  document.body.dataset.inacors = flags.inaCorsImport ? "on" : "off";
+  document.body.dataset.sandbox = flags.syntheticSandbox ? "on" : "off";
+  document.body.dataset.fictional = flags.fictionalMapMarkers ? "on" : "off";
+  $("lab-toggle").setAttribute("aria-pressed", String(labEnabled));
+  $("lab-toggle").textContent = labEnabled ? "Hide experimental tools" : "Enable experimental tools";
+  geoLayers.fictional = flags.fictionalMapMarkers;
+  renderGeographicContext();
+}
+
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, ch => ({
@@ -272,7 +287,8 @@ function renderGeographicContext() {
   const geo = geoContextSummary();
   $("geo-map").innerHTML = renderGeoSvg(geoLayers);
   $("geo-audit-rows").innerHTML = renderSpatialAuditRows();
-  $("geo-layer-summary").textContent = Object.values(geoLayers).filter(Boolean).length + " / 3 layers visible";
+  const available = currentFlags().fictionalMapMarkers ? 3 : 2;
+  $("geo-layer-summary").textContent = Object.values(geoLayers).filter(Boolean).length + " / " + available + " layers visible";
   $("geo-distance").textContent = geo.landmarkDistanceKm.toFixed(1) + " km";
   $("geo-bako-distance").textContent = "≈ " + geo.externalObservationQcStationDistanceKm + " km apart";
   for (const button of document.querySelectorAll("[data-map-layer]")) {
@@ -465,6 +481,12 @@ $("export-json").addEventListener("click", () => {
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
 $("case-study-btn").addEventListener("click", runCaseStudy);
+$("lab-toggle").addEventListener("click", () => {
+  labEnabled = !labEnabled;
+  applyFeatureFlags();
+  notify(labEnabled ? "Experimental data tools enabled. BAKO remains the verified default." :
+    "Experimental tools hidden. Published evidence and verified fallback remain available.");
+});
 $("view-decision").addEventListener("click", () => setDashboardView("decision"));
 $("view-analyst").addEventListener("click", () => setDashboardView("analyst"));
 $("step-sector").addEventListener("click", () => reviewStep("field-evidence"));
@@ -503,12 +525,13 @@ $("historical-sector-list").addEventListener("click", e => {
   button.setAttribute("aria-current", "true");
   selectedSectorId = button.dataset.sector;
   $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selectedSectorId);
+  $("sector-detail-wrap").open = true;
   updateSelectedSector();
   notify("Selected "+ historicalDoc.sectors.find(s => s.id === selectedSectorId).name + ". Historical study only; current condition unknown.");
 });
 $("report-btn").addEventListener("click", printEvidenceReport);
 $("executive-brief").addEventListener("click", printEvidenceReport);
-renderGeographicContext();
+applyFeatureFlags();
 renderExecutiveDesk();
 loadHistoricalResearch();
 // Separate authentic sources: CSEM historical positions versus archived BAKO multi-GNSS QC.
