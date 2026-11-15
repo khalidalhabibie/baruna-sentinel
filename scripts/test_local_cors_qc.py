@@ -33,7 +33,7 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "observation RINEX"):
             read_header(rinex("CSEM", kind="N"), "file.26o")
         with self.assertRaisesRegex(ValueError, "MARKER NAME"):
-            read_header(line("2.11           O", "RINEX VERSION / TYPE")+
+            read_header(line("     2.11           O                   G", "RINEX VERSION / TYPE")+
                         line("", "END OF HEADER"), "file.26o")
 
     def test_parse_locally_gzipped_header(self):
