@@ -286,6 +286,37 @@
             </div>
           </section>
 
+          <section class="cors-qc-section" id="station-qc" aria-label="Private multi-day GNSS observation quality comparison">
+            <div class="cors-qc-heading">
+              <div>
+                <span class="section-index">GNSS OBSERVATION READINESS</span>
+                <h2>Two stations. One evidence timeline.</h2>
+                <p>Inspect daily observation coverage from CSEM and CSMG before treating any GNSS evidence as usable.</p>
+              </div>
+              <span class="cors-local-pill">LOCAL QC · NOT UPLOADED</span>
+            </div>
+            <div class="cors-import-bar">
+              <div class="cors-import-description">
+                <strong>Load your locally processed daily QC summary</strong>
+                <span>JSON produced from RINEX · CSEM / CSMG · daily 30-second epochs</span>
+              </div>
+              <div class="cors-import-controls">
+                <label for="cors-qc-file" class="cors-import-label">Select QC JSON</label>
+                <input id="cors-qc-file" type="file" accept=".json,application/json" aria-label="Select local CSEM CSMG daily QC JSON">
+                <button id="cors-qc-reset" type="button" hidden>Clear local comparison</button>
+              </div>
+            </div>
+            <p id="cors-qc-notice" class="cors-qc-notice" role="status" aria-live="polite">No station QC loaded. Choose a local summary to see the comparison; this page does not upload or save the file.</p>
+            <div id="cors-qc-result" class="cors-qc-result">
+              <div class="cors-qc-empty"><strong>Evidence comparison is ready.</strong><span>Import the private QC JSON to reveal the day-by-day CSEM and CSMG observations. The published web demo intentionally contains no redistributed SRGI data.</span></div>
+            </div>
+            <details class="cors-qc-details">
+              <summary>What does the comparison prove?</summary>
+              <p>The plot compares time coverage and GNSS pseudorange observation presence, not millimetre positioning accuracy. Missing files do not prove a receiver outage. CSEM (historic GPS-derived displacement), CSMG and the independent BAKO multi-GNSS QC are not interchangeable station or time series. No site-specific inspection risk or annual subsidence rate is calculated.</p>
+              <p>BIG/SRGI terms may restrict redistribution of original or derived data. Import locally; check permission before sharing exported screenshots or reports.</p>
+            </details>
+          </section>
+
                     <div class="section-row analyst-only"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
           <article class="panel gnss-panel analyst-only">
             <div class="gnss-icon" aria-hidden="true">◎</div>
