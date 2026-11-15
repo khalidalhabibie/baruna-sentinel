@@ -173,11 +173,21 @@ try {
   });
   assert.ok(mapQa.svg>=1&&mapQa.svgPaths>=2&&mapQa.canvas===0,
     "Imported polygon and CSEM station are drawn as distinct inspectable SVG paths");
+  await assessmentPage.evaluate(()=>{ document.activeElement?.blur?.(); window.scrollTo({top:0,left:0,behavior:"instant"}); });
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake.png",fullPage:true});
   await assessmentPage.locator("#ai-print").click();
   assert.equal(await assessmentPage.evaluate(()=>window.__assessmentPrintInvoked),true);
   assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("0"));
   assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("Locally supplied survey polygon"));
+  await assessmentPage.setViewportSize({width:390,height:844});
+  await assessmentPage.evaluate(()=>{
+    document.activeElement?.blur?.();
+    window.scrollTo({top:0,left:0,behavior:"instant"});
+  });
+  assert.equal(await assessmentPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
+    "Imported asset map and evidence review remain usable on mobile");
+  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake-mobile.png",fullPage:true});
+  await assessmentPage.setViewportSize({width:1440,height:900});
   await assessmentPage.locator("#ai-file").setInputFiles({
     name:"wrong-projection.geojson",
     mimeType:"application/json",
@@ -187,11 +197,7 @@ try {
   assert.ok((await assessmentPage.locator(".ai-error").textContent()).includes("WGS84"));
   assert.ok((await assessmentPage.locator(".ai-record-head").textContent()).includes("Locally supplied survey polygon"),
     "Invalid uploads cannot replace the last validated local asset review");
-  await assessmentPage.setViewportSize({width:390,height:844});
-  assert.equal(await assessmentPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
-    "Imported asset map and evidence review remain usable on mobile");
-  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake-mobile.png",fullPage:true});
-  await assessmentPage.setViewportSize({width:1440,height:900});
+
 
   await assessmentPage.locator("#as-real-mode").click();
   await assessmentPage.setViewportSize({width:390,height:844});
