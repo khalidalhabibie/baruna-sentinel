@@ -43,3 +43,26 @@ The source also supports static hosting on Vercel. The default bundled CSEM file
 - Regional stations are not direct asset instruments.
 - Exposures, assets, priorities in demonstration mode are synthetic and not operational advice.
 - Neither data source should be silently merged with the other when date, frame, or station provenance differs.
+
+## Verified real multi-GNSS observation QC (15 Nov 2026)
+
+A GitHub Actions run successfully downloaded genuine BAKO IGS RINEX from BKG and decoded the compressed archive using **GeoRinex**:
+
+- Evidence: https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/43690104506
+- Source: `BAKO00IDN_R_20250010000_01D_30S_MO.crx.gz`, 1 January 2025, IGS station BAKO (Cibinong, Indonesia)
+- Measured window: 41 observation epochs in 20 minutes
+- Populated pseudorange: GPS, GLONASS, Galileo, BeiDou, QZSS, and SBAS
+- Average satellites with usable pseudorange per epoch: GPS only **8.951**, all present systems **44.634**
+- 41/41 epochs have observations beyond GPS
+- The result is an **observational availability comparison only**, *not* an accuracy or Semarang subsidence comparison
+
+The static UI loads the verified summary from `data/BAKO_IGS_2025-001_20min_qc_summary.json`.
+The complete machine-generated QC report is available as a GitHub Actions artifact.
+To reproduce processing from the original source:
+
+```bash
+python3 -m pip install georinex hatanaka
+python3 scripts/verify_igs_rinex.py
+```
+
+See [the frozen Semarang use case and scientific limits](docs/USE_CASE_AND_REAL_RINEX_EVIDENCE.md).
