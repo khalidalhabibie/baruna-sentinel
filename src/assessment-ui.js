@@ -1,6 +1,8 @@
 import {safeHtml as e} from "./projects.js";
 import {validateHistoricalFieldEvidence} from "./historical.js";
 import {parseRneu,analyzeSeries} from "./engine.js";
+import {publishedCorsComparison} from "./published-cors.js";
+import {renderAssetIntake,loadSyntheticAssetExample,importGeoJSONFile,selectImportedAsset,clearImportedAssets,downloadAssetTemplate,printableImportedAssetReport,disposeIntakeMap,renderImportedAssetMap} from "./asset-intake-ui.js";
 import {
   ASSESSMENT_POLICY,assessRealProject,assessSyntheticScenario,buildAssessmentPrint
 } from "./assessment.js";
@@ -10,6 +12,7 @@ let real=null;
 let sourceError=null;
 let selectedId="west-breakwater";
 let showSimulation=false;
+let assetMode=false;
 const measuredSources={csem:null,bako:null};
 const nav=window.BarunaNavigation;
 const button=(page,label,secondary=true)=>
@@ -28,6 +31,10 @@ function sourceRows(){
      bako.epochCount+" epochs · "+bako.constellations+" constellations with pseudorange · no position solution":
      "Independent Cibinong station; not a CSEM position solution"]
  ].map(x=>'<div class="as-source-row"><strong>'+e(x[0])+'</strong><span>'+e(x[1])+'</span><em>'+e(x[2])+'</em><small>'+e(x[3])+'</small></div>').join("");
+}
+function publishedCorsCard(){
+ const p=publishedCorsComparison();
+ return '<section class="as-cors-contrast"><div class="as-cors-intro"><span class="as-pane-label">2021–2023 / PEER-REVIEWED PPP SOURCE</span><h2>Why one CORS rate cannot describe every asset</h2><p>Independent station rates from <a href="'+e(p.url)+'" target="_blank" rel="noopener noreferrer">Sitaningrum &amp; Widjajanti (2024) ↗</a>. These are published geodetic results, not live monitoring or BARUNA calculations.</p></div><div class="as-cors-metrics"><div><small>CSMG · SEMARANG GENUK</small><strong>'+p.csmg.verticalMmYr.toFixed(2)+' <span>mm/year</span></strong><em>Downward vertical movement</em></div><div><small>CSEM · SEMARANG</small><strong>+'+p.csem.verticalMmYr.toFixed(2)+' <span>mm/year</span></strong><em>Upward vertical movement</em></div></div><p class="as-cors-warning">Same study and period, different reference stations. This difference is not a velocity gradient or asset-specific risk. Do not mix these 2021–2023 PPP results with CSEM 2010–2021 descriptive OLS or BAKO 2025 QC.</p></section>';
 }
 function renderReal(){
  if(sourceError)return '<div class="as-error">The published source could not be validated. Assessment unavailable: '+e(sourceError)+'</div>';
@@ -70,6 +77,7 @@ function renderReal(){
        '<div class="as-action-row"><button type="button" class="pw-btn pw-btn-primary" id="as-export">Export assessment brief</button>'+
          button("detail","View field records")+'</div></section>'+
    '</div>'+
+   publishedCorsCard()+
    '<section class="as-source-panel"><div class="as-source-title"><h2>GNSS and source provenance</h2>'+
       button("analyst","Open GNSS Lab")+'</div>'+
      '<div class="as-source-header"><span>SOURCE</span><span>STATION / SITE</span><span>RELATION</span><span>WHAT IT MEANS</span></div>'+
@@ -101,6 +109,7 @@ function renderSimulation(){
 }
 function render(){
  if(!root)return;
+ disposeIntakeMap();
  const selectedProject=nav?.getProject?.()||"semarang-port";
  if(selectedProject!=="semarang-port"){
   root.innerHTML='<div class="pw-breadcrumb"><button type="button" data-pw-page="projects">Projects</button><span>/</span> Assessment</div>'+
@@ -116,10 +125,12 @@ function render(){
      '<h1>Inspection assessment</h1><p>Explain what the research proves, what remains unknown, and whether an infrastructure inspection priority can be issued.</p></div>'+
      '<div class="pw-heading-actions">'+button("analyst","GNSS evidence")+button("compare","Compare sources")+'</div></div>'+
   '<div class="as-mode-switch" role="group" aria-label="Assessment evidence mode">'+
-     '<button type="button" id="as-real-mode" aria-pressed="'+(!showSimulation)+'" class="'+(!showSimulation?"is-active":"")+'">Published evidence</button>'+
+     '<button type="button" id="as-real-mode" aria-pressed="'+(!showSimulation&&!assetMode)+'" class="'+(!showSimulation&&!assetMode?"is-active":"")+'">Published evidence</button>'+
+     '<button type="button" id="as-asset-mode" aria-pressed="'+assetMode+'" class="'+(assetMode?"is-active":"")+'">Import asset GeoJSON</button>'+
      '<button type="button" id="as-demo-mode" aria-pressed="'+showSimulation+'" class="'+(showSimulation?"is-active":"")+'">Synthetic policy demo</button>'+
-     '<span>'+ (showSimulation?"Illustrative data only · no real site positions":"Actual 2005 study · asset risk unassessed")+'</span></div>'+
-  (showSimulation?renderSimulation():renderReal());
+     '<span>'+(assetMode?"Local geometry upload · no derived asset displacement":showSimulation?"Illustrative data only · no real site positions":"Actual 2005 study · asset risk unassessed")+'</span></div>'+
+  (assetMode?renderAssetIntake():showSimulation?renderSimulation():renderReal());
+  if(assetMode)requestAnimationFrame(()=>renderImportedAssetMap());
 }
 root?.addEventListener("click",event=>{
  const target=event.target.closest("button");
@@ -127,8 +138,19 @@ root?.addEventListener("click",event=>{
  if(target.id==="as-open-semarang"){
   nav.selectProject("semarang-port",{page:"assessment"});return;
  }
- if(target.id==="as-real-mode"||target.id==="as-demo-mode"){
-  showSimulation=target.id==="as-demo-mode";render();return;
+ if(target.id==="as-real-mode"||target.id==="as-demo-mode"||target.id==="as-asset-mode"){
+  showSimulation=target.id==="as-demo-mode";
+  assetMode=target.id==="as-asset-mode";
+  render();return;
+ }
+ if(target.id==="ai-example"){loadSyntheticAssetExample();render();return;}
+ if(target.id==="ai-clear"){clearImportedAssets();render();return;}
+ if(target.id==="ai-template"){downloadAssetTemplate();return;}
+ if(target.dataset.aiAsset){if(selectImportedAsset(target.dataset.aiAsset))render();return;}
+ if(target.id==="ai-print"){
+  const printRegion=document.getElementById("print-report");
+  printRegion.innerHTML=printableImportedAssetReport();
+  window.print();return;
  }
  if(target.dataset.asSector){
   selectedId=target.dataset.asSector;render();return;
@@ -139,6 +161,14 @@ root?.addEventListener("click",event=>{
   printRegion.innerHTML=buildAssessmentPrint({real,scenario:showSimulation?assessSyntheticScenario():null});
   window.print();return;
  }
+});
+root?.addEventListener("change",async event=>{
+ if(event.target.id!=="ai-file")return;
+ const file=event.target.files?.[0];
+ if(!file)return;
+ await importGeoJSONFile(file);
+ assetMode=true;
+ render();
 });
 window.addEventListener("baruna:pagechange",render);
 async function loadSourceMetrics(){

@@ -11,7 +11,8 @@ const officialLinks=[
   {title:"Aditiya & Ito (2023) · InSAR Semarang",url:"https://doi.org/10.1016/j.jag.2023.103579"},
   {title:"Wetlands International / Deltares · Ekonomi penurunan tanah",url:"https://indonesia.wetlands.org/id/download/1496/"},
   {title:"Studi sektor Tanjung Emas (2005)",url:"https://doi.org/10.32693/bomg.32.1.2017.351"},
-  {title:"Susilo et al. (2023) · GNSS historis",url:"https://doi.org/10.5281/zenodo.7775016"}
+  {title:"Susilo et al. (2023) · GNSS historis",url:"https://doi.org/10.5281/zenodo.7775016"},
+  {title:"Sitaningrum & Widjajanti (2024) · CSMG dan CSEM PPP",url:"https://doi.org/10.22146/jgise.95957"}
 ];
 const estimate=()=>estimatedInterruptionExposure(hours,hourlyCost);
 const estimateLabel=()=>estimate()===null?"Masukkan dua asumsi":rupiah(estimate());
@@ -50,6 +51,7 @@ function extraPanel(id){
     return '<div class="ws-dataset-lines">'+[
       ["RISET / 2005","6 sektor Tanjung Emas","Catatan penurunan kumulatif"],
       ["GPS / 2010–2021","CSEM · 3.561 posisi","Tren stasiun, bukan aset"],
+      ["PPP / 2021–2023","CSMG −94,03 / CSEM +3,23","Perbandingan dua stasiun, bukan aset"],
       ["QC / 2025","BAKO · 41 epoch","Mutu observasi stasiun lain"]
     ].map(x=>'<div><small>'+esc(x[0])+'</small><strong>'+esc(x[1])+'</strong><span>'+esc(x[2])+'</span></div>').join("")+'</div>';
   }
