@@ -6,7 +6,7 @@ Independent, offline-capable competition prototype. This repository does **not**
 Coastal infrastructure teams need an explainable **inspection-review queue**, not a misleading map implying that a nearby GNSS station measures every asset.
 
 ## Demo (software-only)
-1. Load an **explicitly illustrative** observation fixture or a user-supplied cleaned `.rneu` station time series.
+1. Auto-load an **authentic historical CSEM GPS-derived series** from a locally bundled source-derived numeric extract (2010–2021), an explicitly illustrative fixture, or a user-supplied cleaned `.rneu` time series.
 2. Validate dates, units, duplicate epochs, completeness, and observation duration.
 3. Calculate a **descriptive** vertical displacement trend from parsed positions. No engineering threshold, structural failure probability, or flood prediction is implied.
 4. Independently inspect a user-supplied RINEX observation file to identify declared/observed GNSS constellations when supported. A GPS-only time series is **not** evidence of multi-GNSS processing.
@@ -25,7 +25,7 @@ python3 -m http.server 4173
 node --test
 ```
 
-The source also supports static hosting on Vercel. The built-in demo fixture is invented for testing and prominently labelled **illustrative / not a real GNSS observation**. Import a verified dataset for a scientifically grounded demo.
+The source also supports static hosting on Vercel. The default bundled CSEM file contains all 3,561 numeric observation rows extracted from the public cleaned Zenodo time series; original header comments were replaced with explicit source attribution. The alternative fixture is invented for UI testing and prominently labelled **illustrative / not a real GNSS observation**. Neither stream is proof of multi-constellation observations.
 
 ## Event readiness
 - [ ] Confirm multi-GNSS RINEX from organizers and test constellation parser
