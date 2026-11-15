@@ -41,10 +41,11 @@
           <div class="control-header"><span class="section-index">01 / INPUT</span><h2>Observation desk</h2><p>Import a station time series and inspect its provenance.</p></div>
           <div class="control-block">
             <span class="form-label">TIME SERIES · CLEAN .RNEU</span>
-            <button id="sample-btn" class="primary-btn" type="button">▶ Run illustrative scenario</button>
+            <button id="published-btn" class="primary-btn" type="button">▶ Analyze published CSEM data</button>
+            <button id="sample-btn" class="upload-btn" type="button">◉ Switch to illustrative scenario</button>
             <label for="series-file" class="upload-btn">↑ Import real .rneu time series</label>
             <input id="series-file" type="file" accept=".rneu,.txt,text/plain" hidden>
-            <p class="hint">For authentic data, download a cleaned GNSS time series from the cited Zenodo record and import it locally.</p>
+            <p class="hint">Built-in CSEM: real historical GPS-derived observations, 2010–2021 (published by Susilo et al.). Or import your own cleaned time series.</p>
           </div>
           <div class="form-grid">
             <label class="form-field"><span class="form-label">Station identifier</span><input id="station" maxlength="16" value="CSEM" spellcheck="false"></label>
