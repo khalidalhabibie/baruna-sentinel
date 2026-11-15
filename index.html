@@ -109,11 +109,11 @@
 
       <section class="workspace">
         <aside class="controls">
-          <div class="control-header"><span class="section-index">01 / INPUT</span><h2>Observation desk</h2><p>Import a station time series and inspect its provenance.</p></div>
+          <div class="control-header"><span class="section-index">DATA SOURCES</span><h2>GNSS workbench</h2><p>Verified demo: IGS BAKO.</p><button id="lab-toggle" type="button" class="lab-toggle" aria-pressed="false">Enable experimental tools</button></div>
           <div class="control-block">
             <span class="form-label">TIME SERIES · CLEAN .RNEU</span>
             <button id="published-btn" class="primary-btn" type="button">▶ Analyze published CSEM data</button>
-            <button id="sample-btn" class="upload-btn" type="button">◉ Switch to illustrative scenario</button>
+            <button id="sample-btn" class="upload-btn" type="button" data-feature="syntheticSandbox">◉ Switch to illustrative scenario</button>
             <label for="series-file" class="upload-btn" role="button" tabindex="0" aria-describedby="time-series-upload-help">↑ Import .rneu position series</label>
             <input id="series-file" type="file" accept=".rneu,.txt,text/plain" hidden>
             <p class="hint" id="time-series-upload-help">Built-in CSEM: real historical GPS-derived observations, 2010–2021 (published by Susilo et al.). Uploaded station identity and datum are not automatically verified.</p>
@@ -126,12 +126,12 @@
             <span class="form-label">MULTI-GNSS OBSERVATION AUDIT · RINEX</span>
             <label for="rinex-file" class="upload-btn" role="button" tabindex="0" aria-describedby="rinex-upload-help">↑ Inspect RINEX observation file</label>
             <input id="rinex-file" type="file" accept=".rnx,.obs,.o,.txt,text/plain" hidden>
-            <label for="qc-report-file" class="upload-btn" role="button" tabindex="0" aria-describedby="qc-import-help">↑ Import GeoRinex QC JSON (BIG / local)</label>
-            <input id="qc-report-file" type="file" accept=".json,application/json" hidden>
+            <div data-feature="inaCorsImport" class="lab-import"><label for="qc-report-file" class="upload-btn" role="button" tabindex="0" aria-describedby="qc-import-help">↑ Import local QC JSON</label>
+            <input id="qc-report-file" type="file" accept=".json,application/json" hidden></div>
             <button id="load-bako" type="button" class="secondary-link">↺ Restore verified BAKO fallback</button>
-            <button id="rinex-demo" class="secondary-link" type="button">Use illustrative RINEX v3 fixture</button>
-            <p class="hint" id="qc-import-help"><b>Two paths:</b> Plan A: process a legitimate Ina-CORS RINEX locally using <code>scripts/verify_igs_rinex.py --file … --station CSMG</code>, then import its QC JSON here. Plan B: use the existing verified BAKO IGS sample. An uploaded station name is user-declared, not automatically validated by BIG.</p>
-            <p class="hint" id="rinex-upload-help">Browser inspection is limited. The authentic BAKO multi-GNSS QC was calculated separately with GeoRinex; this interface does not solve GNSS positions.</p>
+            <button id="rinex-demo" class="secondary-link" type="button" data-feature="syntheticSandbox">Use illustrative RINEX v3 fixture</button>
+            <p class="hint" id="qc-import-help" data-feature="inaCorsImport">Process Ina-CORS RINEX locally with GeoRinex, then import QC JSON. Station provenance remains user-declared.</p>
+            <p class="hint" id="rinex-upload-help">Observation QC only; no positioning solution.</p>
           </div>
           <div class="control-block source-meta">
             <span class="form-label">DATA PROVENANCE</span>
@@ -158,14 +158,14 @@
             <div class="chart-footer"><span id="audit-series">Series not loaded</span><span>NOT STRUCTURAL SAFETY ADVICE</span></div>
           </article>
 
-          <div class="section-row" id="field-evidence"><div><span class="section-index">05 / FIELD RECORD</span><h2>Published Tanjung Emas infrastructure evidence</h2></div><span class="subtle-pill">Real research · historical only</span></div>
+          <div class="section-row" id="field-evidence"><div><span class="section-index">01 / SITE</span><h2>Choose a port sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
           <article class="panel historical-panel">
             <div class="historical-head">
-              <div><div class="historical-head-badge">DOCUMENTED LOCAL CASE · 2005 MEASUREMENT / 2017 PUBLICATION</div>
-                <h3>Six real infrastructure sectors. Current condition: unknown.</h3>
-                <p>Published field levelling from Tanjung Emas describes historic cumulative settlement. These are not current displacement rates or asset risk rankings. Precise sector survey coordinates are not supplied.</p>
+              <div><div class="historical-head-badge">HISTORICAL FIELD STUDY</div>
+                <h3>Historic settlement records</h3>
+                <p>Select a sector to see the historic measurement and data gap.</p>
               </div>
-              <a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener" class="historical-source">Open scientific source ↗</a>
+              <a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener" class="historical-source">Research source</a>
             </div>
             <div class="historical-filters" id="historical-filters" aria-label="Filter published infrastructure sectors">
               <button type="button" data-filter="all" aria-pressed="true">All sectors</button>
@@ -173,25 +173,25 @@
               <button type="button" data-filter="port" aria-pressed="false">Port operations</button>
               <button type="button" data-filter="road" aria-pressed="false">Road access</button>
             </div>
-            <div id="historical-sector-list" class="historical-sector-list">Loading original research references…</div>
-            <div class="historical-detail" id="historical-sector-detail"><p>Select an infrastructure sector to inspect its historical evidence and the required modern verification.</p></div>
-            <div class="historical-footer"><b>Evidence boundary:</b> reported historic sector measurements are independent of CSEM GNSS historical positions and BAKO multi-GNSS QC. Unknown current condition never means safe, unstable or due for immediate inspection.</div>
+            <div id="historical-sector-list" class="historical-sector-list">Loading sector records…</div>
+            <details class="sector-detail-wrap" id="sector-detail-wrap"><summary>View evidence and next checks</summary><div class="historical-detail" id="historical-sector-detail"><p>Select a sector to review its historic evidence.</p></div></details>
+            <details class="historical-footer"><summary>Data limitations</summary><p>Historic field measurements are independent of CSEM GPS positions and BAKO multi-GNSS QC. Unknown current condition is not a safety assessment.</p></details>
           </article>
 
 
           <div id="geo-context" class="geo-section">
-            <div class="section-row"><div><span class="section-index">03 / LOCATE</span><h2>Coastal geospatial context</h2></div><span class="subtle-pill">Georeferenced points · WGS84</span></div>
+            <div class="section-row"><div><span class="section-index">02 / MAP</span><h2>Where is the evidence?</h2></div><span class="subtle-pill">Reference points · WGS84</span></div>
             <article class="panel geo-panel">
-              <div class="geo-panel-top"><div><strong>Semarang / Genuk · inspection planning scenario</strong><p>Coordinate-based context. Only green/white markers are public reference locations; amber A–C are fictional examples.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
-              <div class="geo-layer-toolbar" role="group" aria-label="Toggle geographic evidence layers">
+              <div class="geo-panel-top"><div><strong>Semarang / Genuk</strong><p>Public reference points, not asset measurements.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
+              <div class="geo-layer-toolbar analyst-only" role="group" aria-label="Toggle geographic evidence layers">
                 <div><span class="geo-layer-caption">GIS layers · WGS84 / EPSG:4326</span><small>Toggle point categories on the offline coordinate plot</small></div>
                 <button type="button" data-map-layer="station" aria-pressed="true">CSEM station</button>
                 <button type="button" data-map-layer="landmarks" aria-pressed="true">Public landmarks</button>
-                <button type="button" data-map-layer="fictional" aria-pressed="true">Scenario markers</button>
+                <button type="button" data-map-layer="fictional" aria-pressed="false" data-feature="fictionalMapMarkers">Scenario markers</button>
                 <span class="layer-count" id="geo-layer-summary" role="status" aria-live="polite">3 / 3 layers visible</span>
               </div>
               <div class="geo-map-tools">
-                <span><b>Choose map context</b> · the street map is third-party geographic context, not field-survey evidence</span>
+                <span>Map context</span>
                 <button id="osm-toggle" class="geo-basemap-toggle" type="button" aria-expanded="false">Show live street map (OSM)</button>
               </div>
               <div id="geo-osm-embed" class="geo-osm-embed" hidden>
@@ -200,8 +200,8 @@
                 <div class="geo-online-foot"><span>Map © <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap contributors</a> · map features are contextual and do not validate inspection risk</span></div>
               </div>
               <div id="geo-map" class="geo-map" aria-label="WGS84 context plot for Semarang">Loading geographic references…</div>
-              <div class="geo-legend"><span><i class="geo-marker-dot real"></i> CSEM station · BIG</span><span><i class="geo-marker-dot landmark"></i> Public landmarks</span><span><i class="geo-marker-dot fictional"></i> Fictional asset placements A–C</span></div>
-              <div class="geo-insights">
+              <div class="geo-legend"><span><i class="geo-marker-dot real"></i> CSEM station · BIG</span><span><i class="geo-marker-dot landmark"></i> Public landmarks</span><span data-feature="fictionalMapMarkers"><i class="geo-marker-dot fictional"></i> Fictional scenario markers</span></div>
+              <div class="geo-insights analyst-only">
                 <div><small>Reference station</small><strong>CSEM · Semarang</strong><span>Historical GPS-derived position series</span></div>
                 <div><small>CSEM → Tanjung Emas terminal</small><strong id="geo-distance">—</strong><span>Straight-line geographic distance; NOT proof of asset displacement</span></div>
                 <div><small>Independent observation QC</small><strong id="geo-bako-distance">—</strong><span>BAKO / Cibinong · entirely separate GNSS evidence source</span></div>
@@ -211,7 +211,7 @@
                 <div class="gis-table-wrap"><table class="gis-audit-table"><thead><tr><th scope="col">REFERENCE</th><th scope="col">LAT, LON · WGS84</th><th scope="col">FROM CSEM</th><th scope="col">ROLE / SOURCE</th><th scope="col">EVIDENCE RELATION</th></tr></thead><tbody id="geo-audit-rows"></tbody></table></div>
                 <p class="gis-audit-footer">Only publicly sourced reference points are represented. Six historical infrastructure sectors have no verified exact survey geometries in this MVP; no sector is given a fabricated coordinate, hazard buffer or DEMNAS exposure.</p>
               </div>
-                            <p class="geo-disclaimer">This is a WGS84 point-context plot, not an authoritative shoreline, DEMNAS elevation, exposure raster or asset register. Fictional asset pins have invented coordinates. Distance cannot validate shared deformation. Sources: <a target="_blank" rel="noopener" href="https://big.go.id/assets/download/InaCORS/InaCORS%20BIG%202018_compressed.pdf">BIG InaCORS catalogue</a>, <a target="_blank" rel="noopener" href="https://network.igs.org/BAKO00IDN">IGS BAKO</a>, <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/node/2085925705">OSM port terminal</a>, <a target="_blank" rel="noopener" href="https://dataspasial.semarangkota.go.id/detail_kantor/38">Semarang GIS</a>.</p>
+                            <details class="geo-disclaimer"><summary>Sources and limitations</summary><p>This plot is geographic context, not an asset survey or hazard map. Sources: <a target="_blank" rel="noopener" href="https://big.go.id/assets/download/InaCORS/InaCORS%20BIG%202018_compressed.pdf">BIG InaCORS catalogue</a>, <a target="_blank" rel="noopener" href="https://network.igs.org/BAKO00IDN">IGS BAKO</a>, <a target="_blank" rel="noopener" href="https://www.openstreetmap.org/node/2085925705">OSM port terminal</a>, <a target="_blank" rel="noopener" href="https://dataspasial.semarangkota.go.id/detail_kantor/38">Semarang GIS</a>.</p></details>
             </article>
           </div>
 
@@ -230,14 +230,14 @@
             </div>
           </article>
 
-          <div class="section-row analyst-only"><div><span class="section-index">06 / SANDBOX</span><h2>Illustrative inspection scheduling</h2></div><span class="subtle-pill">Fictional portfolio · no operator data</span></div>
-          <article class="panel assets-panel analyst-only">
+          <div class="section-row analyst-only" data-feature="syntheticSandbox"><div><span class="section-index">06 / SANDBOX</span><h2>Illustrative inspection scheduling</h2></div><span class="subtle-pill">Fictional portfolio · no operator data</span></div>
+          <article class="panel assets-panel analyst-only" data-feature="syntheticSandbox">
             <div class="asset-head"><span>ASSET SCENARIO</span><span>DECISION &amp; REASON</span></div>
             <div id="asset-rows" class="asset-rows"></div>
             <div class="asset-footnote">All review tiers are fictional and derived solely from illustrative exposure and criticality. Regional GNSS observations cannot justify real asset-level inspection priority, safety claims or a diagnosis.</div>
           </article>
 
-          <div class="explain-box analyst-only">
+          <div class="explain-box analyst-only" data-feature="syntheticSandbox">
             <div class="explain-number">07</div>
             <div><h3>Explain before you escalate.</h3><p>Every output includes provenance, observation coverage, analysis assumptions, station-to-asset relationship and reason codes. Missing evidence remains missing evidence—it is never treated as stability.</p></div>
             <span class="explain-arrow">↗</span>
