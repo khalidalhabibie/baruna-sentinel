@@ -18,15 +18,17 @@ Feature switches are defined in [`src/feature-flags.js`](src/feature-flags.js):
 
 For an intentionally experimental share link, append `?lab=1`. **This is UI feature gating, not authentication or access control.** Plan B verified BAKO evidence remains available without logging in or enabling the lab. Plan A remains an offline QC import, not a live stream or BIG-verified data certificate.
 
-## Interactive geospatial reference map (offline-first)
+## Real Semarang basemap + offline GIS fallback
 
-The Decision and Analyst views now share a source-grounded **WGS84 point map** (EPSG:4326) with three inspectable public geographic references. Choose between **Semarang**, **Tanjung Emas**, and **CSEM station** focus presets, select a map marker using mouse or keyboard, or use the reference cards below the map. The inspector shows original lat/lon, citation/source link, and approximate great-circle distance from CSEM. Its 2 km / 5 km scale bar uses a latitude-adjusted Haversine approximation.
+BARUNA Sentinel now opens with a **real interactive OpenStreetMap street basemap**, powered by **locally packaged Leaflet 1.9.4**. Drag/pan, zoom, scale and three selectable source-referenced points (BIG CSEM, OSM Tanjung Emas terminal and Semarang city GIS Genuk office) work in both Decision and Analyst modes. No account, paid API key, or remote JavaScript CDN is needed. Each reference marker opens the existing station/location inspector with lat/lon, source URL and approximate great-circle distance from CSEM.
 
-**Map caveat:** this is an accurately projected point-reference diagram, *not an authoritative street basemap*. The optional OpenStreetMap embed (user-initiated and requiring internet) gives real-world street context, updating its focus and marker to the current selected reference. The SVG works with zero network access.
+**Internet requirement:** street **tiles** are retrieved from OSM only for the visible viewport. If tiles cannot load, the browser falls back to the previously available offline WGS84 coordinate plot. The user can switch manually via **Coordinate grid / Offline**. The library itself is bundled and locally licensed (Leaflet BSD-2-Clause); only online tiles require connectivity.
 
-**No invented asset boundary:** the six sector names and historic settlement measurements originate from published field research but their precise survey geometry is not available. Therefore they are displayed as a research register, not exact map pins. BAKO remains geographically separate and is never drawn as a Semarang station.
+**OSM attribution and fair use:** the map visibly credits [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) and follows [OSM standard tile usage](https://operations.osmfoundation.org/policies/tiles/). No bulk tile downloads, prefetch, offline caching feature, or unlimited-use promise. A commercial deployment with significant traffic should use a suitable tile provider or self-hosted vector tile service.
 
-No external GIS runtime, map credentials, remote JavaScript dependency, or backend was added. The three data point coordinates, sources, and distance calculations remain tested in `src/geo.test.js`; mouse/map selections, view changes, evidence report, and mobile overflow are covered by browser QA.
+**Scientific scope:** the three public reference points are not surveyed port asset monitoring points, and the six genuine historical infrastructure sector observations lack exact verified geometries in this MVP. We never invent surveyed sector pins, exposure rasters or hazard estimates. BAKO QC is a separate station in Cibinong and is not pinned as Semarang movement.
+
+Node test + browser smoke check the original WGS84 fallback, real Leaflet runtime, marker layers, attribution, location inspector, field evidence and mobile accessibility. CI stubs third-party **tile images** to keep tests deterministic; that is not a claim of external tile service uptime.
 
 ## Demo (software-only)
 1. Auto-load an **authentic historical CSEM GPS-derived series** from a locally bundled source-derived numeric extract (2010–2021), an explicitly illustrative fixture, or a user-supplied cleaned `.rneu` time series.
@@ -40,12 +42,13 @@ No external GIS runtime, map credentials, remote JavaScript dependency, or backe
 Susilo et al. (2023), [Scientific Data 10, 421](https://doi.org/10.1038/s41597-023-02274-0) and [Zenodo dataset 7775016](https://doi.org/10.5281/zenodo.7775016), containing cleaned `.rneu` and GAGE `.pos` historical data (2010–2021). The paper describes processing **GPS phase observations**. Do not present this dataset as proven multi-constellation data.
 
 ## How to run
-Pure HTML/CSS/ES modules; no third-party frontend dependencies and no API calls.
+Static HTML/CSS/ES modules with one pinned map library (Leaflet); no backend, API keys or live geodetic API integration. Leaflet is installed at build time and copied into the approved static `dist/` artifact.
 
 ```bash
-python3 -m http.server 4173
+npm install
+npm run check
+python3 -m http.server 4173 --directory dist
 # open http://localhost:4173
-node --test
 ```
 
 The source also supports static hosting on Vercel. Automated Chromium desktop/mobile and JSON export checks are provided in `.github/workflows/browser-smoke.yml`. The default bundled CSEM file contains all 3,561 numeric observation rows extracted from the public cleaned Zenodo time series; original header comments were replaced with explicit source attribution. The alternative fixture is invented for UI testing and prominently labelled **illustrative / not a real GNSS observation**. Neither stream is proof of multi-constellation observations.
