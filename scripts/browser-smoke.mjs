@@ -60,8 +60,9 @@ try {
   await page.locator("#pw-page-overview .pw-heading-actions [data-pw-page='detail']").click();
   assert.equal(await page.locator("#pw-page-detail").isVisible(),true);
   assert.equal(await page.locator(".case-workspace").isVisible(),true);
-  const response={status:()=>200};
-  assert.equal(response.status(), 200, "Site root serves 200");
+  const response=await page.goto(BASE+"/?page=detail",{waitUntil:"networkidle",timeout:30000});
+  assert.equal(response.status(),200,"Deep-linked project detail serves 200");
+  assert.equal(await page.locator("#pw-page-detail").isVisible(),true,"Direct detail URL resolves");
   assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"), "true", "Decision mode is default");
   await page.keyboard.press("Tab");
   assert.equal(await page.evaluate(() => document.activeElement.classList.contains("skip-link")), true,
