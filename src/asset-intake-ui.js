@@ -128,6 +128,7 @@ export function renderImportedAssetMap(){
   if(!leafletMap){
     persistentMapNode=slot;
     leafletMap=L.map(persistentMapNode,{
+      center:[csem.lat,csem.lon],zoom:11,
       scrollWheelZoom:false,zoomControl:true,preferCanvas:false,
       zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false,
       trackResize:false
