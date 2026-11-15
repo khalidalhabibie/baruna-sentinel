@@ -3,7 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   DEMO_RNEU, DEMO_RINEX, parseRneu, analyzeSeries, inspectRinex,
-  rankAssets, evidenceBundle, ASSETS
+  rankAssets, evaluateEvidenceLink, evidenceBundle, ASSETS
 } from "./engine.js";
 
 test("synthetic .rneu parses and descriptive downward trend is reproducible", () => {
@@ -47,8 +47,10 @@ test("RINEX with header only cannot pass observation proof", () => {
 test("review engine never permits operational decisions from regional station", () => {
   const movement = analyzeSeries(parseRneu(DEMO_RNEU, {station: "CSEM"}));
   const ranked = rankAssets(movement, ASSETS);
-  assert.equal(ranked[0].priority, "REVIEW_SOON");
-  assert.equal(ranked[1].priority, "ROUTINE_REVIEW");
+  assert.ok(ranked.every(a => a.priority === "VERIFY_LOCAL_EVIDENCE"));
+  assert.equal(ranked[0].scenarioTier, "ILLUSTRATIVE_FIRST_LOOK");
+  assert.equal(ranked[1].scenarioTier, "ILLUSTRATIVE_FOLLOW_UP");
+  assert.equal(ranked[2].scenarioTier, "ILLUSTRATIVE_BASELINE");
   assert.ok(ranked.every(asset => asset.operationalDecisionAllowed === false));
   assert.ok(ranked.every(asset => asset.reasons.includes("REGIONAL_REFERENCE_NOT_ASSET_INSTRUMENT")));
   const bundle = evidenceBundle({ mode: "synthetic" }, movement, inspectRinex(DEMO_RINEX), ranked);
@@ -66,5 +68,37 @@ test("published CSEM series has authenticated historic rows and does not escalat
   assert.ok(analysis.verticalSlopeMmYr < 0);
   assert.ok(analysis.verticalSlopeMmYr > -2);
   assert.ok(analysis.endpointPrecisionRatio < 3);
-  assert.ok(rankAssets(analysis).every(x => x.priority === "ROUTINE_REVIEW"));
+  assert.ok(rankAssets(analysis).every(x => x.priority === "VERIFY_LOCAL_EVIDENCE"));
+});
+
+test("synthetic portfolio tiers depend on declared fictional metadata, not arbitrary slope or endpoint ratio", () => {
+  const weak = analyzeSeries(parseRneu(readFileSync(new URL("../data/CSEM_clean_Noff1site.source-derived.rneu", import.meta.url), "utf8"), {station: "CSEM"}));
+  const strongFixture = analyzeSeries(parseRneu(DEMO_RNEU, {station: "CSEM"}));
+  assert.deepEqual(
+    rankAssets(weak).map(x => x.scenarioTier),
+    rankAssets(strongFixture).map(x => x.scenarioTier)
+  );
+  assert.ok(rankAssets(strongFixture).every(x => x.operationalDecisionAllowed === false));
+});
+test("BAKO QC remains explicitly independent from CSEM displacement and never qualifies asset movement", () => {
+  const qc = JSON.parse(readFileSync(new URL("../data/BAKO_IGS_2025-001_20min_qc_summary.json", import.meta.url), "utf8"));
+  const movement = analyzeSeries(parseRneu(DEMO_RNEU, {station: "CSEM"}));
+  const rinex = {
+    marker: qc.source.station,
+    status: "MULTI_GNSS_RECORDS_SEEN",
+    linkedToCsemMovement: false,
+    verifiedRun: qc.verifiedRun
+  };
+  const meta = {mode: "synthetic", rinexSource: {mode: "real-qc", name: qc.source.filename}};
+  const gate = evaluateEvidenceLink(movement, meta, rinex, meta.rinexSource);
+  assert.equal(gate.status, "INDEPENDENT_SOURCES_NOT_LINKED");
+  assert.equal(gate.sameStationSolutionDemonstrated, false);
+  assert.equal(gate.multiGnssDisplacementClaimAllowed, false);
+  assert.equal(gate.operationalAssetDecisionAllowed, false);
+  const bundle = evidenceBundle(meta, movement, rinex, rankAssets(movement));
+  assert.deepEqual(bundle.evidenceGate, gate);
+});
+test("missing multi-GNSS QC cannot be silently treated as verified", () => {
+  const movement = analyzeSeries(parseRneu(DEMO_RNEU, {station: "CSEM"}));
+  assert.equal(evaluateEvidenceLink(movement, {mode:"synthetic"}, null, {mode:"none"}).status, "MULTI_GNSS_QC_NOT_VERIFIED");
 });
