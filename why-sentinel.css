@@ -304,3 +304,19 @@ body[data-page="why"] .ws-detail-main{padding-bottom:24px}
  body[data-page="why"] .ws-outcome .ws-case-figure{font-size:27px}
  body[data-page="why"] .ws-bottom-actions{grid-template-columns:1fr 1fr}
 }
+
+
+/* Commercial conversation follows a tangible demo, not a speculative SaaS price card. */
+.ws-bottom-actions .ws-contact-link{
+ display:inline-flex;align-items:center;justify-content:center;
+ gap:7px;border:1px solid #b8d1c9;border-radius:5px;
+ min-height:38px;padding:8px 12px;font-size:11px;font-weight:740;
+ color:#216f64;text-decoration:none;white-space:normal;text-align:center;
+}
+.ws-bottom-actions .ws-contact-link:hover{background:#edf7f3}
+@media(max-width:720px){
+ .ws-bottom-actions .ws-contact-link{flex:1 1 220px}
+}
+@media(max-width:480px){
+ .ws-bottom-actions .ws-contact-link{grid-column:1/-1}
+}
