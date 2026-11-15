@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
+  <script defer src="./src/navigation.js"></script>
   <script type="module" src="./src/app.js"></script>
 </head>
 <body data-view="decision" data-inacors="off" data-sandbox="off" data-fictional="off">
@@ -19,21 +20,21 @@
         <span class="brand-mark"><span></span></span>
         <span><strong>BARUNA</strong><small>SENTINEL</small></span>
       </a>
-      <span class="event-label">BHUMIREKA 2026 · PROTOTYPE</span>
+      <span class="event-label">BHUMIREKA 2026 · EVIDENCE WORKSPACE</span>
       <div class="workspace-switch" role="group" aria-label="Choose dashboard view">
-        <button type="button" id="view-decision" aria-pressed="true">Decision view</button>
-        <button type="button" id="view-analyst" aria-pressed="false">GIS / Analyst</button>
+        <button type="button" id="view-decision" aria-pressed="true" aria-current="page" aria-label="Open Overview">Overview</button>
+        <button type="button" id="view-analyst" aria-pressed="false" aria-label="Open GNSS Analyst">GNSS Analyst</button>
       </div>
-      <div class="top-actions"><span class="offline-status"><span class="status-dot"></span> Static · offline-capable</span><a href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener">Source ↗</a></div>
+      <div class="top-actions"><span class="offline-status"><span class="status-dot"></span> Source-backed · Read-only</span><a href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener">Source ↗</a></div>
     </header>
 
     <main id="top">
       <section class="hero">
         <div class="hero-content">
           <div class="eyebrow"><span class="mini-line"></span> SEMARANG COAST · RESEARCH-BASED FIELD CASE</div>
-          <h1>Coastal infrastructure.<br><em>Decisions backed by evidence.</em></h1>
-          <p>Explore documented ground movement, inspect the supporting GNSS evidence, and identify what needs verifying before deciding where to inspect.</p>
-          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Explore Semarang evidence</button><span id="demo-status">Published research · verified GNSS QC</span></div>
+          <h1>Semarang coastal evidence.<br><em>Know what to verify next.</em></h1>
+          <p>Research-backed coastal infrastructure screening with transparent GNSS observations, geographic context, and no invented risk scores.</p>
+          <div class="hero-cta"><button id="case-study-btn" type="button" class="case-start">Explore Semarang evidence</button><button type="button" class="hero-secondary-cta" data-switch-view="analyst">GNSS data quality <span aria-hidden="true">↗</span></button><span id="demo-status">Evidence: historical · not a live risk model</span></div>
         </div>
         <div class="hero-aside">
           <div class="orbit"><div class="orbit-2"></div><div class="orbit-3"></div><i class="orbit-dot one"></i><i class="orbit-dot two"></i><i class="orbit-dot three"></i><span class="orbit-center">GNSS<br><small>→ ACTION</small></span></div>
@@ -107,6 +108,37 @@
         </div>
       </section>
 
+      <section class="cors-qc-section analyst-only" id="station-qc" aria-label="Private multi-day GNSS observation quality comparison">
+            <div class="cors-qc-heading">
+              <div>
+                <span class="section-index">GNSS OBSERVATION READINESS</span>
+                <h2>Two stations. One evidence timeline.</h2>
+                <p>Inspect daily observation coverage from CSEM and CSMG before treating any GNSS evidence as usable.</p>
+              </div>
+              <span class="cors-local-pill">LOCAL QC · NOT UPLOADED</span>
+            </div>
+            <div class="cors-import-bar">
+              <div class="cors-import-description">
+                <strong>Load your locally processed daily QC summary</strong>
+                <span>JSON produced from RINEX · CSEM / CSMG · daily 30-second epochs</span>
+              </div>
+              <div class="cors-import-controls">
+                <label for="cors-qc-file" class="cors-import-label">Select QC JSON</label>
+                <input id="cors-qc-file" type="file" accept=".json,application/json" aria-label="Select local CSEM CSMG daily QC JSON">
+                <button id="cors-qc-reset" type="button" hidden>Clear local comparison</button>
+              </div>
+            </div>
+            <p id="cors-qc-notice" class="cors-qc-notice" role="status" aria-live="polite">No station QC loaded. Choose a local summary to see the comparison; this page does not upload or save the file.</p>
+            <div id="cors-qc-result" class="cors-qc-result">
+              <div class="cors-qc-empty"><strong>Evidence comparison is ready.</strong><span>Import the private QC JSON to reveal the day-by-day CSEM and CSMG observations. The published web demo intentionally contains no redistributed SRGI data.</span></div>
+            </div>
+            <details class="cors-qc-details">
+              <summary>What does the comparison prove?</summary>
+              <p>The plot compares time coverage and GNSS pseudorange observation presence, not millimetre positioning accuracy. Missing files do not prove a receiver outage. CSEM (historic GPS-derived displacement), CSMG and the independent BAKO multi-GNSS QC are not interchangeable station or time series. No site-specific inspection risk or annual subsidence rate is calculated.</p>
+              <p>BIG/SRGI terms may restrict redistribution of original or derived data. Import locally; check permission before sharing exported screenshots or reports.</p>
+            </details>
+          </section>
+
       <details class="notice analyst-only" role="note"><summary>Scientific limitations</summary><p id="boundary-notice">Verifying dataset provenance. Historic port measurements, CSEM GPS history, and BAKO multi-GNSS QC are separate sources; none establishes a current asset condition.</p></details>
 
       <section class="workspace">
@@ -172,29 +204,6 @@
               </div>
             </header>
             <div class="case-workspace-layout">
-              <div class="case-sites-column">
-                          <div class="section-row" id="field-evidence"><div><span class="section-index">FIELD EVIDENCE</span><h2>Choose a port sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
-          <article class="panel historical-panel">
-            <div class="historical-head">
-              <div><div class="historical-head-badge">HISTORICAL FIELD STUDY</div>
-                <h3>Historic settlement records</h3>
-                <p>Select a sector to see the historic measurement and data gap.</p>
-              </div>
-              <a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener" class="historical-source">Research source</a>
-            </div>
-            <div class="historical-filters" id="historical-filters" aria-label="Filter published infrastructure sectors">
-              <button type="button" data-filter="all" aria-pressed="true">All sectors</button>
-              <button type="button" data-filter="coastal" aria-pressed="false">Coastal structures</button>
-              <button type="button" data-filter="port" aria-pressed="false">Port operations</button>
-              <button type="button" data-filter="road" aria-pressed="false">Road access</button>
-            </div>
-            <div id="historical-sector-list" class="historical-sector-list">Loading sector records…</div>
-            <details class="sector-detail-wrap" id="sector-detail-wrap"><summary>View evidence and next checks</summary><div class="historical-detail" id="historical-sector-detail"><p>Select a sector to review its historic evidence.</p></div></details>
-            <details class="historical-footer"><summary>Data limitations</summary><p>Historic field measurements are independent of CSEM GPS positions and BAKO multi-GNSS QC. Unknown current condition is not a safety assessment.</p></details>
-          </article>
-
-
-              </div>
               <div class="case-map-column">
                           <div id="geo-context" class="geo-section">
             <div class="section-row"><div><span class="section-index">SPATIAL CONTEXT</span><h2>Where is the evidence?</h2></div><span class="subtle-pill">Reference points · WGS84</span></div>
@@ -254,7 +263,30 @@
             </article>
           </div>
 
+              </div><div class="case-sites-column">
+                          <div class="section-row" id="field-evidence"><div><span class="section-index">FIELD EVIDENCE</span><h2>Choose a port sector</h2></div><span class="subtle-pill">Field study · 2005</span></div>
+          <article class="panel historical-panel">
+            <div class="historical-head">
+              <div><div class="historical-head-badge">HISTORICAL FIELD STUDY</div>
+                <h3>Historic settlement records</h3>
+                <p>Select a sector to see the historic measurement and data gap.</p>
               </div>
+              <a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener" class="historical-source">Research source</a>
+            </div>
+            <div class="historical-filters" id="historical-filters" aria-label="Filter published infrastructure sectors">
+              <button type="button" data-filter="all" aria-pressed="true">All sectors</button>
+              <button type="button" data-filter="coastal" aria-pressed="false">Coastal structures</button>
+              <button type="button" data-filter="port" aria-pressed="false">Port operations</button>
+              <button type="button" data-filter="road" aria-pressed="false">Road access</button>
+            </div>
+            <div id="historical-sector-list" class="historical-sector-list">Loading sector records…</div>
+            <details class="sector-detail-wrap" id="sector-detail-wrap"><summary>View evidence and next checks</summary><div class="historical-detail" id="historical-sector-detail"><p>Select a sector to review its historic evidence.</p></div></details>
+            <details class="historical-footer"><summary>Data limitations</summary><p>Historic field measurements are independent of CSEM GPS positions and BAKO multi-GNSS QC. Unknown current condition is not a safety assessment.</p></details>
+          </article>
+
+
+              </div>
+              
             </div>
             <div class="case-workspace-outcome" id="case-workspace-outcome" aria-label="Selected site evidence assessment">
               <div class="case-outcome-heading">
@@ -286,36 +318,16 @@
             </div>
           </section>
 
-          <section class="cors-qc-section" id="station-qc" aria-label="Private multi-day GNSS observation quality comparison">
-            <div class="cors-qc-heading">
-              <div>
-                <span class="section-index">GNSS OBSERVATION READINESS</span>
-                <h2>Two stations. One evidence timeline.</h2>
-                <p>Inspect daily observation coverage from CSEM and CSMG before treating any GNSS evidence as usable.</p>
-              </div>
-              <span class="cors-local-pill">LOCAL QC · NOT UPLOADED</span>
+          
+
+          <article class="decision-data-bridge decision-only" aria-label="Review GNSS evidence quality">
+            <div class="decision-bridge-icon" aria-hidden="true">◎</div>
+            <div class="decision-bridge-copy"><span class="section-index">OBSERVATION QUALITY</span>
+              <h3>Two Semarang GNSS stations. Different data coverage.</h3>
+              <p>Compare CSEM and CSMG station-day availability, missing periods and recorded constellations before interpreting a position trend.</p>
             </div>
-            <div class="cors-import-bar">
-              <div class="cors-import-description">
-                <strong>Load your locally processed daily QC summary</strong>
-                <span>JSON produced from RINEX · CSEM / CSMG · daily 30-second epochs</span>
-              </div>
-              <div class="cors-import-controls">
-                <label for="cors-qc-file" class="cors-import-label">Select QC JSON</label>
-                <input id="cors-qc-file" type="file" accept=".json,application/json" aria-label="Select local CSEM CSMG daily QC JSON">
-                <button id="cors-qc-reset" type="button" hidden>Clear local comparison</button>
-              </div>
-            </div>
-            <p id="cors-qc-notice" class="cors-qc-notice" role="status" aria-live="polite">No station QC loaded. Choose a local summary to see the comparison; this page does not upload or save the file.</p>
-            <div id="cors-qc-result" class="cors-qc-result">
-              <div class="cors-qc-empty"><strong>Evidence comparison is ready.</strong><span>Import the private QC JSON to reveal the day-by-day CSEM and CSMG observations. The published web demo intentionally contains no redistributed SRGI data.</span></div>
-            </div>
-            <details class="cors-qc-details">
-              <summary>What does the comparison prove?</summary>
-              <p>The plot compares time coverage and GNSS pseudorange observation presence, not millimetre positioning accuracy. Missing files do not prove a receiver outage. CSEM (historic GPS-derived displacement), CSMG and the independent BAKO multi-GNSS QC are not interchangeable station or time series. No site-specific inspection risk or annual subsidence rate is calculated.</p>
-              <p>BIG/SRGI terms may restrict redistribution of original or derived data. Import locally; check permission before sharing exported screenshots or reports.</p>
-            </details>
-          </section>
+            <button type="button" data-switch-view="analyst" class="decision-bridge-action">Open GNSS Analyst <span aria-hidden="true">↗</span></button>
+          </article>
 
                     <div class="section-row analyst-only"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
           <article class="panel gnss-panel analyst-only">
