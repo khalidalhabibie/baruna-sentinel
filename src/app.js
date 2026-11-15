@@ -17,6 +17,7 @@ let ranks = [];
 let historicalDoc = null;
 let historicalFilter = "all";
 let selectedSectorId = null;
+const geoLayers = {station:true,landmarks:true,fictional:true};
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, ch => ({
@@ -27,6 +28,31 @@ function notify(message, error = false) {
   $("status-note").textContent = message;
   $("status-note").classList.toggle("is-error", error);
   $("live-region").textContent = message;
+  if ($("inline-feedback")) {
+    $("inline-feedback").textContent = message;
+    $("inline-feedback").classList.toggle("is-error", error);
+  }
+}
+function setDashboardView(mode) {
+  if (mode !== "decision" && mode !== "analyst") return;
+  document.body.dataset.view = mode;
+  $("view-decision").setAttribute("aria-pressed", String(mode === "decision"));
+  $("view-analyst").setAttribute("aria-pressed", String(mode === "analyst"));
+  const target = mode === "decision" ? $("executive-desk") : $("analyst-intro");
+  target.scrollIntoView({behavior:"smooth",block:"start"});
+  $("live-region").textContent = mode === "decision"
+    ? "Decision view. Follow three steps to prepare an evidence brief."
+    : "GIS analyst view. GNSS time series, spatial references and observation QC are visible.";
+}
+function reviewStep(sectionId) {
+  $(sectionId).scrollIntoView({behavior:"smooth",block:"start"});
+}
+function updateSelectedSector() {
+  const selected = historicalDoc?.sectors?.find(row => row.id === selectedSectorId);
+  $("selected-sector-title").textContent = selected?.name || "Research record unavailable";
+  $("selected-sector-range").textContent = selected
+    ? selected.minCm + "–" + selected.maxCm + " cm cumulative settlement (2005 only)"
+    : "No current site evidence is included";
 }
 function number(value, digits = 1) {
   return Number.isFinite(value) ? value.toFixed(digits) : "—";
@@ -48,8 +74,10 @@ function processSeries(content, meta) {
       : meta.mode === "published"
         ? "Historical CSEM observations loaded from the cited public dataset. GPS-based, not multi-GNSS proof."
         : "Imported and calculated locally. Source, station identity and frame still require verification.");
+    return true;
   } catch (error) {
     notify(error instanceof Error ? error.message : "Unable to parse GNSS input.", true);
+    return false;
   }
 }
 function runDemo() {
@@ -63,7 +91,7 @@ async function runPublished() {
     if (!response.ok) throw new Error("Historical dataset is not available at this deployment.");
     $("station").value = "CSEM";
     $("unit").value = "meters";
-    processSeries(await response.text(), {
+    return processSeries(await response.text(), {
       mode: "published",
       name: "CSEM 2010–2021 — source-derived numeric extract",
       provider: "Susilo et al. (2023), Zenodo 7775016",
@@ -71,8 +99,23 @@ async function runPublished() {
       constellationClaim: "GPS-processed historical station series, not proven multi-GNSS"
     });
   } catch (error) {
-    runDemo();
-    notify("Could not open local CSEM data. Illustrative fallback loaded. " + error.message, true);
+    // Do not silently substitute synthetic observations for a failed authentic source.
+    seriesInput = "";
+    seriesMeta = null;
+    movement = null;
+    ranks = [];
+    $("source-badge").textContent = "UNAVAILABLE";
+    $("source-title").textContent = "CSEM · not loaded";
+    $("mode-movement").textContent = "SOURCE UNAVAILABLE";
+    $("stat-epochs").textContent = "—";
+    $("stat-trend").textContent = "—";
+    $("stat-quality").textContent = "NO DATA";
+    $("plot").textContent = "Published CSEM evidence could not be loaded. Choose the illustrative scenario explicitly if needed.";
+    $("asset-rows").textContent = "No valid GNSS time series loaded.";
+    $("boundary-notice").textContent = "CSEM source unavailable; no synthetic observations were substituted.";
+    renderExecutiveDesk();
+    notify("Published CSEM data unavailable: " + error.message + ". The application did not switch to synthetic data.", true);
+    return false;
   }
 }
 async function loadVerifiedRinexQC() {
@@ -100,8 +143,14 @@ async function loadVerifiedRinexQC() {
     };
     rinexMeta = { mode: "real-qc", name: qc.source.filename, verifiedRun: qc.verifiedRun };
     renderRinex();
+    return true;
   } catch (error) {
+    rinexResult = null;
+    rinexMeta = {mode:"none",name:"QC unavailable"};
+    renderEvidenceGate();
+    renderExecutiveDesk();
     notify("GeoRinex-verified QC summary unavailable: " + (error instanceof Error ? error.message : String(error)), true);
+    return false;
   }
 }
 function inspect(content, meta) {
@@ -179,6 +228,7 @@ function renderHistoricalResearch() {
   for (const button of $("historical-filters").querySelectorAll("button[data-filter]")) {
     button.setAttribute("aria-pressed", String(button.dataset.filter === historicalFilter));
   }
+  updateSelectedSector();
   renderExecutiveDesk();
 }
 
@@ -188,9 +238,15 @@ async function loadHistoricalResearch() {
     if(!response.ok) throw new Error("Original published field evidence extract unavailable.");
     historicalDoc = validateHistoricalFieldEvidence(await response.json());
     renderHistoricalResearch();
+    return true;
   } catch(error) {
     $("historical-sector-list").textContent = "Historical research records unavailable: " + (error instanceof Error?error.message:String(error));
     $("historical-sector-detail").textContent = "Do not infer that absent records indicate no historic subsidence.";
+    historicalDoc = null;
+    selectedSectorId = null;
+    updateSelectedSector();
+    renderExecutiveDesk();
+    return false;
   }
 }
 
@@ -213,9 +269,12 @@ function showLiveOsmMap(show) {
 
 function renderGeographicContext() {
   const geo = geoContextSummary();
-  $("geo-map").innerHTML = renderGeoSvg();
+  $("geo-map").innerHTML = renderGeoSvg(geoLayers);
   $("geo-distance").textContent = geo.landmarkDistanceKm.toFixed(1) + " km";
   $("geo-bako-distance").textContent = "≈ " + geo.externalObservationQcStationDistanceKm + " km apart";
+  for (const button of document.querySelectorAll("[data-map-layer]")) {
+    button.setAttribute("aria-pressed", String(geoLayers[button.dataset.mapLayer]));
+  }
 }
 
 function currentEvidenceBundle() {
@@ -243,17 +302,28 @@ function printEvidenceReport() {
 }
 
 async function runCaseStudy() {
+  const button = $("case-study-btn");
+  button.disabled = true;
+  button.setAttribute("aria-busy", "true");
   $("demo-status").textContent = "Loading authentic historical positions and independent multi-GNSS QC…";
-  await runPublished();
-  await loadVerifiedRinexQC();
-  if (!historicalDoc) await loadHistoricalResearch();
-  const complete = seriesMeta?.mode === "published" && rinexMeta.mode === "real-qc";
-  $("demo-status").textContent = complete
-    ? "Case ready · authentic CSEM + real BAKO QC · explicitly independent"
-    : "Case incomplete · check local data source and provenance notices";
-  if (complete) {
-    $("field-evidence").scrollIntoView({behavior:"smooth",block:"start"});
-    notify("Semarang case ready. WGS84 context markers are referenced; fictional assets are not surveyed.");
+  try {
+    const csemLoaded = await runPublished();
+    const qcLoaded = await loadVerifiedRinexQC();
+    const fieldLoaded = historicalDoc ? true : await loadHistoricalResearch();
+    const complete = Boolean(csemLoaded && qcLoaded && fieldLoaded &&
+      seriesMeta?.mode === "published" && rinexMeta.mode === "real-qc");
+    $("demo-status").textContent = complete
+      ? "Case ready · authentic CSEM + real BAKO QC · explicitly independent"
+      : "Case incomplete · check missing sources below. No simulated replacement.";
+    if (complete) {
+      reviewStep("field-evidence");
+      notify("Case ready. Select an infrastructure sector, review evidence limits, and prepare a verification brief.");
+    } else {
+      notify("One or more real sources could not load. Choose illustrative data manually only if you want to simulate.",true);
+    }
+  } finally {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
   }
 }
 
@@ -366,6 +436,29 @@ $("export-json").addEventListener("click", () => {
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
 $("case-study-btn").addEventListener("click", runCaseStudy);
+$("view-decision").addEventListener("click", () => setDashboardView("decision"));
+$("view-analyst").addEventListener("click", () => setDashboardView("analyst"));
+$("step-sector").addEventListener("click", () => reviewStep("field-evidence"));
+$("step-evidence").addEventListener("click", () => reviewStep("geo-context"));
+$("step-report").addEventListener("click", printEvidenceReport);
+document.querySelector(".geo-layer-toolbar").addEventListener("click", event => {
+  const button = event.target.closest("button[data-map-layer]");
+  if (!button) return;
+  const layer = button.dataset.mapLayer;
+  if (!Object.hasOwn(geoLayers,layer)) return;
+  geoLayers[layer] = !geoLayers[layer];
+  renderGeographicContext();
+  notify("Map layer " + layer + (geoLayers[layer] ? " visible." : " hidden.") +
+    " Coordinates show geographic context, not measured asset deformation.");
+});
+document.querySelectorAll('label[role="button"][for]').forEach(label => {
+  label.addEventListener("keydown", event => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      $(label.htmlFor).click();
+    }
+  });
+});
 $("osm-toggle").addEventListener("click", () => showLiveOsmMap($("geo-osm-embed").hidden));
 $("osm-close").addEventListener("click", () => showLiveOsmMap(false));
 $("historical-filters").addEventListener("click", e => {
@@ -381,6 +474,8 @@ $("historical-sector-list").addEventListener("click", e => {
   button.setAttribute("aria-current", "true");
   selectedSectorId = button.dataset.sector;
   $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selectedSectorId);
+  updateSelectedSector();
+  notify("Selected "+ historicalDoc.sectors.find(s => s.id === selectedSectorId).name + ". Historical study only; current condition unknown.");
 });
 $("report-btn").addEventListener("click", printEvidenceReport);
 $("executive-brief").addEventListener("click", printEvidenceReport);
