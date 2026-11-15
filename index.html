@@ -13,6 +13,7 @@
   <script defer src="./src/navigation.js"></script>
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/project-workspace.js"></script>
+  <script type="module" src="./src/assessment-ui.js"></script>
 </head>
 <body data-view="decision" data-page="projects" data-project="semarang-port" data-lab-tab="movement" data-inacors="off" data-sandbox="off" data-fictional="off">
   <a href="#pw-shell" class="skip-link">Skip to project workspace</a>
@@ -27,6 +28,7 @@
         <button type="button" data-pw-page="projects" aria-current="page">Projects</button>
         <button type="button" data-pw-page="overview">Overview</button>
         <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false" aria-label="Open project detail">Detail</button>
+        <button type="button" data-pw-page="assessment">Assessment</button>
         <button type="button" data-pw-page="compare">Compare</button>
         <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false" aria-label="Open GNSS Lab">GNSS Lab</button>
       </nav>
@@ -45,6 +47,7 @@
         <div id="pw-page-projects" class="pw-page" data-pw-screen="projects"></div>
         <div id="pw-page-overview" class="pw-page" data-pw-screen="overview"></div>
         <div id="pw-page-detail" class="pw-page" data-pw-screen="detail"></div>
+        <div id="pw-page-assessment" class="pw-page" data-pw-screen="assessment" aria-label="Project inspection evidence assessment"></div>
         <div id="pw-page-compare" class="pw-page" data-pw-screen="compare"></div>
         <div class="pw-lab-context pw-page" data-pw-screen="analyst">
           <div class="pw-breadcrumb"><button type="button" data-pw-page="projects">Projects</button><span>/</span> GNSS Lab</div>
