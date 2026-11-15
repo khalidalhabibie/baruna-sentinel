@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="./styles.css">
   <script type="module" src="./src/app.js"></script>
 </head>
-<body>
+<body data-view="decision">
+  <a href="#executive-desk" class="skip-link">Skip to decision desk</a>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#top" aria-label="BARUNA Sentinel home">
@@ -17,6 +18,10 @@
         <span><strong>BARUNA</strong><small>SENTINEL</small></span>
       </a>
       <span class="event-label">BIG BHUMIREKA <span class="event-year">2026</span> / RGPD CHALLENGE</span>
+      <div class="workspace-switch" role="group" aria-label="Choose dashboard view">
+        <button type="button" id="view-decision" aria-pressed="true">Decision view</button>
+        <button type="button" id="view-analyst" aria-pressed="false">GIS / Analyst</button>
+      </div>
       <div class="top-actions"><span class="offline-status"><span class="status-dot"></span> Static · offline-capable</span><a href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener">Source ↗</a></div>
     </header>
 
@@ -68,6 +73,42 @@
         </div>
       </section>
 
+      <section class="case-journey" id="case-journey" aria-label="Three-step verification workflow">
+        <div class="journey-intro">
+          <span class="section-index">GUIDED WORKFLOW / THREE STEPS</span>
+          <h2>From field record to verification brief</h2>
+          <p>Use the real published case to identify an evidence gap. Detailed GNSS diagnostics remain available in GIS / Analyst.</p>
+        </div>
+        <div class="journey-actions">
+          <button id="step-sector" type="button" class="journey-step"><span class="journey-num">01</span><span><strong>Choose infrastructure</strong><small>Six documented historical sectors</small></span><span aria-hidden="true">↗</span></button>
+          <button id="step-evidence" type="button" class="journey-step"><span class="journey-num">02</span><span><strong>Review spatial evidence</strong><small>See station coverage and its limitations</small></span><span aria-hidden="true">↗</span></button>
+          <button id="step-report" type="button" class="journey-step journey-primary"><span class="journey-num">03</span><span><strong>Prepare verification brief</strong><small>Document missing measurements</small></span><span aria-hidden="true">↗</span></button>
+        </div>
+        <div class="journey-selection" aria-live="polite" aria-atomic="true">
+          <span><b>SELECTED HISTORICAL SECTOR</b> <strong id="selected-sector-title">Loading research record…</strong></span>
+          <span id="selected-sector-range">Historical measurement · no current condition established</span>
+          <span class="journey-gap">Site-level GNSS validation: not available</span>
+        </div>
+        <details class="product-help" id="evidence-help">
+          <summary>How to read the evidence and the map</summary>
+          <div class="help-content">
+            <p><strong>Historical settlement:</strong> published cumulative measurements in 2005, not 2026 asset conditions or a yearly rate.</p>
+            <p><strong>CSEM GPS:</strong> historic station coordinates from 2010–2021. A regional station is not an instrument on the selected port structure.</p>
+            <p><strong>BAKO multi-GNSS:</strong> authentic observation-quality data from Cibinong in 2025, not a Semarang movement calculation.</p>
+            <p><strong>WGS84 / EPSG:4326:</strong> coordinates and approximate distances provide geographic context, not a coastal exposure or engineering hazard model.</p>
+          </div>
+        </details>
+      </section>
+      <section class="analyst-intro" id="analyst-intro" aria-label="GIS and geodetic analyst workspace">
+        <div><span class="section-index">ANALYST WORKSPACE / TECHNICAL EVIDENCE</span><h2>Inspect the measurement chain, not just its conclusion.</h2>
+          <p>Independent real datasets and a coordinate-based study area. Geodetic processing and QC do not establish on-asset deformation without a valid spatial and temporal linkage.</p></div>
+        <div class="analyst-provenance">
+          <span><b>GPS · CSEM</b><small>2010–2021 historic solution</small></span>
+          <span><b>Multi-GNSS · BAKO</b><small>2025 authentic RINEX QC</small></span>
+          <span><b>GIS · WGS84</b><small>Asset co-location unverified</small></span>
+        </div>
+      </section>
+
       <div class="notice" role="note"><strong>Scientific boundary</strong> <span id="boundary-notice">Verifying dataset provenance. Historic port measurements, CSEM GPS history, and BAKO multi-GNSS QC are separate sources; none establishes a current asset condition.</span></div>
 
       <section class="workspace">
@@ -77,9 +118,9 @@
             <span class="form-label">TIME SERIES · CLEAN .RNEU</span>
             <button id="published-btn" class="primary-btn" type="button">▶ Analyze published CSEM data</button>
             <button id="sample-btn" class="upload-btn" type="button">◉ Switch to illustrative scenario</button>
-            <label for="series-file" class="upload-btn">↑ Import real .rneu time series</label>
+            <label for="series-file" class="upload-btn" role="button" tabindex="0" aria-describedby="time-series-upload-help">↑ Import .rneu position series</label>
             <input id="series-file" type="file" accept=".rneu,.txt,text/plain" hidden>
-            <p class="hint">Built-in CSEM: real historical GPS-derived observations, 2010–2021 (published by Susilo et al.). Or import your own cleaned time series.</p>
+            <p class="hint" id="time-series-upload-help">Built-in CSEM: real historical GPS-derived observations, 2010–2021 (published by Susilo et al.). Uploaded station identity and datum are not automatically verified.</p>
           </div>
           <div class="form-grid">
             <label class="form-field"><span class="form-label">Station identifier</span><input id="station" maxlength="16" value="CSEM" spellcheck="false"></label>
@@ -87,10 +128,10 @@
           </div>
           <div class="control-block secondary-block">
             <span class="form-label">MULTI-GNSS OBSERVATION AUDIT · RINEX</span>
-            <label for="rinex-file" class="upload-btn">↑ Inspect RINEX observation file</label>
+            <label for="rinex-file" class="upload-btn" role="button" tabindex="0" aria-describedby="rinex-upload-help">↑ Inspect RINEX observation file</label>
             <input id="rinex-file" type="file" accept=".rnx,.obs,.o,.txt,text/plain" hidden>
             <button id="rinex-demo" class="secondary-link" type="button">Use illustrative RINEX v3 fixture</button>
-            <p class="hint">Lightweight browser inspection only. Authentic BAKO multi-GNSS QC is precomputed with GeoRinex and displayed separately; no station position solution is calculated.</p>
+            <p class="hint" id="rinex-upload-help">Browser inspection is limited. The authentic BAKO multi-GNSS QC was calculated separately with GeoRinex; this interface does not solve GNSS positions.</p>
           </div>
           <div class="control-block source-meta">
             <span class="form-label">DATA PROVENANCE</span>
@@ -99,19 +140,19 @@
             <div class="source-meta-row"><span>Association</span><strong>Regional reference</strong></div>
             <div class="source-meta-row"><span>Asset register</span><strong>Illustrative</strong></div>
           </div>
-          <div id="status-note" class="status-note" role="status" aria-live="polite">Ready to run the illustrative scenario.</div>
+          <div id="status-note" class="status-note" role="status" aria-live="polite" aria-atomic="true">Ready to run the illustrative scenario.</div>
           <button id="report-btn" type="button" class="report-btn">↗ Print evidence dossier / Save PDF</button>
           <button id="export-json" type="button" class="export-btn">↓ Download evidence JSON</button>
         </aside>
 
         <div class="dashboard">
-          <div class="dashboard-heading"><div><span class="section-index">02 / ANALYZE</span><h2>Movement evidence</h2></div><span id="mode-movement" class="mode-chip">ILLUSTRATIVE MODE</span></div>
-          <div class="metrics">
+          <div class="dashboard-heading analyst-only"><div><span class="section-index">02 / ANALYZE</span><h2>Movement evidence</h2></div><span id="mode-movement" class="mode-chip">ILLUSTRATIVE MODE</span></div>
+          <div class="metrics analyst-only">
             <article class="metric"><span>VERTICAL TREND</span><strong id="stat-trend">—</strong><small>mm/year · descriptive OLS</small></article>
             <article class="metric"><span>OBSERVATION EPOCHS</span><strong id="stat-epochs">—</strong><small>Parsed daily/sample positions</small></article>
             <article class="metric"><span>SCREENING QUALITY</span><strong id="stat-quality">—</strong><small>Duration / sample continuity</small></article>
           </div>
-          <article class="panel chart-panel">
+          <article class="panel chart-panel analyst-only">
             <div class="panel-top"><div><h3>Vertical displacement</h3><p id="plot-caption">Station-level data, not direct asset movement</p></div><span class="legend"><i></i> Up · mm</span></div>
             <div id="plot" class="chart" aria-label="Time series chart"></div>
             <div class="chart-footer"><span id="audit-series">Series not loaded</span><span>NOT STRUCTURAL SAFETY ADVICE</span></div>
@@ -121,6 +162,12 @@
             <div class="section-row"><div><span class="section-index">03 / LOCATE</span><h2>Coastal geospatial context</h2></div><span class="subtle-pill">Georeferenced points · WGS84</span></div>
             <article class="panel geo-panel">
               <div class="geo-panel-top"><div><strong>Semarang / Genuk · inspection planning scenario</strong><p>Coordinate-based context. Only green/white markers are public reference locations; amber A–C are fictional examples.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
+              <div class="geo-layer-toolbar" role="group" aria-label="Toggle geographic evidence layers">
+                <div><span class="geo-layer-caption">GIS layers · WGS84 / EPSG:4326</span><small>Toggle point categories on the offline coordinate plot</small></div>
+                <button type="button" data-map-layer="station" aria-pressed="true">CSEM station</button>
+                <button type="button" data-map-layer="landmarks" aria-pressed="true">Public landmarks</button>
+                <button type="button" data-map-layer="fictional" aria-pressed="true">Scenario markers</button>
+              </div>
               <div class="geo-map-tools">
                 <span><b>Choose map context</b> · the street map is third-party geographic context, not field-survey evidence</span>
                 <button id="osm-toggle" class="geo-basemap-toggle" type="button" aria-expanded="false">Show live street map (OSM)</button>
@@ -141,13 +188,13 @@
             </article>
           </div>
 
-          <div class="section-row"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
-          <article class="panel gnss-panel">
+          <div class="section-row analyst-only"><div><span class="section-index">04 / VERIFY</span><h2>Multi-GNSS observation evidence</h2></div><span class="subtle-pill">Separate station and period</span></div>
+          <article class="panel gnss-panel analyst-only">
             <div class="gnss-icon" aria-hidden="true">◎</div>
             <div class="gnss-content"><h3 id="rinex-status">No RINEX observation file examined</h3><p id="rinex-caption">A historical GPS solution alone is not proof of multi-constellation observations.</p><div id="rinex-systems" class="systems"><span class="system muted">Awaiting observation records</span></div></div>
           </article>
 
-          <article class="panel gnss-panel" aria-label="Evidence linkage guardrail" style="margin-top:12px">
+          <article class="panel gnss-panel analyst-only" aria-label="Evidence linkage guardrail" style="margin-top:12px">
             <div class="gnss-icon" aria-hidden="true">≠</div>
             <div class="gnss-content">
               <span class="section-index">PROVENANCE GATE · REASONED LIMITATIONS</span>
@@ -176,14 +223,14 @@
             <div class="historical-footer"><b>Evidence boundary:</b> reported historic sector measurements are independent of CSEM GNSS historical positions and BAKO multi-GNSS QC. Unknown current condition never means safe, unstable or due for immediate inspection.</div>
           </article>
 
-          <div class="section-row"><div><span class="section-index">06 / SANDBOX</span><h2>Illustrative inspection scheduling</h2></div><span class="subtle-pill">Fictional portfolio · no operator data</span></div>
-          <article class="panel assets-panel">
+          <div class="section-row analyst-only"><div><span class="section-index">06 / SANDBOX</span><h2>Illustrative inspection scheduling</h2></div><span class="subtle-pill">Fictional portfolio · no operator data</span></div>
+          <article class="panel assets-panel analyst-only">
             <div class="asset-head"><span>ASSET SCENARIO</span><span>DECISION &amp; REASON</span></div>
             <div id="asset-rows" class="asset-rows"></div>
             <div class="asset-footnote">All review tiers are fictional and derived solely from illustrative exposure and criticality. Regional GNSS observations cannot justify real asset-level inspection priority, safety claims or a diagnosis.</div>
           </article>
 
-          <div class="explain-box">
+          <div class="explain-box analyst-only">
             <div class="explain-number">07</div>
             <div><h3>Explain before you escalate.</h3><p>Every output includes provenance, observation coverage, analysis assumptions, station-to-asset relationship and reason codes. Missing evidence remains missing evidence—it is never treated as stability.</p></div>
             <span class="explain-arrow">↗</span>
