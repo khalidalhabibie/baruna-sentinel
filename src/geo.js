@@ -136,3 +136,25 @@ export function geoContextSummary() {
     }))
   };
 }
+
+/**
+ * GIS provenance audit, never a deformation or hazard model.
+ * Distances are WGS84/Haversine approximations from the *real* reference station.
+ * Does not create survey geometry for the six documented port sectors.
+ */
+export function renderSpatialAuditRows() {
+  const csem=LANDMARKS.find(x=>x.id==="csem");
+  const entries=[
+    {site:csem,role:"Historic GPS station",link:"No on-asset GNSS link",type:"STATION"},
+    {site:LANDMARKS.find(x=>x.id==="port-terminal"),role:"Public terminal landmark",link:"Location context only",type:"LANDMARK"},
+    {site:LANDMARKS.find(x=>x.id==="genuk-office"),role:"Public administrative landmark",link:"Location context only",type:"LANDMARK"},
+    {site:BAKO,role:"Independent multi-GNSS QC",link:"Different station and time",type:"QC ONLY"}
+  ];
+  return entries.map(({site,role,link,type})=>
+    '<tr><th scope="row">'+esc(site.title)+'</th><td class="gis-monospace">'
+    +site.lat.toFixed(6)+', '+site.lon.toFixed(6)+'</td><td>'
+    +haversineKm(csem,site).toFixed(1)+' km</td><td>'+esc(role)
+    +'<small>'+esc(site.source)+'</small></td><td><span class="gis-link-status">'
+    +esc(type)+'</span><small>'+esc(link)+'</small></td></tr>'
+  ).join("");
+}
