@@ -12,14 +12,17 @@ const publicAssets=[
   "src/readiness.js",
   "src/qc-source.js",
   "src/feature-flags.js",
+  "src/live-map.js",
   "data/CSEM_clean_Noff1site.source-derived.rneu",
   "data/BAKO_IGS_2025-001_20min_qc_summary.json",
-  "data/tanjung-emas-historical-field-evidence.json"
+  "data/tanjung-emas-historical-field-evidence.json",
+  "node_modules/leaflet/dist/leaflet.js",
+  "node_modules/leaflet/dist/leaflet.css"
 ];
 rmSync("dist",{recursive:true,force:true});
 for(const file of publicAssets){
   if(!existsSync(file)||!statSync(file).isFile()) throw new Error("Missing public asset: "+file);
-  const output=join("dist",file);
+  const output=join("dist",file.replace("node_modules/leaflet/dist/","vendor/leaflet/"));
   mkdirSync(dirname(output),{recursive:true});
   copyFileSync(file,output);
 }
