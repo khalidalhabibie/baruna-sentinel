@@ -4,6 +4,7 @@ import {
 } from "./engine.js";
 import {renderGeoSvg, geoContextSummary} from "./geo.js";
 import {buildEvidenceReportMarkup} from "./report.js";
+import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
 
 const $ = id => document.getElementById(id);
 let seriesInput = "";
@@ -12,6 +13,8 @@ let movement = null;
 let rinexResult = null;
 let rinexMeta = { mode: "none", name: "No RINEX" };
 let ranks = [];
+let historicalDoc = null;
+let historicalFilter = "all";
 
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, ch => ({
@@ -149,6 +152,48 @@ function drawPlot() {
     + '<text class="axis-label" text-anchor="end" x="' + (w-r) + '" y="' + (h-8) + '">' + escapeHtml(source[source.length - 1].date) + '</text>'
     + '</svg>';
 }
+function renderHistoricalResearch() {
+  if (!historicalDoc) return;
+  $("historical-sector-list").innerHTML = renderHistoricalSectorCards(historicalDoc, historicalFilter);
+  const selected = $("historical-sector-list").querySelector(".historical-sector");
+  if (selected) {
+    $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selected.dataset.sector);
+    selected.setAttribute("aria-current", "true");
+  }
+  for (const button of $("historical-filters").querySelectorAll("button[data-filter]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.filter === historicalFilter));
+  }
+}
+
+async function loadHistoricalResearch() {
+  try {
+    const response = await fetch("./data/tanjung-emas-historical-field-evidence.json");
+    if(!response.ok) throw new Error("Original published field evidence extract unavailable.");
+    historicalDoc = validateHistoricalFieldEvidence(await response.json());
+    renderHistoricalResearch();
+  } catch(error) {
+    $("historical-sector-list").textContent = "Historical research records unavailable: " + (error instanceof Error?error.message:String(error));
+    $("historical-sector-detail").textContent = "Do not infer that absent records indicate no historic subsidence.";
+  }
+}
+
+function showLiveOsmMap(show) {
+  const embed = $("geo-osm-embed");
+  embed.hidden = !show;
+  $("geo-map").hidden = show;
+  $("osm-toggle").setAttribute("aria-expanded", String(show));
+  $("osm-toggle").textContent = show ? "Return to coordinate plot" : "Show live street map (OSM)";
+  if (show && !$("osm-iframe").getAttribute("src")) {
+    // Only on explicit click. Never prefetch OSM tiles and never imply geodetic survey status.
+    const bbox = [110.355,-7.010,110.505,-6.925].join(",");
+    const url = new URL("https://www.openstreetmap.org/export/embed.html");
+    url.searchParams.set("bbox", bbox);
+    url.searchParams.set("layer", "mapnik");
+    url.searchParams.set("marker", "-6.94776,110.4243");
+    $("osm-iframe").src = url.href;
+  }
+}
+
 function renderGeographicContext() {
   const geo = geoContextSummary();
   $("geo-map").innerHTML = renderGeoSvg();
@@ -158,7 +203,8 @@ function renderGeographicContext() {
 
 function currentEvidenceBundle() {
   const bundle = evidenceBundle({ ...seriesMeta, rinexSource: rinexMeta }, movement, rinexResult, ranks);
-  return { ...bundle, geospatialContext: geoContextSummary() };
+  return { ...bundle, geospatialContext: geoContextSummary(),
+    publishedFieldEvidence: historicalDoc ? historicalEvidenceSummary(historicalDoc) : null };
 }
 
 function printEvidenceReport() {
@@ -176,6 +222,7 @@ async function runCaseStudy() {
   $("demo-status").textContent = "Loading authentic historical positions and independent multi-GNSS QC…";
   await runPublished();
   await loadVerifiedRinexQC();
+  if (!historicalDoc) await loadHistoricalResearch();
   const complete = seriesMeta?.mode === "published" && rinexMeta.mode === "real-qc";
   $("demo-status").textContent = complete
     ? "Case ready · authentic CSEM + real BAKO QC · explicitly independent"
@@ -293,8 +340,24 @@ $("export-json").addEventListener("click", () => {
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
 $("case-study-btn").addEventListener("click", runCaseStudy);
+$("osm-toggle").addEventListener("click", () => showLiveOsmMap($("geo-osm-embed").hidden));
+$("osm-close").addEventListener("click", () => showLiveOsmMap(false));
+$("historical-filters").addEventListener("click", e => {
+  const button = e.target.closest("button[data-filter]");
+  if(!button || !historicalDoc) return;
+  historicalFilter = button.dataset.filter;
+  renderHistoricalResearch();
+});
+$("historical-sector-list").addEventListener("click", e => {
+  const button = e.target.closest("button[data-sector]");
+  if(!button || !historicalDoc) return;
+  for (const row of $("historical-sector-list").querySelectorAll("button[data-sector]")) row.removeAttribute("aria-current");
+  button.setAttribute("aria-current", "true");
+  $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, button.dataset.sector);
+});
 $("report-btn").addEventListener("click", printEvidenceReport);
 renderGeographicContext();
+loadHistoricalResearch();
 // Separate authentic sources: CSEM historical positions versus archived BAKO multi-GNSS QC.
 // BAKO QC is verified by GeoRinex, but NEVER merged into the CSEM movement solution.
 runPublished();
