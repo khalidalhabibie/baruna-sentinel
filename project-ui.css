@@ -563,3 +563,27 @@ body[data-page="assessment"] .pw-page[data-pw-screen="assessment"]{display:block
  .as-simulation-table{min-width:650px}
  .as-simulation-footer .pw-btn{width:100%}
 }
+
+
+/* Project registry: infrastructure project vs independent GNSS reference library */
+.pw-reference-library{
+ display:flex;justify-content:space-between;align-items:center;gap:24px;
+ border-bottom:1px solid #dce6e6;padding:23px 3px 20px;
+}
+.pw-reference-library>div:first-child{max-width:450px}
+.pw-reference-library h2{font-size:14px;letter-spacing:-.02em;color:#39575d;margin:0 0 5px}
+.pw-reference-library p{font-size:11px;line-height:1.6;color:#7a8d93;margin:0}
+.pw-reference-links{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.pw-reference-links button{
+ display:flex;flex-direction:column;text-align:left;gap:4px;
+ border:1px solid #d9e5e5;background:white;border-radius:6px;
+ padding:10px 13px;cursor:pointer;min-width:170px;
+}
+.pw-reference-links button:hover{border-color:#94c3b9;background:#f7fbfa}
+.pw-reference-links span{font-size:11px;font-weight:760;color:#38605f}
+.pw-reference-links small{font-size:10px;color:#829395}
+@media(max-width:800px){
+ .pw-reference-library{flex-direction:column;align-items:stretch;gap:12px}
+ .pw-reference-links{justify-content:stretch}
+ .pw-reference-links button{flex:1 1 180px}
+}
