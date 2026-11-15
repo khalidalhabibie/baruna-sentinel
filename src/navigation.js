@@ -23,12 +23,12 @@
       window.history.replaceState({view}, "", url.pathname+url.search+url.hash);
     }
     if(options.scroll) {
-      const target=view==="decision"?$("case-workspace"):$("station-qc");
+      const target=view==="decision"?$("executive-desk"):$("analyst-intro");
       (target || $("top"))?.scrollIntoView({behavior:"smooth",block:"start"});
     }
     if($("live-region")) $("live-region").textContent =
-      view==="decision"?"Overview selected: map and published port evidence.":
-      "GNSS Analyst selected: observation QC and data provenance.";
+      view==="decision"?"Evidence Review selected: known evidence, limitations and next verification.":
+      "GNSS Analyst selected: independent station records, observation QC and source provenance.";
   }
   function initialView() {
     const param=new URLSearchParams(window.location.search).get("view");
