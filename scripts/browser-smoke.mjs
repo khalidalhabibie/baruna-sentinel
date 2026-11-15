@@ -31,6 +31,11 @@ try {
   await page.waitForFunction(() => document.querySelectorAll("#historical-sector-list button[data-sector]").length === 6, { timeout:15000 });
   const fieldRows = page.locator("#historical-sector-list button[data-sector]");
   assert.equal(await fieldRows.count(), 6, "Six real research-documented historical infrastructure sectors loaded");
+  await page.waitForFunction(() => document.querySelector("#exec-streams")?.textContent?.includes("3 / 3"), {timeout:15000});
+  assert.equal(await page.locator("#exec-sectors").textContent(), "6", "Decision desk reports source-backed sectors");
+  assert.equal(await page.locator("#exec-current").textContent(), "0", "No current on-asset instrument falsely declared");
+  assert.ok((await page.locator("#executive-desk").textContent()).includes("1–6 November 2026"), "Urgency includes dated BMKG historical context");
+  assert.ok((await page.locator("#executive-desk").textContent()).includes("That window has passed"), "No active flood alarm falsely asserted");
   assert.ok((await page.locator("#historical-sector-detail").textContent()).includes("not a 2026 displacement rate"), "Historical measurement explicitly not current");
   await page.locator('#historical-filters button[data-filter="coastal"]').click();
   assert.equal(await fieldRows.count(), 3, "Historical coastal-sector filter works");
@@ -68,6 +73,9 @@ try {
   assert.ok(reportText.includes("NO — fictional input only"), "Report prohibits false asset recommendation");
   assert.ok(reportText.includes("West breakwater"), "Real research sector appears in A4 evidence dossier");
   assert.ok(reportText.includes("HISTORICAL SETTLEMENT"), "Published measurements are labeled historic, not risk");
+  assert.ok(reportText.includes("Selected documented sector:"), "Printable brief identifies the chosen actual research sector");
+  assert.ok(reportText.includes("Request updated"), "Executive evidence action is included");
+  assert.ok(reportText.includes("To be assigned by operator"), "Responsible owner never fabricated");
 
   assert.equal(await page.evaluate(() => window.__reportPrintCalled), true, "Print action invoked");
   await page.pdf({ path: "reports/sentinel-judge-evidence-dossier.pdf", format: "A4", printBackground: true });
@@ -94,6 +102,10 @@ try {
   assert.equal(json.geospatialContext.observationLinkedToMovement, false, "Geo evidence remains independent");
   assert.equal(json.publishedFieldEvidence.sectorCount,6,"Published sector register exported with provenance");
   assert.equal(json.publishedFieldEvidence.operationalInspectionPriorityAvailable,false);
+  assert.equal(json.executiveReadiness.loadedEvidenceStreams,3);
+  assert.equal(json.executiveReadiness.currentInstrumentedAssetMeasurementsInDemo,0);
+  assert.equal(json.verificationRequest.sectorId,"west-breakwater");
+  assert.equal(json.verificationRequest.estimates.roi,null);
   assert.ok(json.publishedFieldEvidence.sectors.every(s=>s.currentRisk==="UNKNOWN"));
 
   assert.ok(json.geospatialContext.assets.every(a => a.locationType === "FICTIONAL_SCENARIO_POINT"));
@@ -103,7 +115,7 @@ try {
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 3);
   assert.equal(overflows, false, "Mobile viewport has no horizontal overflow");
   assert.deepEqual(errors, [], "No runtime JS errors");
-  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, realResearchSectors: 6, printPdf: true, errors: errors.length }, null, 2));
+  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, realResearchSectors: 6, executiveReadiness: "3 streams, no current measurements", printPdf: true, errors: errors.length }, null, 2));
 } finally {
   await browser.close();
 }
