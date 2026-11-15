@@ -28,6 +28,27 @@ try {
   assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Coordinate map rendered without network");
   assert.ok(geoMap.includes("fictional scenario location"), "Fictional markers disclosed");
   assert.ok((await page.locator("#geo-distance").textContent()).includes("km"), "Landmark distance shown");
+  await page.waitForFunction(() => document.querySelectorAll("#historical-sector-list button[data-sector]").length === 6, { timeout:15000 });
+  const fieldRows = page.locator("#historical-sector-list button[data-sector]");
+  assert.equal(await fieldRows.count(), 6, "Six real research-documented historical infrastructure sectors loaded");
+  assert.ok((await page.locator("#historical-sector-detail").textContent()).includes("not a 2026 displacement rate"), "Historical measurement explicitly not current");
+  await page.locator('#historical-filters button[data-filter="coastal"]').click();
+  assert.equal(await fieldRows.count(), 3, "Historical coastal-sector filter works");
+  await page.locator('#historical-filters button[data-filter="all"]').click();
+  await page.locator('#historical-sector-list button[data-sector="west-breakwater"]').click();
+  assert.ok((await page.locator("#historical-sector-detail").textContent()).includes("74–140 cm"), "Source-derived west breakwater result is presented");
+
+  // Intercept third-party tiles during CI. A user explicitly enables the map,
+  // while default/offline mode never requires an external tile server.
+  await page.route("https://www.openstreetmap.org/**", async route => route.fulfill({
+    status:200, contentType:"text/html", body:"<html><body>OSM context placeholder for CI</body></html>"
+  }));
+  await page.getByRole("button", { name: /show live street map/i }).click();
+  assert.equal(await page.locator("#geo-osm-embed").isVisible(),true, "Interactive third-party OSM iframe is opt-in");
+  assert.ok((await page.locator("#osm-iframe").getAttribute("src")).includes("openstreetmap.org/export/embed.html"), "Official OSM embed URL used");
+  await page.getByRole("button", { name: /back to offline coordinate plot/i }).click();
+  assert.equal(await page.locator("#geo-map").isVisible(),true, "Offline coordinate view remains available");
+
   mkdirSync("reports", { recursive: true });
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
@@ -45,6 +66,9 @@ try {
   assert.ok(reportText.includes("INDEPENDENT SOURCES NOT LINKED"), "Report includes scientific provenance gate");
   assert.ok(reportText.includes("BAKO"), "Report includes genuine multi-GNSS QC");
   assert.ok(reportText.includes("NO — fictional input only"), "Report prohibits false asset recommendation");
+  assert.ok(reportText.includes("West breakwater"), "Real research sector appears in A4 evidence dossier");
+  assert.ok(reportText.includes("HISTORICAL SETTLEMENT"), "Published measurements are labeled historic, not risk");
+
   assert.equal(await page.evaluate(() => window.__reportPrintCalled), true, "Print action invoked");
   await page.pdf({ path: "reports/sentinel-judge-evidence-dossier.pdf", format: "A4", printBackground: true });
 
@@ -68,6 +92,10 @@ try {
   assert.equal(json.evidenceGate.multiGnssDisplacementClaimAllowed, false);
   assert.ok(json.illustrativeAssetReview.every(a => !a.operationalDecisionAllowed));
   assert.equal(json.geospatialContext.observationLinkedToMovement, false, "Geo evidence remains independent");
+  assert.equal(json.publishedFieldEvidence.sectorCount,6,"Published sector register exported with provenance");
+  assert.equal(json.publishedFieldEvidence.operationalInspectionPriorityAvailable,false);
+  assert.ok(json.publishedFieldEvidence.sectors.every(s=>s.currentRisk==="UNKNOWN"));
+
   assert.ok(json.geospatialContext.assets.every(a => a.locationType === "FICTIONAL_SCENARIO_POINT"));
 
   await page.setViewportSize({ width: 390, height: 844 });
@@ -75,7 +103,7 @@ try {
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 3);
   assert.equal(overflows, false, "Mobile viewport has no horizontal overflow");
   assert.deepEqual(errors, [], "No runtime JS errors");
-  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, printPdf: true, errors: errors.length }, null, 2));
+  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, realResearchSectors: 6, printPdf: true, errors: errors.length }, null, 2));
 } finally {
   await browser.close();
 }
