@@ -63,4 +63,3 @@ test("no direct source or receiver-identifying string is placed into HTML",()=>{
   assert.equal(output.includes("<script>"),false);
   assert.equal(output.includes("TEST ONLY"),false);
 });
-});
