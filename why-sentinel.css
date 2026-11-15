@@ -225,3 +225,82 @@ body[data-page="why"] footer:not(.ws-sources){display:none}
 @media(prefers-reduced-motion:reduce){
  .ws-node-number{transition:none}
 }
+
+
+/* v2 clarity pass — OURDO is the company; BARUNA Sentinel is the product. */
+body[data-page] .topbar .ourdo-brand{gap:0;flex:none;white-space:nowrap;text-decoration:none}
+body[data-page] .topbar .ourdo-wordmark{display:flex;flex-direction:column;gap:2px}
+body[data-page] .topbar .ourdo-wordmark strong{
+  font-size:18px;font-weight:870;letter-spacing:-.035em;color:#1c5756;line-height:1;
+}
+body[data-page] .topbar .ourdo-wordmark small{
+  font-size:9px;font-weight:760;letter-spacing:.22em;color:#657f83;line-height:1.1;margin:0;
+}
+body[data-page] .topbar .ourdo-product-name{
+  font-size:11px;font-weight:650;color:#355e65;border-left:1px solid #d9e5e4;
+  padding-left:15px;margin-left:3px;white-space:nowrap;line-height:1.2;
+}
+body[data-page] .topbar .ourdo-product-name strong{color:#1f6660;font-size:11px}
+body[data-page] .topbar .ourdo-product-name small{
+  display:block;font-size:8px;color:#9babaa;letter-spacing:.05em;margin-top:5px;
+}
+body[data-page="why"] .pw-primary-nav button[data-pw-page="overview"],
+body[data-page="why"] .pw-primary-nav button[data-pw-page="detail"],
+body[data-page="why"] .pw-primary-nav button[data-pw-page="compare"]{display:none!important}
+body[data-page="why"] .pw-primary-nav button{font-size:12px;padding-left:16px;padding-right:16px}
+body[data-page="why"] .ws-story-header{padding-top:34px}
+body[data-page="why"] .ws-kicker{font-size:11px;letter-spacing:.075em}
+body[data-page="why"] .ws-headline h1{max-width:850px;font-weight:760;font-size:clamp(30px,3.55vw,46px)}
+body[data-page="why"] .ws-headline>p{font-size:15px;color:#526e73;max-width:745px}
+body[data-page="why"] .ws-hero-aside{padding:23px;min-height:225px}
+.ws-aside-case{display:flex;flex-direction:column;gap:10px;padding:23px 0}
+.ws-aside-case strong{color:#e7f3f1;font-size:27px;font-weight:750;letter-spacing:-.042em;line-height:1.2}
+.ws-aside-case span{font-size:13px;line-height:1.5;color:#acc9ca;max-width:300px}
+body[data-page="why"] .ws-aside-bottom span:first-child{color:#93e0c7;font-weight:700}
+body[data-page="why"] .ws-fact strong{font-size:16px}
+body[data-page="why"] .ws-fact span{font-size:12px;line-height:1.55;color:#687f85}
+body[data-page="why"] .ws-section-head p{font-size:13px}
+body[data-page="why"] .ws-node-title{font-size:12px}
+body[data-page="why"] .ws-detail-lead{font-size:14px;color:#536f74}
+body[data-page="why"] .ws-takeaway>b{color:#826c45}
+body[data-page="why"] .ws-takeaway p{font-size:12px;color:#687e83}
+body[data-page="why"] .ws-strong-point span{font-size:12px;color:#57767a}
+body[data-page="why"] .ws-cta-primary{background:#176e65;color:white;border:1px solid #176e65;cursor:pointer}
+body[data-page="why"] .ws-cta-primary:hover{background:#115b56}
+body[data-page="why"] .ws-cta-secondary{background:transparent;border-color:#c8dbd8}
+body[data-page="why"] .ws-source-link{font-size:11px}
+body[data-page="why"] .ws-outcome{gap:12px}
+.ws-outcome .ws-case-figure{font-size:30px;letter-spacing:-.06em;color:#236d64;font-weight:770;line-height:1.1}
+.ws-case-status{border-top:1px solid #dce9e3;padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.ws-case-status b{font-size:12px;color:#8c6d3b;font-weight:740}
+.ws-case-status span{font-size:11px;line-height:1.5;color:#647f7f}
+body[data-page="why"] .ws-workflow{padding-top:28px}
+body[data-page="why"] .ws-step-detail{min-height:0}
+body[data-page="why"] .ws-detail-main{padding-bottom:24px}
+@media(max-width:1260px){
+ body[data-page] .topbar .ourdo-product-name{display:none}
+ body[data-page="why"] .pw-primary-nav{margin-left:auto}
+}
+@media(max-width:820px){
+ body[data-page] .topbar .ourdo-brand{grid-column:1;grid-row:1}
+ body[data-page="why"] .topbar .pw-primary-nav{grid-column:1/-1;grid-row:2}
+ body[data-page="why"] .topbar{grid-template-columns:1fr;row-gap:8px}
+ body[data-page="why"] .topbar .top-actions{display:none}
+ body[data-page="why"] .ws-headline h1{font-size:clamp(29px,5vw,38px)}
+ body[data-page="why"] .ws-headline>p{font-size:13px}
+ body[data-page="why"] .ws-fact span{font-size:11px}
+ body[data-page="why"] .ws-detail-lead{font-size:13px}
+ body[data-page="why"] .ws-aside-case{padding:13px 0}
+ body[data-page="why"] .ws-aside-case strong{font-size:23px}
+}
+@media(max-width:480px){
+ body[data-page="why"] .pw-primary-nav button{min-width:0;flex:1;padding-left:8px;padding-right:8px;font-size:11px;text-align:center}
+ body[data-page="why"] .ws-headline h1{font-size:clamp(28px,8.2vw,32px)}
+ body[data-page="why"] .ws-aside-case span{font-size:12px}
+ body[data-page="why"] .ws-fact strong{font-size:14px}
+ body[data-page="why"] .ws-fact span{font-size:10px}
+ body[data-page="why"] .ws-node-title{font-size:10px}
+ body[data-page="why"] .ws-detail-main{padding:18px}
+ body[data-page="why"] .ws-outcome .ws-case-figure{font-size:27px}
+ body[data-page="why"] .ws-bottom-actions{grid-template-columns:1fr 1fr}
+}
