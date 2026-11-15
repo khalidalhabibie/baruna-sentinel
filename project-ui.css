@@ -56,8 +56,8 @@ body[data-page] .decision-data-bridge,
 body[data-page] #evidence-help{display:none!important}
 body[data-page]:not([data-page="detail"]):not([data-page="analyst"]) .workspace,
 body[data-page="detail"]:not([data-project-kind="sector"]) .workspace{display:none!important}
-body[data-page="analyst"] .case-workspace,
 body[data-page="analyst"] .analyst-intro{display:none!important}
+body[data-page="analyst"] .case-workspace{display:block!important}
 body[data-page="analyst"] .cors-qc-section{margin-top:10px}
 body[data-page] .workspace{max-width:1400px;width:100%;margin:0 auto}
 body[data-page="detail"] .workspace{padding:0 30px 15px!important}
