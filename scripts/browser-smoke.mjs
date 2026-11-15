@@ -144,7 +144,26 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-mobile-decision.png", fullPage: true });
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 3);
   assert.equal(overflows, false, "Mobile viewport has no horizontal overflow");
-  assert.deepEqual(errors, [], "No runtime JS errors");
+
+  // Regression: missing real CSEM data must NOT be disguised as a simulated success.
+  await page.locator("#view-analyst").click();
+  const preErrorCount=errors.length;
+  await page.route("**/data/CSEM_clean_Noff1site.source-derived.rneu", route =>
+    route.fulfill({status:503,contentType:"text/plain",body:"source temporarily unavailable"})
+  );
+  await page.locator("#published-btn").click();
+  await page.waitForFunction(() => document.querySelector("#source-badge")?.textContent === "UNAVAILABLE", {timeout:10000});
+  assert.equal(await page.locator("#mode-movement").textContent(), "SOURCE UNAVAILABLE");
+  assert.ok((await page.locator("#inline-feedback").textContent()).includes("did not switch to synthetic"),
+    "CSEM failure announces no synthetic substitution");
+  const expectedNetworkErrors=errors.slice(preErrorCount);
+  assert.ok(expectedNetworkErrors.every(message => /503|Failed to load resource/i.test(message)),
+    "Only the intentionally injected HTTP failure was logged");
+  errors.splice(preErrorCount);
+  await page.unroute("**/data/CSEM_clean_Noff1site.source-derived.rneu");
+  await page.locator("#published-btn").click();
+  await page.waitForFunction(() => document.querySelector("#stat-epochs")?.textContent?.includes("3,561"), {timeout:10000});
+  assert.deepEqual(errors, [], "No unexpected runtime JS errors");
   console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, layeredGIS: true, keyboardSkip: true, views: 2, realResearchSectors: 6, executiveReadiness: "3 streams, no current measurements", printPdf: true, errors: errors.length }, null, 2));
 } finally {
   await browser.close();
