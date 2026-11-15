@@ -351,6 +351,20 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-mobile.png", fullPage: true });
   await page.locator("#view-decision").click();
   assert.equal(await page.locator(".controls").isVisible(), false, "Technical controls stay hidden in mobile Decision mode");
+  await page.evaluate(() => {
+    document.querySelector("#map-disclosure").open=false;
+    document.activeElement?.blur?.();
+    window.scrollTo({top:0,behavior:"instant"});
+  });
+  const mobileDecisionBox=await page.locator("#case-workspace-outcome").boundingBox();
+  const mobileListBox=await page.locator(".case-sites-column").boundingBox();
+  assert.ok(mobileDecisionBox && mobileListBox && mobileDecisionBox.y<mobileListBox.y,
+    "Mobile first impression shows the useful verification outcome before the list");
+  assert.equal(await page.locator(".change-sector-link").isVisible(),true,
+    "Mobile users can change the initially selected example");
+  assert.equal(await page.locator("#map-disclosure").getAttribute("open"),null,
+    "Mobile map starts collapsed");
+  await page.screenshot({ path: "reports/sentinel-judge-demo-mobile-first-look.png", fullPage: true });
   await page.screenshot({ path: "reports/sentinel-judge-demo-mobile-decision.png", fullPage: true });
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 3);
   assert.equal(overflows, false, "Mobile viewport has no horizontal overflow");
