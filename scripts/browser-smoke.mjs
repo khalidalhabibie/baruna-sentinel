@@ -21,12 +21,56 @@ try {
   assert.equal(initial.status(),200);
   assert.equal(await page.locator("[data-pw-screen='projects']").isVisible(),true,
     "Projects index is the new default entry");
-  assert.equal(await page.locator(".pw-list-item").count(),3,
-    "Three clearly identified research/reference workspaces appear");
+  assert.equal(await page.locator(".pw-list-item").count(),1,
+    "Infrastructure project registry does not mislabel GNSS reference data as projects");
+  assert.equal(await page.locator(".pw-reference-links button").count(),2,
+    "CSEM and BAKO appear in a separate source library");
   assert.ok((await page.locator(".pw-index-foot").textContent()).includes("not customer projects"),
     "Independent GNSS references are not presented as customer deployments");
   mkdirSync("reports",{recursive:true});
   await page.screenshot({path:"reports/sentinel-judge-demo-projects.png",fullPage:true});
+
+  // Proposal-conformant vertical slice: a real, source-constrained assessment
+  // and a strictly separated synthetic rule demonstration.
+  const assessmentPage=await browser.newPage({viewport:{width:1440,height:900}});
+  const assessmentErrors=[];
+  assessmentPage.on("pageerror",error=>assessmentErrors.push(error.message));
+  await assessmentPage.goto(BASE+"/?page=assessment&project=semarang-port",{waitUntil:"networkidle",timeout:30000});
+  await assessmentPage.locator(".as-sector").first().waitFor({state:"visible",timeout:15000});
+  assert.equal(await assessmentPage.locator(".as-sector").count(),6,
+    "Six real published sectors are assessed through evidence sufficiency gates");
+  assert.equal(await assessmentPage.locator(".as-decision-status").textContent(),"DATA INSUFFICIENT",
+    "No unsupported real asset-risk ranking is produced");
+  assert.ok((await assessmentPage.locator(".as-workflow").textContent()).includes("station-to-asset link absent"),
+    "Assessment shows the disconnected GNSS and asset evidence chain");
+  await assessmentPage.locator('[data-as-sector="north-breakwater"]').click();
+  assert.ok((await assessmentPage.locator(".as-decision-top").textContent()).includes("64–79"),
+    "Published cumulative measurements follow the selected sector");
+  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment.png",fullPage:true});
+  await assessmentPage.locator("#as-demo-mode").click();
+  assert.equal(await assessmentPage.locator(".as-simulation-table tbody tr").count(),4,
+    "Synthetic policy demo contains four transparent decision outcomes");
+  assert.ok((await assessmentPage.locator(".as-simulation-table").textContent()).includes("HIGH"));
+  assert.ok((await assessmentPage.locator(".as-simulation-table").textContent()).includes("MEDIUM"));
+  assert.ok((await assessmentPage.locator(".as-simulation-table").textContent()).includes("MONITOR"));
+  assert.ok((await assessmentPage.locator(".as-simulation-table").textContent()).includes("BLOCKED"));
+  await assessmentPage.evaluate(()=>{
+    window.__assessmentPrintInvoked=false;
+    window.print=()=>{window.__assessmentPrintInvoked=true;};
+  });
+  await assessmentPage.locator("#as-export").click();
+  assert.equal(await assessmentPage.evaluate(()=>window.__assessmentPrintInvoked),true,
+    "Assessment delivers a real printable evidence report");
+  assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("fictional"),
+    "Printed simulation remains explicitly separated from source-backed observations");
+  await assessmentPage.locator("#as-real-mode").click();
+  await assessmentPage.setViewportSize({width:390,height:844});
+  const assessmentOverflow=await assessmentPage.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+3);
+  assert.equal(assessmentOverflow,false,"Assessment fits a narrow mobile viewport");
+  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment-mobile.png",fullPage:true});
+  assert.deepEqual(assessmentErrors,[],"No unexpected runtime errors on Assessment");
+  await assessmentPage.close();
+
   await page.locator(".pw-list-item").first().locator("button.pw-project-name").click();
   assert.equal(await page.locator("#pw-page-overview").isVisible(),true,"Opening a workspace displays its overview");
   assert.ok((await page.locator("#pw-page-overview").textContent()).includes("Six historical cumulative-settlement ranges"),
