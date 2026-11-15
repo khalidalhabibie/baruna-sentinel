@@ -222,6 +222,9 @@ try {
     document.activeElement?.blur?.();
     window.scrollTo({top:0,left:0,behavior:"instant"});
   });
+  const executiveCtaHeight=await assessmentPage.locator("#as-preview").evaluate(el=>el.getBoundingClientRect().height);
+  assert.ok(executiveCtaHeight>=36&&executiveCtaHeight<=70,
+    "Executive brief CTA must remain compact instead of occupying a mobile viewport");
   const assessmentOverflow=await assessmentPage.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+3);
   assert.equal(assessmentOverflow,false,"Assessment fits a narrow mobile viewport");
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment-mobile.png",fullPage:true});
