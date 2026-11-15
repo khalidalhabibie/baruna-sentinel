@@ -35,6 +35,14 @@ jobs:
           curl --fail http://127.0.0.1:4173/ > /dev/null
       - name: Verify authentic data, UI, evidence export and mobile layout
         run: node scripts/browser-smoke.mjs
+      - name: Inspect public deployment assets (non-blocking diagnostic)
+        if: always()
+        run: |
+          for path in "/" "/src/navigation.js" "/src/app.js" "/src/station-qc.js" "/vendor/leaflet/leaflet.js"; do
+            url="https://baruna-sentinel.vercel.app${path}"
+            response=$(curl --max-time 12 --connect-timeout 5 -L -sS -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || true)
+            echo "PRODUCTION_DIAGNOSTIC $path HTTP ${response:-UNREACHABLE}"
+          done
       - name: Keep screenshots
         if: always()
         uses: actions/upload-artifact@v4
