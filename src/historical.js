@@ -50,9 +50,9 @@ export function renderHistoricalSectorCards(doc, filter="all") {
   const records = filterHistoricalSectors(doc,filter);
   return records.map(s=>
     '<button class="historical-sector" type="button" data-sector="'+escapeHistorical(s.id)+'" aria-label="Inspect historical evidence for '+escapeHistorical(s.name)+'">'
-    +'<span class="historical-sector-left"><strong>'+escapeHistorical(s.name)+'</strong><small>'+escapeHistorical(s.type)+' · published 2017, measurements 2005</small></span>'
-    +'<span class="historical-range">'+s.minCm+'–'+s.maxCm+' cm<small>historical cumulative</small></span>'
-    +'<span class="historical-next">RE-VERIFY<small>2026 status unknown</small></span>'
+    +'<span class="historical-sector-left"><strong>'+escapeHistorical(s.name)+'</strong><small>'+escapeHistorical(s.type)+'</small></span>'
+    +'<span class="historical-range">'+s.minCm+'–'+s.maxCm+' cm<small>2005 · cumulative</small></span>'
+    +'<span class="historical-next">NEEDS DATA<small>2026 status unknown</small></span>'
     +'</button>').join("");
 }
 export function renderHistoricalSectorDetail(doc, id) {
