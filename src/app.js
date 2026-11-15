@@ -2,6 +2,8 @@ import {
   ASSETS, DEMO_RNEU, DEMO_RINEX, parseRneu, analyzeSeries,
   inspectRinex, rankAssets, evaluateEvidenceLink, evidenceBundle
 } from "./engine.js";
+import {renderGeoSvg, geoContextSummary} from "./geo.js";
+import {buildEvidenceReportMarkup} from "./report.js";
 
 const $ = id => document.getElementById(id);
 let seriesInput = "";
@@ -147,6 +149,43 @@ function drawPlot() {
     + '<text class="axis-label" text-anchor="end" x="' + (w-r) + '" y="' + (h-8) + '">' + escapeHtml(source[source.length - 1].date) + '</text>'
     + '</svg>';
 }
+function renderGeographicContext() {
+  const geo = geoContextSummary();
+  $("geo-map").innerHTML = renderGeoSvg();
+  $("geo-distance").textContent = geo.landmarkDistanceKm.toFixed(1) + " km";
+  $("geo-bako-distance").textContent = "≈ " + geo.externalObservationQcStationDistanceKm + " km apart";
+}
+
+function currentEvidenceBundle() {
+  const bundle = evidenceBundle({ ...seriesMeta, rinexSource: rinexMeta }, movement, rinexResult, ranks);
+  return { ...bundle, geospatialContext: geoContextSummary() };
+}
+
+function printEvidenceReport() {
+  if (!movement || !seriesMeta) return notify("Load a station time series before printing the evidence dossier.", true);
+  try {
+    $("print-report").innerHTML = buildEvidenceReportMarkup(currentEvidenceBundle());
+    window.print();
+    notify("Evidence dossier prepared. Select Print / Save as PDF in your browser.");
+  } catch (error) {
+    notify("Could not generate evidence report: " + (error instanceof Error ? error.message : String(error)), true);
+  }
+}
+
+async function runCaseStudy() {
+  $("demo-status").textContent = "Loading authentic historical positions and independent multi-GNSS QC…";
+  await runPublished();
+  await loadVerifiedRinexQC();
+  const complete = seriesMeta?.mode === "published" && rinexMeta.mode === "real-qc";
+  $("demo-status").textContent = complete
+    ? "Case ready · authentic CSEM + real BAKO QC · explicitly independent"
+    : "Case incomplete · check local data source and provenance notices";
+  if (complete) {
+    $("geo-context").scrollIntoView({behavior:"smooth",block:"start"});
+    notify("Semarang case ready. WGS84 context markers are referenced; fictional assets are not surveyed.");
+  }
+}
+
 function renderRinex() {
   if (!rinexResult) return;
   const modeText = rinexMeta.mode === "real-qc" ? " · REAL ARCHIVE, VERIFIED VIA GEORINEX" : rinexMeta.mode === "synthetic" ? " · illustrative fixture" : " · user-supplied, not independently verified";
@@ -252,6 +291,9 @@ $("export-json").addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
+$("case-study-btn").addEventListener("click", runCaseStudy);
+$("report-btn").addEventListener("click", printEvidenceReport);
+renderGeographicContext();
 // Separate authentic sources: CSEM historical positions versus archived BAKO multi-GNSS QC.
 // BAKO QC is verified by GeoRinex, but NEVER merged into the CSEM movement solution.
 runPublished();
