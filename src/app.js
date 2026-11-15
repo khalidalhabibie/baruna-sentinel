@@ -4,6 +4,7 @@ import {
 } from "./engine.js";
 import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows} from "./geo.js";
 import {buildEvidenceReportMarkup} from "./report.js";
+import {parseLocalQcReport} from "./qc-source.js";
 import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
 import {evidenceReadiness, verificationRequestForSector} from "./readiness.js";
 
@@ -331,7 +332,7 @@ async function runCaseStudy() {
 
 function renderRinex() {
   if (!rinexResult) return;
-  const modeText = rinexMeta.mode === "real-qc" ? " · REAL ARCHIVE, VERIFIED VIA GEORINEX" : rinexMeta.mode === "synthetic" ? " · illustrative fixture" : " · user-supplied, not independently verified";
+  const modeText = rinexMeta.mode === "real-qc" ? " · REAL ARCHIVE, VERIFIED VIA GEORINEX" : rinexMeta.mode === "local-qc" ? " · LOCALLY DECODED, SOURCE DECLARED BY USER" : rinexMeta.mode === "synthetic" ? " · illustrative fixture" : " · user-supplied, not independently verified";
   const systems = rinexResult.observedSystems;
   if (rinexResult.status === "MULTI_GNSS_RECORDS_SEEN" || rinexResult.status === "MULTI_GNSS_EPOCH_IDS_SEEN") {
     $("rinex-status").textContent = systems.length + (rinexResult.status === "MULTI_GNSS_EPOCH_IDS_SEEN" ? " GNSS systems in RINEX 2 epoch satellite lists" : " GNSS systems identified in observation records") + modeText;
@@ -344,12 +345,17 @@ function renderRinex() {
     ? "IGS BAKO · 1 Jan 2025 · " + rinexResult.epochCount + " epochs · GPS-only " + rinexResult.averageGpsPseudorangeSatellitesPerEpoch
       + " vs multi-GNSS " + rinexResult.averageAllPseudorangeSatellitesPerEpoch
       + " average satellites with pseudorange per epoch. NOT Semarang movement or positioning accuracy."
-    : "RINEX " + (rinexResult.version || "unknown") + " · "
-      + rinexResult.epochCount + " epoch markers · Station: " + rinexResult.marker
-      + ". This is a separate audit; it is not linked to station displacement without matching processing provenance.";
+    : rinexMeta.mode === "local-qc"
+      ? "Local GeoRinex QC · " + rinexResult.marker + " (operator-declared identity) · " + rinexResult.epochCount
+        + " epochs · GPS-only " + rinexResult.averageGpsPseudorangeSatellitesPerEpoch
+        + " vs all observed systems " + rinexResult.averageAllPseudorangeSatellitesPerEpoch
+        + " mean pseudorange satellites/epoch. Not independently verified by BIG; no asset movement solution."
+      : "RINEX " + (rinexResult.version || "unknown") + " · "
+        + rinexResult.epochCount + " epoch markers · Station: " + rinexResult.marker
+        + ". This is a separate audit; it is not linked to station displacement without matching processing provenance.";
   const shown = systems.length ? systems : rinexResult.declaredSystems;
   $("rinex-systems").innerHTML = shown.length
-    ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + (rinexMeta.mode === "real-qc" ? "pseudorange observed" : s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
+    ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + ((rinexMeta.mode === "real-qc" || rinexMeta.mode === "local-qc") ? "pseudorange observed" : s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
     : '<span class="system muted">No verifiable GNSS systems found</span>';
   renderEvidenceGate();
   renderExecutiveDesk();
@@ -405,6 +411,27 @@ function renderAll() {
 $("sample-btn").addEventListener("click", runDemo);
 $("published-btn").addEventListener("click", runPublished);
 $("rinex-demo").addEventListener("click", () => inspect(DEMO_RINEX, {mode: "synthetic", name: "Illustrative RINEX 3.04 fixture"}));
+$("load-bako").addEventListener("click", async () => {
+  const success=await loadVerifiedRinexQC();
+  notify(success ? "Plan B active: verified BAKO original observation QC, Cibinong, independent from CSEM."
+    : "BAKO fallback is not available in this build.", !success);
+});
+$("qc-report-file").addEventListener("change", async event => {
+  const file=event.target.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > 2*1024*1024) throw new Error("QC summary exceeds 2 MB; upload a compact GeoRinex JSON, not raw RINEX.");
+    const parsed=parseLocalQcReport(JSON.parse(await file.text()));
+    rinexResult=parsed;
+    rinexMeta={mode:"local-qc",name:file.name,stationEvidence:"operator_declared_unverified"};
+    renderRinex();
+    notify("Plan A file decoded: "+parsed.marker+". Provenance/station declared by operator; no BIG verification or asset deformation claim.");
+  } catch(error) {
+    notify("QC JSON rejected: "+(error instanceof Error?error.message:String(error))+". BAKO remains available via Restore.", true);
+  } finally {
+    event.target.value="";
+  }
+});
 $("series-file").addEventListener("change", async e => {
   const file = e.target.files && e.target.files[0];
   if (!file) return;
