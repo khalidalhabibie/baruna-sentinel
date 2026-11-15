@@ -5,6 +5,19 @@ Independent, offline-capable competition prototype. This repository does **not**
 ## Problem
 Coastal infrastructure teams need an explainable **inspection-review queue**, not a misleading map implying that a nearby GNSS station measures every asset.
 
+## Competition UI: simple by default
+
+**Decision view (default)** answers three questions: what historical evidence exists, which sector is selected, and what new measurements should be requested. The interactive map shows public reference locations; technical details and source caveats are available on demand.
+
+**GIS / Analyst** retains the original GPS/GNSS analysis, spatial audit, source controls and export. Use **Enable experimental tools** to reveal local Ina-CORS GeoRinex QC import, fictional scenario markers and synthetic data controls. Closing the lab hides them again without changing core datasets.
+
+Feature switches are defined in [`src/feature-flags.js`](src/feature-flags.js):
+- `inaCorsImport`: off by default; user-declared Ina-CORS QC import only
+- `syntheticSandbox`: off by default; illustrative test fixtures and sandbox view
+- `fictionalMapMarkers`: off by default; only source-backed reference points appear in the normal map
+
+For an intentionally experimental share link, append `?lab=1`. **This is UI feature gating, not authentication or access control.** Plan B verified BAKO evidence remains available without logging in or enabling the lab. Plan A remains an offline QC import, not a live stream or BIG-verified data certificate.
+
 ## Demo (software-only)
 1. Auto-load an **authentic historical CSEM GPS-derived series** from a locally bundled source-derived numeric extract (2010–2021), an explicitly illustrative fixture, or a user-supplied cleaned `.rneu` time series.
 2. Validate dates, units, duplicate epochs, completeness, and observation duration.
