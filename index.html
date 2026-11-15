@@ -14,7 +14,7 @@
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/project-workspace.js"></script>
 </head>
-<body data-view="decision" data-page="projects" data-project="semarang-port" data-inacors="off" data-sandbox="off" data-fictional="off">
+<body data-view="decision" data-page="projects" data-project="semarang-port" data-lab-tab="movement" data-inacors="off" data-sandbox="off" data-fictional="off">
   <a href="#pw-shell" class="skip-link">Skip to project workspace</a>
   <div class="app-shell">
     <header class="topbar">
@@ -49,6 +49,12 @@
         <div class="pw-lab-context pw-page" data-pw-screen="analyst">
           <div class="pw-breadcrumb"><button type="button" data-pw-page="projects">Projects</button><span>/</span> GNSS Lab</div>
           <div class="pw-heading-row"><div><span class="pw-kicker">TECHNICAL ANALYSIS</span><h1>GNSS Lab</h1><p>Historical CSEM positions and independent BAKO observation QC. Different stations, different questions.</p></div><button type="button" class="pw-btn pw-btn-secondary" data-pw-page="compare">Compare evidence</button></div>
+          <nav class="pw-lab-tabs" role="tablist" aria-label="GNSS Lab analysis tools">
+            <button type="button" role="tab" data-pw-lab="movement" aria-selected="true">Position history</button>
+            <button type="button" role="tab" data-pw-lab="qc" aria-selected="false">Observation QC</button>
+            <button type="button" role="tab" data-pw-lab="gis" aria-selected="false">GIS context</button>
+            <button type="button" role="tab" data-pw-lab="sandbox" data-feature="syntheticSandbox" aria-selected="false">Experimental</button>
+          </nav>
         </div>
       </section>
       <dialog id="pw-new-project-dialog" class="pw-dialog" aria-labelledby="pw-dialog-title">
