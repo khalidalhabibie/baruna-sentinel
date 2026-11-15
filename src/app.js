@@ -38,7 +38,9 @@ function processSeries(content, meta) {
     renderAll();
     notify(meta.mode === "synthetic"
       ? "Illustrative data loaded. Numbers are invented for UI demonstration."
-      : "Imported and calculated locally. Source, station identity and frame still require verification.");
+      : meta.mode === "published"
+        ? "Historical CSEM observations loaded from the cited public dataset. GPS-based, not multi-GNSS proof."
+        : "Imported and calculated locally. Source, station identity and frame still require verification.");
   } catch (error) {
     notify(error instanceof Error ? error.message : "Unable to parse GNSS input.", true);
   }
@@ -47,6 +49,24 @@ function runDemo() {
   $("station").value = "CSEM";
   $("unit").value = "meters";
   processSeries(DEMO_RNEU, { mode: "synthetic", name: "CSEM-style invented fixture (not a real station record)", provider: "BARUNA Sentinel demo fixture", reference: "None – synthetic" });
+}
+async function runPublished() {
+  try {
+    const response = await fetch("./data/CSEM_clean_Noff1site.source-derived.rneu");
+    if (!response.ok) throw new Error("Historical dataset is not available at this deployment.");
+    $("station").value = "CSEM";
+    $("unit").value = "meters";
+    processSeries(await response.text(), {
+      mode: "published",
+      name: "CSEM 2010–2021 — source-derived numeric extract",
+      provider: "Susilo et al. (2023), Zenodo 7775016",
+      reference: "https://doi.org/10.5281/zenodo.7775016",
+      constellationClaim: "GPS-processed historical station series, not proven multi-GNSS"
+    });
+  } catch (error) {
+    runDemo();
+    notify("Could not open local CSEM data. Illustrative fallback loaded. " + error.message, true);
+  }
 }
 function inspect(content, meta) {
   try {
@@ -135,22 +155,26 @@ function renderAssets() {
 function renderAll() {
   if (!movement) return;
   const isSynthetic = seriesMeta && seriesMeta.mode === "synthetic";
-  $("source-badge").textContent = isSynthetic ? "SIMULATED" : "USER FILE";
-  $("source-title").textContent = movement.station + (isSynthetic ? " · fictional" : " · unverified");
-  $("mode-movement").textContent = isSynthetic ? "ILLUSTRATIVE MODE" : "IMPORTED · PROVENANCE UNVERIFIED";
+  const isPublished = seriesMeta && seriesMeta.mode === "published";
+  $("source-badge").textContent = isSynthetic ? "SIMULATED" : isPublished ? "HISTORICAL GPS" : "USER FILE";
+  $("source-title").textContent = movement.station + (isSynthetic ? " · fictional" : isPublished ? " · 2010–2021" : " · unverified");
+  $("mode-movement").textContent = isSynthetic ? "ILLUSTRATIVE MODE" : isPublished ? "PUBLISHED GPS · HISTORICAL" : "IMPORTED · PROVENANCE UNVERIFIED";
   $("stat-trend").textContent = (movement.verticalSlopeMmYr > 0 ? "+" : "") + number(movement.verticalSlopeMmYr, 1);
   $("stat-epochs").textContent = movement.epochCount.toLocaleString("en-US");
   $("stat-quality").textContent = movement.quality === "SCREENING_READY" ? "SCREENING" : "LIMITED";
   $("stat-quality").className = movement.quality === "SCREENING_READY" ? "quality-good" : "quality-warn";
-  $("plot-caption").textContent = movement.station + " · " + (isSynthetic ? "invented observations" : "uploaded observations (not verified)") + " · OLS trend is descriptive";
+  $("plot-caption").textContent = movement.station + " · " + (isSynthetic ? "invented observations" : isPublished ? "published GPS historical positions" : "uploaded observations (not verified)") + " · OLS trend is descriptive";
   $("audit-series").textContent = movement.start + " → " + movement.end + " · max gap " + movement.maxGapDays + " days";
   $("boundary-notice").textContent = isSynthetic
     ? "All plotted numbers are SYNTHETIC, not Semarang GNSS observations. RINEX constellation audit is a separate source."
-    : "Imported observation values are user-supplied; station metadata and processing provenance have not been independently verified. RINEX audit is separate.";
+    : isPublished
+      ? "CSEM is a real 2010–2021 GPS-derived historical dataset; it is not 2026 monitoring or proof of multi-GNSS processing. RINEX inspection is a separate source."
+      : "Imported observation values are user-supplied; station metadata and processing provenance have not been independently verified. RINEX audit is separate.";
   drawPlot();
   renderAssets();
 }
 $("sample-btn").addEventListener("click", runDemo);
+$("published-btn").addEventListener("click", runPublished);
 $("rinex-demo").addEventListener("click", () => inspect(DEMO_RINEX, {mode: "synthetic", name: "Illustrative RINEX 3.04 fixture"}));
 $("series-file").addEventListener("change", async e => {
   const file = e.target.files && e.target.files[0];
@@ -183,6 +207,5 @@ $("export-json").addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
-// Start in labelled illustrative mode so the one-minute walkthrough can begin immediately.
-runDemo();
-inspect(DEMO_RINEX, { mode: "synthetic", name: "Illustrative RINEX 3.04 fixture" });
+// Default to authentic historical GPS observations. Multi-GNSS remains unverified until a separate real RINEX is inspected.
+runPublished();
