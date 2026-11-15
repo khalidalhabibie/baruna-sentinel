@@ -367,3 +367,37 @@ body[data-view="decision"] .hero p{font-size:13px}
 
 /* A buyer-facing view never displays fictional markers, even with experimental flags on. */
 body[data-view="decision"] [data-feature="fictionalMapMarkers"]{display:none!important}
+
+/* spatial reference cockpit: coordinate-grounded map navigation, no invented geography */
+.geo-focus-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:7px;padding:12px 19px;background:#f3faf7;border-top:1px solid #e1eee9;border-bottom:1px solid #e1eee9}
+.geo-focus-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:850;color:#537a78;margin-right:6px}
+.geo-focus-toolbar button{background:#fff;color:#3a696a;border:1px solid #cde0da;border-radius:6px;font-size:12px;font-weight:800;padding:10px 14px;min-height:42px}
+.geo-focus-toolbar button[aria-pressed="true"]{background:#164d53;border-color:#164d53;color:#fff}
+.geo-focus-toolbar button:hover:not([aria-pressed="true"]){border-color:#21817a;background:#e6f5f0}
+.geo-trust-pill{margin-left:auto;font-size:11px;color:#497c73;background:#e2f3ed;border:1px solid #c5e3d7;border-radius:5px;padding:9px 11px;font-weight:800}
+.geo-map-tools{border-top:0;padding-top:11px}
+.geo-map{box-shadow:0 8px 24px rgba(11,39,55,.08)}
+.geo-map [data-point-id]{cursor:pointer;outline:0}
+.geo-map [data-point-id]:hover circle:first-child{fill-opacity:.23;opacity:1}
+.geo-map [data-point-id]:focus-visible{outline:none}
+.geo-map [data-point-id]:focus-visible circle:first-child{stroke:#ffffff;stroke-width:3;opacity:.65}
+.geo-reference-desk{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);gap:12px;margin:13px 19px 0;align-items:stretch}
+.geo-reference-choices{display:grid;gap:6px}
+.geo-reference-choices button{width:100%;display:flex;gap:7px;flex-direction:column;justify-content:center;text-align:left;border:1px solid #dce9e5;background:#fafdfb;color:#1b4350;padding:12px 15px;border-radius:7px;min-height:69px}
+.geo-reference-choices button[aria-pressed="true"]{background:#ebf8f3;border-color:#5ba99a;box-shadow:inset 4px 0 #178177}
+.geo-reference-choices button:hover{border-color:#3d9b8a}
+.geo-choice-type{font-size:10px;color:#368074;letter-spacing:.1em;font-weight:900}
+.geo-reference-choices button strong{font-size:13px;font-weight:850;line-height:1.3}
+.geo-reference-choices button small{font-size:11px;color:#728e93;margin-top:0}
+.geo-selected-panel{background:#123a4a;color:#e5f9f5;padding:21px 23px;border-radius:7px;display:flex;flex-direction:column;gap:11px}
+.geo-selected-kicker{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:900;color:#89d7c4}
+.geo-selected-panel h3{font-size:18px;line-height:1.25;letter-spacing:-.03em;margin:0;color:#fff}
+.geo-coordinate-group{display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid #325c6a}
+.geo-coordinate-group span{font-size:10px;letter-spacing:.08em;color:#9cc3c6;font-weight:850}
+.geo-coordinate-group code,.geo-coordinate-group strong{font-size:13px;font-weight:800;color:#e6f8f4;letter-spacing:0;word-break:break-word;font-variant-numeric:tabular-nums}
+.geo-selected-panel p{font-size:11px;line-height:1.55;color:#b6d2d4;margin:0}
+.geo-selected-panel a{align-self:start;font-size:12px;font-weight:800;text-decoration:underline;text-underline-offset:3px;color:#9ce7d3;margin-top:auto}
+.geo-map-compact-note{margin:12px 20px 0;font-size:11px;line-height:1.5;color:#618087}
+.geo-legend{padding:12px 20px}
+@media(max-width:880px){.geo-reference-desk{grid-template-columns:1fr}.geo-reference-choices{grid-template-columns:repeat(3,minmax(0,1fr))}.geo-reference-choices button{min-height:100px}.geo-selected-panel{display:grid;grid-template-columns:1fr 1fr;gap:10px}.geo-selected-panel h3{grid-column:span 2}.geo-selected-panel p{grid-column:span 2}.geo-selected-panel a{grid-column:span 2}.geo-trust-pill{margin-left:0}}
+@media(max-width:580px){.geo-focus-toolbar{padding:10px;gap:5px}.geo-focus-label{width:100%;margin-bottom:2px}.geo-focus-toolbar button{padding:9px;flex:1 1 auto;font-size:11px;min-height:43px}.geo-trust-pill{width:100%;text-align:center;font-size:10px}.geo-reference-desk{margin:10px 10px 0;gap:9px}.geo-reference-choices{grid-template-columns:1fr;gap:5px}.geo-reference-choices button{min-height:52px;padding:10px 13px;gap:2px}.geo-selected-panel{display:flex;padding:16px;gap:9px}.geo-selected-panel h3{font-size:17px}.geo-map-compact-note{margin:11px 12px 0}.geo-legend{padding:10px 12px}}
