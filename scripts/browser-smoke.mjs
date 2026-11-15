@@ -151,6 +151,14 @@ try {
   assert.ok((await assessmentPage.locator(".as-qc-bridge-conclusion").textContent()).includes("SHARED FULL DAY"));
   assert.ok((await assessmentPage.locator(".as-qc-next").textContent()).includes("North breakwater"),
     "Observation summary connects to selected study sector as a data-request, not a displacement");
+  await assessmentPage.locator(".as-qc-daily summary").click();
+  assert.ok((await assessmentPage.locator(".as-qc-daily-inner").textContent()).includes("DOY 319"),
+    "Local QC drilldown exposes source-derived daily coverage to technical reviewers");
+  await assessmentPage.locator(".as-qc-daily summary").click();
+  await assessmentPage.evaluate(()=>{
+    document.activeElement?.blur?.();
+    window.scrollTo({top:0,left:0,behavior:"instant"});
+  });
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-p1-cors-to-brief.png",fullPage:true});
   await assessmentPage.evaluate(()=>{
     window.__p1Print=false;window.print=()=>{window.__p1Print=true};
@@ -174,6 +182,9 @@ try {
   await assessmentPage.setViewportSize({width:390,height:844});
   assert.equal(await assessmentPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
     "CSEM–CSMG QC intake remains mobile-safe even without private files");
+  const qcImportHeight=await assessmentPage.locator(".as-qc-import label").evaluate(el=>el.getBoundingClientRect().height);
+  assert.ok(qcImportHeight>=36&&qcImportHeight<=70,
+    "QC import control remains compact on a narrow mobile viewport");
   await assessmentPage.setViewportSize({width:1440,height:900});
 
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment.png",fullPage:true});
