@@ -99,6 +99,12 @@ try {
   await assessmentPage.locator('[data-as-sector="north-breakwater"]').click();
   assert.ok((await assessmentPage.locator(".as-decision-top").textContent()).includes("64–79"),
     "Published cumulative measurements follow the selected sector");
+  assert.ok((await assessmentPage.locator(".as-cors-contrast").textContent()).includes("-94.03"),
+    "Published CSMG 2021–2023 PPP decline is visible with its source");
+  assert.ok((await assessmentPage.locator(".as-cors-contrast").textContent()).includes("+3.23"),
+    "CSEM published PPP rate is a separate period from the historic OLS series");
+  assert.ok((await assessmentPage.locator(".as-cors-contrast").textContent()).includes("not a velocity gradient"),
+    "Two station rates do not create asset-specific velocity gradients");
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment.png",fullPage:true});
   await assessmentPage.locator("#as-demo-mode").click();
   assert.equal(await assessmentPage.locator(".as-simulation-table tbody tr").count(),4,
@@ -116,6 +122,64 @@ try {
     "Assessment delivers a real printable evidence report");
   assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("fictional"),
     "Printed simulation remains explicitly separated from source-backed observations");
+  // User-uploaded real GeoJSON is rendered in Leaflet but does not turn CSEM
+  // station proximity into a false asset deformation or operator inspection rank.
+  await assessmentPage.locator("#as-asset-mode").click();
+  assert.equal(await assessmentPage.locator("#ai-file").count(),1);
+  assert.ok((await assessmentPage.locator(".ai-empty").textContent()).includes("Import"));
+  await assessmentPage.locator("#ai-example").click();
+  assert.equal(await assessmentPage.locator(".ai-select-asset").count(),3);
+  assert.ok((await assessmentPage.locator(".as-synthetic-warning").textContent()).includes("Fictional"));
+  await assessmentPage.locator(".ai-select-asset").nth(1).click();
+  assert.ok((await assessmentPage.locator(".ai-record-head h3").textContent()).includes("Fictional coastal road"));
+  const importedAsset={
+    type:"FeatureCollection",
+    crs:{type:"name",properties:{name:"EPSG:4326"}},
+    features:[{
+      type:"Feature",properties:{
+        asset_id:"asset-12",asset_name:"Locally supplied survey polygon",
+        criticality:"high",exposure:"high",
+        geometry_source:"Unverified owner-declared file",survey_date:"2026-09-20"
+      },
+      geometry:{type:"Polygon",coordinates:[[
+        [110.424,-6.947],[110.425,-6.947],[110.425,-6.946],
+        [110.424,-6.946],[110.424,-6.947]
+      ]]}
+    }]
+  };
+  await assessmentPage.locator("#ai-file").setInputFiles({
+    name:"owner-supplied-asset.geojson",
+    mimeType:"application/geo+json",
+    buffer:Buffer.from(JSON.stringify(importedAsset))
+  });
+  await assessmentPage.waitForFunction(()=>document.querySelector(".ai-record-head h3")?.textContent?.includes("Locally supplied survey polygon"),{timeout:15000});
+  assert.equal(await assessmentPage.locator(".ai-select-asset").count(),1);
+  assert.ok((await assessmentPage.locator(".ai-status-line").textContent()).includes("USER-DECLARED, UNVERIFIED"));
+  assert.ok((await assessmentPage.locator(".ai-no-rank").textContent()).includes("0 operational rankings"));
+  assert.ok((await assessmentPage.locator(".ai-asset-result").textContent()).includes("Geographic proximity"));
+  await assessmentPage.locator(".ai-map-wrap .leaflet-container").waitFor({state:"visible",timeout:10000});
+  assert.ok((await assessmentPage.locator(".ai-map-wrap .leaflet-interactive").count())>=2,
+    "Actual imported polygon and CSEM station are drawn as independent map layers");
+  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake.png",fullPage:true});
+  await assessmentPage.locator("#ai-print").click();
+  assert.equal(await assessmentPage.evaluate(()=>window.__assessmentPrintInvoked),true);
+  assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("0"));
+  assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("Locally supplied survey polygon"));
+  await assessmentPage.locator("#ai-file").setInputFiles({
+    name:"wrong-projection.geojson",
+    mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify({...importedAsset,crs:{type:"name",properties:{name:"EPSG:3857"}}}))
+  });
+  await assessmentPage.locator(".ai-error").waitFor({state:"visible",timeout:10000});
+  assert.ok((await assessmentPage.locator(".ai-error").textContent()).includes("WGS84"));
+  assert.ok((await assessmentPage.locator(".ai-record-head").textContent()).includes("Locally supplied survey polygon"),
+    "Invalid uploads cannot replace the last validated local asset review");
+  await assessmentPage.setViewportSize({width:390,height:844});
+  assert.equal(await assessmentPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
+    "Imported asset map and evidence review remain usable on mobile");
+  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake-mobile.png",fullPage:true});
+  await assessmentPage.setViewportSize({width:1440,height:900});
+
   await assessmentPage.locator("#as-real-mode").click();
   await assessmentPage.setViewportSize({width:390,height:844});
   await assessmentPage.evaluate(()=>{
