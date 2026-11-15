@@ -117,3 +117,19 @@ This separate real-world literature case shows why generic citywide or single-st
 The frontend renders a filtering, interactive *Historical Field Evidence* register and an opt-in OpenStreetMap embedded street map. The official OSM embed requires internet; the previously available source-grounded WGS84 offline point plot remains the default. OSM street context is not surveyed GNSS ground truth or an engineering inspection record.
 
 Research extract: `data/tanjung-emas-historical-field-evidence.json`, validated by `src/historical.js` and unit tests. Printable PDF dossier and JSON export include published sectors with provenance and explicit current-data gaps.
+
+## Executive decision desk — commercial positioning, without invented urgency
+
+As of the competition snapshot (15 Nov 2026), the product now opens with a buyer-facing **inspection evidence readiness** panel. It distinguishes:
+
+- **6 historically measured Tanjung Emas sectors** based on published 2005 field levelling (Raharjo & Yosi 2017); no current 2026 measurement inferred.
+- **3 independent authentic evidence streams** when loaded: field-study sector ranges (2005), CSEM processed GPS historic positions (2010–2021) and BAKO original multi-GNSS observation QC (1 Jan 2025).
+- **0 current on-asset measurements in this prototype**, explicitly not a count of all instruments or measurements available in the real port.
+
+A dated BMKG coastal-flood bulletin records Semarang as included **1–6 Nov 2026**; this was a *past coastal water-level alert*, not an active alert, GNSS deformation observation, or a known structural condition.
+
+**Decision output:** "Prepare an evidence brief" prints a sector-specific verification request for the currently selected documented sector. The request identifies missing asset boundary/criticality, up-to-date survey, reference frame/source matching and qualified expert review. It does not estimate costs, financial ROI, probability of failure or engineer-certified inspection priority.
+
+**Commercial hypothesis, not validated result:** a maintenance/asset-integrity team may benefit from consolidating provenance and requests for necessary site verification. A paid pilot would require an operator partner, a real asset register, local surveys and agreed metrics before any savings or operational impact claim.
+
+Test coverage: `src/readiness.test.js` and `scripts/browser-smoke.mjs`. Vercel remains the same static `dist/` package; **no backend, account, DB or live GNSS feed** has been introduced.
