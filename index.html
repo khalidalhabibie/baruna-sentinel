@@ -88,6 +88,15 @@
             <div class="section-row"><div><span class="section-index">03 / LOCATE</span><h2>Coastal geospatial context</h2></div><span class="subtle-pill">Georeferenced points · WGS84</span></div>
             <article class="panel geo-panel">
               <div class="geo-panel-top"><div><strong>Semarang / Genuk · inspection planning scenario</strong><p>Coordinate-based context. Only green/white markers are public reference locations; amber A–C are fictional examples.</p></div><span class="geo-tag">NO HAZARD MODEL</span></div>
+              <div class="geo-map-tools">
+                <span><b>Choose map context</b> · the street map is third-party geographic context, not field-survey evidence</span>
+                <button id="osm-toggle" class="geo-basemap-toggle" type="button" aria-expanded="false">Show live street map (OSM)</button>
+              </div>
+              <div id="geo-osm-embed" class="geo-osm-embed" hidden>
+                <div class="geo-online-note"><span>LIVE STREET MAP · OpenStreetMap · internet required</span><button id="osm-close" type="button">Back to offline coordinate plot</button></div>
+                <iframe id="osm-iframe" title="OpenStreetMap live view of Tanjung Emas and Genuk — public map context only" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="geo-online-foot"><span>Map © <a href="https://www.openstreetmap.org/copyright" rel="noopener" target="_blank">OpenStreetMap contributors</a> · map features are contextual and do not validate inspection risk</span></div>
+              </div>
               <div id="geo-map" class="geo-map" aria-label="WGS84 context plot for Semarang">Loading geographic references…</div>
               <div class="geo-legend"><span><i class="geo-marker-dot real"></i> CSEM station · BIG</span><span><i class="geo-marker-dot landmark"></i> Public landmarks</span><span><i class="geo-marker-dot fictional"></i> Fictional asset placements A–C</span></div>
               <div class="geo-insights">
@@ -114,7 +123,27 @@
             </div>
           </article>
 
-          <div class="section-row"><div><span class="section-index">05 / DECIDE</span><h2>Site-verification workflow</h2></div><span class="subtle-pill">Illustrative scheduling tiers only</span></div>
+          <div class="section-row" id="field-evidence"><div><span class="section-index">05 / FIELD RECORD</span><h2>Published Tanjung Emas infrastructure evidence</h2></div><span class="subtle-pill">Real research · historical only</span></div>
+          <article class="panel historical-panel">
+            <div class="historical-head">
+              <div><div class="historical-head-badge">DOCUMENTED LOCAL CASE · 2005 MEASUREMENT / 2017 PUBLICATION</div>
+                <h3>Six real infrastructure sectors. Current condition: unknown.</h3>
+                <p>Published field levelling from Tanjung Emas describes historic cumulative settlement. These are not current displacement rates or asset risk rankings. Precise sector survey coordinates are not supplied.</p>
+              </div>
+              <a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener" class="historical-source">Open scientific source ↗</a>
+            </div>
+            <div class="historical-filters" id="historical-filters" aria-label="Filter published infrastructure sectors">
+              <button type="button" data-filter="all" aria-pressed="true">All sectors</button>
+              <button type="button" data-filter="coastal" aria-pressed="false">Coastal structures</button>
+              <button type="button" data-filter="port" aria-pressed="false">Port operations</button>
+              <button type="button" data-filter="road" aria-pressed="false">Road access</button>
+            </div>
+            <div id="historical-sector-list" class="historical-sector-list">Loading original research references…</div>
+            <div class="historical-detail" id="historical-sector-detail"><p>Select an infrastructure sector to inspect its historical evidence and the required modern verification.</p></div>
+            <div class="historical-footer"><b>Evidence boundary:</b> reported historic sector measurements are independent of CSEM GNSS historical positions and BAKO multi-GNSS QC. Unknown current condition never means safe, unstable or due for immediate inspection.</div>
+          </article>
+
+          <div class="section-row"><div><span class="section-index">06 / SANDBOX</span><h2>Illustrative inspection scheduling</h2></div><span class="subtle-pill">Fictional portfolio · no operator data</span></div>
           <article class="panel assets-panel">
             <div class="asset-head"><span>ASSET SCENARIO</span><span>DECISION &amp; REASON</span></div>
             <div id="asset-rows" class="asset-rows"></div>
@@ -122,7 +151,7 @@
           </article>
 
           <div class="explain-box">
-            <div class="explain-number">06</div>
+            <div class="explain-number">07</div>
             <div><h3>Explain before you escalate.</h3><p>Every output includes provenance, observation coverage, analysis assumptions, station-to-asset relationship and reason codes. Missing evidence remains missing evidence—it is never treated as stability.</p></div>
             <span class="explain-arrow">↗</span>
           </div>
