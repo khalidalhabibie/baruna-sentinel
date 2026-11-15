@@ -92,7 +92,7 @@ export function analyzeSeries(series) {
   const residualRms = Math.sqrt(ys.reduce((sum, y, i) => sum + (y - intercept - slope * xs[i]) ** 2, 0) / n);
   const maxGap = points.reduce((max, p, i) => i ? Math.max(max, p.t - points[i - 1].t) : 0, 0);
   // Conservative descriptive gate, NOT scientific statistical significance.
-  const sufficientForScreening = n >= 10 && daySpan >= 365 && maxGap <= 120;
+  const sufficientForScreening = n >= 10 && daySpan >= 365 && maxGap <= 180;
   return {
     station: series.station,
     epochCount: n,
