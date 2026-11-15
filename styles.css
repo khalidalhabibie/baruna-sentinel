@@ -983,3 +983,21 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
  .case-map-column .street-map{height:300px}
  .top-actions{margin-left:auto}
 }
+
+
+/* Sentinel verification one-page print layout */
+@media print{
+ #print-report .brief-sheet{font-size:9.4pt;line-height:1.35;color:#162f3b}
+ #print-report .brief-sheet .print-head{padding-bottom:10px}
+ #print-report .brief-sheet h1{font-size:20pt;margin:15px 0 8px}
+ #print-report .brief-sheet h2{font-size:11pt;margin:13px 0 5px;padding-bottom:4px}
+ #print-report .brief-sheet .print-callout{padding:9px 12px;margin:10px 0}
+ #print-report .brief-sheet .print-callout p{margin:5px 0 0}
+ #print-report .brief-sheet .print-metrics{margin:10px 0}
+ #print-report .brief-sheet .print-metrics>div{padding:8px 9px}
+ #print-report .brief-sheet .print-metrics strong{font-size:12pt}
+ #print-report .brief-sheet p{margin:5px 0 7px}
+ #print-report .brief-sheet .brief-action-list{padding-left:21px;margin:8px 0 10px}
+ #print-report .brief-sheet .brief-action-list li{padding-left:2px;margin:4px 0;line-height:1.37}
+ #print-report .brief-sheet .print-footer{margin-top:16px;padding-top:7px}
+}
