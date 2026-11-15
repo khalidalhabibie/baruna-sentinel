@@ -281,7 +281,8 @@ $("station").addEventListener("change", () => {
   if (seriesInput && seriesMeta) processSeries(seriesInput, seriesMeta);
 });
 $("export-json").addEventListener("click", () => {
-  const bundle = evidenceBundle({ ...seriesMeta, rinexSource: rinexMeta }, movement, rinexResult, ranks);
+  if (!movement) return notify("Load a station series before exporting.", true);
+  const bundle = currentEvidenceBundle();
   const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
