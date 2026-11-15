@@ -599,3 +599,23 @@ body[data-view="analyst"] .case-workspace-header-meta{display:none}
   body[data-view="decision"] .executive-kpi{padding:19px}
   body[data-view="decision"] .case-journey{margin:20px 14px 42px}
 }
+
+/* Genuine GIS basemap — Leaflet + real OSM streets; SVG is offline fallback */
+.geo-osm-embed{margin:0 21px 10px;border-radius:10px;overflow:hidden;border:1px solid #cde3dc;background:#e8f2ed}
+.geo-osm-embed[hidden],.geo-map[hidden]{display:none!important}
+.street-map{height:455px;width:100%;min-height:380px;background:#d8e9e2;isolation:isolate}
+.street-map .leaflet-container{font-family:inherit}
+.street-map .leaflet-control-attribution{background:rgba(255,255,255,.94)!important;font-size:11px!important;padding:5px 8px!important}
+.street-map .leaflet-control-attribution a{color:#27675f}
+.street-map .leaflet-control-zoom{border:1px solid #d4e8e0!important;border-radius:7px!important;overflow:hidden;box-shadow:0 6px 20px #1a3c4640}
+.street-map .leaflet-control-zoom a{width:37px!important;height:37px!important;line-height:37px!important;font-size:21px!important;color:#164b53!important}
+.street-map .leaflet-control-scale-line{border-color:#225560!important;background:rgba(255,255,255,.92)!important;color:#194955!important;font-size:11px!important}
+.street-map .leaflet-tooltip{padding:8px 12px;border:1px solid #b7dbd2;border-radius:5px;box-shadow:0 6px 16px #1139462a;color:#174b52;font-size:13px;font-weight:800}
+.geo-online-foot{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:12px 17px;font-size:12px;line-height:1.55;color:#51747b;background:#f4faf7}
+.geo-online-foot button{min-height:37px;background:white;color:#1b716b;border:1px solid #c5e1d9;border-radius:5px;font-size:12px;font-weight:800;padding:8px 12px;flex:none}
+.geo-online-foot button:hover{background:#e1f6ee}
+#basemap-status{color:#275d64!important;font-size:13px!important;font-weight:750}
+#osm-toggle{min-height:44px!important;font-size:12px!important;border-radius:6px!important}
+body[data-view="decision"] .case-map-column .geo-osm-embed{margin:0 21px 12px}
+@media(max-width:760px){.street-map{height:400px;min-height:340px}.geo-online-foot{display:block;font-size:11px}.geo-online-foot button{margin-top:8px}.geo-osm-embed{margin:0 12px 9px}.case-map-column .geo-osm-embed{margin:0 12px 9px!important}}
+@media(max-width:540px){.street-map{height:350px;min-height:310px}.geo-osm-embed,.case-map-column .geo-osm-embed{margin:0 10px 10px!important}.geo-online-foot{padding:10px 12px}}
