@@ -113,13 +113,13 @@ export function renderAssetIntake(){
    '<div class="ai-interpretation"><strong>Published comparison available:</strong> CSMG and CSEM 2021–2023 show different station vertical trends in the same PPP study. Differences between stations do not assign a motion rate to any imported asset.</div>';
 }
 export function disposeIntakeMap(){
-  if(leafletMap){try{leafletMap.remove();}catch{}leafletMap=null;}
+  if(leafletMap){try{leafletMap.stop();leafletMap.remove();}catch{}leafletMap=null;}
 }
 export function renderImportedAssetMap(){
   disposeIntakeMap();
   const node=document.getElementById("ai-map");
   if(!node||!documentRecord||!window.L||document.body.dataset.page!=="assessment")return;
-  leafletMap=L.map(node,{scrollWheelZoom:false,zoomControl:true,preferCanvas:false});
+  leafletMap=L.map(node,{scrollWheelZoom:false,zoomControl:true,preferCanvas:false,zoomAnimation:false,fadeAnimation:false,markerZoomAnimation:false});
   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom:19
@@ -151,7 +151,7 @@ export function renderImportedAssetMap(){
   }).addTo(leafletMap);
   csemMarker.bindPopup('CSEM reference station · not linked to imported assets');
   const b=shapeLayer.getBounds();
-  if(b?.isValid())leafletMap.fitBounds(b.extend([csem.lat,csem.lon]).pad(.22),{maxZoom:13});
+  if(b?.isValid())leafletMap.fitBounds(b.extend([csem.lat,csem.lon]).pad(.22),{maxZoom:13,animate:false});
   else leafletMap.setView([csem.lat,csem.lon],11);
   requestAnimationFrame(()=>leafletMap?.invalidateSize());
 }
