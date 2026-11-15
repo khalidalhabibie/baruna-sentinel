@@ -1,6 +1,6 @@
 import {
   ASSETS, DEMO_RNEU, DEMO_RINEX, parseRneu, analyzeSeries,
-  inspectRinex, rankAssets, evidenceBundle
+  inspectRinex, rankAssets, evaluateEvidenceLink, evidenceBundle
 } from "./engine.js";
 
 const $ = id => document.getElementById(id);
@@ -169,19 +169,31 @@ function renderRinex() {
   $("rinex-systems").innerHTML = shown.length
     ? shown.map(s => '<span class="system"><b>' + escapeHtml(s.name) + '</b><small>' + (rinexMeta.mode === "real-qc" ? "pseudorange observed" : s.lines ? s.lines + " records" : "header only") + '</small></span>').join("")
     : '<span class="system muted">No verifiable GNSS systems found</span>';
+  renderEvidenceGate();
+}
+
+function renderEvidenceGate() {
+  const gate = evaluateEvidenceLink(movement, seriesMeta, rinexResult, rinexMeta);
+  const title = gate.status === "INDEPENDENT_SOURCES_NOT_LINKED"
+    ? "Independent observations — no verified solution link"
+    : gate.status === "MOVEMENT_EVIDENCE_LIMITED"
+      ? "Movement evidence needs further verification"
+      : "Multi-GNSS solution linkage not verified";
+  $("evidence-gate-title").textContent = title;
+  $("evidence-gate-caption").textContent = gate.explanation
+    + " Asset-level decisions are not authorized by this demonstration.";
 }
 function renderAssets() {
   $("asset-rows").innerHTML = ranks.map((asset, i) => {
-    const cls = asset.priority === "REVIEW_SOON" ? "amber" : asset.priority === "ROUTINE_REVIEW" ? "teal" : "gray";
-    const desc = asset.priority === "REVIEW_SOON"
-      ? "Downward regional context + illustrative high exposure and criticality. Verify locally."
-      : asset.priority === "ROUTINE_REVIEW"
-        ? "Regional-only evidence; continue routine checks, not a structural diagnosis."
-        : "Series is insufficient for an interpretable screening review.";
+    const cls = asset.priority === "DATA_INSUFFICIENT" ? "gray" : "teal";
+    const tierText = asset.scenarioTier.replace(/_/g, " ");
+    const desc = asset.priority === "DATA_INSUFFICIENT"
+      ? "Insufficient time-series evidence. Do not treat unknown as stability."
+      : "Fictional triage tier based on illustrative exposure/criticality, NOT measured asset displacement.";
     return '<div class="asset-row"><div class="asset-left"><span class="asset-index">0' + (i+1) + '</span><div><h4>'
       + escapeHtml(asset.name) + '</h4><p>Exposure: ' + escapeHtml(asset.exposure) + ' · Criticality: ' + escapeHtml(asset.criticality)
-      + '</p></div></div><div class="asset-right"><span class="priority ' + cls + '">' + escapeHtml(asset.priority.replace(/_/g, " ")) + '</span><small>'
-      + escapeHtml(desc) + '</small></div></div>';
+      + '</p></div></div><div class="asset-right"><span class="priority ' + cls + '">' + escapeHtml(tierText) + '</span><small>'
+      + escapeHtml(asset.priority.replace(/_/g, " ")) + ' · ' + escapeHtml(desc) + '</small></div></div>';
   }).join("");
 }
 function renderAll() {
@@ -204,6 +216,7 @@ function renderAll() {
       : "Imported observation values are user-supplied; station metadata and processing provenance have not been independently verified. RINEX audit is separate.";
   drawPlot();
   renderAssets();
+  renderEvidenceGate();
 }
 $("sample-btn").addEventListener("click", runDemo);
 $("published-btn").addEventListener("click", runPublished);
