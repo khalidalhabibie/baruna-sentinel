@@ -76,18 +76,6 @@ function notify(message, error = false) {
     $("inline-feedback").classList.toggle("is-error", error);
   }
 }
-function setDashboardView(mode) {
-  if (mode !== "decision" && mode !== "analyst") return;
-  document.body.dataset.view = mode;
-  $("view-decision").setAttribute("aria-pressed", String(mode === "decision"));
-  $("view-analyst").setAttribute("aria-pressed", String(mode === "analyst"));
-  renderGeographicContext();
-  const target = mode === "decision" ? $("executive-desk") : $("analyst-intro");
-  target.scrollIntoView({behavior:"smooth",block:"start"});
-  $("live-region").textContent = mode === "decision"
-    ? "Decision view. Follow three steps to prepare an evidence brief."
-    : "GIS analyst view. GNSS time series, spatial references and observation QC are visible.";
-}
 function reviewStep(sectionId) {
   $(sectionId).scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -568,8 +556,7 @@ $("lab-toggle").addEventListener("click", async () => {
   notify(labEnabled ? "Experimental data tools enabled. BAKO remains the verified default." :
     "Data lab closed. Verified evidence restored when experimental data had been selected.");
 });
-$("view-decision").addEventListener("click", () => setDashboardView("decision"));
-$("view-analyst").addEventListener("click", () => setDashboardView("analyst"));
+// View switching is owned by independent navigation.js, not by this analytics module.
 $("step-sector").addEventListener("click", () => reviewStep("field-evidence"));
 $("step-evidence").addEventListener("click", () => reviewStep("geo-context"));
 $("step-report").addEventListener("click", printEvidenceReport);
