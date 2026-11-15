@@ -31,6 +31,8 @@ try {
   assert.ok(asset.includes("ILLUSTRATIVE FIRST LOOK"), "Synthetic scenario label visible");
   assert.ok(!asset.includes("REVIEW SOON"), "No unvalidated asset risk escalation");
   // Default: real reference points only; experiments are hidden until enabled.
+  mkdirSync("reports", { recursive: true });
+  await page.screenshot({ path:"reports/sentinel-judge-demo-first-impression.png", fullPage:true });
   const geoMap = await page.locator("#geo-map").innerHTML();
   assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Offline geographic map works");
   assert.equal(await page.locator("#geo-map .geo-marker").count(), 3,
@@ -60,6 +62,10 @@ try {
   await page.locator('[data-map-layer="landmarks"]').click();
   assert.equal(await page.locator("#geo-layer-summary").textContent(), "3 / 3 layers visible");
   await page.locator("#view-decision").click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3,
+    "Decision view hides invented markers even after experimental tools are enabled");
+  assert.equal(await page.locator('[data-feature="fictionalMapMarkers"]').first().isVisible(), false,
+    "Decision view hides fictional layer controls");
   await page.waitForFunction(() => document.querySelectorAll("#historical-sector-list button[data-sector]").length === 6, { timeout:15000 });
   const fieldRows = page.locator("#historical-sector-list button[data-sector]");
   assert.equal(await fieldRows.count(), 6, "Six real research-documented historical infrastructure sectors loaded");
@@ -193,6 +199,11 @@ try {
 
   // Regression: missing real CSEM data must NOT be disguised as a simulated success.
   await page.locator("#view-analyst").click();
+  // Turning experiments off must restore trusted default data.
+  await page.locator("#lab-toggle").click();
+  assert.equal(await page.locator(".lab-import").isVisible(), false);
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3);
+  assert.ok((await page.locator("#rinex-caption").textContent()).includes("IGS BAKO"));
   const preErrorCount=errors.length;
   await page.route("**/data/CSEM_clean_Noff1site.source-derived.rneu", route =>
     route.fulfill({status:503,contentType:"text/plain",body:"source temporarily unavailable"})
