@@ -619,3 +619,100 @@ body[data-view="analyst"] .case-workspace-header-meta{display:none}
 body[data-view="decision"] .case-map-column .geo-osm-embed{margin:0 21px 12px}
 @media(max-width:760px){.street-map{height:400px;min-height:340px}.geo-online-foot{display:block;font-size:11px}.geo-online-foot button{margin-top:8px}.geo-osm-embed{margin:0 12px 9px}.case-map-column .geo-osm-embed{margin:0 12px 9px!important}}
 @media(max-width:540px){.street-map{height:350px;min-height:310px}.geo-osm-embed,.case-map-column .geo-osm-embed{margin:0 10px 10px!important}.geo-online-foot{padding:10px 12px}}
+
+
+/* CSEM / CSMG — locally imported observational QC, not a positioning model */
+.cors-qc-section{margin:42px 0 20px;min-width:0;scroll-margin-top:20px}
+.cors-qc-heading{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:22px}
+.cors-qc-heading .section-index{color:#228577;font-size:11px;letter-spacing:.12em}
+.cors-qc-heading h2{font-size:clamp(24px,2.5vw,36px);line-height:1.2;letter-spacing:-.045em;font-weight:850;color:#153d49;margin:9px 0}
+.cors-qc-heading p{margin:0;font-size:14px;line-height:1.6;color:#607d85;max-width:740px}
+.cors-local-pill{flex:none;border:1px solid #b8dcd4;background:#e8f6f0;color:#176a61;padding:12px 17px;border-radius:6px;font-size:11px;font-weight:850;letter-spacing:.05em}
+.cors-import-bar{display:flex;justify-content:space-between;align-items:center;gap:24px;border:1px solid #d3e3de;background:#fff;border-radius:10px 10px 0 0;padding:20px 25px}
+.cors-import-description{display:flex;flex-direction:column;gap:7px;min-width:0}
+.cors-import-description strong{font-size:15px;color:#163c49}
+.cors-import-description span{font-size:12px;line-height:1.5;color:#69848b}
+.cors-import-controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;position:relative}
+.cors-import-controls>input[type=file]{position:absolute;left:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden}
+.cors-import-controls:focus-within .cors-import-label{outline:3px solid #72b9ad;outline-offset:2px}
+.cors-import-label{display:inline-flex;justify-content:center;align-items:center;cursor:pointer;min-height:44px;border-radius:6px;border:1px solid #134b53;background:#174d57;color:#fff;font-weight:850;font-size:12px;padding:10px 18px;white-space:nowrap}
+.cors-import-label:hover{background:#126d69}
+#cors-qc-reset{min-height:44px;border:1px solid #c7dcd6;background:#f6fbf9;color:#39716b;border-radius:6px;padding:10px 13px;font-weight:800;font-size:12px}
+#cors-qc-reset[hidden]{display:none!important}
+.cors-qc-notice{font-size:12px;line-height:1.55;color:#426b70;background:#f1f9f5;border:1px solid #d3e3de;border-top:0;border-bottom:0;margin:0;padding:13px 25px}
+.cors-qc-notice.is-error{background:#fff5ef;color:#a94932}
+.cors-qc-result{background:#fff;border:1px solid #d3e3de;border-top:0;border-radius:0 0 10px 10px;overflow:hidden;min-width:0}
+.cors-qc-empty{min-height:125px;padding:28px;display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center;gap:9px;background:#f9fcfa}
+.cors-qc-empty strong{font-size:17px;color:#1a4b54}
+.cors-qc-empty span{font-size:13px;line-height:1.7;color:#69838a;max-width:650px}
+.cors-overview-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid #e3eee9}
+.cors-main-stat{padding:28px 28px 25px;min-width:0;display:flex;flex-direction:column;gap:8px;border-right:1px solid #e3eee9}
+.cors-main-stat:last-child{border-right:0}
+.cors-mini-label{font-size:10px;color:#61818a;letter-spacing:.11em;font-weight:850}
+.cors-main-stat>strong{font-size:clamp(25px,3.5vw,42px);letter-spacing:-.04em;color:#123d48;line-height:1.05}
+.cors-main-stat>strong.cors-not-available{font-size:23px;letter-spacing:-.03em;color:#ba8040;margin:6px 0}
+.cors-main-stat>small{font-size:12px;color:#6b858b;line-height:1.5}
+.cors-station-summaries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;padding:22px 24px 28px;background:#f8fbfa}
+.cors-station-summary{border:1px solid #d9e6e2;background:#fff;border-radius:8px;padding:20px 23px;min-width:0}
+.cors-station-summary header{display:flex;align-items:end;justify-content:space-between;gap:14px}
+.cors-station-summary h3{margin:7px 0 0;color:#123e4b;font-size:27px;letter-spacing:-.04em}
+.cors-station-summary header>strong{font-size:12px;color:#25766e;font-weight:850;text-align:right}
+.cors-station-numbers{display:flex;gap:24px;align-items:center;flex-wrap:wrap;border-top:1px solid #e2ece9;margin:16px 0;padding-top:14px}
+.cors-station-numbers span{font-size:12px;color:#6a8188}
+.cors-station-numbers b{font-weight:900;font-size:17px;color:#194d55;margin-right:3px}
+.cors-system-list{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cors-system-pill{font-size:11px;font-weight:780;background:#eaf5f0;border:1px solid #d3e9e0;color:#296c67;padding:7px 10px;border-radius:4px}
+.cors-calendar{border-top:1px solid #e2ebe8;min-width:0}
+.cors-day-header,.cors-day-row{display:grid;grid-template-columns:minmax(84px,.62fr) minmax(135px,1fr) minmax(135px,1fr) minmax(150px,1.55fr);column-gap:20px;align-items:center;padding:0 25px}
+.cors-day-header{background:#153d48;color:#e1f4ee;font-weight:850;font-size:10px;letter-spacing:.08em;min-height:46px}
+.cors-day-row{border-bottom:1px solid #e6efeb;min-height:95px;background:white}
+.cors-day-row:nth-child(odd){background:#fcfefd}
+.cors-day-row:last-child{border-bottom:0}
+.cors-day-label{display:flex;flex-direction:column;gap:6px;color:#1c4a54}
+.cors-day-label strong{font-size:14px;font-weight:900}
+.cors-day-label small{font-size:12px;color:#66858a}
+.cors-day-cell{min-width:0;display:flex;flex-direction:column;gap:7px}
+.cors-day-cell strong{font-size:14px;line-height:1;color:#1b5758}
+.cors-day-cell small{color:#638189;font-size:11px;line-height:1.35}
+.cors-day-cell.is-missing strong{color:#9a6971}
+.cors-day-cell.is-partial strong{color:#a36b36}
+.cors-meter{height:9px;border-radius:20px;overflow:hidden;background:#e1e9e7;width:100%;max-width:220px}
+.cors-meter>span{display:block;height:100%;background:#25897d;border-radius:20px}
+.cors-day-cell.is-partial .cors-meter>span{background:#dfac5d}
+.cors-day-notes{color:#6a8286;font-size:11px;line-height:1.55;padding:8px 0}
+.cors-day-notes.is-good{color:#23796d;font-weight:800}
+.cors-method-note{font-size:12px;line-height:1.75;color:#678088;padding:22px 25px 24px;margin:0;background:#f8fbfa;border-top:1px solid #e5eeeb}
+.cors-method-note strong{font-weight:900;color:#1e525a}
+.cors-qc-details{margin-top:12px;background:#fff;border:1px solid #dde8e4;border-radius:7px;color:#537780;padding:16px 22px}
+.cors-qc-details summary{cursor:pointer;font-weight:850;color:#246b68;font-size:12px;min-height:22px}
+.cors-qc-details p{font-size:12px;line-height:1.7;max-width:950px}
+@media(max-width:850px){
+  .cors-qc-heading{align-items:start;flex-direction:column;gap:13px}
+  .cors-import-bar{flex-wrap:wrap;align-items:start}
+  .cors-overview-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cors-main-stat:last-child{grid-column:1/-1;border-top:1px solid #e3eee9;border-right:0}
+  .cors-day-header,.cors-day-row{grid-template-columns:minmax(78px,.7fr) minmax(100px,1fr) minmax(100px,1fr);column-gap:13px}
+  .cors-day-header span:last-child{display:none}
+  .cors-day-notes{grid-column:1/-1;padding:0 0 14px;margin-top:-2px}
+  .cors-day-row{row-gap:5px;padding-top:16px}
+}
+@media(max-width:600px){
+  .cors-qc-section{margin:27px 0 18px}
+  .cors-qc-heading h2{font-size:24px}
+  .cors-qc-heading p{font-size:13px}
+  .cors-local-pill{font-size:10px;padding:9px 11px}
+  .cors-import-bar{padding:17px;gap:15px}
+  .cors-qc-notice{padding:12px 17px}
+  .cors-overview-row{grid-template-columns:1fr}
+  .cors-main-stat,.cors-main-stat:last-child{grid-column:auto;border-right:0;border-bottom:1px solid #e3eee9;padding:20px}
+  .cors-main-stat>strong{font-size:30px}
+  .cors-station-summaries{grid-template-columns:1fr;padding:14px;gap:11px}
+  .cors-station-summary{padding:16px}
+  .cors-day-header,.cors-day-row{grid-template-columns:65px minmax(0,1fr) minmax(0,1fr);column-gap:9px;padding-left:11px;padding-right:11px}
+  .cors-day-header{font-size:9px;letter-spacing:0}
+  .cors-day-label strong{font-size:12px}
+  .cors-day-label small,.cors-day-cell small{font-size:10px}
+  .cors-day-cell strong{font-size:12px}
+  .cors-method-note{padding:16px;font-size:11px}
+  .cors-qc-details{padding:14px}
+}
