@@ -15,6 +15,7 @@ let error=null;
 let leafletMap=null;
 let persistentMapNode=null;
 let assetShapeLayer=null;
+let assetLinkLine=null;
 const csem=LANDMARKS.find(x=>x.id==="csem");
 
 export function loadSyntheticAssetExample(){
@@ -150,11 +151,14 @@ export function renderImportedAssetMap(){
       onEachFeature:(feature,layer)=>{
         const info=assessment?.records.find(x=>x.id===feature.properties.id);
         layer.bindPopup('<strong>'+esc(info?.name||"Asset")+'</strong><p>Location context only · rank unavailable</p>');
+        if(feature.properties.id===selectedAssetId)layer.bindTooltip(esc(info?.name||"Asset"),{permanent:true,direction:"top",className:"ai-map-label"});
       }
     }).addTo(leafletMap);
     L.circleMarker([csem.lat,csem.lon],{
       radius:6,color:"#314b7d",fillColor:"#5c7fc0",fillOpacity:.95
-    }).bindPopup("CSEM reference station · not linked to imported assets").addTo(leafletMap);
+    }).bindPopup("CSEM reference station · not linked to imported assets")
+      .bindTooltip("CSEM reference station",{permanent:true,direction:"right",className:"ai-map-label"})
+      .addTo(leafletMap);
   }else{
     // The prior layout detached the map container but did not destroy its
     // overlays. Keep those objects stable through rapid user interactions.
@@ -170,6 +174,17 @@ export function renderImportedAssetMap(){
   leafletMap.stop();
   assetShapeLayer.clearLayers();
   assetShapeLayer.addData(collection);
+  if(assetLinkLine){leafletMap.removeLayer(assetLinkLine);assetLinkLine=null;}
+  const selected=assessment?.records.find(x=>x.id===selectedAssetId);
+  if(selected){
+    assetLinkLine=L.polyline([
+      [csem.lat,csem.lon],
+      [selected.approxCenter.lat,selected.approxCenter.lon]
+    ],{color:"#849c9d",weight:2,dashArray:"6 6",opacity:.9}).addTo(leafletMap);
+    assetLinkLine.bindTooltip(selected.proximityKm.toFixed(2)+" km · geographic proximity only",{
+      sticky:true,direction:"auto",className:"ai-map-distance"
+    });
+  }
   const bounds=assetShapeLayer.getBounds();
   if(bounds?.isValid()){
     leafletMap.fitBounds(bounds.extend([csem.lat,csem.lon]).pad(.22),{
