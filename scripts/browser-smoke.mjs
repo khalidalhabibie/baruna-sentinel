@@ -63,6 +63,7 @@ try {
     name:"synthetic-browser-test-qc.json",
     mimeType:"application/json",buffer:Buffer.from(JSON.stringify(qcFixture))
   });
+  await page.waitForFunction(()=>document.querySelectorAll("#cors-qc-result .cors-day-row").length===2,{timeout:10000});
   assert.equal(await page.locator("#cors-qc-result .cors-day-row").count(),2,
     "Station-day comparison renders the two test dates");
   assert.ok((await page.locator("#cors-qc-result").textContent()).includes("No file"),
