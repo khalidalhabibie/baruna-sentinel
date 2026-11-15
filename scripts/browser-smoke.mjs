@@ -32,6 +32,7 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
   await page.getByRole("button", { name: /run semarang case study/i }).click();
+  await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
   assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
 
   await page.evaluate(() => {
