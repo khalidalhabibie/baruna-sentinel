@@ -183,25 +183,66 @@ export function inspectRinex(text) {
   };
 }
 
+/**
+ * Demonstration triage, NOT real asset inspection ranking.
+ * A regional station cannot justify a direct asset action irrespective of
+ * its descriptive slope or a two-endpoint uncertainty heuristic.
+ * Illustrative tiers use ONLY synthetic exposure/criticality metadata.
+ */
 export function rankAssets(movement, assets = ASSETS) {
+  const ready = Boolean(movement && movement.quality === "SCREENING_READY");
   return assets.map(asset => {
-    const reasons = [];
-    let priority = "DATA_INSUFFICIENT";
-    if (movement && movement.quality === "SCREENING_READY") {
-      if (movement.direction === "DOWNWARD_DESCRIPTIVE"
-        && movement.endpointPrecisionRatio !== null
-        && movement.endpointPrecisionRatio >= 3
-        && asset.exposure === "high" && asset.criticality === "high") {
-        priority = "REVIEW_SOON";
-        reasons.push("DESCRIPTIVE_DOWNWARD_REGIONAL_TREND", "DEMO_ENDPOINT_PRECISION_HEURISTIC_3X", "ILLUSTRATIVE_HIGH_EXPOSURE", "ILLUSTRATIVE_HIGH_CRITICALITY");
-      } else {
-        priority = "ROUTINE_REVIEW";
-        reasons.push("NO_DIRECT_ASSET_MOVEMENT_EVIDENCE", "INSUFFICIENT_EVIDENCE_FOR_ESCALATION", "ILLUSTRATIVE_ASSET_CONTEXT");
-      }
-    } else reasons.push("INSUFFICIENT_STATION_TIME_SERIES");
-    reasons.push("REGIONAL_REFERENCE_NOT_ASSET_INSTRUMENT");
-    return { ...asset, priority, reasons, operationalDecisionAllowed: false };
+    const reasons = ["REGIONAL_REFERENCE_NOT_ASSET_INSTRUMENT", "SYNTHETIC_ASSET_CONTEXT"];
+    if (!ready) {
+      reasons.push("INSUFFICIENT_STATION_TIME_SERIES");
+      return {
+        ...asset,
+        priority: "DATA_INSUFFICIENT",
+        scenarioTier: "BLOCKED",
+        nextAction: "Obtain suitable GNSS observations and site-specific evidence",
+        reasons,
+        operationalDecisionAllowed: false
+      };
+    }
+
+    const scenarioTier = asset.exposure === "high" && asset.criticality === "high"
+      ? "ILLUSTRATIVE_FIRST_LOOK"
+      : asset.criticality === "high" || asset.exposure === "high"
+        ? "ILLUSTRATIVE_FOLLOW_UP" : "ILLUSTRATIVE_BASELINE";
+    reasons.push("REGIONAL_STATION_SERIES_AVAILABLE_FOR_CONTEXT", "LOCAL_MOVEMENT_UNVERIFIED");
+    reasons.push("ILLUSTRATIVE_SCENARIO_TIER_FROM_ASSET_METADATA_ONLY");
+    return {
+      ...asset,
+      priority: "VERIFY_LOCAL_EVIDENCE",
+      scenarioTier,
+      nextAction: "Confirm asset-specific observations and operator-approved inspection criteria",
+      reasons,
+      operationalDecisionAllowed: false
+    };
   });
+}
+
+/** Presence of a verified separate RINEX file is NOT proof that it produced the movement series. */
+export function evaluateEvidenceLink(movement, movementSource, rinex, rinexSource) {
+  const movementReady = Boolean(movement && movement.quality === "SCREENING_READY");
+  const qcVerified = rinexSource?.mode === "real-qc" &&
+    rinex?.status === "MULTI_GNSS_RECORDS_SEEN" &&
+    rinex?.linkedToCsemMovement === false &&
+    typeof rinex?.verifiedRun === "string";
+  return {
+    status: !movementReady ? "MOVEMENT_EVIDENCE_LIMITED"
+      : qcVerified ? "INDEPENDENT_SOURCES_NOT_LINKED" : "MULTI_GNSS_QC_NOT_VERIFIED",
+    movementStation: movement?.station ?? null,
+    movementProvenance: movementSource?.mode ?? "unknown",
+    observationQcStation: rinex?.marker ?? null,
+    observationQcProvenance: rinexSource?.mode ?? "none",
+    sameStationSolutionDemonstrated: false,
+    multiGnssDisplacementClaimAllowed: false,
+    operationalAssetDecisionAllowed: false,
+    explanation: qcVerified
+      ? "Real BAKO multi-GNSS observation QC and historic CSEM GPS displacement are independent datasets; no common processing solution is demonstrated."
+      : "No verified multi-GNSS-derived displacement solution is linked to the regional station time series."
+  };
 }
 
 export function evidenceBundle(meta, movement, rinex, ranks) {
@@ -213,11 +254,14 @@ export function evidenceBundle(meta, movement, rinex, ranks) {
     movement: movement ? { ...movement, points: movement.points } : null,
     rinexInspection: rinex,
     illustrativeAssetReview: ranks,
+    evidenceGate: evaluateEvidenceLink(
+      movement, meta, rinex, meta?.rinexSource
+    ),
     scientificLimitations: [
       "Synthetic asset locations, context and priorities are not real-world asset risk.",
       "Historical station GPS time series does not prove multi-GNSS signal processing.",
       "RINEX evidence, if supplied separately, is NOT silently linked to the displacement series.",
-      "Endpoint precision heuristic is not an engineering threshold or robust statistical detection.",
+      "Endpoint precision heuristic is descriptive only and does not determine asset review tier.",
       "No raw RINEX geodetic solution; no asset safety certification or failure probability."
     ],
     references: [
