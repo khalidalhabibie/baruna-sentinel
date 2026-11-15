@@ -7,6 +7,7 @@ import {buildEvidenceReportMarkup} from "./report.js";
 import {parseLocalQcReport} from "./qc-source.js";
 import {resolveFeatureFlags} from "./feature-flags.js";
 import {makeStreetMap} from "./live-map.js";
+import {parseStationQc,renderStationQc} from "./station-qc.js";
 import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
 import {evidenceReadiness, verificationRequestForSector} from "./readiness.js";
 
@@ -629,6 +630,43 @@ $("historical-sector-list").addEventListener("click", e => {
 $("report-btn").addEventListener("click", printEvidenceReport);
 $("executive-brief").addEventListener("click", printEvidenceReport);
 $("case-workspace-brief").addEventListener("click",printEvidenceReport);
+$("cors-qc-file").addEventListener("change", async event=>{
+  const file=event.target.files?.[0];
+  if(!file)return;
+  const notice=$("cors-qc-notice");
+  const result=$("cors-qc-result");
+  if(file.size>3*1024*1024){
+    notice.textContent="This browser viewer accepts QC JSON smaller than 3 MB. Process larger sets locally first.";
+    notice.classList.add("is-error");
+    return;
+  }
+  result.setAttribute("aria-busy","true");
+  notice.classList.remove("is-error");
+  notice.textContent="Validating locally derived RINEX coverage summary…";
+  try{
+    const parsed=parseStationQc(JSON.parse(await file.text()));
+    result.innerHTML=renderStationQc(parsed);
+    $("cors-qc-reset").hidden=false;
+    notice.textContent="Local QC ready · "+parsed.records.length+" station-day files · "+parsed.firstDate+
+      " to "+parsed.lastDate+". These measurements remain in this tab only.";
+    $("live-region").textContent="CSEM and CSMG local QC loaded. "+
+      parsed.jointFullDays.length+" matching days with complete observed epoch grids.";
+  }catch(error){
+    result.innerHTML='<div class="cors-qc-empty"><strong>Invalid QC summary</strong><span>Review your local data and try again. No source files were transmitted.</span></div>';
+    notice.textContent="QC validation failed: "+error.message;
+    notice.classList.add("is-error");
+    $("cors-qc-reset").hidden=true;
+  }finally{
+    result.removeAttribute("aria-busy");
+  }
+});
+$("cors-qc-reset").addEventListener("click",()=>{
+  $("cors-qc-file").value="";
+  $("cors-qc-reset").hidden=true;
+  $("cors-qc-result").innerHTML='<div class="cors-qc-empty"><strong>Evidence comparison is ready.</strong><span>Choose a local CSEM/CSMG QC JSON to review station-day observations.</span></div>';
+  $("cors-qc-notice").textContent="Local QC cleared. No station data was stored or uploaded.";
+  $("cors-qc-notice").classList.remove("is-error");
+});
 applyFeatureFlags();
 showLiveOsmMap(true);
 renderExecutiveDesk();
