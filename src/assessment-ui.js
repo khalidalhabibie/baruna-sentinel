@@ -48,7 +48,7 @@ function executiveDecisionCard(){
    '<div><dt>Temuan sumber</dt><dd>'+e(chosen.historicRangeCm.join("–"))+' cm · penurunan kumulatif pada studi tahun 2005</dd></div>'+
    '<div><dt>Hasil pemeriksaan</dt><dd>Bukti belum cukup untuk menetapkan prioritas inspeksi operasional</dd></div></dl>'+
    '<strong class="as-brief-next-label">Tindakan yang dapat dilakukan sekarang</strong>'+
-   '<ol>'+chosen.requiredActions.slice(0,3).map(x=>'<li>'+e(x)+'</li>').join("")+'</ol>'+
+   '<ol><li>Konfirmasi ID aset, batas resmi, dan lokasi titik survei historis bersama pengelola.</li>'+'<li>Minta pengukuran ulang yang mewakili aset, lengkap dengan tanggal, datum, metode, dan ketidakpastian.</li>'+'<li>Periksa keterkaitan data stasiun GNSS dengan aset, paparan pesisir, dan tingkat penting aset.</li></ol>'+
    '<p>Ringkasan ini bersumber dari penelitian historis. Cetak laporan lengkap untuk daftar enam sektor, provenance, dan batas interpretasi.</p>'+
    '</div>':"";
  return '<section class="as-executive-decision" aria-label="Ringkasan keputusan untuk tim operasional">'+
