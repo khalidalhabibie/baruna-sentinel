@@ -8,8 +8,10 @@ const publicAssets=[
   "src/engine.js",
   "src/geo.js",
   "src/report.js",
+  "src/historical.js",
   "data/CSEM_clean_Noff1site.source-derived.rneu",
-  "data/BAKO_IGS_2025-001_20min_qc_summary.json"
+  "data/BAKO_IGS_2025-001_20min_qc_summary.json",
+  "data/tanjung-emas-historical-field-evidence.json"
 ];
 rmSync("dist",{recursive:true,force:true});
 for(const file of publicAssets){
