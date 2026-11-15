@@ -4,3 +4,13 @@ reports/
 tmp/
 *.log
 .DS_Store
+
+# Private BIG/SRGI source observation archives and locally generated QC
+BIG_CORS_RINEX_*.zip
+baruna_private_cors_qc_*
+*.26o
+*.26n
+*.rnx
+*.crx
+*.rnx.gz
+*.crx.gz
