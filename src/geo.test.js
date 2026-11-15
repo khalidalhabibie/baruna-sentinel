@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {LANDMARKS,BAKO,SCENARIO_MARKERS,projectWgs84,haversineKm,renderGeoSvg,geoContextSummary} from "./geo.js";
+import {LANDMARKS,BAKO,SCENARIO_MARKERS,projectWgs84,haversineKm,renderGeoSvg,renderSpatialAuditRows,geoContextSummary} from "./geo.js";
 
 test("CSEM coordinates match BIG InaCORS sexagesimal catalogue",()=>{
   const c=LANDMARKS.find(p=>p.id==="csem");
@@ -24,4 +24,23 @@ test("only source-grounded reference points are marked real; scenario locations 
   assert.ok(xml.includes('viewBox="0 0 940 470"'));
   assert.ok(xml.includes("fictional scenario location"));
   assert.ok(xml.includes("NO DEMNAS, COASTLINE OR HAZARD MODEL"));
+});
+
+test("GIS layer controls selectively hide illustrative points without hiding authentic references", () => {
+  const noScenario=renderGeoSvg({fictional:false});
+  assert.ok(noScenario.includes('geo-marker geo-csem'));
+  assert.ok(!noScenario.includes('geo-marker geo-port"'));
+  const onlyStation=renderGeoSvg({station:true,landmarks:false,fictional:false});
+  assert.ok(onlyStation.includes('geo-marker geo-csem'));
+  assert.ok(!onlyStation.includes('geo-marker geo-genuk-office'));
+  assert.ok(!onlyStation.includes('geo-marker geo-store'));
+});
+test("GIS coordinate audit returns four provenance-grounded reference rows and no invented survey sector geometry", () => {
+  const audit=renderSpatialAuditRows();
+  assert.equal((audit.match(/<tr>/g)||[]).length,4);
+  assert.ok(audit.includes("BAKO (IGS)"));
+  assert.ok(audit.includes("Different station and time"));
+  assert.ok(audit.includes("110.376937"));
+  assert.ok(audit.includes("No on-asset GNSS link"));
+  assert.ok(!audit.includes("West breakwater"));
 });
