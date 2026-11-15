@@ -96,3 +96,24 @@ Do not configure Vercel to serve `.` or bypass `dist`; the deliberate isolation 
 - Validate the manually deployed URL on the presentation laptop, including PDF print/export.
 - If available, obtain genuine Semarang RINEX for the original use case; BAKO remains explicitly a separate instrument-capability proof.
 - Do **not** claim this demo contains actual DEMNAS exposure analysis, physically measured asset risk, an operational GNSS positioning pipeline, or a production operator integration.
+
+## Real port-infrastructure historical field evidence — NOT current GNSS
+
+BARUNA Sentinel now includes a **published, real field study** about *six Tanjung Emas Harbour infrastructure sectors*. Source: Purnomo Raharjo & Mira Yosi (2017), ["The Identification of Land Subsidance by Levelling Measurement and GPR Data at Tanjung Emas Harbour, Semarang"](https://doi.org/10.32693/bomg.32.1.2017.351), reporting 2005 field levelling and a preceding 10-year historic harbour context.
+
+| Real documented sector | Published cumulative settlement (historical) |
+|---|---:|
+| Coaster Street | 21–41 cm |
+| Container wharf | 62–94 cm |
+| North breakwater | 64–79 cm |
+| West breakwater | 74–140 cm |
+| East groin | 76–89 cm |
+| Stacking area | 77–109 cm |
+
+These quantities are **neither 2026 asset conditions nor annual rates**. Exact survey geometry for these sectors has *not* been established in the MVP; therefore real sectors appear in an **evidence register, without fabricated point locations**. All require fresh independent measurements and an operator-approved inspection protocol before operational ranking.
+
+This separate real-world literature case shows why generic citywide or single-station displacement is inadequate. Historical harbour levelling, CSEM GPS time-series analysis and BAKO multi-GNSS observation QC are independent measurement datasets: the MVP does **not** merge or interpolate them.
+
+The frontend renders a filtering, interactive *Historical Field Evidence* register and an opt-in OpenStreetMap embedded street map. The official OSM embed requires internet; the previously available source-grounded WGS84 offline point plot remains the default. OSM street context is not surveyed GNSS ground truth or an engineering inspection record.
+
+Research extract: `data/tanjung-emas-historical-field-evidence.json`, validated by `src/historical.js` and unit tests. Printable PDF dossier and JSON export include published sectors with provenance and explicit current-data gaps.
