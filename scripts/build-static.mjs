@@ -13,6 +13,7 @@ const publicAssets=[
   "src/asset-evidence.js",
   "src/asset-intake-ui.js",
   "src/published-cors.js",
+  "src/cors-evidence-bridge.js",
   "src/assessment.js",
   "src/assessment-ui.js",
   "src/app.js",
