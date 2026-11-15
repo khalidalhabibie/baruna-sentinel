@@ -25,16 +25,20 @@ try {
     "First keyboard tab reaches the skip link");
   assert.equal(await page.locator("#station-qc").isVisible(),false,
     "Full GNSS QC screen is not stacked into the buyer Overview");
-  assert.equal(await page.locator(".decision-data-bridge").isVisible(),true,
-    "Overview has a meaningful CTA into GNSS data analysis");
+  assert.equal(await page.locator(".decision-data-bridge").isVisible(),false,
+    "Duplicate GNSS CTA is removed from the buyer's view");
+  assert.equal(await page.locator(".evidence-strip").isVisible(),true,
+    "Compact source chain stays next to the main decision");
   assert.equal(await page.locator(".evidence-logic-card").count(),3,
     "Overview explains what is known, unknown, and what to verify next");
   assert.ok((await page.locator(".evidence-logic").textContent()).includes("We cannot claim"),
     "Buyer-facing decision explicitly states scientific limitations");
   const deskBox=await page.locator("#executive-desk").boundingBox();
   const geoBox=await page.locator("#case-workspace").boundingBox();
-  assert.ok(deskBox && geoBox && deskBox.y<geoBox.y,
-    "Evidence interpretation precedes geographic map workspace");
+  assert.ok(deskBox && geoBox && geoBox.y<deskBox.y,
+    "The sector decision precedes optional source notes");
+  assert.equal(await page.locator("#map-disclosure").getAttribute("open"),null,
+    "Map stays collapsed until explicitly requested");
   await page.locator("#view-analyst").click();
   assert.equal(await page.locator(".analyst-proof-card:visible").count(),2,
     "Analyst starts with two independently sourced GNSS records");
@@ -47,7 +51,7 @@ try {
   assert.ok(page.url().includes("view=analyst"),"Analyst mode is URL-shareable");
   await page.locator("#view-decision").click();
   assert.equal(await page.locator("#station-qc").isVisible(),false,"Overview hides technical QC workbench");
-  assert.equal(await page.locator(".decision-data-bridge").isVisible(),true,"Overview restores its evidence CTA");
+  assert.equal(await page.locator(".evidence-strip").isVisible(),true,"Overview restores the source chain");
   assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"),"true");
   // Fail-safe contract: the two mode switches must continue to work
   // even if app.js has a production loading or runtime import error.
@@ -63,7 +67,8 @@ try {
   await navOnly.close();
 
   assert.equal(await page.locator(".controls").isVisible(), false, "Decision mode hides technical controls");
-  assert.equal(await page.locator("#case-journey").isVisible(), true, "Guided 3-step journey shown");
+  assert.equal(await page.locator("#case-journey").isVisible(), false,
+    "Redundant three-step section stays hidden");
   await page.waitForFunction(() => document.querySelector("#stat-epochs")?.textContent.includes("3,561"), { timeout: 15000 });
   const epochCount = await page.locator("#stat-epochs").textContent();
   assert.ok(epochCount.includes("3,561"), "CSEM authentic historic positions load");
@@ -131,8 +136,12 @@ try {
   assert.equal(await page.locator("#cors-qc-result .cors-qc-empty").count(),1,
     "Local QC can be purged from application memory");
 
+  assert.equal(await page.locator("#geo-osm-embed").isVisible(),false,
+    "Geographic context starts collapsed");
+  await page.locator("#map-disclosure > summary").click();
+  await page.waitForTimeout(350);
   assert.equal(await page.locator("#geo-osm-embed").isVisible(),true,
-    "Real street basemap is default, not an opt-in secondary iframe");
+    "Expanding location context reveals the interactive map");
   assert.equal(await page.locator("#street-map .leaflet-container").count(),0,
     "Map div is the Leaflet container itself");
   assert.ok(await page.locator("#street-map .leaflet-tile-pane").count()===1,
@@ -200,7 +209,7 @@ try {
   assert.equal(await page.locator("#exec-sectors").textContent(), "6", "Decision desk reports source-backed sectors");
   assert.equal(await page.locator("#exec-current").textContent(), "0", "No current on-asset instrument falsely declared");
   assert.equal(await page.locator("#case-outcome-name").isVisible(),true,
-    "Spacious map-first workspace includes selected site assessment");
+    "Selected sector and its next step are visible without using the map");
   assert.ok((await page.locator("#case-outcome-name").textContent()).length>3);
   assert.ok((await page.locator("#case-outcome-history").textContent()).includes("cm"),
     "Selected historic sector measurement is visible beside GIS reference workflow");
@@ -216,6 +225,8 @@ try {
   assert.equal(await page.locator("#case-outcome-history").textContent(),"74–140 cm");
   assert.equal(await page.locator("#case-workspace-brief").isVisible(),true,
     "Selected sector has a real report action in the evidence workspace");
+  assert.equal(await page.locator("#sector-detail-wrap").getAttribute("open"),null,
+    "Sector detail stays collapsed until the user requests it");
   await page.evaluate(() => {
     window.__briefPrintCalled=false;
     window.print=()=>{window.__briefPrintCalled=true;};
@@ -243,8 +254,7 @@ try {
   mkdirSync("reports", { recursive: true });
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
-  await page.locator("#step-sector").click();
-  await page.getByRole("button", { name: /review the evidence/i }).click();
+  await page.getByRole("button", { name: /explore case/i }).click();
   await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
   assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
 
