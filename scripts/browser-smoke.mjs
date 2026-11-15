@@ -171,9 +171,8 @@ try {
       dimensions:node?.getBoundingClientRect()?.toJSON()
     };
   });
-  console.log("ASSET_MAP_DIAGNOSTIC",JSON.stringify(mapQa));
-  assert.ok(mapQa.vectorLayers>=2,
-    "Actual imported polygon and CSEM station are drawn as independent map layers");
+  assert.ok(mapQa.svg>=1&&mapQa.svgPaths>=2&&mapQa.canvas===0,
+    "Imported polygon and CSEM station are drawn as distinct inspectable SVG paths");
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake.png",fullPage:true});
   await assessmentPage.locator("#ai-print").click();
   assert.equal(await assessmentPage.evaluate(()=>window.__assessmentPrintInvoked),true);
