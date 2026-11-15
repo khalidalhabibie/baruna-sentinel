@@ -2,7 +2,7 @@
 (function () {
   "use strict";
   const ALLOWED = new Set(["decision", "analyst"]);
-  const DISPLAY = {decision:"Overview",analyst:"GNSS Analyst"};
+  const DISPLAY = {decision:"Evidence Review",analyst:"GNSS Analyst"};
   const $ = id => document.getElementById(id);
   function setView(view, options = {}) {
     if(!ALLOWED.has(view)) return;
@@ -23,11 +23,11 @@
       window.history.replaceState({view}, "", url.pathname+url.search+url.hash);
     }
     if(options.scroll) {
-      const target=view==="decision"?$("executive-desk"):$("analyst-intro");
+      const target=view==="decision"?$("case-workspace"):$("analyst-intro");
       (target || $("top"))?.scrollIntoView({behavior:"smooth",block:"start"});
     }
     if($("live-region")) $("live-region").textContent =
-      view==="decision"?"Evidence Review selected: known evidence, limitations and next verification.":
+      view==="decision"?"Evidence Review selected: choose a sector and export a verification brief.":
       "GNSS Analyst selected: independent station records, observation QC and source provenance.";
   }
   function initialView() {
