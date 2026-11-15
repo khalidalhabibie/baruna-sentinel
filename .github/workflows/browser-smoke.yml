@@ -36,5 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: sentinel-judge-demo-screenshots
-          path: reports/sentinel-judge-demo-*.png
+          path: |
+            reports/sentinel-judge-demo-*.png
+            reports/sentinel-judge-evidence-dossier.pdf
           if-no-files-found: ignore
