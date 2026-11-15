@@ -17,7 +17,49 @@ try {
   const tilePixel=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGN4/P4NAAV3Ar/lz70PAAAAAElFTkSuQmCC","base64");
   await page.route("https://tile.openstreetmap.org/**", route =>
     route.fulfill({status:200,contentType:"image/png",body:tilePixel}));
-  const initial=await page.goto(BASE, {waitUntil:"networkidle",timeout:30000});
+  const initial=await page.goto(BASE+"/?page=projects", {waitUntil:"networkidle",timeout:30000});
+  // Separate product-introduction journey: default route, node navigation,
+  // economic assumption exercise, assessment deep-link and mobile usability.
+  const storyPage=await browser.newPage({viewport:{width:1440,height:900}});
+  const storyErrors=[];
+  storyPage.on("pageerror",error=>storyErrors.push(error.message));
+  await storyPage.goto(BASE,{waitUntil:"networkidle",timeout:30000});
+  assert.equal(await storyPage.locator("#pw-page-why").isVisible(),true,
+    "Default entry shows concise Why Sentinel story rather than a dense dashboard");
+  assert.equal(await storyPage.locator("#ws-node-track [role='tab']").count(),5,
+    "Five connected, accessible evidence-to-decision nodes exist");
+  assert.ok((await storyPage.locator(".ws-headline h1").textContent()).includes("Keputusan inspeksi"));
+  assert.ok((await storyPage.locator(".ws-fact-strip").textContent()).includes("100–120 mm/tahun"),
+    "Published regional InSAR finding is shown with its period and caveat");
+  await storyPage.screenshot({path:"reports/sentinel-judge-why-sentinel-desktop.png",fullPage:true});
+  await storyPage.locator('[data-ws-index="1"]').click();
+  assert.ok((await storyPage.locator("#ws-step-detail h3").textContent()).includes("biaya operasional"),
+    "Clicking the second node reveals economic implications");
+  await storyPage.locator("#ws-hours").fill("6");
+  await storyPage.locator("#ws-hourly").fill("1000000");
+  assert.equal(await storyPage.locator("#ws-econ-result").textContent(),"Rp6.000.000",
+    "Economic calculator changes only on user-defined hypothetical inputs");
+  assert.ok((await storyPage.locator(".ws-econ-model").textContent()).includes("Bukan nilai kerugian aktual"),
+    "Economic scenario never masquerades as verified port loss");
+  await storyPage.locator('[data-ws-index="2"]').click();
+  assert.ok((await storyPage.locator(".ws-dataset-lines").textContent()).includes("BAKO"),
+    "Evidence node labels independent CSEM and BAKO datasets");
+  await storyPage.locator('[data-ws-index="2"]').press("ArrowRight");
+  assert.equal(await storyPage.locator('[data-ws-index="3"]').getAttribute("aria-selected"),"true",
+    "Node navigation supports keyboard arrow keys");
+  await storyPage.locator('[data-ws-index="4"]').click();
+  assert.ok((await storyPage.locator("#ws-step-detail").textContent()).includes("Data Insufficient") ||
+    (await storyPage.locator("#ws-step-detail").textContent()).includes("DATA INSUFFICIENT"));
+  await storyPage.locator(".ws-stage-actions [data-pw-page='assessment']").click();
+  assert.equal(await storyPage.locator("#pw-page-assessment").isVisible(),true,
+    "Final node opens a functioning Inspection Assessment");
+  await storyPage.goto(BASE,{waitUntil:"networkidle",timeout:30000});
+  await storyPage.setViewportSize({width:390,height:844});
+  assert.equal(await storyPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
+    "Why Sentinel introduction has no horizontal mobile overflow");
+  await storyPage.screenshot({path:"reports/sentinel-judge-why-sentinel-mobile.png",fullPage:true});
+  assert.deepEqual(storyErrors,[],"Interactive story has no JavaScript runtime errors");
+  await storyPage.close();
   assert.equal(initial.status(),200);
   assert.equal(await page.locator("[data-pw-screen='projects']").isVisible(),true,
     "Projects index is the new default entry");
