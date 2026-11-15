@@ -612,6 +612,15 @@ $("geo-map").addEventListener("keydown",event=>{
   const node=event.target.closest("[data-point-id]");
   if(node){event.preventDefault();selectGeoPoint(node.dataset.pointId);}
 });
+$("map-disclosure").addEventListener("toggle", () => {
+  if ($("map-disclosure").open) {
+    // Recalculate map dimensions after opening a previously hidden Leaflet map.
+    requestAnimationFrame(() => {
+      if(streetMap) streetMap.resize();
+      else showLiveOsmMap(true);
+    });
+  }
+});
 $("osm-toggle").addEventListener("click", () => showLiveOsmMap(!requestedOnlineMap));
 $("osm-close").addEventListener("click", () => showLiveOsmMap(false));
 $("historical-filters").addEventListener("click", e => {
@@ -627,7 +636,7 @@ $("historical-sector-list").addEventListener("click", e => {
   button.setAttribute("aria-current", "true");
   selectedSectorId = button.dataset.sector;
   $("historical-sector-detail").innerHTML = renderHistoricalSectorDetail(historicalDoc, selectedSectorId);
-  $("sector-detail-wrap").open = true;
+  // Technical detail stays closed until the user explicitly expands it.
   updateSelectedSector();
   notify("Selected "+ historicalDoc.sectors.find(s => s.id === selectedSectorId).name + ". Historical study only; current condition unknown.");
 });
