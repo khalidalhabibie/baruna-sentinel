@@ -5,11 +5,18 @@ Independent, offline-capable competition prototype. This repository does **not**
 ## Problem
 Coastal infrastructure teams need an explainable **inspection-review queue**, not a misleading map implying that a nearby GNSS station measures every asset.
 
-## Competition UI: simple by default
+## Product promise: evidence that leads to a defensible next step
 
-**Overview (default)** is a map-first, source-backed coastal evidence workspace that answers three questions: what historical evidence exists, which sector is selected, and what new measurements should be requested. The interactive map shows public reference locations; technical details and source caveats are available on demand.
+**Overview (default)** is an **evidence-first** decision workspace that answers three plain-language questions: **What do we know? What can we *not* conclude? What should we verify next?** Historical sector records and their limitations come before the map. The OSM map remains interactive geographic context; it is not an asset risk surface or a surveyed-sector map.
 
-**GNSS Analyst** is a dedicated technical workspace for local CSEM / CSMG observation QC, historic GPS positions, spatial audit, source controls and exports. Its full daily-QC report is intentionally separate from the Overview to avoid overloading buyer-facing decisions. View selection is handled by a standalone navigation script, so the two tabs still work even when the geospatial analysis module fails. Share a direct technical view with `?view=analyst`. Use **Enable experimental tools** to reveal local Ina-CORS GeoRinex QC import, fictional scenario markers and synthetic data controls. Closing the lab hides them again without changing core datasets.
+**GNSS Analyst** is a separate technical workspace, starting with two independent proof-of-capability sources: the historic CSEM GPS-derived station series (Semarang, 2010–2021) and verified BAKO multi-GNSS observation QC (Cibinong, 1 Jan 2025). It then exposes position trends, source controls, spatial audit, and optional local CSEM / CSMG observation QC. The analyst must never imply BAKO verified CSEM displacement or site safety. View selection is handled by a standalone navigation script, so the two tabs still work even when the geospatial analysis module fails. Switching to an analyst opens its source context, not an empty optional import screen. Share a direct technical view with `?view=analyst`. Use **Enable experimental tools** to reveal local Ina-CORS GeoRinex QC import, fictional scenario markers and synthetic data controls. Closing the lab hides them again without changing core datasets.
+
+**Two honest outputs:**
+
+- **Prepare verification brief** (Overview): concise, sector-specific print / Save as PDF, with the published historical measurement, unknown current condition, missing exact geometry, and explicit next evidence requests. This depends only on validated historical sector records; it does **not** need a GNSS position solution. If the published sector extract cannot load, the action stops instead of fabricating a report.
+- **Print evidence dossier** (GNSS Analyst): technical report with CSEM trend, the independently sourced observation QC, provenance guard, spatial references, and all method limits. This requires a valid loaded GNSS series.
+
+**Commercial hypothesis (unproven):** a maintenance or geodetic planning team may save coordination effort by getting a reproducible missing-evidence request. We have **not** validated time saved, willingness to pay, asset criticality, safe operational thresholds or a production buyer. This product must not be sold as continuous asset monitoring or structural risk scoring.
 
 Feature switches are defined in [`src/feature-flags.js`](src/feature-flags.js):
 - `inaCorsImport`: off by default; user-declared Ina-CORS QC import only
