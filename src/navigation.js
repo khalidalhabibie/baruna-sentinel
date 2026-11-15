@@ -15,6 +15,7 @@
       button.setAttribute("aria-current",selected?"page":"false");
     }
     document.title="BARUNA Sentinel | "+DISPLAY[view];
+    window.dispatchEvent(new CustomEvent("baruna:viewchange",{detail:{view}}));
     if(options.updateUrl) {
       const url=new URL(window.location.href);
       if(view==="decision") url.searchParams.delete("view");
