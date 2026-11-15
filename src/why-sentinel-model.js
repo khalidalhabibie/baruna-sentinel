@@ -1,45 +1,43 @@
 /**
- * Introductory editorial walkthrough for Bhumireka / commercial conversations.
- *
- * Content is source-grounded, never an operational loss estimate or a claim
- * that published regional rates measure an individual port asset.
+ * Single-purpose story: explain the coastal-infrastructure decision problem
+ * before exposing advanced GIS/GNSS screens. Historical records stay labelled.
  */
 export const STORY_STEPS=Object.freeze([
-  Object.freeze({id:"problem",number:"01",nav:"Masalah",eyebrow:"THE PROBLEM",
-    title:"Tanah bergerak. Prioritas inspeksi belum otomatis jelas.",
-    lead:"Pesisir Semarang tidak mengalami penurunan tanah yang seragam. Data ada, tetapi tidak langsung menjawab aset mana yang perlu diperiksa dahulu.",
-    takeaway:"Pergerakan stasiun regional bukan bukti bahwa satu dermaga, jalan, atau gudang bergerak dengan laju yang sama.",
-    action:"Buka studi Tanjung Emas",page:"detail",
-    sourceLabel:"Aditiya & Ito, 2023",sourceUrl:"https://doi.org/10.1016/j.jag.2023.103579"}),
-  Object.freeze({id:"economy",number:"02",nav:"Dampak",eyebrow:"WHY IT MATTERS",
-    title:"Keterlambatan keputusan bisa menjadi biaya operasional.",
-    lead:"Ketika perubahan tanah memengaruhi akses atau fasilitas, konsekuensinya dapat berupa pemeriksaan tambahan, pengalihan operasi, keterlambatan logistik, dan pekerjaan perbaikan.",
-    takeaway:"BARUNA belum menghitung kerugian aktual, penghematan, maupun ROI. Besarnya tergantung kondisi aset, lama gangguan, dan biaya operasional operator.",
-    action:"Lihat asumsi ekonomi",page:null,
-    sourceLabel:"Azeriansyah et al., 2025",sourceUrl:"https://doi.org/10.31284/j.jemt.2025.v5i2.6841"}),
-  Object.freeze({id:"evidence",number:"03",nav:"Bukti GNSS",eyebrow:"WHAT WE HAVE",
-    title:"Dari laporan historis dan GNSS menjadi bukti yang terlacak.",
-    lead:"BARUNA menampilkan sumber, stasiun, periode, kualitas observasi, dan keterbatasannya. Dataset dari lokasi atau waktu yang berbeda tidak digabung menjadi satu kesimpulan palsu.",
-    takeaway:"Data CSEM menunjukkan konteks pergerakan stasiun; QC BAKO membuktikan ketersediaan observasi Multi-GNSS yang terpisah, bukan gerak aset Semarang.",
-    action:"Buka GNSS Lab",page:"analyst",
-    sourceLabel:"Susilo et al., 2023 / Zenodo",sourceUrl:"https://doi.org/10.5281/zenodo.7775016"}),
-  Object.freeze({id:"process",number:"04",nav:"Analisis",eyebrow:"HOW IT WORKS",
-    title:"Setiap klaim melewati pemeriksaan bukti terlebih dahulu.",
-    lead:"Rantai analisis: sumber GNSS dan observasi → quality control → relasi stasiun-ke-aset → konteks paparan dan kekritisan → keputusan yang disertai alasan.",
-    takeaway:"Jika geometri, pengukuran representatif, atau kriteria aset belum tersedia, hasilnya Data Insufficient, bukan aman atau berisiko tinggi.",
-    action:"Lihat assessment",page:"assessment",
-    sourceLabel:"Metodologi BARUNA Sentinel / Proposal RGPD 2026",sourceUrl:null}),
-  Object.freeze({id:"action",number:"05",nav:"Keputusan",eyebrow:"THE OUTCOME",
-    title:"Hasilnya: tahu apa yang harus diverifikasi berikutnya.",
-    lead:"Tim mendapat ringkasan evidence readiness, sektor yang dipilih, kekurangan data, dan verification brief yang dapat diserahkan kepada tim survei atau teknik.",
-    takeaway:"Prototype ini mendukung screening dan perencanaan inspeksi. Belum merupakan pemantauan langsung, prediksi kegagalan, atau sertifikasi keselamatan.",
-    action:"Coba Inspection Assessment",page:"assessment",
-    sourceLabel:"BARUNA Sentinel · source-backed research prototype",sourceUrl:null})
+  Object.freeze({id:"problem",number:"01",nav:"Masalah",eyebrow:"MASALAH DI LAPANGAN",
+    title:"Tanah bisa turun dengan kecepatan berbeda di setiap lokasi.",
+    lead:"Di kawasan pesisir, dermaga, jalan akses, dan fasilitas industri sama-sama perlu dijaga. Tetapi data penurunan tanah tingkat wilayah belum menunjukkan aset mana yang harus diperiksa lebih dulu.",
+    takeaway:"Temuan 100–120 mm/tahun adalah laju maksimum pada lokasi tertentu di studi Semarang–Demak 2015–2022, bukan ukuran pergerakan setiap aset.",
+    action:"Buka catatan Tanjung Emas",page:"detail",
+    sourceLabel:"Aditiya & Ito (2023), InSAR 2015–2022",sourceUrl:"https://doi.org/10.1016/j.jag.2023.103579"}),
+  Object.freeze({id:"economy",number:"02",nav:"Dampak",eyebrow:"KENAPA PENTING",
+    title:"Jika infrastruktur terganggu, biaya operasi bisa ikut naik.",
+    lead:"Akses pelabuhan yang terganggu berpotensi menyebabkan keterlambatan angkutan, pengalihan rute, pemeriksaan mendadak, dan perbaikan. Tim perlu memfokuskan inspeksi sebelum gangguan menjadi lebih mahal.",
+    takeaway:"BARUNA belum menghitung kerugian aktual, kemungkinan kejadian, penghematan, atau ROI operator. Kalkulator di samping hanya perkalian asumsi yang Anda masukkan.",
+    action:"Coba kalkulator asumsi",page:null,
+    sourceLabel:"Wetlands International / Deltares — economic assessment of subsidence",sourceUrl:"https://indonesia.wetlands.org/id/download/1496/"}),
+  Object.freeze({id:"evidence",number:"03",nav:"Data",eyebrow:"APA YANG DIANALISIS",
+    title:"Kita mulai dari data yang benar-benar tersedia.",
+    lead:"BARUNA membedakan catatan penurunan tanah historis, riwayat posisi stasiun GPS, dan pemeriksaan kualitas data Multi-GNSS. Setiap sumber punya tempat, tahun, dan arti yang berbeda.",
+    takeaway:"Data CSEM 2010–2021 bukan pengukuran pada dermaga. QC BAKO tahun 2025 berasal dari stasiun lain; tidak dapat membuktikan penurunan tanah di Tanjung Emas.",
+    action:"Lihat data GNSS",page:"analyst",
+    sourceLabel:"Susilo et al. (2023), arsip posisi GPS historis",sourceUrl:"https://doi.org/10.5281/zenodo.7775016"}),
+  Object.freeze({id:"process",number:"04",nav:"Cara kerja",eyebrow:"CARA BARUNA MEMBANTU",
+    title:"Periksa data, hubungkan dengan aset, baru tentukan tindakan.",
+    lead:"Sistem mengecek asal dan kualitas pengukuran, apakah stasiun mewakili aset, lalu mempertimbangkan lokasi, paparan pesisir, dan pentingnya aset. Keputusan harus mempunyai alasan yang dapat ditelusuri.",
+    takeaway:"Jika peta aset atau pengukuran saat ini belum tersedia, hasilnya Data Insufficient (bukti belum cukup), bukan klaim bahwa aset aman ataupun berisiko tinggi.",
+    action:"Lihat proses penilaian",page:"assessment",
+    sourceLabel:"Metodologi BARUNA Sentinel dalam proposal RGPD 2026",sourceUrl:null}),
+  Object.freeze({id:"action",number:"05",nav:"Hasil",eyebrow:"CONTOH HASIL",
+    title:"Contoh: Tanjung Emas masih memerlukan pengukuran baru.",
+    lead:"Studi tahun 2005 mencatat penurunan kumulatif 74–140 cm pada sektor West breakwater. Karena geometri sektor dan kondisi terbaru belum tervalidasi, BARUNA meminta bukti tambahan sebelum memberi peringkat inspeksi.",
+    takeaway:"Prototype ini menghasilkan pemeriksaan kelengkapan bukti, kebutuhan survei, dan laporan. Ranking Tinggi/Sedang/Pantau hanya didemokan pada data sintetis terpisah; bukan hasil risiko aset riil.",
+    action:"Buka hasil dan laporan",page:"assessment",
+    sourceLabel:"Catatan lapangan historis Tanjung Emas, penelitian 2005",sourceUrl:"https://doi.org/10.32693/bomg.32.1.2017.351"})
 ]);
 export const STORY_HIGHLIGHTS=Object.freeze([
-  Object.freeze({label:"100–120 mm/tahun",detail:"Laju maksimum area tertentu pada riset InSAR 2015–2022; bukan laju seluruh aset.",source:"https://doi.org/10.1016/j.jag.2023.103579"}),
-  Object.freeze({label:"6 sektor",detail:"Catatan penelitian kumulatif Tanjung Emas tahun 2005; bukan kondisi aset saat ini.",source:"https://doi.org/10.32693/bomg.32.1.2017.351"}),
-  Object.freeze({label:"3 aliran bukti",detail:"Studi sektor, posisi GPS CSEM, dan QC Multi-GNSS BAKO; ketiganya independen.",source:null})
+  Object.freeze({label:"Masalah",detail:"Data penurunan tanah tersebar dan tidak otomatis menunjukkan aset mana yang perlu diperiksa.",source:null}),
+  Object.freeze({label:"Cara kerja",detail:"Periksa GNSS → cek mutu dan kaitannya dengan aset → tentukan apakah bukti cukup.",source:null}),
+  Object.freeze({label:"Keluaran",detail:"Alasan prioritas atau permintaan data tambahan, disertai laporan untuk tim teknik.",source:null})
 ]);
 export function selectStoryStep(input){
   const step=typeof input==="number"?STORY_STEPS[input]:STORY_STEPS.find(x=>x.id===input);
