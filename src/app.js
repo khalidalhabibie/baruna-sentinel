@@ -296,7 +296,7 @@ function showLiveOsmMap(show) {
   $("geo-map").hidden = show;
   $("osm-toggle").setAttribute("aria-expanded", String(show));
   $("osm-toggle").textContent = show ? "Return to coordinate plot" : "Show live street map (OSM)";
-  if (show && !$("osm-iframe").getAttribute("src")) {
+  if (show) {
     // Only on explicit click. Never prefetch OSM tiles and never imply geodetic survey status.
     const bounds=GEO_VIEWS[geoView];
     const bbox = [bounds.west,bounds.south,bounds.east,bounds.north].join(",");
@@ -305,7 +305,7 @@ function showLiveOsmMap(show) {
     url.searchParams.set("layer", "mapnik");
     const location=geoPointDetails(geoSelectedId);
     url.searchParams.set("marker",location.latitude+","+location.longitude);
-    $("osm-iframe").src = url.href;
+    if ($("osm-iframe").getAttribute("src") !== url.href) $("osm-iframe").src = url.href;
   }
 }
 
@@ -335,6 +335,9 @@ function renderGeographicContext() {
   for (const button of document.querySelectorAll("[data-map-layer]")) {
     button.setAttribute("aria-pressed", String(geoLayers[button.dataset.mapLayer]));
   }
+  // OSM remains opt-in; after an explicit user opt-in keep the marker/extent
+  // synchronized with the selected point rather than leaving a stale pin.
+  if(!$("geo-osm-embed").hidden) showLiveOsmMap(true);
 }
 
 function currentEvidenceBundle() {
