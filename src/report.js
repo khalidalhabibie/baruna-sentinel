@@ -86,3 +86,47 @@ export function buildEvidenceReportMarkup(bundle) {
     +'<p class="print-tiny"><b>Evidence sources:</b><br>'+refs.map(s=>safeText(s)).join('<br>')+'</p>'
     +'<div class="print-footer">BARUNA Sentinel · Ourdo Indonesia · Responsible screening demonstrator. Public reference positions and historical observations are not equivalent to an operational asset safety certificate.</div>';
 }
+
+
+/**
+ * A concise, printable decision artifact. Unlike the technical GNSS dossier, this
+ * requires ONLY a validated historic sector and its evidence-request record.
+ * Missing movement/RINEX data must not block an honest verification request.
+ */
+export function buildVerificationBriefMarkup({verification, source, generatedAt} = {}) {
+  if(!verification || verification.decision !== "REQUEST_UPDATED_EVIDENCE" ||
+     !Array.isArray(verification.request) || verification.request.length === 0 ||
+     !Array.isArray(verification.historicCumulativeSettlementCm) ||
+     verification.historicCumulativeSettlementCm.length !== 2 ||
+     !source || source.reportedSurveyYear !== verification.historicMeasurementYear) {
+    throw new TypeError("A validated historical sector is required for the verification brief");
+  }
+  const requests = verification.request.map(item =>
+    '<li>'+safeText(item)+'</li>').join("");
+  return '<div class="brief-sheet">'
+    +'<div class="print-head"><div><div class="print-brand">BARUNA / SENTINEL</div>'
+    +'<small>OURDO INDONESIA · RESEARCH EVIDENCE WORKSPACE</small></div>'
+    +'<div style="text-align:right"><b>FIELD VERIFICATION BRIEF</b>'
+    +'<small>Prepared '+safeText((generatedAt || new Date().toISOString()).slice(0,10))+' · Historical reference only</small></div></div>'
+    +'<h1>'+safeText(verification.sectorName)+'</h1>'
+    +'<div class="print-callout"><b>Recommended next step: REQUEST UPDATED FIELD EVIDENCE.</b>'
+    +'<p>This brief explains what is documented, what is unknown, and what the responsible operator should verify next. It is not an inspection order or a safety assessment.</p></div>'
+    +'<div class="print-metrics">'
+    +'<div><small>HISTORICAL FIELD OBSERVATION</small><strong>'+safeText(verification.historicMeasurementYear)+'</strong></div>'
+    +'<div><small>REPORTED CUMULATIVE SETTLEMENT</small><strong>'+safeText(verification.historicCumulativeSettlementCm[0])+'–'+safeText(verification.historicCumulativeSettlementCm[1])+' cm</strong></div>'
+    +'<div><small>CURRENT ASSET CONDITION</small><strong>UNKNOWN</strong></div></div>'
+    +'<h2>01 / What we know</h2>'
+    +'<p>A published field study reports cumulative historical settlement for the selected infrastructure sector in '
+    +safeText(verification.historicMeasurementYear)
+    +'. This is research context, not a contemporary engineering measurement or an annual rate.</p>'
+    +'<h2>02 / What we cannot conclude</h2>'
+    +'<p>The source does not supply validated exact sector geometry or current on-asset measurement in this prototype. Historical CSEM GPS-derived station positions and independent BAKO multi-GNSS QC cannot establish this sector\'s current safety, subsidence rate or inspection priority.</p>'
+    +'<h2>03 / What to verify next</h2>'
+    +'<ol class="brief-action-list">'+requests+'</ol>'
+    +'<h2>Evidence and decision boundary</h2>'
+    +'<p><b>Source:</b> '+safeText(source.publication?.title || "Published coastal field study")
+    +' · '+safeText(source.publication?.doi || "DOI not supplied")+'.</p>'
+    +'<p><b>Decision:</b> Evidence request only. No probability of failure, risk score, cost estimate, or safety certification is provided.</p>'
+    +'<div class="print-footer">BARUNA Sentinel · Engineered by Ourdo Indonesia · Historical source and measurement scope must remain attached to every exported decision.</div>'
+    +'</div>';
+}
