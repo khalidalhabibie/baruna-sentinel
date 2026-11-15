@@ -158,7 +158,21 @@ try {
   assert.ok((await assessmentPage.locator(".ai-no-rank").textContent()).includes("0 operational rankings"));
   assert.ok((await assessmentPage.locator(".ai-asset-result").textContent()).includes("Geographic proximity"));
   await assessmentPage.locator(".ai-map-wrap .leaflet-container").waitFor({state:"visible",timeout:10000});
-  assert.ok((await assessmentPage.locator(".ai-map-wrap .leaflet-interactive").count())>=2,
+  const mapQa=await assessmentPage.evaluate(()=>{
+    const node=document.querySelector("#ai-map");
+    return {
+      className:node?.className,
+      children:node?.children.length,
+      svgPaths:node?.querySelectorAll("path").length,
+      vectorLayers:node?.querySelectorAll(".leaflet-interactive").length,
+      svg:node?.querySelectorAll("svg").length,
+      canvas:node?.querySelectorAll("canvas").length,
+      htmlPreview:node?.innerHTML?.slice(0,1800),
+      dimensions:node?.getBoundingClientRect()?.toJSON()
+    };
+  });
+  console.log("ASSET_MAP_DIAGNOSTIC",JSON.stringify(mapQa));
+  assert.ok(mapQa.vectorLayers>=2,
     "Actual imported polygon and CSEM station are drawn as independent map layers");
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-asset-intake.png",fullPage:true});
   await assessmentPage.locator("#ai-print").click();
