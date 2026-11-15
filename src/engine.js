@@ -90,6 +90,9 @@ export function analyzeSeries(series) {
   const slope = xs.reduce((sum, x, i) => sum + (x - xbar) * (ys[i] - ybar), 0) / sxx;
   const intercept = ybar - slope * xbar;
   const residualRms = Math.sqrt(ys.reduce((sum, y, i) => sum + (y - intercept - slope * xs[i]) ** 2, 0) / n);
+  const endpointSigmaMm = Math.hypot(points[0].sigmaU, points[n - 1].sigmaU) * 1000;
+  const endpointDeltaMm = (points[n - 1].up - points[0].up) * 1000;
+  const endpointPrecisionRatio = endpointSigmaMm > 0 ? Math.abs(endpointDeltaMm) / endpointSigmaMm : null;
   const maxGap = points.reduce((max, p, i) => i ? Math.max(max, p.t - points[i - 1].t) : 0, 0);
   // Conservative descriptive gate, NOT scientific statistical significance.
   const sufficientForScreening = n >= 10 && daySpan >= 365 && maxGap <= 180;
@@ -100,7 +103,9 @@ export function analyzeSeries(series) {
     end: points[n - 1].date,
     spanDays: Math.round(daySpan),
     maxGapDays: Math.round(maxGap),
-    deltaUpMm: Math.round((points[n - 1].up - points[0].up) * 100000) / 100,
+    deltaUpMm: Math.round(endpointDeltaMm * 100) / 100,
+    endpointSigmaMm: Math.round(endpointSigmaMm * 100) / 100,
+    endpointPrecisionRatio: endpointPrecisionRatio === null ? null : Math.round(endpointPrecisionRatio * 100) / 100,
     verticalSlopeMmYr: Math.round(slope * 100) / 100,
     residualRmsMm: Math.round(residualRms * 100) / 100,
     quality: sufficientForScreening ? "SCREENING_READY" : "LIMITED_EVIDENCE",
@@ -110,6 +115,7 @@ export function analyzeSeries(series) {
       "Ordinary least-squares descriptive slope; no seasonal, discontinuity, autocorrelation or tectonic corrections.",
       "Vertical trend is at a station. It is not a measured displacement of nearby assets.",
       "A negative slope alone is not a validated safety/engineering threshold.",
+      "The exploratory endpoint precision ratio assumes independent endpoint uncertainties; it is NOT a calibrated geodetic significance test.",
       ...(sufficientForScreening ? [] : ["Short, sparse or discontinuous series. Do not interpret as a reliable long-term signal."])
     ]
   };
@@ -159,7 +165,7 @@ export function inspectRinex(text) {
   }
   const observedSystems = Object.keys(observed);
   const declaredSystems = [...declared];
-  const status = observedSystems.length >= 2 ? "MULTI_GNSS_RECORDS_SEEN"
+  const status = observedSystems.length >= 2 ? (version >= 3 ? "MULTI_GNSS_RECORDS_SEEN" : "MULTI_GNSS_EPOCH_IDS_SEEN")
     : declaredSystems.length >= 2 ? "MULTI_GNSS_HEADER_ONLY"
       : observedSystems.length === 1 ? "SINGLE_SYSTEM_RECORDS_SEEN" : "UNVERIFIED";
   return {
@@ -182,12 +188,15 @@ export function rankAssets(movement, assets = ASSETS) {
     const reasons = [];
     let priority = "DATA_INSUFFICIENT";
     if (movement && movement.quality === "SCREENING_READY") {
-      if (movement.direction === "DOWNWARD_DESCRIPTIVE" && asset.exposure === "high" && asset.criticality === "high") {
+      if (movement.direction === "DOWNWARD_DESCRIPTIVE"
+        && movement.endpointPrecisionRatio !== null
+        && movement.endpointPrecisionRatio >= 3
+        && asset.exposure === "high" && asset.criticality === "high") {
         priority = "REVIEW_SOON";
-        reasons.push("DESCRIPTIVE_DOWNWARD_REGIONAL_TREND", "ILLUSTRATIVE_HIGH_EXPOSURE", "ILLUSTRATIVE_HIGH_CRITICALITY");
+        reasons.push("DESCRIPTIVE_DOWNWARD_REGIONAL_TREND", "DEMO_ENDPOINT_PRECISION_HEURISTIC_3X", "ILLUSTRATIVE_HIGH_EXPOSURE", "ILLUSTRATIVE_HIGH_CRITICALITY");
       } else {
         priority = "ROUTINE_REVIEW";
-        reasons.push("NO_DIRECT_ASSET_MOVEMENT_EVIDENCE", "ILLUSTRATIVE_ASSET_CONTEXT");
+        reasons.push("NO_DIRECT_ASSET_MOVEMENT_EVIDENCE", "INSUFFICIENT_EVIDENCE_FOR_ESCALATION", "ILLUSTRATIVE_ASSET_CONTEXT");
       }
     } else reasons.push("INSUFFICIENT_STATION_TIME_SERIES");
     reasons.push("REGIONAL_REFERENCE_NOT_ASSET_INSTRUMENT");
@@ -208,6 +217,7 @@ export function evidenceBundle(meta, movement, rinex, ranks) {
       "Synthetic asset locations, context and priorities are not real-world asset risk.",
       "Historical station GPS time series does not prove multi-GNSS signal processing.",
       "RINEX evidence, if supplied separately, is NOT silently linked to the displacement series.",
+      "Endpoint precision heuristic is not an engineering threshold or robust statistical detection.",
       "No raw RINEX geodetic solution; no asset safety certification or failure probability."
     ],
     references: [
