@@ -140,6 +140,9 @@ export function renderGeoSvg(layers={}, options={}) {
       +(fictional?'<circle cx="'+to(x)+'" cy="'+to(y)+'" r="2.5" fill="#0d2937"/>':'')
       +'<text x="'+to(labelX)+'" y="'+to(labelY)+'" fill="'+(active?"#a4ffe7":"#e3f5f1")+
         '" font-size="12" font-weight="700">'+esc(labels[p.id])+'</text>'
+      // Transparent hit target matches label + marker, for mouse, touch and Playwright.
+      +(fictional?'':'<rect class="geo-marker-hit" x="'+to(x-24)+'" y="'+to(y-33)+
+        '" width="168" height="57" fill="transparent" pointer-events="all"/>')
       +'<title>'+esc(p.title)+(fictional?" — fictional scenario location":" — public geographic reference")+'</title></g>';
   };
   const a=LANDMARKS.find(p=>p.id==="csem");
