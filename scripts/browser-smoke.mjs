@@ -31,7 +31,7 @@ try {
   assert.ok((await storyPage.locator(".ws-headline h1").textContent()).includes("Keputusan inspeksi"));
   assert.ok((await storyPage.locator(".ws-fact-strip").textContent()).includes("100–120 mm/tahun"),
     "Published regional InSAR finding is shown with its period and caveat");
-  await storyPage.screenshot({path:"reports/sentinel-judge-why-sentinel-desktop.png",fullPage:true});
+  await storyPage.screenshot({path:"reports/sentinel-judge-demo-why-sentinel-desktop.png",fullPage:true});
   await storyPage.locator('[data-ws-index="1"]').click();
   assert.ok((await storyPage.locator("#ws-step-detail h3").textContent()).includes("biaya operasional"),
     "Clicking the second node reveals economic implications");
@@ -57,7 +57,7 @@ try {
   await storyPage.setViewportSize({width:390,height:844});
   assert.equal(await storyPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
     "Why Sentinel introduction has no horizontal mobile overflow");
-  await storyPage.screenshot({path:"reports/sentinel-judge-why-sentinel-mobile.png",fullPage:true});
+  await storyPage.screenshot({path:"reports/sentinel-judge-demo-why-sentinel-mobile.png",fullPage:true});
   assert.deepEqual(storyErrors,[],"Interactive story has no JavaScript runtime errors");
   await storyPage.close();
   assert.equal(initial.status(),200);
