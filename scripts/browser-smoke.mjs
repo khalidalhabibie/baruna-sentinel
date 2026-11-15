@@ -119,6 +119,63 @@ try {
     "CSEM published PPP rate is a separate period from the historic OLS series");
   assert.ok((await assessmentPage.locator(".as-cors-contrast").textContent()).includes("not a velocity gradient"),
     "Two station rates do not create asset-specific velocity gradients");
+  // P1 verified flow: user-declared LOCAL CSEM & CSMG QC from RINEX-derived JSON
+  // must become a station-date comparison and a separate sector verification annex.
+  assert.ok((await assessmentPage.locator(".as-qc-bridge").textContent()).includes("belum diimpor"));
+  const corsSample={
+    schema:"baruna-private-cors-qc-v1",
+    method:"FICTITIOUS test RINEX observations; never real BIG results",
+    disposition:"FICTITIOUS TEST ONLY",
+    records:[
+      ...["csem","csmg"].map(station=>({
+        station,date:"2026-11-15",doy:319,epochs:2880,
+        expected_full_day_30s_epochs:2880,long_gaps_gt30s:0,largest_gap_min:0,
+        first_epoch_gps:"2026-11-15 00:00:00",
+        last_epoch_gps:"2026-11-15 23:59:30",
+        epochs_with_C1_by_constellation:{G:2880,R:2880,E:2880,S:0,"G+R+E":2880}
+      })),
+      {station:"csem",date:"2026-11-16",doy:320,epochs:1700,
+        expected_full_day_30s_epochs:2880,long_gaps_gt30s:1,largest_gap_min:40,
+        first_epoch_gps:"2026-11-16 00:00:00",last_epoch_gps:"2026-11-16 14:09:30",
+        epochs_with_C1_by_constellation:{G:1700,R:1100,E:1200,S:0,"G+R+E":950}}
+    ]
+  };
+  await assessmentPage.locator("#as-qc-file").setInputFiles({
+    name:"FICTITIOUS-PRIVATE-CORS-TEST.json",mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify(corsSample))
+  });
+  await assessmentPage.locator("#as-qc-brief").waitFor({state:"visible",timeout:10000});
+  assert.equal(await assessmentPage.locator(".as-qc-bridge-summary strong").count(),4);
+  assert.equal((await assessmentPage.locator(".as-qc-bridge-summary strong").allTextContents()).join(","),
+    "2,1,1,1","Same-day CSEM–CSMG pairing counts reflect real parsing, not placeholder data");
+  assert.ok((await assessmentPage.locator(".as-qc-bridge-conclusion").textContent()).includes("SHARED FULL DAY"));
+  assert.ok((await assessmentPage.locator(".as-qc-next").textContent()).includes("North breakwater"),
+    "Observation summary connects to selected study sector as a data-request, not a displacement");
+  await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-p1-cors-to-brief.png",fullPage:true});
+  await assessmentPage.evaluate(()=>{
+    window.__p1Print=false;window.print=()=>{window.__p1Print=true};
+  });
+  await assessmentPage.locator("#as-qc-brief").click();
+  assert.equal(await assessmentPage.evaluate(()=>window.__p1Print),true,
+    "P1 generates the integrated historical sector and local observation QC print report");
+  assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("North breakwater"));
+  assert.ok((await assessmentPage.locator("#print-report .print-station-qc").textContent()).includes("NOT BIG CERTIFIED"));
+  assert.ok((await assessmentPage.locator("#print-report").textContent()).includes("REQUEST UPDATED SITE EVIDENCE"));
+  await assessmentPage.locator("#as-qc-file").setInputFiles({
+    name:"bad-station.json",mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify({...corsSample,records:[{...corsSample.records[0],station:"bako"}]}))
+  });
+  await assessmentPage.locator(".as-qc-bridge-error").waitFor({state:"visible",timeout:10000});
+  assert.ok((await assessmentPage.locator(".as-qc-bridge-error").textContent()).includes("CSEM and CSMG"));
+  assert.equal(await assessmentPage.locator("#as-qc-brief").isVisible(),true,
+    "Rejected invalid QC cannot replace last valid, entirely local study session");
+  await assessmentPage.locator("#as-qc-clear").click();
+  assert.equal(await assessmentPage.locator("#as-qc-brief").count(),0);
+  await assessmentPage.setViewportSize({width:390,height:844});
+  assert.equal(await assessmentPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
+    "CSEM–CSMG QC intake remains mobile-safe even without private files");
+  await assessmentPage.setViewportSize({width:1440,height:900});
+
   await assessmentPage.screenshot({path:"reports/sentinel-judge-demo-assessment.png",fullPage:true});
   await assessmentPage.locator("#as-demo-mode").click();
   assert.equal(await assessmentPage.locator(".as-simulation-table tbody tr").count(),4,
