@@ -30,20 +30,36 @@ try {
   const asset = await page.locator("#asset-rows").textContent();
   assert.ok(asset.includes("ILLUSTRATIVE FIRST LOOK"), "Synthetic scenario label visible");
   assert.ok(!asset.includes("REVIEW SOON"), "No unvalidated asset risk escalation");
+  // Default: real reference points only; experiments are hidden until enabled.
   const geoMap = await page.locator("#geo-map").innerHTML();
-  assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Coordinate map rendered without network");
-  assert.ok(geoMap.includes("fictional scenario location"), "Fictional markers disclosed");
-  assert.ok((await page.locator("#geo-distance").textContent()).includes("km"), "Landmark distance shown");
-  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "Initial GIS layers show three references and three fictional markers");
-  await page.locator('[data-map-layer="fictional"]').click();
-  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3, "GIS filter removes fictional markers without moving reference points");
-  assert.equal(await page.locator('[data-map-layer="fictional"]').getAttribute("aria-pressed"), "false");
-  await page.locator('[data-map-layer="fictional"]').click();
-  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "GIS layer can be restored");
+  assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Offline geographic map works");
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3,
+    "Competition default shows only genuine station and landmark points");
+  assert.equal(await page.locator("#geo-layer-summary").textContent(), "2 / 2 layers visible");
+  assert.ok((await page.locator("#geo-distance").textContent()).includes("km"));
+
+  await page.locator("#view-analyst").click();
+  assert.equal(await page.locator("#lab-toggle").getAttribute("aria-pressed"), "false");
+  assert.equal(await page.locator(".lab-import").isVisible(), false, "Ina-CORS import hidden by default");
+  assert.equal(await page.locator("#sample-btn").isVisible(), false, "Synthetic data control hidden by default");
   await page.locator('[data-map-layer="landmarks"]').click();
-  assert.equal(await page.locator("#geo-map .geo-marker").count(), 4, "Public landmark toggle works");
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 1, "Landmark layer can be hidden");
+  await page.locator('[data-map-layer="landmarks"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3, "Landmark layer restored");
+  await page.locator("#lab-toggle").click();
+  assert.equal(await page.locator("#lab-toggle").getAttribute("aria-pressed"), "true");
+  assert.equal(await page.locator(".lab-import").isVisible(), true, "Ina-CORS import appears in lab mode");
+  assert.equal(await page.locator("#sample-btn").isVisible(), true, "Explicit synthetic mode available only in lab");
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "Lab enables three disclosed fictional scenario points");
+  await page.locator('[data-map-layer="fictional"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3, "Fictional layer is reversible");
+  await page.locator('[data-map-layer="fictional"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "Fictional layer restored");
+  await page.locator('[data-map-layer="landmarks"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 4, "Real landmark toggle works in lab");
   await page.locator('[data-map-layer="landmarks"]').click();
   assert.equal(await page.locator("#geo-layer-summary").textContent(), "3 / 3 layers visible");
+  await page.locator("#view-decision").click();
   await page.waitForFunction(() => document.querySelectorAll("#historical-sector-list button[data-sector]").length === 6, { timeout:15000 });
   const fieldRows = page.locator("#historical-sector-list button[data-sector]");
   assert.equal(await fieldRows.count(), 6, "Six real research-documented historical infrastructure sectors loaded");
@@ -74,7 +90,7 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
   await page.locator("#step-sector").click();
-  await page.getByRole("button", { name: /run semarang case study/i }).click();
+  await page.getByRole("button", { name: /explore case study/i }).click();
   await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
   assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
 
