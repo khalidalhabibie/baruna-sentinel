@@ -82,7 +82,7 @@ try {
   // and a strictly separated synthetic rule demonstration.
   const assessmentPage=await browser.newPage({viewport:{width:1440,height:900}});
   const assessmentErrors=[];
-  assessmentPage.on("pageerror",error=>assessmentErrors.push(error.message));
+  assessmentPage.on("pageerror",error=>assessmentErrors.push(error.stack||error.message));
   await assessmentPage.goto(BASE+"/?page=assessment&project=semarang-port",{waitUntil:"networkidle",timeout:30000});
   await assessmentPage.locator(".as-sector").first().waitFor({state:"visible",timeout:15000});
   await assessmentPage.waitForFunction(()=>document.querySelector(".as-source-panel")?.textContent?.includes("OLS"),{timeout:15000});
