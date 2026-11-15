@@ -14,6 +14,12 @@ try {
   });
   const response = await page.goto(BASE, { waitUntil: "networkidle", timeout: 30000 });
   assert.equal(response.status(), 200, "Site root serves 200");
+  assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"), "true", "Decision mode is default");
+  assert.equal(await page.locator(".controls").isVisible(), false, "Decision mode hides technical controls");
+  await page.keyboard.press("Tab");
+  assert.equal(await page.evaluate(() => document.activeElement.classList.contains("skip-link")), true,
+    "First keyboard tab reaches the skip link");
+  assert.equal(await page.locator("#case-journey").isVisible(), true, "Guided 3-step journey shown");
   await page.waitForFunction(() => document.querySelector("#stat-epochs")?.textContent.includes("3,561"), { timeout: 15000 });
   const epochCount = await page.locator("#stat-epochs").textContent();
   assert.ok(epochCount.includes("3,561"), "CSEM authentic historic positions load");
@@ -28,6 +34,16 @@ try {
   assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Coordinate map rendered without network");
   assert.ok(geoMap.includes("fictional scenario location"), "Fictional markers disclosed");
   assert.ok((await page.locator("#geo-distance").textContent()).includes("km"), "Landmark distance shown");
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "Initial GIS layers show three references and three fictional markers");
+  await page.locator('[data-map-layer="fictional"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 3, "GIS filter removes fictional markers without moving reference points");
+  assert.equal(await page.locator('[data-map-layer="fictional"]').getAttribute("aria-pressed"), "false");
+  await page.locator('[data-map-layer="fictional"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "GIS layer can be restored");
+  await page.locator('[data-map-layer="landmarks"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 4, "Public landmark toggle works");
+  await page.locator('[data-map-layer="landmarks"]').click();
+  assert.equal(await page.locator("#geo-layer-summary").textContent(), "3 / 3 layers visible");
   await page.waitForFunction(() => document.querySelectorAll("#historical-sector-list button[data-sector]").length === 6, { timeout:15000 });
   const fieldRows = page.locator("#historical-sector-list button[data-sector]");
   assert.equal(await fieldRows.count(), 6, "Six real research-documented historical infrastructure sectors loaded");
@@ -57,9 +73,20 @@ try {
   mkdirSync("reports", { recursive: true });
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
+  await page.locator("#step-sector").click();
   await page.getByRole("button", { name: /run semarang case study/i }).click();
   await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
   assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
+
+  await page.locator("#view-analyst").click();
+  assert.equal(await page.locator("#view-analyst").getAttribute("aria-pressed"), "true", "Analyst view is selected");
+  assert.equal(await page.locator(".controls").isVisible(), true, "Analyst view reveals original GNSS controls");
+  assert.equal(await page.locator("#analyst-intro").isVisible(), true, "Analyst view shows instrumentation provenance");
+  assert.equal(await page.locator("#gis-audit").isVisible(), true, "GIS spatial audit visible to analysts");
+  assert.equal(await page.locator("#geo-audit-rows tr").count(), 4, "GIS table contains CSEM, landmarks and independent BAKO");
+  assert.ok((await page.locator("#geo-audit-rows").textContent()).includes("Different station and time"),
+    "GIS table flags that BAKO is not a local movement solution");
+  await page.screenshot({ path:"reports/sentinel-judge-demo-analyst.png", fullPage:true });
 
   await page.evaluate(() => {
     window.__reportPrintCalled = false;
@@ -112,10 +139,13 @@ try {
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: "reports/sentinel-judge-demo-mobile.png", fullPage: true });
+  await page.locator("#view-decision").click();
+  assert.equal(await page.locator(".controls").isVisible(), false, "Technical controls stay hidden in mobile Decision mode");
+  await page.screenshot({ path: "reports/sentinel-judge-demo-mobile-decision.png", fullPage: true });
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 3);
   assert.equal(overflows, false, "Mobile viewport has no horizontal overflow");
   assert.deepEqual(errors, [], "No runtime JS errors");
-  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, realResearchSectors: 6, executiveReadiness: "3 streams, no current measurements", printPdf: true, errors: errors.length }, null, 2));
+  console.log(JSON.stringify({ result: "PASS", desktop: true, mobile: true, datasetEpochs: 3561, sourceLinkGate: json.evidenceGate.status, map: true, layeredGIS: true, keyboardSkip: true, views: 2, realResearchSectors: 6, executiveReadiness: "3 streams, no current measurements", printPdf: true, errors: errors.length }, null, 2));
 } finally {
   await browser.close();
 }
