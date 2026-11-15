@@ -69,6 +69,17 @@ try {
     "Missing CSMG date is made explicit instead of treated as zero data");
   assert.ok((await page.locator("#cors-qc-notice").textContent()).includes("3 station-day files"),
     "Locally imported QC reports its exact record count");
+  await page.locator("#station-qc").screenshot({
+    path:"reports/sentinel-judge-demo-cors-qc-synthetic.png"
+  });
+  await page.setViewportSize({width:390,height:844});
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+3),false,
+    "Local QC comparison has no mobile horizontal overflow");
+  await page.locator("#station-qc").screenshot({
+    path:"reports/sentinel-judge-demo-cors-qc-mobile-synthetic.png"
+  });
+  await page.setViewportSize({width:1440,height:1000});
+
   await page.locator("#cors-qc-reset").click();
   assert.equal(await page.locator("#cors-qc-result .cors-qc-empty").count(),1,
     "Local QC can be purged from application memory");
