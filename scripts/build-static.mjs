@@ -5,6 +5,7 @@ const publicAssets=[
   "index.html",
   "styles.css",
   "src/app.js",
+  "src/navigation.js",
   "src/engine.js",
   "src/geo.js",
   "src/report.js",
