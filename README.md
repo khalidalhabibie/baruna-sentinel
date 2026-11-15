@@ -66,3 +66,33 @@ python3 scripts/verify_igs_rinex.py
 ```
 
 See [the frozen Semarang use case and scientific limits](docs/USE_CASE_AND_REAL_RINEX_EVIDENCE.md).
+
+## Competition-ready case-study improvements (15 Nov 2026)
+
+**Run case study:** Click **Run Semarang case study** at the top to replay two separately sourced datasets: CSEM historic GPS-derived positions and BAKO archived, GeoRinex-verified multi-constellation observation QC. The evidence gate explicitly refuses to link them as a common multi-GNSS displacement solution.
+
+**Geographic context:** A self-contained WGS84 reference-point SVG displays CSEM (coordinates transcribed from BIG's InaCORS 2018 catalogue), Tanjung Emas passenger terminal (OpenStreetMap), and Genuk district office (municipal GIS). Three amber site markers A–C are **invented scenario points**, not surveyed assets. The plotted distances describe geography only, not asset deformation. **This is not a basemap, DEMNAS raster or validated exposure layer.** The original proposal's authoritative spatial exposure-analysis capability remains outside this demo.
+
+**Evidence dossier:** Select **Print evidence dossier / Save PDF** in the observation desk. The browser renders a print-formatted A4 report showing source, period, geospatial provenance, QC metrics, independent-source evidence gate, scientific limitations and non-operational example review tiers. **Download evidence JSON** includes the geographic context and fictional-asset flags.
+
+**Reproducible checks:** `npm run check` tests scientific guardrails and writes a static deployment artifact; GitHub Actions also performs real-browser checks for the map, one-click demo, exported JSON, print PDF and mobile layout.
+
+### Deploy to Vercel (manual Git import)
+
+The project intentionally has **no backend, DB, secret or live external map tile dependency**. The top-level `vercel.json` pins:
+
+- Framework: **Other**
+- Build command: `npm run build`
+- Output directory: **dist**
+- Root directory: **./**
+
+The build scripts copy only approved public assets into `dist/` (no GitHub workflows, Python GNSS tooling, unit tests or internal docs). `npm run build` is zero-dependency and safe for Node.js 20+.
+
+Do not configure Vercel to serve `.` or bypass `dist`; the deliberate isolation is a deployment guardrail.
+
+### Remaining before submitting
+
+- Capture and check the 60-second walkthrough and the five-minute slides.
+- Validate the manually deployed URL on the presentation laptop, including PDF print/export.
+- If available, obtain genuine Semarang RINEX for the original use case; BAKO remains explicitly a separate instrument-capability proof.
+- Do **not** claim this demo contains actual DEMNAS exposure analysis, physically measured asset risk, an operational GNSS positioning pipeline, or a production operator integration.
