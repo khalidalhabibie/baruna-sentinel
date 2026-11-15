@@ -1,0 +1,40 @@
+{
+  "schema": "baruna-sentinel-public-igs-qc-summary-v1",
+  "status": "VERIFIED_REAL_RINEX_OBSERVATIONS",
+  "computedBy": "GeoRinex on GitHub Actions",
+  "verifiedRun": "https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/43690104506",
+  "source": {
+    "station": "BAKO00IDN",
+    "stationLocation": "Cibinong, Indonesia — NOT Semarang",
+    "originalArchive": "https://igs.bkg.bund.de/root_ftp/IGS/obs/2025/001/BAKO00IDN_R_20250010000_01D_30S_MO.crx.gz",
+    "filename": "BAKO00IDN_R_20250010000_01D_30S_MO.crx.gz",
+    "observationDate": "2025-01-01",
+    "nominalCadenceSeconds": 30,
+    "compressedBytes": 3272943
+  },
+  "audit": {
+    "sampleWindowUtc": "2025-01-01T00:00–00:20 UTC",
+    "epochs": 41,
+    "constellationsObservedWithPseudorange": [
+      "GPS",
+      "GLONASS",
+      "Galileo",
+      "BeiDou",
+      "QZSS",
+      "SBAS"
+    ],
+    "gpsOnlyAveragePseudorangeSatellitesPerEpoch": 8.951,
+    "multiGnssAveragePseudorangeSatellitesPerEpoch": 44.634,
+    "epochsWithNonGpsPseudorange": 41,
+    "notAPositionAccuracyComparison": true
+  },
+  "relationshipToSemarang": {
+    "linkedToCsemMovement": false,
+    "explanation": "This BAKO QC sample is at a different station and time from CSEM historic 2010–2021 GPS-derived positions. It verifies authentic constellation observations, not measured Semarang movement."
+  },
+  "limitations": [
+    "Derived summary based on authentic file downloaded and decoded in linked GitHub Actions run; original archive not redistributed here.",
+    "Pseudorange availability, not a GNSS position solution or measured improvement in positional accuracy.",
+    "Not asset-level deformation evidence; no structural inspection or safety conclusion."
+  ]
+}
