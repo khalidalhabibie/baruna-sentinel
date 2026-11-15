@@ -161,3 +161,91 @@ footer{background:#09202e;color:#b8cbd0;display:flex;justify-content:space-betwe
 @media(max-width:1100px){.executive{margin-left:3%;margin-right:3%}.executive-bottom{grid-template-columns:1fr 1fr}.executive-action,.executive-urgency{padding:20px}}
 @media(max-width:820px){.executive{margin:20px 5% 0}.executive-heading{flex-direction:column;gap:12px;padding:20px}.executive-kpi{padding:14px}.executive-bottom{grid-template-columns:1fr}.executive-action{border-right:0;border-bottom:1px solid #e5edea}.executive-strip{gap:9px;padding:12px 18px}.executive-pilot-note{margin-left:0}}
 @media(max-width:540px){.executive-kpis{grid-template-columns:1fr 1fr}.executive-kpi:last-child{grid-column:span 2;border-top:1px solid #dce8e4}.executive-kpi{padding:12px}.executive-kpi strong{font-size:26px}.executive-action,.executive-urgency{padding:16px}.executive-strip{display:grid;grid-template-columns:1fr;gap:6px}}
+
+/* guided decision + analyst UX redesign */
+.skip-link{position:fixed;top:-80px;left:16px;background:#fff;color:#154b4c;padding:12px 18px;z-index:9999;border-radius:6px;font-size:14px;font-weight:900;box-shadow:0 5px 20px #0c203033}
+.skip-link:focus{top:12px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,label[role="button"]:focus-visible{outline:3px solid #21a79b;outline-offset:3px}
+button:disabled{cursor:wait;opacity:.65}
+button[aria-busy="true"]{position:relative}
+.workspace-switch{display:flex;gap:4px;align-items:center;border:1px solid #35616b;padding:4px;background:#153b4c;border-radius:7px;margin-left:auto;flex:none}
+.workspace-switch button{background:transparent;border:0;color:#aac8d2;padding:9px 15px;border-radius:5px;font-size:12px;font-weight:800;white-space:nowrap;min-height:39px}
+.workspace-switch button[aria-pressed="true"]{background:#a2efda;color:#0e3540;box-shadow:0 3px 15px #06192340}
+.workspace-switch button:hover:not([aria-pressed="true"]){background:#24576a;color:white}
+body[data-view="decision"] .workspace{grid-template-columns:minmax(0,1fr);gap:0;max-width:1500px}
+body[data-view="decision"] .controls,body[data-view="decision"] .analyst-only{display:none!important}
+body[data-view="analyst"] .executive,body[data-view="analyst"] .case-journey{display:none!important}
+body[data-view="analyst"] .hero{min-height:220px;padding-top:28px;padding-bottom:28px}
+body[data-view="analyst"] .hero-aside{display:none}
+body[data-view="analyst"] .hero h1{font-size:clamp(27px,2.5vw,39px);margin:11px 0 11px}
+body[data-view="analyst"] .hero-pills{display:none}
+body[data-view="analyst"] .hero-cta{margin-top:13px}
+.analyst-intro{display:none;margin:24px 5% 0;border:1px solid #c4dedc;border-radius:9px;padding:24px 28px;background:linear-gradient(105deg,#f1faf6,#eaf3f3);gap:22px;align-items:center;justify-content:space-between}
+body[data-view="analyst"] .analyst-intro{display:flex}
+.analyst-intro h2{font-size:24px;line-height:1.25;letter-spacing:-.04em;margin:8px 0}
+.analyst-intro p{max-width:760px;font-size:13px;line-height:1.65;margin:0;color:#456773}
+.analyst-provenance{display:grid;gap:7px;min-width:220px}
+.analyst-provenance span{border:1px solid #c8dfdb;background:#fff;border-radius:5px;padding:10px 13px;display:block}
+.analyst-provenance b{display:block;font-size:12px;color:#215456}
+.analyst-provenance small{font-size:11px;color:#648589;display:block;margin-top:3px}
+.case-journey{margin:20px 5% 0;border:1px solid #d6e8e3;background:#fff;box-shadow:0 10px 35px #123b4b09;border-radius:9px;overflow:hidden}
+.journey-intro{padding:20px 24px 13px}
+.journey-intro h2{color:#14354a;font-size:22px;line-height:1.3;margin:7px 0;letter-spacing:-.04em}
+.journey-intro p{font-size:12px;line-height:1.6;color:#5f7b84;margin:0;max-width:760px}
+.journey-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:12px 20px 17px}
+.journey-step{display:flex;align-items:center;text-align:left;gap:13px;min-height:88px;background:#f3f8f6;border:1px solid #d6e7e1;border-radius:7px;padding:14px 15px;color:#1a4852}
+.journey-step:hover{border-color:#29978b;background:#e6f5ef;transform:translateY(-1px)}
+.journey-step span:nth-child(2){flex:1;min-width:0}
+.journey-step strong{font-size:14px;display:block;line-height:1.3}
+.journey-step small{display:block;font-size:12px;line-height:1.5;color:#617c83;margin-top:4px}
+.journey-step>span:last-child{font-size:18px;color:#5f8e8d}
+.journey-step .journey-num{color:#166f68;font-size:23px;font-weight:900;letter-spacing:-.06em}
+.journey-step.journey-primary{background:#153d4c;color:white;border-color:#153d4c}
+.journey-step.journey-primary .journey-num{color:#7ed9c5}
+.journey-step.journey-primary small{color:#c2d7d9}
+.journey-step.journey-primary>span:last-child{color:#7ed9c5}
+.journey-step.journey-primary:hover{background:#105569}
+.journey-selection{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:#eef7f3;border-top:1px solid #dfece6;border-bottom:1px solid #dfece6;padding:13px 24px}
+.journey-selection span:first-child{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.journey-selection b{font-size:10px;letter-spacing:.09em;color:#567a78}
+.journey-selection strong{font-size:13px;color:#113e45}
+#selected-sector-range{font-size:12px;color:#4e757b}
+.journey-gap{margin-left:auto;border:1px solid #e1c8a2;background:#fff7e8;color:#7e5932;border-radius:4px;padding:8px 10px;font-size:11px;font-weight:800}
+.inline-feedback{padding:9px 24px;background:#fcfefd;color:#497779;font-size:12px;line-height:1.5;min-height:38px}
+.inline-feedback.is-error{background:#fff2eb;color:#9e492e}
+.product-help{border-top:1px solid #e1ebe7;background:#fff}
+.product-help summary{padding:13px 24px;cursor:pointer;font-size:13px;font-weight:800;color:#24746e;min-height:44px}
+.product-help summary:hover{background:#f5faf8}
+.help-content{padding:2px 24px 15px;display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.help-content p{color:#516e77;font-size:12px;line-height:1.7;margin:0;padding:10px 0}
+.geo-layer-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:12px 20px 5px}
+.geo-layer-toolbar>div{margin-right:auto;min-width:180px}
+.geo-layer-caption{display:block;color:#1b5d64;font-size:12px;font-weight:900}
+.geo-layer-toolbar small{display:block;color:#708a8c;font-size:11px;margin-top:3px}
+.geo-layer-toolbar button{font-size:12px;font-weight:800;padding:10px 13px;min-height:42px;border:1px solid #c9dad9;border-radius:6px;color:#587078;background:#fff}
+.geo-layer-toolbar button[aria-pressed="true"]{background:#174e58;color:#fff;border-color:#174e58}
+.geo-layer-toolbar button[aria-pressed="false"]{opacity:.84}
+.geo-layer-toolbar button:hover{border-color:#1c9489}
+#geo-context,#field-evidence,.analyst-intro,.executive,.case-journey{scroll-margin-top:18px}
+.controls label[role="button"]{min-height:44px;cursor:pointer}
+.historical-filters button{min-height:42px;font-size:12px}
+.historical-sector{min-height:68px}
+.historical-sector-left strong{font-size:14px}
+.historical-sector-left small,.historical-range small,.historical-next small{font-size:11px}
+.historical-next{font-size:11px}
+.historical-detail p,.historical-head p,.geo-disclaimer{font-size:12px}
+.historical-footer,.geo-legend span,.geo-online-foot{font-size:12px}
+.form-label{font-size:11px}
+.hint,.source-meta-row,.status-note{font-size:12px}
+.section-index{font-size:11px}
+.subtle-pill,.mode-chip{font-size:11px}
+.case-start{min-height:44px;font-size:13px}
+.report-btn,.export-btn,.primary-btn,.upload-btn{min-height:44px}
+.report-btn{font-size:12px}
+.geo-tag{font-size:11px}
+.geo-map-tools span{font-size:12px}
+.geo-basemap-toggle{min-height:44px;font-size:12px}
+@media(max-width:1050px){.workspace-switch{order:3;margin-left:0}.topbar .event-label{order:4}.journey-selection .journey-gap{margin-left:0}}
+@media(max-width:820px){body[data-view="analyst"] .analyst-intro{display:block}.analyst-provenance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-width:0;margin-top:15px}.analyst-provenance span{padding:9px}.analyst-provenance small{font-size:10px}.journey-actions{padding:10px 14px;gap:7px}.journey-step{padding:10px;gap:9px}.journey-step strong{font-size:12px}.journey-step small{font-size:11px}.journey-step .journey-num{font-size:19px}.geo-layer-toolbar{padding:10px 13px}.topbar{justify-content:space-between}}
+@media(max-width:620px){.workspace-switch{order:2;margin-left:auto}.workspace-switch button{font-size:11px;padding:8px 9px}.topbar .event-label{order:3}.journey-actions{grid-template-columns:1fr}.journey-step{min-height:62px;padding:11px 13px}.journey-step strong{font-size:14px}.journey-step small{font-size:12px}.journey-selection{padding:12px 14px}.journey-intro{padding:17px 15px 7px}.inline-feedback,.product-help summary{padding-left:15px;padding-right:15px}.help-content{grid-template-columns:1fr;padding:0 15px 15px}.analyst-intro{margin:14px 5% 0!important;padding:16px}.analyst-provenance{grid-template-columns:1fr}.geo-layer-toolbar>div{width:100%}.geo-layer-toolbar button{flex:1 1 auto;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.journey-step:hover{transform:none}}
