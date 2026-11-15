@@ -58,7 +58,10 @@ function esc(s) {
 }
 
 /** Zero-network SVG coordinate plot: geographically positioned *points* only. */
-export function renderGeoSvg() {
+export function renderGeoSvg(layers = {}) {
+  const selected = {station:true,landmarks:true,fictional:true,...layers};
+  const sourcePoints = LANDMARKS.filter(p => p.type === "station" ? selected.station : selected.landmarks);
+  const scenarioPoints = selected.fictional ? SCENARIO_MARKERS : [];
   const left = 65, top = 52, width = 800, height = 370;
   const point = p => {
     const xy = projectWgs84(p);
@@ -92,7 +95,7 @@ export function renderGeoSvg() {
     const {x,y}=point(p);
     return '<text x="'+(x+offsetX).toFixed(1)+'" y="'+(y+offsetY).toFixed(1)+'" fill="#e3f5f1" font-size="12" font-weight="700" text-anchor="'+anchor+'">'+esc(p.id==="csem"?"CSEM":p.id==="port-terminal"?"Tanjung Emas":p.id==="genuk-office"?"Genuk office":p.id==="port"?"A":p.id==="road"?"B":"C")+'</text>';
   };
-  return '<svg class="geo-plot" role="img" aria-label="WGS84 coordinate reference plot of Semarang with authentic CSEM, Tanjung Emas, Genuk office and three fictional inspection scenario points" viewBox="0 0 940 470" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">'
+  return '<svg class="geo-plot" role="img" aria-label="WGS84 point-reference plot of Semarang. Public stations and landmarks are not surveyed asset deformation; optional scenario markers are fictional" viewBox="0 0 940 470" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">'
     +'<defs><linearGradient id="geoBg" x2="1" y2="1"><stop stop-color="#071e31"/><stop offset="1" stop-color="#134255"/></linearGradient></defs>'
     +'<rect x="0" y="0" width="940" height="470" rx="10" fill="url(#geoBg)"/>'
     +'<text x="66" y="30" fill="#a3e1d6" font-size="12" font-weight="800" letter-spacing="2">SEMARANG · WGS84 POINT CONTEXT</text>'
@@ -100,13 +103,12 @@ export function renderGeoSvg() {
     +'<rect x="'+left+'" y="'+top+'" width="'+width+'" height="'+height+'" rx="5" fill="#12344a" stroke="#487887" stroke-opacity=".7"/>'
     +grid.join("")
     +'<text x="469" y="91" font-size="20" fill="#5e9dad" fill-opacity=".30" font-weight="700" text-anchor="middle" letter-spacing="6">COASTAL STUDY CONTEXT</text>'
-    +LANDMARKS.map(marker).join("")+SCENARIO_MARKERS.map(marker).join("")
-    +markerLabel(LANDMARKS[0],16,-14)
-    +markerLabel(LANDMARKS[1],13,-14)
-    +markerLabel(LANDMARKS[2],-12,-15,"end")
-    +markerLabel(SCENARIO_MARKERS[0],14,17)
-    +markerLabel(SCENARIO_MARKERS[1],14,17)
-    +markerLabel(SCENARIO_MARKERS[2],14,17)
+    +sourcePoints.map(marker).join("")+scenarioPoints.map(marker).join("")
+    +(selected.station ? markerLabel(LANDMARKS[0],16,-14) : "")
+    +(selected.landmarks ? markerLabel(LANDMARKS[1],13,-14)+markerLabel(LANDMARKS[2],-12,-15,"end") : "")
+    +(selected.fictional ? markerLabel(SCENARIO_MARKERS[0],14,17)
+      +markerLabel(SCENARIO_MARKERS[1],14,17)
+      +markerLabel(SCENARIO_MARKERS[2],14,17) : "")
     +'<text x="866" y="461" text-anchor="end" fill="#7aabaf" font-size="10">GEOGRAPHIC POINTS ONLY · NO DEMNAS, COASTLINE OR HAZARD MODEL</text>'
     +'</svg>';
 }
