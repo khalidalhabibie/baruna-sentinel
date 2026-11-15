@@ -35,6 +35,7 @@ try {
   // Keyboard-focus test is complete; reset focus so screenshot represents an ordinary first visit.
   await page.evaluate(() => document.activeElement?.blur?.());
   await page.screenshot({ path:"reports/sentinel-judge-demo-first-impression.png", fullPage:true });
+  await page.locator("#case-workspace").screenshot({path:"reports/sentinel-judge-evidence-workspace.png"});
   const geoMap = await page.locator("#geo-map").innerHTML();
   assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Offline geographic map works");
   assert.equal(await page.locator("#geo-map .geo-marker").count(), 3,
@@ -84,6 +85,11 @@ try {
   await page.waitForFunction(() => document.querySelector("#exec-streams")?.textContent?.includes("3 / 3"), {timeout:15000});
   assert.equal(await page.locator("#exec-sectors").textContent(), "6", "Decision desk reports source-backed sectors");
   assert.equal(await page.locator("#exec-current").textContent(), "0", "No current on-asset instrument falsely declared");
+  assert.equal(await page.locator("#case-outcome-name").isVisible(),true,
+    "Spacious map-first workspace includes selected site assessment");
+  assert.ok((await page.locator("#case-outcome-name").textContent()).length>3);
+  assert.ok((await page.locator("#case-outcome-history").textContent()).includes("cm"),
+    "Selected historic sector measurement is visible beside GIS reference workflow");
   assert.ok((await page.locator("#executive-desk").textContent()).includes("1–6 November 2026"), "Urgency includes dated BMKG historical context");
   assert.ok((await page.locator("#executive-desk").textContent()).includes("That window has passed"), "No active flood alarm falsely asserted");
   assert.ok((await page.locator("#historical-sector-detail").textContent()).includes("not a 2026 displacement rate"), "Historical measurement explicitly not current");
@@ -92,6 +98,10 @@ try {
   await page.locator('#historical-filters button[data-filter="all"]').click();
   await page.locator('#historical-sector-list button[data-sector="west-breakwater"]').click();
   assert.ok((await page.locator("#historical-sector-detail").textContent()).includes("74–140 cm"), "Source-derived west breakwater result is presented");
+  assert.equal(await page.locator("#case-outcome-name").textContent(),"West breakwater");
+  assert.equal(await page.locator("#case-outcome-history").textContent(),"74–140 cm");
+  assert.equal(await page.locator("#case-workspace-brief").isVisible(),true,
+    "Selected sector has a real report action in the evidence workspace");
 
   // Intercept third-party tiles during CI. A user explicitly enables the map,
   // while default/offline mode never requires an external tile server.
@@ -108,7 +118,7 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
   await page.locator("#step-sector").click();
-  await page.getByRole("button", { name: /explore case study/i }).click();
+  await page.getByRole("button", { name: /explore semarang evidence/i }).click();
   await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
   assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
 
@@ -208,6 +218,9 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-mobile-decision.png", fullPage: true });
   const overflows = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 3);
   assert.equal(overflows, false, "Mobile viewport has no horizontal overflow");
+  assert.equal(await page.locator("#case-workspace").isVisible(),true,
+    "Spacious case workspace stays usable at 390px");
+  assert.equal(await page.locator("#case-outcome-history").textContent(),"74–140 cm");
 
   // Regression: missing real CSEM data must NOT be disguised as a simulated success.
   await page.locator("#view-analyst").click();
