@@ -4,6 +4,9 @@ import {dirname,join} from "node:path";
 const publicAssets=[
   "index.html",
   "styles.css",
+  "project-ui.css",
+  "src/projects.js",
+  "src/project-workspace.js",
   "src/app.js",
   "src/navigation.js",
   "src/engine.js",

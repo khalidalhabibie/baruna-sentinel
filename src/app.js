@@ -301,6 +301,12 @@ function showLiveOsmMap(show) {
   }
   embed.hidden=!show;
   grid.hidden=show;
+  // Do not initialize Leaflet while the surrounding project page or details
+  // disclosure is hidden; otherwise markers can retain zero-size paths.
+  if(show && (!$("map-disclosure").open || !["detail","analyst"].includes(document.body.dataset.page))){
+    status.textContent="Open location context to view referenced coordinates.";
+    return;
+  }
   $("osm-toggle").setAttribute("aria-pressed",String(show));
   $("osm-toggle").textContent=show?"Coordinate grid / Offline":"Show street map";
   if(!show){
@@ -614,11 +620,14 @@ $("geo-map").addEventListener("keydown",event=>{
 });
 $("map-disclosure").addEventListener("toggle", () => {
   if ($("map-disclosure").open) {
-    // Recalculate map dimensions after opening a previously hidden Leaflet map.
-    requestAnimationFrame(() => {
-      if(streetMap) streetMap.resize();
-      else showLiveOsmMap(true);
-    });
+    // Wait for disclosure layout before initializing or redrawing Leaflet.
+    requestAnimationFrame(() => requestAnimationFrame(() => showLiveOsmMap(requestedOnlineMap)));
+  }
+});
+window.addEventListener("baruna:pagechange", () => {
+  if ($("map-disclosure").open && requestedOnlineMap &&
+      ["detail","analyst"].includes(document.body.dataset.page)) {
+    requestAnimationFrame(() => requestAnimationFrame(() => showLiveOsmMap(true)));
   }
 });
 $("osm-toggle").addEventListener("click", () => showLiveOsmMap(!requestedOnlineMap));

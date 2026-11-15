@@ -8,27 +8,65 @@
   <title>BARUNA Sentinel | Bhumireka 2026</title>
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./project-ui.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script defer src="./src/navigation.js"></script>
   <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/project-workspace.js"></script>
 </head>
-<body data-view="decision" data-inacors="off" data-sandbox="off" data-fictional="off">
-  <a href="#executive-desk" class="skip-link">Skip to decision desk</a>
+<body data-view="decision" data-page="projects" data-project="semarang-port" data-lab-tab="movement" data-inacors="off" data-sandbox="off" data-fictional="off">
+  <a href="#pw-shell" class="skip-link">Skip to project workspace</a>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#top" aria-label="BARUNA Sentinel home">
+      <a class="brand" href="?page=projects" data-pw-page="projects" aria-label="BARUNA Sentinel project home">
         <span class="brand-mark"><span></span></span>
         <span><strong>BARUNA</strong><small>SENTINEL</small></span>
       </a>
-      <span class="event-label">SEMARANG CASE · EVIDENCE WORKSPACE</span>
-      <div class="workspace-switch" role="group" aria-label="Choose dashboard view">
-        <button type="button" id="view-decision" aria-pressed="true" aria-current="page" aria-label="Open Evidence Review">Evidence Review</button>
-        <button type="button" id="view-analyst" aria-pressed="false" aria-label="Open GNSS Analyst">GNSS Analyst</button>
-      </div>
-      <div class="top-actions"><span class="ourdo-signature">BUILT BY <b>OURDO</b></span><span class="offline-status"><span class="status-dot"></span> Source-backed · Read-only</span><a href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener">Source ↗</a></div>
+      <span class="event-label">Infrastructure evidence / Ourdo Indonesia</span>
+      <nav class="workspace-switch pw-primary-nav" aria-label="Workspace pages">
+        <button type="button" data-pw-page="projects" aria-current="page">Projects</button>
+        <button type="button" data-pw-page="overview">Overview</button>
+        <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false" aria-label="Open project detail">Detail</button>
+        <button type="button" data-pw-page="compare">Compare</button>
+        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false" aria-label="Open GNSS Lab">GNSS Lab</button>
+      </nav>
+      <label class="pw-current-project" for="pw-project-switch"><span>WORKSPACE</span>
+        <select id="pw-project-switch" aria-label="Selected project">
+          <option value="semarang-port">Tanjung Emas / Semarang</option>
+          <option value="csem-history">CSEM / Semarang</option>
+          <option value="bako-observations">BAKO / Cibinong</option>
+        </select>
+      </label>
+      <div class="top-actions"><span class="ourdo-signature">BY <b>OURDO</b></span></div>
     </header>
 
     <main id="top">
+      <section class="pw-shell" id="pw-shell" aria-label="BARUNA project management and evidence review">
+        <div id="pw-page-projects" class="pw-page" data-pw-screen="projects"></div>
+        <div id="pw-page-overview" class="pw-page" data-pw-screen="overview"></div>
+        <div id="pw-page-detail" class="pw-page" data-pw-screen="detail"></div>
+        <div id="pw-page-compare" class="pw-page" data-pw-screen="compare"></div>
+        <div class="pw-lab-context pw-page" data-pw-screen="analyst">
+          <div class="pw-breadcrumb"><button type="button" data-pw-page="projects">Projects</button><span>/</span> GNSS Lab</div>
+          <div class="pw-heading-row"><div><span class="pw-kicker">TECHNICAL ANALYSIS</span><h1>GNSS Lab</h1><p>Historical CSEM positions and independent BAKO observation QC. Different stations, different questions.</p></div><button type="button" class="pw-btn pw-btn-secondary" data-pw-page="compare">Compare evidence</button></div>
+          <nav class="pw-lab-tabs" role="tablist" aria-label="GNSS Lab analysis tools">
+            <button type="button" role="tab" data-pw-lab="movement" aria-selected="true">Position history</button>
+            <button type="button" role="tab" data-pw-lab="qc" aria-selected="false">Observation QC</button>
+            <button type="button" role="tab" data-pw-lab="gis" aria-selected="false">GIS context</button>
+            <button type="button" role="tab" data-pw-lab="sandbox" data-feature="syntheticSandbox" aria-selected="false">Experimental</button>
+          </nav>
+        </div>
+      </section>
+      <dialog id="pw-new-project-dialog" class="pw-dialog" aria-labelledby="pw-dialog-title">
+        <form id="pw-new-project-form" method="dialog">
+          <div class="pw-dialog-top"><h2 id="pw-dialog-title">New local workspace</h2><button type="button" id="pw-dialog-close" aria-label="Close dialog">×</button></div>
+          <p>This is a browser-session draft, not a registered operator project. No measurement or polygon is imported.</p>
+          <label>Project name<input id="pw-draft-name" type="text" required minlength="3" maxlength="72" placeholder="e.g. North coast survey" autocomplete="off"></label>
+          <label>Region / area<input id="pw-draft-area" type="text" required minlength="3" maxlength="80" placeholder="e.g. Semarang, Central Java" autocomplete="off"></label>
+          <p id="pw-draft-error" class="pw-form-error" role="alert" hidden></p>
+          <div class="pw-dialog-actions"><button type="button" class="pw-btn pw-btn-secondary" id="pw-dialog-cancel">Cancel</button><button class="pw-btn pw-btn-primary" type="submit">Create workspace</button></div>
+        </form>
+      </dialog>
       <section class="hero">
         <div class="hero-content">
           <div class="eyebrow"><span class="mini-line"></span> SEMARANG · RESEARCH DEMO</div>

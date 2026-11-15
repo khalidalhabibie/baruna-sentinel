@@ -17,8 +17,52 @@ try {
   const tilePixel=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGN4/P4NAAV3Ar/lz70PAAAAAElFTkSuQmCC","base64");
   await page.route("https://tile.openstreetmap.org/**", route =>
     route.fulfill({status:200,contentType:"image/png",body:tilePixel}));
-  const response = await page.goto(BASE, { waitUntil: "networkidle", timeout: 30000 });
-  assert.equal(response.status(), 200, "Site root serves 200");
+  const initial=await page.goto(BASE, {waitUntil:"networkidle",timeout:30000});
+  assert.equal(initial.status(),200);
+  assert.equal(await page.locator("[data-pw-screen='projects']").isVisible(),true,
+    "Projects index is the new default entry");
+  assert.equal(await page.locator(".pw-list-item").count(),3,
+    "Three clearly identified research/reference workspaces appear");
+  assert.ok((await page.locator(".pw-index-foot").textContent()).includes("not customer projects"),
+    "Independent GNSS references are not presented as customer deployments");
+  mkdirSync("reports",{recursive:true});
+  await page.screenshot({path:"reports/sentinel-judge-demo-projects.png",fullPage:true});
+  await page.locator(".pw-list-item").first().locator("button.pw-project-name").click();
+  assert.equal(await page.locator("#pw-page-overview").isVisible(),true,"Opening a workspace displays its overview");
+  assert.ok((await page.locator("#pw-page-overview").textContent()).includes("Six historical cumulative-settlement ranges"),
+    "Semarang overview shows the research source, not fake real-time risk");
+  await page.screenshot({path:"reports/sentinel-judge-demo-project-overview.png",fullPage:true});
+  await page.locator("[data-pw-screen='overview'] [data-pw-page='compare']").click();
+  assert.equal(await page.locator("#pw-page-compare").isVisible(),true,"Compare is a separate working page");
+  assert.equal(await page.locator(".pw-comparison tbody tr").count(),10,"Evidence comparison has explicit fields");
+  assert.ok((await page.locator("#pw-page-compare").textContent()).includes("not ground movement"),
+    "Comparison does not rank unrelated station movement or asset safety");
+  await page.screenshot({path:"reports/sentinel-judge-demo-compare.png",fullPage:true});
+  await page.locator("[data-pw-compare='bako-observations']").check();
+  assert.equal(await page.locator(".pw-comparison thead th").count(),4,
+    "Compare can show three independently sourced workspaces side by side");
+  await page.locator("[data-pw-page='projects']").first().click();
+  await page.locator("#pw-new-project-btn").click();
+  assert.equal(await page.locator("#pw-new-project-dialog").isVisible(),true);
+  await page.locator("#pw-draft-name").fill("Regional bridge study");
+  await page.locator("#pw-draft-area").fill("Semarang, Central Java");
+  await page.locator("#pw-new-project-form button[type='submit']").click();
+  assert.equal(await page.locator("#pw-page-overview").isVisible(),true);
+  assert.ok((await page.locator("#pw-page-overview").textContent()).includes("No evidence imported"),
+    "User-created workspace does not fabricate an assessment");
+  await page.locator("#pw-project-switch").selectOption("csem-history");
+  assert.ok((await page.locator("#pw-page-overview").textContent()).includes("3,561"),
+    "Project selector opens the correct CSEM source overview");
+  await page.locator("#pw-page-overview .pw-heading-actions [data-pw-page='detail']").click();
+  assert.equal(await page.locator(".case-workspace").isVisible(),false,
+    "CSEM technical study does not inherit unrelated Semarang field sectors");
+  await page.locator("#pw-project-switch").selectOption("semarang-port");
+  await page.locator("#pw-page-overview .pw-heading-actions [data-pw-page='detail']").click();
+  assert.equal(await page.locator("#pw-page-detail").isVisible(),true);
+  assert.equal(await page.locator(".case-workspace").isVisible(),true);
+  const response=await page.goto(BASE+"/?page=detail",{waitUntil:"networkidle",timeout:30000});
+  assert.equal(response.status(),200,"Deep-linked project detail serves 200");
+  assert.equal(await page.locator("#pw-page-detail").isVisible(),true,"Direct detail URL resolves");
   assert.equal(await page.locator("#view-decision").getAttribute("aria-pressed"), "true", "Decision mode is default");
   await page.keyboard.press("Tab");
   assert.equal(await page.evaluate(() => document.activeElement.classList.contains("skip-link")), true,
@@ -33,22 +77,26 @@ try {
     "Overview explains what is known, unknown, and what to verify next");
   assert.ok((await page.locator(".evidence-logic").textContent()).includes("We cannot claim"),
     "Buyer-facing decision explicitly states scientific limitations");
-  const deskBox=await page.locator("#executive-desk").boundingBox();
+  const detailHeading=await page.locator("#pw-page-detail").boundingBox();
   const geoBox=await page.locator("#case-workspace").boundingBox();
-  assert.ok(deskBox && geoBox && geoBox.y<deskBox.y,
-    "The sector decision precedes optional source notes");
+  assert.ok(detailHeading && geoBox && geoBox.y>detailHeading.y,
+    "Project title and navigation appear before the selected sector");
   assert.equal(await page.locator("#map-disclosure").getAttribute("open"),null,
     "Map stays collapsed until explicitly requested");
   await page.locator("#view-analyst").click();
   assert.equal(await page.locator(".analyst-proof-card:visible").count(),2,
     "Analyst starts with two independently sourced GNSS records");
+  assert.equal(await page.locator("#station-qc").isVisible(),false,
+    "Position history is the default focused GNSS Lab view");
+  assert.equal(await page.locator('[data-pw-lab="movement"]').getAttribute("aria-selected"),"true");
+  await page.locator('[data-pw-lab="qc"]').click();
   assert.equal(await page.locator("#station-qc").isVisible(),true,
-    "GNSS Analyst opens on its real daily QC workstation");
+    "Observation QC tab opens the separate authentic QC workstation");
   assert.equal(await page.locator(".controls").isVisible(),true,
     "Analyst provides the technical GNSS data tools");
   assert.equal(await page.locator(".decision-data-bridge").isVisible(),false,
     "Overview-specific upsell is hidden in Analyst");
-  assert.ok(page.url().includes("view=analyst"),"Analyst mode is URL-shareable");
+  assert.ok(page.url().includes("page=analyst"),"GNSS Lab has a shareable URL");
   await page.locator("#view-decision").click();
   assert.equal(await page.locator("#station-qc").isVisible(),false,"Overview hides technical QC workbench");
   assert.equal(await page.locator(".evidence-strip").isVisible(),true,"Overview restores the source chain");
@@ -59,8 +107,9 @@ try {
   await navOnly.route("**/src/app.js",route=>route.abort());
   await navOnly.goto(BASE+"/?view=analyst",{waitUntil:"domcontentloaded",timeout:30000});
   await navOnly.waitForFunction(()=>document.body.dataset.view==="analyst",{timeout:10000});
+  await navOnly.locator('[data-pw-lab="qc"]').click();
   assert.equal(await navOnly.locator("#station-qc").isVisible(),true,
-    "GNSS Analyst tab works independently of the GIS analysis JavaScript module");
+    "GNSS Lab tabs work even if the analysis JavaScript module is unavailable");
   await navOnly.locator("#view-decision").click();
   assert.equal(await navOnly.locator("#case-workspace").isVisible(),true,
     "Overview navigation survives missing GIS analysis module");
@@ -180,15 +229,24 @@ try {
   assert.equal(await page.locator("#lab-toggle").getAttribute("aria-pressed"), "false");
   assert.equal(await page.locator(".lab-import").isVisible(), false, "Ina-CORS import hidden by default");
   assert.equal(await page.locator("#sample-btn").isVisible(), false, "Synthetic data control hidden by default");
+  await page.locator('[data-pw-lab="gis"]').click();
+  assert.equal(await page.locator("#geo-context").isVisible(),true,
+    "GIS is a deliberate technical subview, not forced beneath the chart");
   await page.locator('[data-map-layer="landmarks"]').click();
   assert.equal(await page.locator("#geo-map .geo-marker").count(), 1, "Landmark layer can be hidden");
   await page.locator('[data-map-layer="landmarks"]').click();
   assert.equal(await page.locator("#geo-map .geo-marker").count(), 3, "Landmark layer restored");
+  await page.locator('[data-pw-lab="movement"]').click();
   await page.locator("#lab-toggle").click();
   assert.equal(await page.locator("#lab-toggle").getAttribute("aria-pressed"), "true");
   assert.equal(await page.locator(".lab-import").isVisible(), true, "Ina-CORS import appears in lab mode");
   assert.equal(await page.locator("#sample-btn").isVisible(), true, "Explicit synthetic mode available only in lab");
-  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "Lab enables three disclosed fictional scenario points");
+  assert.equal(await page.locator('[data-pw-lab="sandbox"]').isVisible(),true,
+    "Experimental tab only becomes available by explicit opt-in");
+  await page.locator('[data-pw-lab="sandbox"]').click();
+  assert.equal(await page.locator(".assets-panel").isVisible(),true,"Synthetic scheduling stays isolated");
+  await page.locator('[data-pw-lab="gis"]').click();
+  assert.equal(await page.locator("#geo-map .geo-marker").count(), 6, "Lab enables disclosed fictional GIS points");
   await page.locator('[data-map-layer="fictional"]').click();
   assert.equal(await page.locator("#geo-map .geo-marker").count(), 3, "Fictional layer is reversible");
   await page.locator('[data-map-layer="fictional"]').click();
@@ -254,18 +312,26 @@ try {
   mkdirSync("reports", { recursive: true });
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
-  await page.getByRole("button", { name: /explore case/i }).click();
-  await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
-  assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
+  assert.equal(await page.locator("#pw-page-detail").isVisible(),true,
+    "Full historical sector evidence remains accessible from the project detail page");
 
   await page.locator("#view-analyst").click();
   assert.equal(await page.locator("#view-analyst").getAttribute("aria-pressed"), "true", "Analyst view is selected");
-  assert.equal(await page.locator(".controls").isVisible(), true, "Analyst view reveals original GNSS controls");
-  assert.equal(await page.locator("#analyst-intro").isVisible(), true, "Analyst view shows instrumentation provenance");
-  assert.equal(await page.locator("#gis-audit").isVisible(), true, "GIS spatial audit visible to analysts");
+  assert.equal(await page.locator(".pw-lab-context").isVisible(), true, "GNSS Lab has its own technical page heading");
+  await page.locator('[data-pw-lab="gis"]').click();
+  assert.equal(await page.locator(".controls").isVisible(), false, "Dedicated GIS tab does not stack GNSS import tools");
+  assert.equal(await page.locator("#gis-audit").isVisible(), true, "Expanded GIS tab preserves the technical spatial provenance audit");
   assert.equal(await page.locator("#geo-audit-rows tr").count(), 4, "GIS table contains CSEM, landmarks and independent BAKO");
   assert.ok((await page.locator("#geo-audit-rows").textContent()).includes("Different station and time"),
     "GIS table flags that BAKO is not a local movement solution");
+  await page.locator('[data-pw-lab="movement"]').click();
+  assert.equal(await page.locator(".controls").isVisible(),true, "Position history exposes actual GNSS data controls");
+  assert.equal(await page.locator(".chart-panel").isVisible(),true,
+    "Historical CSEM position chart is visible without stacking QC and GIS");
+  assert.equal(await page.locator("#station-qc").isVisible(),false,
+    "Dedicated Position history tab does not stack the QC import section");
+  assert.equal(await page.locator("#geo-context").isVisible(),false,
+    "Map and geographic provenance remain available under GIS context");
   await page.screenshot({ path:"reports/sentinel-judge-demo-analyst.png", fullPage:true });
 
   await page.evaluate(() => {
