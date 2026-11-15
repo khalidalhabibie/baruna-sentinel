@@ -54,6 +54,7 @@ function setDashboardView(mode) {
   document.body.dataset.view = mode;
   $("view-decision").setAttribute("aria-pressed", String(mode === "decision"));
   $("view-analyst").setAttribute("aria-pressed", String(mode === "analyst"));
+  renderGeographicContext();
   const target = mode === "decision" ? $("executive-desk") : $("analyst-intro");
   target.scrollIntoView({behavior:"smooth",block:"start"});
   $("live-region").textContent = mode === "decision"
@@ -285,7 +286,9 @@ function showLiveOsmMap(show) {
 
 function renderGeographicContext() {
   const geo = geoContextSummary();
-  $("geo-map").innerHTML = renderGeoSvg(geoLayers);
+  // Competition decision view never displays invented scenario markers, even when the lab is enabled.
+  const visibleLayers = { ...geoLayers, fictional: geoLayers.fictional && document.body.dataset.view === "analyst" };
+  $("geo-map").innerHTML = renderGeoSvg(visibleLayers);
   $("geo-audit-rows").innerHTML = renderSpatialAuditRows();
   const available = currentFlags().fictionalMapMarkers ? 3 : 2;
   $("geo-layer-summary").textContent = Object.values(geoLayers).filter(Boolean).length + " / " + available + " layers visible";
@@ -481,11 +484,15 @@ $("export-json").addEventListener("click", () => {
   notify("Evidence bundle exported. Keep original source files and document their origin.");
 });
 $("case-study-btn").addEventListener("click", runCaseStudy);
-$("lab-toggle").addEventListener("click", () => {
+$("lab-toggle").addEventListener("click", async () => {
   labEnabled = !labEnabled;
   applyFeatureFlags();
+  if (!labEnabled) {
+    if (seriesMeta?.mode === "synthetic") await runPublished();
+    if (rinexMeta.mode === "local-qc" || rinexMeta.mode === "synthetic") await loadVerifiedRinexQC();
+  }
   notify(labEnabled ? "Experimental data tools enabled. BAKO remains the verified default." :
-    "Experimental tools hidden. Published evidence and verified fallback remain available.");
+    "Data lab closed. Verified evidence restored when experimental data had been selected.");
 });
 $("view-decision").addEventListener("click", () => setDashboardView("decision"));
 $("view-analyst").addEventListener("click", () => setDashboardView("analyst"));
