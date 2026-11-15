@@ -1,49 +1,97 @@
-/* Standalone view navigation: works even if the GIS analysis module fails to initialize. */
-(function () {
+/* BARUNA product navigation. Route workspaces without conflating independent datasets. */
+(function(){
   "use strict";
-  const ALLOWED = new Set(["decision", "analyst"]);
-  const DISPLAY = {decision:"Evidence Review",analyst:"GNSS Analyst"};
-  const $ = id => document.getElementById(id);
-  function setView(view, options = {}) {
-    if(!ALLOWED.has(view)) return;
-    document.body.dataset.view = view;
-    for(const name of ALLOWED) {
-      const button=$("view-"+name);
-      if(!button) continue;
-      const selected=name===view;
-      button.setAttribute("aria-pressed",String(selected));
-      button.setAttribute("aria-current",selected?"page":"false");
+  const PAGES=new Set(["projects","overview","detail","compare","analyst"]);
+  const LABELS={projects:"Projects",overview:"Overview",detail:"Project detail",compare:"Evidence compare",analyst:"GNSS Lab"};
+  const $=id=>document.getElementById(id);
+  const pageFromLegacy=view=>view==="analyst"?"analyst":"detail";
+  let selectedProject="semarang-port";
+
+  function readRoute(){
+    const query=new URLSearchParams(window.location.search);
+    const desired=query.get("page")||(query.get("view")==="analyst"?"analyst":"projects");
+    return {page:PAGES.has(desired)?desired:"projects",project:query.get("project")||"semarang-port"};
+  }
+  function setPage(page,{updateUrl=false,scroll=false,replace=false}={}){
+    if(!PAGES.has(page))return false;
+    const legacyView=page==="analyst"?"analyst":"decision";
+    document.body.dataset.page=page;
+    document.body.dataset.view=legacyView;
+    document.body.dataset.project=selectedProject;
+    for(const button of document.querySelectorAll("[data-pw-page]")){
+      const active=button.dataset.pwPage===page;
+      if(button.tagName==="BUTTON"){
+        button.setAttribute("aria-current",active?"page":"false");
+        if(button.id==="view-decision"||button.id==="view-analyst")button.setAttribute("aria-pressed",String(active));
+      }
     }
-    document.title="BARUNA Sentinel | "+DISPLAY[view];
-    window.dispatchEvent(new CustomEvent("baruna:viewchange",{detail:{view}}));
-    if(options.updateUrl) {
+    const select=$("pw-project-switch");
+    if(select&&Array.from(select.options).some(o=>o.value===selectedProject))select.value=selectedProject;
+    document.title="BARUNA Sentinel | "+LABELS[page];
+    if(updateUrl){
       const url=new URL(window.location.href);
-      if(view==="decision") url.searchParams.delete("view");
-      else url.searchParams.set("view","analyst");
-      window.history.replaceState({view}, "", url.pathname+url.search+url.hash);
+      url.searchParams.delete("view");
+      if(page==="projects")url.searchParams.delete("page");
+      else url.searchParams.set("page",page);
+      if(selectedProject==="semarang-port")url.searchParams.delete("project");
+      else url.searchParams.set("project",selectedProject);
+      const method=replace?"replaceState":"pushState";
+      window.history[method]({page,project:selectedProject},"",url.pathname+url.search);
     }
-    if(options.scroll) {
-      const target=view==="decision"?$("case-workspace"):$("analyst-intro");
-      (target || $("top"))?.scrollIntoView({behavior:"smooth",block:"start"});
+    window.dispatchEvent(new CustomEvent("baruna:pagechange",{detail:{page,project:selectedProject}}));
+    window.dispatchEvent(new CustomEvent("baruna:viewchange",{detail:{view:legacyView}}));
+    if(scroll){
+      const target=page==="detail"?$("pw-page-detail"):
+        page==="analyst"?$("pw-shell"):$("pw-shell");
+      (target||$("top"))?.scrollIntoView({behavior:"smooth",block:"start"});
     }
-    if($("live-region")) $("live-region").textContent =
-      view==="decision"?"Evidence Review selected: choose a sector and export a verification brief.":
-      "GNSS Analyst selected: independent station records, observation QC and source provenance.";
+    const live=$("live-region");
+    if(live)live.textContent=LABELS[page]+" opened for "+selectedProject+".";
+    return true;
   }
-  function initialView() {
-    const param=new URLSearchParams(window.location.search).get("view");
-    return ALLOWED.has(param)?param:"decision";
+  function selectProject(id,{page="overview",updateUrl=true,scroll=true}={}){
+    if(typeof id!=="string"||!/^(semarang-port|csem-history|bako-observations|draft-[a-zA-Z0-9-]+)$/.test(id))return false;
+    selectedProject=id;
+    return setPage(PAGES.has(page)?page:"overview",{updateUrl,scroll});
   }
-  function init() {
-    for(const view of ALLOWED) $("view-"+view)?.addEventListener("click",()=>setView(view,{updateUrl:true,scroll:true}));
+  function setView(view,options={}){
+    return setPage(pageFromLegacy(view),options);
+  }
+  function init(){
+    const {page,project}=readRoute();
+    if(/^(semarang-port|csem-history|bako-observations|draft-[a-zA-Z0-9-]+)$/.test(project))selectedProject=project;
     document.addEventListener("click",event=>{
-      const target=event.target.closest("[data-switch-view]");
-      if(target) setView(target.dataset.switchView,{updateUrl:true,scroll:true});
+      const pageTarget=event.target.closest("[data-pw-page]");
+      if(pageTarget){
+        event.preventDefault();
+        setPage(pageTarget.dataset.pwPage,{updateUrl:true,scroll:true});
+        return;
+      }
+      const projectTarget=event.target.closest("[data-pw-open]");
+      if(projectTarget){
+        event.preventDefault();
+        selectProject(projectTarget.dataset.pwOpen);
+        return;
+      }
+      const legacyTarget=event.target.closest("[data-switch-view]");
+      if(legacyTarget){
+        event.preventDefault();
+        setView(legacyTarget.dataset.switchView,{updateUrl:true,scroll:true});
+      }
     });
-    window.addEventListener("popstate",()=>setView(initialView()));
-    setView(initialView());
+    $("pw-project-switch")?.addEventListener("change",event=>selectProject(event.target.value));
+    window.addEventListener("popstate",()=>{
+      const next=readRoute();
+      selectedProject=next.project;
+      setPage(next.page,{updateUrl:false,scroll:false});
+    });
+    setPage(page);
   }
-  window.BarunaNavigation=Object.freeze({setView});
-  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",init,{once:true});
+  window.BarunaNavigation=Object.freeze({
+    setPage,selectProject,setView,
+    getPage:()=>document.body.dataset.page,
+    getProject:()=>selectedProject
+  });
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
   else init();
 })();
