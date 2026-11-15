@@ -14,7 +14,7 @@ try {
   });
   // Keep third-party OSM tile infrastructure out of deterministic CI while
   // checking the *real* Leaflet UI, marker wiring and licensed attribution.
-  const tilePixel=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLttAAAAABJRU5ErkJggg==","base64");
+  const tilePixel=Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGN4/P4NAAV3Ar/lz70PAAAAAElFTkSuQmCC","base64");
   await page.route("https://tile.openstreetmap.org/**", route =>
     route.fulfill({status:200,contentType:"image/png",body:tilePixel}));
   const response = await page.goto(BASE, { waitUntil: "networkidle", timeout: 30000 });
@@ -67,7 +67,11 @@ try {
   // Default: real reference points only; experiments are hidden until enabled.
   mkdirSync("reports", { recursive: true });
   // Keyboard-focus test is complete; reset focus so screenshot represents an ordinary first visit.
-  await page.evaluate(() => document.activeElement?.blur?.());
+  await page.evaluate(() => {
+    document.activeElement?.blur?.();
+    window.scrollTo({top:0,left:0,behavior:"instant"});
+  });
+  await page.waitForTimeout(150);
   await page.screenshot({ path:"reports/sentinel-judge-demo-first-impression.png", fullPage:true });
   await page.locator("#case-workspace").screenshot({path:"reports/sentinel-judge-evidence-workspace.png"});
   // Private CORS daily QC import is explicit, local-only and never in the public build.
