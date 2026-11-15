@@ -6,7 +6,7 @@ with historical CSEM positions / Semarang assets.
 
 Usage:
   python scripts/verify_igs_rinex.py
-  python scripts/verify_igs_rinex.py --file /path/to/real-station.crx.gz
+  python scripts/verify_igs_rinex.py --file /path/to/real-station.crx.gz --station CSMG --source-url https://srgi.big.go.id
 """
 from __future__ import annotations
 
@@ -59,7 +59,7 @@ def year_doy_from_filename(path: Path) -> datetime | None:
         return datetime.strptime(match.group(1) + match.group(2), "%Y%j")
     return None
 
-def analyze(path: Path, source_url: str, minutes: int) -> dict:
+def analyze(path: Path, source_url: str, minutes: int, station: str, station_evidence: str) -> dict:
     import georinex as gr
     import numpy as np
 
@@ -119,8 +119,9 @@ def analyze(path: Path, source_url: str, minutes: int) -> dict:
     result = {
         "schema": "baruna-sentinel-real-multignss-qc-v1",
         "source": {
-            "type": "authentic_igs_station_observation_archive",
-            "station": "BAKO00IDN" if "BAKO00IDN" in path.name else "station_not_verified",
+            "type": "public_igs_archive" if station_evidence == "original_archive_path" else "user_supplied_rinex",
+            "station": station,
+            "station_evidence": station_evidence,
             "archive_url": source_url,
             "filename": path.name,
             "sha256_compressed": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -142,7 +143,7 @@ def analyze(path: Path, source_url: str, minutes: int) -> dict:
         },
         "relationship_to_CSEM": {
             "linked_to_semarang_movement_solution": False,
-            "reason": "BAKO observational QC is a separate station and epoch window; CSEM movement solution is GPS-processed historical station positions 2010-2021.",
+            "reason": "QC of a separately processed RINEX sample is not a time-matched geodetic position solution associated with CSEM historical GPS positions (2010-2021) or a measured port asset.",
         },
         "limitations": [
             "Actual populated pseudorange, not position solutions.",
@@ -156,14 +157,31 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--file", type=Path, help="Existing original, unmodified RINEX observation file")
     parser.add_argument("--minutes", type=int, default=20, help="Archive observation window, default 20 min")
+    parser.add_argument("--station", help="Operator-declared station code for --file, e.g. CSMG (not independently verified by CLI)")
+    parser.add_argument("--source-url", help="Public provenance page or original archive URL for --file; never put credentials in URLs")
     parser.add_argument("--output", type=Path, default=Path("reports/real_multignss_qc.json"))
     args = parser.parse_args()
     if args.minutes < 2 or args.minutes > 120:
         parser.error("--minutes must be 2–120")
-    path, source = (args.file, str(args.file)) if args.file else retrieve(Path("tmp/igs"))
+    if args.station and not re.fullmatch(r"[A-Za-z0-9_-]{3,16}", args.station):
+        parser.error("--station must be 3–16 alphanumeric/underscore/hyphen characters")
+    if args.source_url and not args.source_url.startswith("https://"):
+        parser.error("--source-url must be an HTTPS URL without credentials or tokens")
+    if args.source_url and ("@" in args.source_url.split("/",3)[2] or "?" in args.source_url):
+        parser.error("--source-url must not contain credentials or query parameters")
+    if not args.file and args.station:
+        parser.error("--station is only for --file; automatic archive station is BAKO00IDN")
+    if args.file:
+        if not args.station:
+            parser.error("--station is required with --file; file names alone do not independently verify station identity")
+        path, source = args.file, (args.source_url or "USER_PROVIDED_LOCAL_FILE")
+        station, station_evidence = args.station.upper(), "operator_declared_unverified"
+    else:
+        path, source = retrieve(Path("tmp/igs"))
+        station, station_evidence = "BAKO00IDN", "original_archive_path"
     if not path.exists():
         raise FileNotFoundError(path)
-    result = analyze(path, source, args.minutes)
+    result = analyze(path, source, args.minutes, station, station_evidence)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf8")
     print("VERIFIED_REAL_MULTI_GNSS_QC_JSON=" + str(args.output), flush=True)
