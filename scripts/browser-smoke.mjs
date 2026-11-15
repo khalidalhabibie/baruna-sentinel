@@ -27,7 +27,17 @@ try {
     "Full GNSS QC screen is not stacked into the buyer Overview");
   assert.equal(await page.locator(".decision-data-bridge").isVisible(),true,
     "Overview has a meaningful CTA into GNSS data analysis");
+  assert.equal(await page.locator(".evidence-logic-card").count(),3,
+    "Overview explains what is known, unknown, and what to verify next");
+  assert.ok((await page.locator(".evidence-logic").textContent()).includes("We cannot claim"),
+    "Buyer-facing decision explicitly states scientific limitations");
+  const deskBox=await page.locator("#executive-desk").boundingBox();
+  const geoBox=await page.locator("#case-workspace").boundingBox();
+  assert.ok(deskBox && geoBox && deskBox.y<geoBox.y,
+    "Evidence interpretation precedes geographic map workspace");
   await page.locator("#view-analyst").click();
+  assert.equal(await page.locator(".analyst-proof-card:visible").count(),2,
+    "Analyst starts with two independently sourced GNSS records");
   assert.equal(await page.locator("#station-qc").isVisible(),true,
     "GNSS Analyst opens on its real daily QC workstation");
   assert.equal(await page.locator(".controls").isVisible(),true,
@@ -206,6 +216,19 @@ try {
   assert.equal(await page.locator("#case-outcome-history").textContent(),"74–140 cm");
   assert.equal(await page.locator("#case-workspace-brief").isVisible(),true,
     "Selected sector has a real report action in the evidence workspace");
+  await page.evaluate(() => {
+    window.__briefPrintCalled=false;
+    window.print=()=>{window.__briefPrintCalled=true;};
+  });
+  await page.locator("#case-workspace-brief").click();
+  const briefText=await page.locator("#print-report").textContent();
+  assert.ok(briefText.includes("FIELD VERIFICATION BRIEF"),"Buyer receives a short field brief");
+  assert.ok(briefText.includes("West breakwater"),"Brief follows the selected historical sector");
+  assert.ok(briefText.includes("What we cannot conclude"),"Brief lists unsupported conclusions");
+  assert.ok(briefText.includes("What to verify next"),"Brief contains actionable follow-up");
+  assert.equal(await page.evaluate(()=>window.__briefPrintCalled),true,
+    "Buyer-facing brief invokes Print/Save as PDF");
+
 
   // Live and offline map controls must be reversible without losing selection.
   await page.locator("#osm-toggle").click();
@@ -221,7 +244,7 @@ try {
   await page.screenshot({ path: "reports/sentinel-judge-demo-desktop.png", fullPage: true });
 
   await page.locator("#step-sector").click();
-  await page.getByRole("button", { name: /explore semarang evidence/i }).click();
+  await page.getByRole("button", { name: /review the evidence/i }).click();
   await page.waitForFunction(() => document.querySelector("#demo-status")?.textContent?.includes("Case ready"), { timeout: 15000 });
   assert.ok((await page.locator("#demo-status").textContent()).includes("Case ready"), "One click reloads both authentic but independent sources");
 
