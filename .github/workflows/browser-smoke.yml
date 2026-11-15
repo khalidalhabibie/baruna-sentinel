@@ -6,6 +6,7 @@ on:
       - "index.html"
       - "styles.css"
       - "project-ui.css"
+      - "why-sentinel.css"
       - "data/**"
       - "scripts/browser-smoke.mjs"
       - "scripts/production-check.mjs"
