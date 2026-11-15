@@ -151,7 +151,7 @@ export function renderImportedAssetMap(){
   }).addTo(leafletMap);
   csemMarker.bindPopup('CSEM reference station · not linked to imported assets');
   const b=shapeLayer.getBounds();
-  if(b?.isValid())leafletMap.fitBounds(b.pad(.25),{maxZoom:13});
+  if(b?.isValid())leafletMap.fitBounds(b.extend([csem.lat,csem.lon]).pad(.22),{maxZoom:13});
   else leafletMap.setView([csem.lat,csem.lon],11);
   requestAnimationFrame(()=>leafletMap?.invalidateSize());
 }
