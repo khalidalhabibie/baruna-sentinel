@@ -93,6 +93,10 @@ function updateSelectedSector() {
   $("selected-sector-range").textContent = selected
     ? selected.minCm + "–" + selected.maxCm + " cm cumulative settlement (2005 only)"
     : "No current site evidence is included";
+  $("case-outcome-name").textContent = selected?.name || "Published sector record unavailable";
+  $("case-outcome-history").textContent = selected
+    ? selected.minCm + "–" + selected.maxCm + " cm"
+    : "—";
 }
 function number(value, digits = 1) {
   return Number.isFinite(value) ? value.toFixed(digits) : "—";
@@ -596,6 +600,7 @@ $("historical-sector-list").addEventListener("click", e => {
 });
 $("report-btn").addEventListener("click", printEvidenceReport);
 $("executive-brief").addEventListener("click", printEvidenceReport);
+$("case-workspace-brief").addEventListener("click",printEvidenceReport);
 applyFeatureFlags();
 renderExecutiveDesk();
 loadHistoricalResearch();
