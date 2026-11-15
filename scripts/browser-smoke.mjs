@@ -41,6 +41,38 @@ try {
   await page.evaluate(() => document.activeElement?.blur?.());
   await page.screenshot({ path:"reports/sentinel-judge-demo-first-impression.png", fullPage:true });
   await page.locator("#case-workspace").screenshot({path:"reports/sentinel-judge-evidence-workspace.png"});
+  // Private CORS daily QC import is explicit, local-only and never in the public build.
+  assert.equal(await page.locator("#cors-qc-result .cors-qc-empty").count(),1,
+    "Public demo has no redistributed private SRGI data");
+  const fakeDay=(station,date,doy,epochs)=>({
+    station,date,doy,epochs,expected_full_day_30s_epochs:2880,
+    long_gaps_gt30s:0,largest_gap_min:0,
+    first_epoch_gps:date+" 00:00:00",last_epoch_gps:date+" 23:59:30",
+    epochs_with_C1_by_constellation:{G:epochs,R:epochs,E:epochs,S:0,"G+R+E":epochs}
+  });
+  const qcFixture={
+    method:"SYNTHETIC BROWSER TEST - RINEX epoch counts",
+    disposition:"Fictional data for automated smoke test; not real SRGI observations",
+    records:[
+      fakeDay("csem","2026-11-10",314,2880),
+      fakeDay("csmg","2026-11-10",314,2880),
+      fakeDay("csem","2026-11-11",315,2880),
+    ]
+  };
+  await page.locator("#cors-qc-file").setInputFiles({
+    name:"synthetic-browser-test-qc.json",
+    mimeType:"application/json",buffer:Buffer.from(JSON.stringify(qcFixture))
+  });
+  assert.equal(await page.locator("#cors-qc-result .cors-day-row").count(),2,
+    "Station-day comparison renders the two test dates");
+  assert.ok((await page.locator("#cors-qc-result").textContent()).includes("No file"),
+    "Missing CSMG date is made explicit instead of treated as zero data");
+  assert.ok((await page.locator("#cors-qc-notice").textContent()).includes("3 station-day files"),
+    "Locally imported QC reports its exact record count");
+  await page.locator("#cors-qc-reset").click();
+  assert.equal(await page.locator("#cors-qc-result .cors-qc-empty").count(),1,
+    "Local QC can be purged from application memory");
+
   assert.equal(await page.locator("#geo-osm-embed").isVisible(),true,
     "Real street basemap is default, not an opt-in secondary iframe");
   assert.equal(await page.locator("#street-map .leaflet-container").count(),0,
