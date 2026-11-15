@@ -6,6 +6,7 @@ import {renderGeoSvg, geoContextSummary, renderSpatialAuditRows,geoPointDetails,
 import {buildEvidenceReportMarkup} from "./report.js";
 import {parseLocalQcReport} from "./qc-source.js";
 import {resolveFeatureFlags} from "./feature-flags.js";
+import {makeStreetMap} from "./live-map.js";
 import {validateHistoricalFieldEvidence, historicalEvidenceSummary, renderHistoricalSectorCards, renderHistoricalSectorDetail} from "./historical.js";
 import {evidenceReadiness, verificationRequestForSector} from "./readiness.js";
 
@@ -24,6 +25,8 @@ const currentFlags = () => resolveFeatureFlags(labEnabled ? "?lab=1" : "");
 const geoLayers = {station:true,landmarks:true,fictional:currentFlags().fictionalMapMarkers};
 let geoView = "all";
 let geoSelectedId = "port-terminal";
+let streetMap = null;
+let requestedOnlineMap = true;
 function setGeoFocus(view) {
   if (!GEO_VIEWS[view]) return;
   geoView = view;
@@ -295,22 +298,49 @@ async function loadHistoricalResearch() {
 }
 
 function showLiveOsmMap(show) {
-  const embed = $("geo-osm-embed");
-  embed.hidden = !show;
-  $("geo-map").hidden = show;
-  $("osm-toggle").setAttribute("aria-expanded", String(show));
-  $("osm-toggle").textContent = show ? "Return to coordinate plot" : "Show live street map (OSM)";
-  if (show) {
-    // Only on explicit click. Never prefetch OSM tiles and never imply geodetic survey status.
-    const bounds=GEO_VIEWS[geoView];
-    const bbox = [bounds.west,bounds.south,bounds.east,bounds.north].join(",");
-    const url = new URL("https://www.openstreetmap.org/export/embed.html");
-    url.searchParams.set("bbox", bbox);
-    url.searchParams.set("layer", "mapnik");
-    const location=geoPointDetails(geoSelectedId);
-    url.searchParams.set("marker",location.latitude+","+location.longitude);
-    if ($("osm-iframe").getAttribute("src") !== url.href) $("osm-iframe").src = url.href;
+  requestedOnlineMap = show;
+  const embed=$("geo-osm-embed");
+  const grid=$("geo-map");
+  const status=$("basemap-status");
+  if(show && !window.L){
+    status.textContent = "Live map library unavailable. Offline coordinate grid shown.";
+    embed.hidden=true;
+    grid.hidden=false;
+    $("osm-toggle").textContent="Retry street map";
+    $("osm-toggle").setAttribute("aria-pressed","false");
+    return;
   }
+  embed.hidden=!show;
+  grid.hidden=show;
+  $("osm-toggle").setAttribute("aria-pressed",String(show));
+  $("osm-toggle").textContent=show?"Coordinate grid / Offline":"Show street map";
+  if(!show){
+    status.textContent="Offline WGS84 coordinate reference · no street tiles";
+    return;
+  }
+  status.textContent="Live OpenStreetMap · pan, zoom and select references";
+  if(!streetMap){
+    try {
+      streetMap=makeStreetMap({
+        element:$("street-map"),
+        onSelect:id=>selectGeoPoint(id),
+        onTileFailure:()=>{
+          if(requestedOnlineMap){
+            showLiveOsmMap(false);
+            $("basemap-status").textContent="Map tiles unavailable. Offline coordinate grid shown.";
+          }
+        }
+      });
+    } catch(error) {
+      streetMap=null;
+      showLiveOsmMap(false);
+      status.textContent="Could not initialize live map. Offline grid remains available.";
+      return;
+    }
+  }
+  const layers={...geoLayers,fictional:geoLayers.fictional && document.body.dataset.view==="analyst"};
+  streetMap.redraw({view:geoView,selectedId:geoSelectedId,layers,includeScenarios:layers.fictional});
+  requestAnimationFrame(()=>streetMap?.resize());
 }
 
 function renderGeographicContext() {
@@ -339,9 +369,7 @@ function renderGeographicContext() {
   for (const button of document.querySelectorAll("[data-map-layer]")) {
     button.setAttribute("aria-pressed", String(geoLayers[button.dataset.mapLayer]));
   }
-  // OSM remains opt-in; after an explicit user opt-in keep the marker/extent
-  // synchronized with the selected point rather than leaving a stale pin.
-  if(!$("geo-osm-embed").hidden) showLiveOsmMap(true);
+  if(requestedOnlineMap) showLiveOsmMap(true);
 }
 
 function currentEvidenceBundle() {
@@ -579,7 +607,7 @@ $("geo-map").addEventListener("keydown",event=>{
   const node=event.target.closest("[data-point-id]");
   if(node){event.preventDefault();selectGeoPoint(node.dataset.pointId);}
 });
-$("osm-toggle").addEventListener("click", () => showLiveOsmMap($("geo-osm-embed").hidden));
+$("osm-toggle").addEventListener("click", () => showLiveOsmMap(!requestedOnlineMap));
 $("osm-close").addEventListener("click", () => showLiveOsmMap(false));
 $("historical-filters").addEventListener("click", e => {
   const button = e.target.closest("button[data-filter]");
@@ -602,6 +630,7 @@ $("report-btn").addEventListener("click", printEvidenceReport);
 $("executive-brief").addEventListener("click", printEvidenceReport);
 $("case-workspace-brief").addEventListener("click",printEvidenceReport);
 applyFeatureFlags();
+showLiveOsmMap(true);
 renderExecutiveDesk();
 loadHistoricalResearch();
 // Separate authentic sources: CSEM historical positions versus archived BAKO multi-GNSS QC.
