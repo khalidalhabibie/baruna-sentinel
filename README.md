@@ -7,9 +7,9 @@ Coastal infrastructure teams need an explainable **inspection-review queue**, no
 
 ## Competition UI: simple by default
 
-**Decision view (default)** answers three questions: what historical evidence exists, which sector is selected, and what new measurements should be requested. The interactive map shows public reference locations; technical details and source caveats are available on demand.
+**Overview (default)** is a map-first, source-backed coastal evidence workspace that answers three questions: what historical evidence exists, which sector is selected, and what new measurements should be requested. The interactive map shows public reference locations; technical details and source caveats are available on demand.
 
-**GIS / Analyst** retains the original GPS/GNSS analysis, spatial audit, source controls and export. Use **Enable experimental tools** to reveal local Ina-CORS GeoRinex QC import, fictional scenario markers and synthetic data controls. Closing the lab hides them again without changing core datasets.
+**GNSS Analyst** is a dedicated technical workspace for local CSEM / CSMG observation QC, historic GPS positions, spatial audit, source controls and exports. Its full daily-QC report is intentionally separate from the Overview to avoid overloading buyer-facing decisions. View selection is handled by a standalone navigation script, so the two tabs still work even when the geospatial analysis module fails. Share a direct technical view with `?view=analyst`. Use **Enable experimental tools** to reveal local Ina-CORS GeoRinex QC import, fictional scenario markers and synthetic data controls. Closing the lab hides them again without changing core datasets.
 
 Feature switches are defined in [`src/feature-flags.js`](src/feature-flags.js):
 - `inaCorsImport`: off by default; user-declared Ina-CORS QC import only
@@ -20,7 +20,7 @@ For an intentionally experimental share link, append `?lab=1`. **This is UI feat
 
 ## Local CSEM / CSMG multi-day RINEX observation QC
 
-**New in Decision View:** scroll to **GNSS Observation Readiness** and click **Select QC JSON**. Choose the locally generated QC summary file (for example a baruna_private_cors_qc_*.json on your computer). The browser displays:
+**In GNSS Analyst:** open **GNSS Observation Readiness** and click **Select QC JSON**. Choose the locally generated QC summary file (for example a baruna_private_cors_qc_*.json on your computer). The browser displays:
 - side-by-side daily **CSEM / CSMG** 30-second epoch coverage and unavailable station-days;
 - common complete-day count, per-station epoch totals, observed GPS/GLONASS/Galileo/SBAS pseudorange C1 presence, and interval gaps;
 - scientific limitations: the chart **does not** calculate CORS displacement, annual subsidence, hazard or asset inspection priority.
