@@ -32,6 +32,8 @@ try {
   assert.ok(!asset.includes("REVIEW SOON"), "No unvalidated asset risk escalation");
   // Default: real reference points only; experiments are hidden until enabled.
   mkdirSync("reports", { recursive: true });
+  // Keyboard-focus test is complete; reset focus so screenshot represents an ordinary first visit.
+  await page.evaluate(() => document.activeElement?.blur?.());
   await page.screenshot({ path:"reports/sentinel-judge-demo-first-impression.png", fullPage:true });
   const geoMap = await page.locator("#geo-map").innerHTML();
   assert.ok(geoMap.includes("WGS84 POINT CONTEXT"), "Offline geographic map works");
