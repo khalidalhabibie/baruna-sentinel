@@ -18,6 +18,57 @@ try {
   await page.route("https://tile.openstreetmap.org/**", route =>
     route.fulfill({status:200,contentType:"image/png",body:tilePixel}));
   const initial=await page.goto(BASE+"/?page=projects", {waitUntil:"networkidle",timeout:30000});
+
+  // Video-only simulated context; do not replace evidence-backed assessment.
+  const videoPage=await browser.newPage({viewport:{width:1440,height:900},acceptDownloads:true});
+  const videoErrors=[];
+  videoPage.on("pageerror",error=>videoErrors.push(error.message));
+  const videoRes=await videoPage.goto(BASE+"/video-demo.html",{waitUntil:"networkidle",timeout:30000});
+  assert.equal(videoRes.status(),200,"Synthetic video route ships in static build");
+  assert.ok((await videoPage.locator(".demo-warning").textContent()).includes("DATA KONTEKS & ASET FIKTIF"));
+  assert.equal(await videoPage.locator(".steps .step").count(),4);
+  assert.ok((await videoPage.locator(".qc-empty").textContent()).includes("BUKAN 0%"),
+    "Private QC is empty, never replaced with fictional CORS metrics");
+  assert.equal(await videoPage.locator(".source-item").count(),6);
+  await videoPage.locator('[data-step="1"]').click();
+  assert.equal(await videoPage.locator(".data-plot").count(),2);
+  assert.ok((await videoPage.locator(".context-disclaimer").textContent()).includes("BUKAN data DEMNAS"));
+  await videoPage.locator('[data-step="2"]').click();
+  assert.equal(await videoPage.locator(".asset-pill").count(),3);
+  assert.ok((await videoPage.locator(".schematic").getAttribute("aria-label")).includes("fictional"));
+  await videoPage.locator('[data-asset="DEMO-B"]').click();
+  assert.ok((await videoPage.locator(".asset-detail h3").textContent()).includes("Sektor B"));
+  await videoPage.locator('[data-step="3"]').click();
+  assert.ok((await videoPage.locator(".result").textContent()).includes("Memerlukan verifikasi lapangan"));
+  assert.ok((await videoPage.locator(".trust-panel").textContent()).includes("belum diimpor"));
+  await videoPage.locator('[data-step="0"]').click();
+  const videoQC={schema:"baruna-private-cors-qc-v1",
+    method:"RINEX observations (SYNTHETIC BROWSER FIXTURE, NOT REAL CSEM / CSMG)",
+    disposition:"NO REAL RINEX OR POSITION DATA",
+    records:["csem","csmg"].map(station=>({
+      station,date:"2026-11-15",doy:319,epochs:2880,
+      expected_full_day_30s_epochs:2880,
+      long_gaps_gt30s:0,largest_gap_min:0,
+      first_epoch_gps:"2026-11-15 00:00:00",
+      last_epoch_gps:"2026-11-15 23:59:30",
+      epochs_with_C1_by_constellation:{G:2880,R:2880,E:0,S:0,"G+R+E":0}
+    }))
+  };
+  await videoPage.locator("#demo-qc-file").setInputFiles({
+    name:"SYNTHETIC-LOCAL-QC-FIXTURE.json",mimeType:"application/json",
+    buffer:Buffer.from(JSON.stringify(videoQC))
+  });
+  assert.equal(await videoPage.locator(".metrics strong").count(),3);
+  assert.ok((await videoPage.locator(".data-provenance").textContent()).includes("DATA IMPOR LOKAL"));
+  assert.deepEqual(await videoPage.locator(".metrics strong").allTextContents(),["100%","100%","1/1"]);
+  await videoPage.locator("#clear-qc").click();
+  assert.equal(await videoPage.locator(".qc-empty").count(),1);
+  await videoPage.setViewportSize({width:390,height:844});
+  assert.equal(await videoPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
+    "Standalone video mode remains mobile-safe");
+  assert.deepEqual(videoErrors,[],"No JavaScript exceptions in video mode");
+  await videoPage.close();
+
   // Separate product-introduction journey: default route, node navigation,
   // economic assumption exercise, assessment deep-link and mobile usability.
   const storyPage=await browser.newPage({viewport:{width:1440,height:900}});
