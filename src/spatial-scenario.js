@@ -85,12 +85,15 @@ export function makeSyntheticAssetSeries(item){
  if(item.result.screeningTier==="BLOCKED")return [];
  const count=Math.round(item.input.spanYears*12)+1;
  const startYear=2026, startMonth=9-(count-1);
+ // The chart plots displacement relative to the FIRST synthetic observation.
+ // This is not a change to the input annual rate or screening result.
+ const originVariation=1.25*Math.sin(item.id.length*.31)+0.45;
  return Array.from({length:count},(_,i)=>{
   const date=new Date(Date.UTC(startYear,startMonth+i,1));
   const year=date.getUTCFullYear(), month=String(date.getUTCMonth()+1).padStart(2,"0");
   const linear=item.input.verticalRateMmYr*i/12;
   const variation=1.25*Math.sin(i*.85+(item.id.length*.31))+0.45*Math.cos(i*.39);
-  return Object.freeze({date:year+"-"+month,upMm:Number((linear+variation).toFixed(2))});
+  return Object.freeze({date:year+"-"+month,upMm:Number((linear+variation-originVariation).toFixed(2))});
  });
 }
 
@@ -108,7 +111,7 @@ export function explainSyntheticDecision(item){
  const critical="Kekritisan "+({high:"tinggi",moderate:"sedang",low:"rendah"}[item.input.criticality]);
  return {
   headline:item.status.label,
-  summary:"Prioritas dihitung dari pergerakan, paparan, dan kekritisan. Kebijakan demo belum tervalidasi untuk operasi lapangan.",
+  summary:"Hasil berasal dari laju pergerakan, paparan, dan pentingnya fungsi aset. Aturan contoh belum disetujui untuk keputusan lapangan.",
   why:[motion,exposure,critical],
   score:item.result.score,
   points
