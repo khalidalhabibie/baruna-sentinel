@@ -52,6 +52,29 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
             self.assertEqual(records[0][0],"CSEM2026.26o")
             self.assertEqual(read_header(*reversed(records[0]))[0],"CSEM")
 
+    def test_monthly_big_archive_with_obs_and_nav_pairs(self):
+        # Actual authorized SRGI archives observed in Nov 2026 use the
+        # 30-day OBS + NAV convention. The local loader only handles OBS.
+        with tempfile.TemporaryDirectory() as root:
+            archive=Path(root)/"csem_month.zip"
+            with zipfile.ZipFile(archive,"w") as z:
+                for day in range(30):
+                    z.writestr(f"rinex/csem{290+day:03d}0.26o",rinex("CSEM"))
+                    z.writestr(f"nav/csem{290+day:03d}0.26n",b"navigation only")
+            records=list(safe_members(archive))
+            self.assertEqual(len(records),30)
+            self.assertTrue(all(name.endswith(".26o") for name,_ in records))
+            self.assertEqual(read_header(records[0][1], records[0][0])[0],"CSEM")
+
+    def test_zip_entry_limit_remains_bounded(self):
+        with tempfile.TemporaryDirectory() as root:
+            archive=Path(root)/"too_many_entries.zip"
+            with zipfile.ZipFile(archive,"w") as z:
+                for day in range(129):
+                    z.writestr(f"misc/file{day:03d}.txt",b"dummy")
+            with self.assertRaisesRegex(ValueError,"too many entries"):
+                list(safe_members(archive))
+
     def test_reject_zip_traversal_and_hatanaka(self):
         with tempfile.TemporaryDirectory() as root:
             archive=Path(root)/"private.zip"
