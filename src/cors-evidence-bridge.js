@@ -15,6 +15,16 @@ export function inspectLocalStationEvidence(document, project, sectorId) {
   const csmgDays=qc.records.filter(x=>x.station==="csmg");
   const sameDayPairs=qc.calendar.filter(day=>qc.lookup.has("csem|"+day.date)&&qc.lookup.has("csmg|"+day.date));
   const sharedFull=qc.jointFullDays;
+  // Count missing archive days as missing observed epochs; not as receiver outages.
+  const expectedPerStation=qc.calendar.length*2880;
+  const epochCoveragePercent=Object.fromEntries(["CSEM","CSMG"].map(name=>{
+    const epochs=qc.records.filter(r=>r.station===name.toLowerCase())
+      .reduce((sum,r)=>sum+r.epochs,0);
+    return [name,expectedPerStation?+(epochs/expectedPerStation*100).toFixed(2):null];
+  }));
+  const missingArchiveDates=Object.fromEntries(["CSEM","CSMG"].map(name=>[
+    name,qc.calendar.filter(day=>!qc.lookup.has(name.toLowerCase()+"|"+day.date)).map(day=>day.date)
+  ]));
   const observedSystems=Object.fromEntries(["csem","csmg"].map(station=>[
     station,["G","R","E","S"].filter(system=>
       qc.records.some(r=>r.station===station&&r.systems[system]>0))
@@ -33,6 +43,7 @@ export function inspectLocalStationEvidence(document, project, sectorId) {
     calendarDayPairs:sameDayPairs.length,
     full30sDayPairs:sharedFull.length,
     sourceDateRange:[qc.firstDate,qc.lastDate],
+    epochCoveragePercent,missingArchiveDates,
     observedSystems,
     evidenceAvailable:qc.totalEpochs>0,
     stationPositionSolutionComputed:false,
@@ -65,6 +76,7 @@ export function localStationEvidencePrint(bridge) {
       '<div><small>MATCHED FULL 30-S DAYS</small><strong>'+bridge.full30sDayPairs+'</strong></div></div>'+
     '<p>Period: '+esc(bridge.sourceDateRange.join(" to "))+' · Same-calendar-day pairs: '+
     bridge.calendarDayPairs+' · QC state: '+esc(bridge.stationCoverageState)+'.</p>'+
+    '<p>Archive epoch coverage: CSEM '+esc(bridge.epochCoveragePercent.CSEM)+'% · CSMG '+esc(bridge.epochCoveragePercent.CSMG)+'%. Missing CSMG archive dates: '+esc(bridge.missingArchiveDates.CSMG.join(', ')||'none')+'. These are timestamps observed in imported archives, not positioning reliability or receiver uptime.</p>'+
     '<h3>Next field and geodetic verification</h3><ol>'+lines+'</ol>'+
     '<p><strong>Decision:</strong> REQUEST UPDATED SITE EVIDENCE. No GNSS displacement solution, operational rank or structural conclusion was calculated from QC.</p></section>';
 }
