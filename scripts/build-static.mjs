@@ -6,6 +6,8 @@ const publicAssets=[
   "video-demo.html",
   "spatial-demo.html",
   "spatial-demo.css",
+  "workspaces.html",
+  "workspaces.css",
   "src/spatial-demo.js",
   "src/spatial-scenario.js",
   "video-demo.css",

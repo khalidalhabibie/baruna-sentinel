@@ -142,7 +142,13 @@ test("Video clarity preserves four fictional versus six historical sectors",()=>
  assert.match(html,/Perpindahan vertikal relatif/);
  assert.match(html,/Dari awal periode/);
  assert.match(html,/mm\/tahun/);
- assert.match(homepage,/Demo Keputusan · 4 aset/);
+ assert.match(homepage,/Semua Workspaces/);
+ assert.match(homepage,/Decision Lab/);
+ const portfolio=readFileSync("workspaces.html","utf8");
+ assert.match(portfolio,/Buka Evidence Review/);
+ assert.match(portfolio,/Buka Decision Lab/);
+ assert.match(portfolio,/Buka GNSS Lab/);
+ assert.match(portfolio,/4.*aset ilustratif/);
  assert.match(sourceWorkspace,/Enam sektor penelitian 2005/);
  assert.match(code,/GATE_LABELS\[code\]/);
  assert.match(code,/mm\/tahun/);

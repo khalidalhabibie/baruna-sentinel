@@ -168,7 +168,8 @@ try{
  await research.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
  await research.goto(BASE+"/?page=assessment",{waitUntil:"networkidle"});
  await research.locator("#pw-page-assessment").waitFor({state:"visible",timeout:12000});
- assert.match(await research.locator(".spatial-demo-entry").innerText(),/Demo Keputusan · 4 aset/);
+ assert.match(await research.locator(".spatial-demo-entry").innerText(),/Decision Lab/);
+ assert.equal(await research.locator(".workspaces-entry").getAttribute("href"),"./workspaces.html");
  await research.locator(".spatial-demo-entry").click();
  assert.match(research.url(),/spatial-demo\.html/);
  await research.locator(".asset-option").first().waitFor({state:"visible"});
@@ -177,6 +178,34 @@ try{
  assert.match(research.url(),/page=assessment/);
  await research.locator("#pw-page-assessment").waitFor({state:"visible"});
  await research.close();
+ // Validate the portfolio is a real navigation surface, not dead project placeholders.
+ const portfolio=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+ portfolio.on("pageerror",e=>exceptions.push(e.stack||e.message));
+ const portfolioResponse=await portfolio.goto(BASE+"/workspaces.html",{waitUntil:"networkidle"});
+ assert.equal(portfolioResponse.status(),200,"project portfolio is published in dist");
+ assert.match(await portfolio.locator("h1").innerText(),/Satu tempat untuk bukti/);
+ assert.equal(await portfolio.locator(".workspace-card").count(),3);
+ assert.match(await portfolio.locator(".workspace-grid").innerText(),/Tanjung Emas/);
+ assert.match(await portfolio.locator(".workspace-grid").innerText(),/Spatial Decision Lab/);
+ assert.match(await portfolio.locator(".workspace-grid").innerText(),/GNSS Evidence Lab/);
+ assert.match(await portfolio.locator(".workspace-grid").innerText(),/Data ilustratif/);
+ assert.equal(await portfolio.locator('.workspace-card [href="./?page=assessment"]').count(),1);
+ assert.equal(await portfolio.locator('.workspace-card [href="./spatial-demo.html"]').count(),1);
+ assert.equal(await portfolio.locator('.workspace-card [href="./?page=analyst"]').count(),1);
+ await portfolio.screenshot({path:"reports/baruna-commercial-workspaces-desktop.png",fullPage:false});
+ await portfolio.setViewportSize({width:390,height:844});
+ assert.equal(await portfolio.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,"portfolio has no horizontal page overflow on mobile");
+ await portfolio.screenshot({path:"reports/baruna-commercial-workspaces-mobile.png",fullPage:false});
+ await portfolio.locator('.workspace-card .card-action[href="./spatial-demo.html"]').click();
+ assert.match(portfolio.url(),/spatial-demo\.html/);
+ await portfolio.locator(".asset-option").first().waitFor({state:"visible"});
+ assert.equal(await portfolio.locator(".asset-option").count(),4);
+ await portfolio.locator('.header-actions a[href="./workspaces.html"]').click();
+ assert.match(portfolio.url(),/workspaces\.html/);
+ await portfolio.locator('.workspace-card .card-action[href="./?page=assessment"]').click();
+ assert.match(portfolio.url(),/page=assessment/);
+ await portfolio.locator("#pw-page-assessment").waitFor({state:"visible"});
+ await portfolio.close();
  assert.deepEqual(exceptions,[],"no uncaught JavaScript errors");
  console.log("Spatial Decision video demo: map, 4 cases, brief, accessibility, mobile PASS");
 }finally{await browser.close()}

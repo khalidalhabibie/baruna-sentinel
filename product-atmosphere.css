@@ -467,3 +467,16 @@ body[data-page] .topbar .spatial-demo-entry:focus-visible{outline:3px solid #54a
  body[data-page] .topbar .spatial-demo-entry{font-size:10px;padding:9px 10px;min-height:35px}
  body[data-page] .topbar .top-actions .bf-preview-tag{display:none!important}
 }
+
+/* One-step navigation from the source-backed app to the portfolio and decision lab. */
+body[data-page] .top-actions .workspaces-entry{
+ display:inline-flex;align-items:center;color:#2a6674;font-weight:740;font-size:11px;
+ white-space:nowrap;padding:8px 0;border-bottom:1px solid #c6dcda;text-decoration:none;
+}
+body[data-page] .top-actions .workspaces-entry:hover{color:#0b8496;border-color:#4f9f9e}
+@media(max-width:1050px){
+ body[data-page] .top-actions .workspaces-entry{font-size:10px}
+}
+@media(max-width:690px){
+ body[data-page] .top-actions .workspaces-entry{font-size:10px;white-space:nowrap}
+}
