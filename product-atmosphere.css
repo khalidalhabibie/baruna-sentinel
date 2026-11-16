@@ -441,3 +441,14 @@ body[data-page] .bg-guide-steps button:focus-visible{
 /* Give the guide title a proper editorial top margin below sticky navigation. */
 body[data-page="guide"] .bg-guide-head{padding-top:31px!important}
 @media(max-width:650px){body[data-page="guide"] .bg-guide-head{padding-top:20px!important}}
+
+/* Mobile nav: enforce actual 48px+ hit targets while keeping all five visible. */
+@media(max-width:650px){
+ body[data-page] .pw-primary-nav>button,
+ body[data-page] .pw-primary-nav .baruna-more-trigger{
+   min-width:50px!important;
+   min-height:42px!important;
+   padding:9px 8px!important;
+ }
+ body[data-page] .pw-primary-nav{gap:9px!important}
+}
