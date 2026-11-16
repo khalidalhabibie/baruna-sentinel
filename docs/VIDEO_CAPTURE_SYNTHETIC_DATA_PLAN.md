@@ -36,3 +36,11 @@ Each source has a stable \`id\`, \`provider\`, \`status\`, \`source\`, \`next\` 
 - Footer and top banner always say the data/context/asset scene is synthetic; keep these visible in recording and don't crop them out.
 - Don't present historical CSEM / CSMG publication velocities as measurements produced by the local 2026 QC import.
 - Production Vercel deployment may be delayed by hosting rate limits. Use local \`npm run start\` after \`npm install\` to run \`http://localhost:4173/video-demo.html\` if needed; the source in \`main\` is authoritative once CI passes.
+
+## Synthetic GNSS ENU chart added for video (16 November 2026)
+
+In Scene 01, the station tabs **CSEM / CSMG** now show invented three-component East/North/Up (ENU) charts. The display range (January 2022–October 2026) is a **video storytelling choice** and is not sourced from a BIG numeric series. All 58 monthly data points per component and station are algorithmically generated in `src/synthetic-gnss-series.js`. They are neither official daily coordinate measurements nor RINEX-derived estimates.
+
+The visual is clearly flagged `SIMULASI DATA KOORDINAT` and `DATA SINTETIS / VIDEO ONLY` and states `CSV resmi belum bisa diunduh`. The source catalog continues to list official coordinate series as `PENDING_REAL_DATA`. Keep on-screen warnings visible in every recorded frame. No rate, subsidence, structural risk, or asset classification may be inferred. Keep this module isolated from real source-backed assessment.
+
+Replacement contract: genuine station ID, observation timestamps, XYZ/ENU reference origin, coordinate reference frame and epoch (e.g. ITRF), changes in antenna or instrument, daily standard deviations and uncertainty, processing method, official series provenance and license. Integrate through a separate validated adapter and do not relabel the synthetic fixture as real.
