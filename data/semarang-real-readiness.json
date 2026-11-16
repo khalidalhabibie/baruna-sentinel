@@ -84,6 +84,32 @@
       ],
       "canUseFor": "single-date optical NDWI overview, cloud-masked display only",
       "notFor": "verified flooding/rob, temporal change, surveyed asset boundaries or operational risk"
+    },
+    {
+      "id": "sentinel2_two_date_index_previews",
+      "status": "VERIFIED_REAL_SOURCE_DERIVED_TWO_DATE_INDICES_PREVIEW",
+      "source": "Element84 Earth Search Sentinel-2 L2A",
+      "dates": [
+        "2026-10-14",
+        "2026-10-21"
+      ],
+      "baselineSceneId": "S2B_T49MDN_20261014T025716_L2A",
+      "comparisonSceneId": "S2A_T49MDN_20261021T025248_L2A",
+      "baselineFourBandSha256": "d398e1af132b23fb3daecaf6477ed8f142d25dd02b6b3218a5c572c15d294363",
+      "baselineB11Sha256": "0f590174926613e63534d1a7cfc8a6dfb1a6b72c8d19d8b2f745d76f2b0ff3a5",
+      "comparisonRasterSha256": "4e1534eed55ca7094477dff93a9b1874123b07edac85962c7def870f3a6cf17f",
+      "asset": "data/semarang-s2-optical-series.json",
+      "sourceResolution": [
+        1218,
+        1660
+      ],
+      "previewResolution": [
+        72,
+        98
+      ],
+      "pairClearFraction": 0.99728,
+      "canUseFor": "NDWI / MNDWI previews on two dates and exploratory index contrast",
+      "notFor": "rob/flood extent, verified land cover change, InSAR, native-resolution parcel analysis or asset decisions"
     }
   ],
   "modelGate": {
@@ -93,7 +119,8 @@
     "realInsar": false,
     "robDepthModel": false,
     "assetLevelInspectionPriority": false,
-    "singleDateNdwiPreview": true
+    "singleDateNdwiPreview": true,
+    "multiDateOpticalIndexPreview": true
   },
-  "warning": "This manifest describes source readiness, not structural safety. Historical CSEM/QC and BMKG live in separate modules; imported private files are never published. Source-derived NDWI overview from 14 Oct 2026 true four-band pixels is now available, but temporal optical change and flood/asset inferences remain blocked."
+  "warning": "This manifest describes source readiness, not structural safety. Historical CSEM/QC and BMKG live in separate modules; imported private files are never published. Source-derived NDWI overview from 14 Oct 2026 true four-band pixels is now available, but temporal optical change and flood/asset inferences remain blocked. Verified 14/21 October source-derived NDWI/MNDWI contrast is available; validated land cover change, flooding, subsidence and risk remain unsupported."
 }
