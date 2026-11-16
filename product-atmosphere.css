@@ -411,3 +411,29 @@ body[data-page="guide"] .bg-guide-foot button{color:var(--ba-ocean)!important}
 @media(prefers-reduced-motion:reduce){
   body[data-page="why"] .bf-sector{transition:none}
 }
+
+/* The official wordmark is a vector asset. Country label is typeset separately. */
+body[data-page] .topbar .ourdo-brand{
+  flex-direction:column!important;justify-content:center!important;
+  align-items:flex-start!important;gap:0!important;
+  padding:0!important;line-height:1!important;
+}
+body[data-page] .topbar .ourdo-brand .ourdo-official-wordmark{
+  width:137px!important;height:38px!important;
+  object-fit:fill!important;object-position:left center!important;
+}
+body[data-page] .topbar .ourdo-brand .ourdo-country-label{
+  display:block;padding-left:2px;margin-top:-1px;
+  color:#15263A;font-size:8px!important;font-weight:770!important;
+  letter-spacing:.28em!important;line-height:1.2!important;
+}
+body[data-page="why"] .bf-detail-status{color:#a96739!important}
+body[data-page] .bf-primary:focus-visible,
+body[data-page] .bf-sector:focus-visible,
+body[data-page] .bg-guide-steps button:focus-visible{
+  outline:3px solid #21899b!important;outline-offset:3px!important;
+}
+@media(max-width:650px){
+  body[data-page] .topbar .ourdo-brand .ourdo-official-wordmark{width:118px!important;height:33px!important}
+  body[data-page] .topbar .ourdo-brand .ourdo-country-label{font-size:7px!important;letter-spacing:.26em!important}
+}
