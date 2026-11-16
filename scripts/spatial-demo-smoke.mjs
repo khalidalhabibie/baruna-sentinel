@@ -18,6 +18,20 @@ try{
  const response=await page.goto(BASE+"/spatial-demo.html",{waitUntil:"networkidle",timeout:30000});
  assert.equal(response?.status(),200);
  await page.locator("#asset-list .asset-option").first().waitFor({state:"visible",timeout:10000});
+ // Real source-backed GIS layer is separate from the four synthetic assets.
+ await page.locator("#real-source-state[data-state=ok]").waitFor({timeout:10000});
+ assert.match(await page.locator("#real-dsm-state").innerText(),/Tersedia/);
+ assert.match(await page.locator("#real-s2-count").innerText(),/16 scene/);
+ assert.match(await page.locator("#real-s1-count").innerText(),/11 scene/);
+ assert.equal(await page.locator("#real-scene option").count(),16);
+ assert.equal(await page.locator(".leaflet-image-layer").count()>=1,true,"actual DSM preview overlay mounted");
+ await page.locator("#real-sensor").selectOption("1");
+ assert.equal(await page.locator("#real-scene option").count(),11);
+ assert.match(await page.locator("#real-scene-details").innerText(),/Belum ada raster\/piksel Sentinel/);
+ await page.locator("#real-sensor").selectOption("2");
+ assert.equal(await page.locator("#real-scene option").count(),16);
+ await page.locator("#real-evidence").scrollIntoViewIfNeeded();
+ await page.screenshot({path:"reports/baruna-spatial-real-source-evidence.png",fullPage:false});
  assert.match(await page.locator(".simulation-ribbon").innerText(),/DEMO SCENARIO/);
  assert.match(await page.locator(".simulation-ribbon").innerText(),/4 aset ilustratif, berbeda dari 6 sektor/);
  assert.match(await page.locator(".header-actions").innerText(),/Bukti Riset · 6 sektor/);
