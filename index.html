@@ -11,13 +11,15 @@
   <link rel="stylesheet" href="./project-ui.css">
   <link rel="stylesheet" href="./why-sentinel.css">
   <link rel="stylesheet" href="./product-experience.css">
+  <link rel="stylesheet" href="./product-focus.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script defer src="./src/navigation.js"></script>
-  <script defer src="./src/product-onboarding.js"></script>
+
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/project-workspace.js"></script>
   <script type="module" src="./src/assessment-ui.js"></script>
   <script type="module" src="./src/why-sentinel.js"></script>
+  <script type="module" src="./src/guide-page.js"></script>
 </head>
 <body data-view="decision" data-page="why" data-project="semarang-port" data-lab-tab="movement" data-inacors="off" data-sandbox="off" data-fictional="off">
   <a href="#pw-shell" class="skip-link">Skip to project workspace</a>
@@ -27,13 +29,14 @@
         <span class="ourdo-wordmark"><strong>OURDO</strong><small>INDONESIA</small></span>
       </a>
       <span class="ourdo-product-name">BARUNA <strong>SENTINEL</strong> <small>PROTOTIPE RGPD 2026</small></span>
-      <nav class="workspace-switch pw-primary-nav" aria-label="Navigasi produk BARUNA">
-        <button type="button" data-pw-page="why" aria-current="page">Beranda</button>
-        <button type="button" data-pw-page="projects"><span class="baruna-nav-full">Studi kasus</span><span class="baruna-nav-compact">Kasus</span></button>
-        <button type="button" data-pw-page="assessment">Cek bukti</button>
-        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false" aria-label="Buka sumber data GNSS"><span class="baruna-nav-full">Data GNSS</span><span class="baruna-nav-compact">GNSS</span></button>
-        <div class="baruna-nav-more"><button type="button" class="baruna-more-trigger" aria-expanded="false" aria-controls="baruna-more-menu"><span class="baruna-nav-full">Eksplorasi lainnya</span><span class="baruna-nav-compact">Lainnya</span> ▾</button>
+      <nav class="workspace-switch pw-primary-nav" aria-label="Navigasi BARUNA">
+        <button type="button" data-pw-page="why" aria-current="page"><span class="baruna-nav-full">Workspace</span><span class="baruna-nav-compact">Area</span></button>
+        <button type="button" data-pw-page="assessment"><span class="baruna-nav-full">Assessment</span><span class="baruna-nav-compact">Review</span></button>
+        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false"><span class="baruna-nav-full">Data GNSS</span><span class="baruna-nav-compact">GNSS</span></button>
+        <button type="button" data-pw-page="guide">Panduan</button>
+        <div class="baruna-nav-more"><button type="button" class="baruna-more-trigger" aria-expanded="false" aria-controls="baruna-more-menu"><span class="baruna-nav-full">Lainnya</span><span class="baruna-nav-compact">Lainnya</span> ▾</button>
           <div class="baruna-more-menu" id="baruna-more-menu" hidden>
+            <button type="button" data-pw-page="projects">Studi kasus</button>
             <button type="button" data-pw-page="overview">Ringkasan proyek</button>
             <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false">Detail lokasi</button>
             <button type="button" data-pw-page="compare">Bandingkan bukti</button>
@@ -47,12 +50,13 @@
           <option value="bako-observations">BAKO / Cibinong</option>
         </select>
       </label>
-      <div class="top-actions"><button id="baruna-start-tour" type="button" aria-controls="baruna-guide-panel">◉ Panduan 2 menit</button><span class="ourdo-signature">BUKTI → KEPUTUSAN</span></div>
+      <div class="top-actions"><span class="bf-preview-tag">PROTOTIPE · 2026</span></div>
     </header>
 
     <main id="top">
       <section class="pw-shell" id="pw-shell" aria-label="BARUNA project management and evidence review">
         <div id="pw-page-why" class="pw-page" data-pw-screen="why"></div>
+        <div id="pw-page-guide" class="pw-page" data-pw-screen="guide" aria-label="Panduan penggunaan BARUNA"></div>
         <div id="pw-page-projects" class="pw-page" data-pw-screen="projects"></div>
         <div id="pw-page-overview" class="pw-page" data-pw-screen="overview"></div>
         <div id="pw-page-detail" class="pw-page" data-pw-screen="detail"></div>

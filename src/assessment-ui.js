@@ -309,6 +309,14 @@ root?.addEventListener("change",async event=>{
  render();
 });
 window.addEventListener("baruna:pagechange",render);
+window.addEventListener("baruna:select-sector",event=>{
+ const id=event.detail?.id;
+ if(typeof id!=="string"||!/^[a-z0-9-]+$/.test(id))return;
+ selectedId=id;
+ showSimulation=false;
+ assetMode=false;
+ render();
+});
 async function loadSourceMetrics(){
  const tasks=[
   async()=>{
