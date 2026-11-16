@@ -165,7 +165,7 @@ def validate_demnas(manifest, base):
             if not src.crs or src.count != 1:
                 raise ValueError("CRS missing or unexpected bands")
             data = src.read(1, masked=True)
-            values = data.filled(np.nan).astype("float64")
+            values = data.astype("float64").filled(np.nan)
             valid = np.isfinite(values) & (values >= -500) & (values <= 9000)
             valid &= ~np.ma.getmaskarray(data)
             frac = float(valid.mean())
@@ -301,11 +301,11 @@ def clip_cog(url, target, min_valid=0.05):
             if window.width * window.height * src.count > 22_000_000:
                 raise ValueError("Crop exceeds pixel limit")
             data = src.read(window=window, masked=True)
-            filled = data.filled(np.nan).astype("float64")
+            filled = data.astype("float64").filled(np.nan)
             valid = np.isfinite(filled) & ~np.ma.getmaskarray(data)
             if float(valid.mean()) < min_valid:
                 raise ValueError("No adequate valid pixels")
-            nodata = (-9999 if src.count == 1 else 0)
+            nodata = (-9999 if src.count == 1 and src.dtypes[0].startswith("float") else 0)
             meta = src.meta.copy()
             meta.update(driver="GTiff", width=data.shape[2], height=data.shape[1],
                         transform=src.window_transform(window), compress="deflate",
