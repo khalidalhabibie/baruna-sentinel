@@ -864,3 +864,50 @@ body[data-page="assessment"] .pw-page[data-pw-screen="assessment"]{display:block
  .as-qc-daily-inner{padding:8px}
  .as-qc-daily-inner .cors-day-row,.as-qc-daily-inner .cors-day-header{min-width:550px}
 }
+
+/* SRGI evidence inventory: actual source readiness, never fake numeric series. */
+.as-evidence-registry{background:#fff;border:1px solid #d8e4e2;border-radius:8px;padding:22px;margin:24px 0 18px}
+.as-registry-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:17px}
+.as-registry-head h2{font-size:19px;letter-spacing:-.03em;color:#264a45;margin:6px 0 9px}
+.as-registry-head p{max-width:750px;font-size:11px;line-height:1.65;color:#617c76;margin:0}
+.as-registry-safety{font-size:9px;line-height:1.6;font-weight:770;color:#866735;border:1px solid #ead9bb;border-radius:4px;background:#fcf6ec;padding:7px 9px;white-space:nowrap}
+.as-registry-stations{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.as-registry-station{background:#f6faf8;border:1px solid #e1ebe6;border-radius:6px;padding:15px;display:flex;flex-direction:column;gap:8px}
+.as-registry-station-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.as-registry-station-head strong{font-size:12px;color:#235a51}
+.as-registry-station-head span{font-size:9px;color:#688e83;font-weight:700}
+.as-registry-station p{font-size:11px;line-height:1.6;color:#40645d;margin:0}
+.as-registry-station small{font-size:10px;line-height:1.6;color:#6b8680}
+.as-registry-station a{font-size:10px;font-weight:700;color:#166c5e;align-self:flex-start}
+.as-registry-qc{margin-top:12px;background:#f2f8f6;border:1px solid #cce3da;border-radius:6px;padding:13px 15px;display:flex;align-items:center;gap:13px;flex-wrap:wrap}
+.as-registry-step{font-size:9px;font-weight:800;color:#247965;letter-spacing:.06em}
+.as-registry-qc strong{font-size:11px;color:#315a51}
+.as-registry-qc>span:not(.as-registry-step){font-size:11px;color:#5c796f}
+.as-registry-qc a{font-size:10px;font-weight:750;color:#176a5e;margin-left:auto}
+.as-registry-pending-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.as-registry-pending{background:#f9f8f6;border:1px solid #e7e0d6;border-radius:6px;padding:15px}
+.as-registry-pending strong{font-size:12px;line-height:1.5;color:#5f574e;display:block;max-width:100%}
+.as-registry-pending>span{display:inline-block;margin:7px 0;font-size:9px;font-weight:760;color:#906b43;letter-spacing:.05em}
+.as-registry-pending p,.as-registry-pending small{font-size:10px;line-height:1.65;color:#80776b;display:block;margin:0}
+.as-registry-pending small{margin-top:8px}
+.as-registry-footnote{margin:13px 0 0;font-size:10px;line-height:1.7;color:#79867e}
+.as-qc-archive-coverage{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.as-qc-archive-coverage>div{border:1px solid #d9e8e2;border-radius:5px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:5px}
+.as-qc-archive-coverage small{font-size:9px;line-height:1.6;color:#698d81}
+.as-qc-archive-coverage strong{font-size:20px;color:#2a7869;font-weight:750}
+.as-qc-archive-missing{font-size:10px!important;color:#667e76!important;margin:9px 0 12px!important}
+@media(max-width:790px){
+ .as-registry-head{flex-direction:column}
+ .as-registry-safety{white-space:normal}
+ .as-registry-stations,.as-registry-pending-list{grid-template-columns:1fr}
+ .as-registry-qc a{margin-left:0}
+}
+@media(max-width:540px){
+ .as-evidence-registry{padding:15px}
+ .as-registry-station-head{align-items:flex-start;flex-direction:column}
+ .as-registry-head h2{font-size:17px}
+ .as-qc-archive-coverage strong{font-size:19px}
+}
+@media print{
+ .as-evidence-registry{display:none!important}
+}
