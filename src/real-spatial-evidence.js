@@ -47,7 +47,7 @@ export async function decodeDisplayGrid(meta) {
   return result;
 }
 
-function rasterOverlayUrl(grid, meta) {
+export function rasterOverlayUrl(grid, meta) {
   const canvas = document.createElement("canvas");
   const [width, height] = meta.previewSize;
   canvas.width = width;
