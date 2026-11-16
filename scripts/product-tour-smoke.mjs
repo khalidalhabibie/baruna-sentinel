@@ -77,6 +77,8 @@ try{
  assert.ok(sectorMetrics.viewHeight<115,"sector navigation does not swallow the viewport");
  assert.ok(sectorMetrics.rows.every(x=>x.height<110),"all case rows remain compact");
  assert.ok(sectorMetrics.scrollWidth>sectorMetrics.clientWidth,"six sectors can be reached by swiping");
+ console.log("NAV_DEBUG",JSON.stringify(sizes));
+ await page.screenshot({path:"reports/baruna-focus-home-mobile.png",fullPage:false});
  assert.ok(sizes.rects.every((r,i)=>r.width>=45&&(i===0||r.left>=sizes.rects[i-1].right-1)),"nav items nonoverlap");
  assert.ok(sizes.rects.at(-1).right<=sizes.width+3,"advanced navigation visible");
  await page.screenshot({path:"reports/baruna-focus-home-mobile.png",fullPage:false});
