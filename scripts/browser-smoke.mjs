@@ -122,7 +122,6 @@ try {
   // P1 verified flow: user-declared LOCAL CSEM & CSMG QC from RINEX-derived JSON
   // must become a station-date comparison and a separate sector verification annex.
   assert.ok((await assessmentPage.locator(".as-qc-bridge").textContent()).includes("belum diimpor"));
-  assert.equal(await assessmentPage.locator(".as-registry-station").count(),0,"No legacy class should be required");
   assert.equal(await assessmentPage.locator(".as-registry-stations .as-registry-station").count(),2,
     "SRGI CSEM and CSMG historical site logs are shown as traceable references");
   assert.ok((await assessmentPage.locator(".as-evidence-registry").textContent()).includes("Time Series koordinat numerik"));
