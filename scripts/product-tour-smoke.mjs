@@ -55,6 +55,15 @@ try{
   return {width:innerWidth,document:document.documentElement.scrollWidth,rects:items.map(i=>i.getBoundingClientRect().toJSON())};
  });
  assert.ok(sizes.document<=sizes.width+3,"no page-wide horizontal scrolling");
+ const sectorMetrics=await page.evaluate(()=>{
+  const el=document.querySelector(".bf-sector-list");
+  const rows=[...document.querySelectorAll(".bf-sector")].map(n=>n.getBoundingClientRect().toJSON());
+  return {flexDirection:getComputedStyle(el).flexDirection,viewHeight:el.getBoundingClientRect().height,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,rows};
+ });
+ assert.equal(sectorMetrics.flexDirection,"row","sector list is horizontal on phones");
+ assert.ok(sectorMetrics.viewHeight<115,"sector navigation does not swallow the viewport");
+ assert.ok(sectorMetrics.rows.every(x=>x.height<110),"all case rows remain compact");
+ assert.ok(sectorMetrics.scrollWidth>sectorMetrics.clientWidth,"six sectors can be reached by swiping");
  assert.ok(sizes.rects.every((r,i)=>r.width>=45&&(i===0||r.left>=sizes.rects[i-1].right-1)),"nav items nonoverlap");
  assert.ok(sizes.rects.at(-1).right<=sizes.width+3,"advanced navigation visible");
  await page.screenshot({path:"reports/baruna-focus-home-mobile.png",fullPage:false});
