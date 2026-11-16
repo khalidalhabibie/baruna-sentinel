@@ -34,7 +34,7 @@
    <div class="intro-text">
     <span class="eyebrow">RGPD / BIG BHUMIREKA 2026</span>
     <h1>Peta, bukti, lalu keputusan.</h1>
-    <p>Pilih aset contoh untuk melihat bagaimana data geospasial menjadi prioritas inspeksi yang dapat dijelaskan.</p>
+    <p>Pilih aset contoh untuk melihat bagaimana data geospasial menjadi prioritas inspeksi yang dapat dijelaskan. <a class="intro-rank-link" href="#ranking">Lihat Ranking & Compare ↓</a></p>
    </div>
    <div class="progress-flow" aria-label="Tiga langkah utama">
     <div class="flow-step"><span>01</span><b>Pilih aset</b></div>
@@ -123,6 +123,49 @@
      <p>Hasil ini bukan rekomendasi inspeksi operasional.</p>
     </div>
    </aside>
+  </section>
+
+  <section id="ranking" class="ranking-section" aria-labelledby="ranking-title">
+   <div class="ranking-heading">
+    <div>
+     <span class="eyebrow">02 / EVIDENCE-BASED SCREENING · SIMULASI</span>
+     <h2 id="ranking-title">Ranking & Compare</h2>
+     <p>Urutkan aset yang lolos pemeriksaan bukti. Aset dengan data kurang tidak diberi ranking.</p>
+    </div>
+    <div class="ranking-count" id="ranking-summary" role="status" aria-live="polite"></div>
+   </div>
+   <div class="ranking-table-scroll" role="region" aria-label="Peringkat aset sintetis" tabindex="0">
+    <table class="ranking-table">
+     <thead><tr>
+      <th scope="col" class="rank-num">Rank</th>
+      <th scope="col">Aset ilustratif</th>
+      <th scope="col">Laju contoh</th>
+      <th scope="col">Evidence Gate</th>
+      <th scope="col" class="numeric">Skor demo</th>
+      <th scope="col">Hasil screening</th>
+      <th scope="col">Compare</th>
+     </tr></thead>
+     <tbody id="ranking-rows"></tbody>
+    </table>
+   </div>
+   <p class="ranking-note"><strong>Penting:</strong> skor hanya mengurutkan aset sintetis menurut kebijakan demo. Bukan probabilitas kegagalan, penilaian keselamatan, atau prioritas operasional.</p>
+   <div class="compare-header">
+    <div>
+     <span class="eyebrow">03 / SIDE-BY-SIDE</span>
+     <h3>Bandingkan keputusan</h3>
+     <p>Pilih dua atau tiga aset pada kolom Compare untuk melihat faktor yang berbeda.</p>
+    </div>
+    <div class="compare-presets" aria-label="Contoh cepat perbandingan">
+     <button type="button" data-compare-preset="normal">A vs B</button>
+     <button type="button" data-compare-preset="blocked">A vs D · Kualitas bukti</button>
+    </div>
+   </div>
+   <div id="compare-selection-count" class="compare-selection-count" aria-live="polite"></div>
+   <div id="compare-content" class="compare-content" role="region" aria-label="Tabel perbandingan aset" tabindex="0"></div>
+   <details class="policy-details">
+    <summary>Bagaimana skor simulasi dihitung?</summary>
+    <p>Skor berasal dari <strong>gerakan turun contoh (0–2)</strong>, <strong>paparan (0–2)</strong>, dan <strong>kekritisan (0–2)</strong>. Kebijakan <code>SYNTHETIC_DEMO_POLICY_V1</code> menentukan batas kelas. Aset yang gagal Evidence Gate dikeluarkan dari ranking sebelum skor dihitung. Ambang ini belum disetujui operator dan tidak boleh dipakai pada aset sebenarnya.</p>
+   </details>
   </section>
   <footer class="workbench-footer">
    <div><span class="footer-mark">◉</span><span><strong>SIMULATION MODE</strong> · Seluruh input dan klasifikasi dibuat untuk menjelaskan alur prototype.</span></div>
