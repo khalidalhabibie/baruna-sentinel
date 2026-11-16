@@ -39,5 +39,17 @@ html=html.replace('</body>',' <script>'+escapeScript(leaflet)+'</script>\n <scri
 const dest="dist/baruna-spatial-demo-standalone.html";
 writeFileSync(dest,html,"utf8");
 const bytes=statSync(dest).size;
-if(bytes<50000||!html.includes("DEMO SCENARIO")||!html.includes("makeSpatialBrief"))throw new Error("Bundled offline video demo appears incomplete");
+// Validate stable behavior and provenance markers, never translated UI copy.
+const checks={
+ "minimum HTML size":bytes>=50000,
+ "visible source disclosure":html.includes('class="simulation-ribbon"'),
+ "explicit simulation data mode":html.includes("SIMULATION_ONLY"),
+ "interactive map":html.includes('id="spatial-map"'),
+ "asset ranking":html.includes('id="ranking"'),
+ "asset comparison":html.includes('id="compare-content"'),
+ "verification brief":html.includes('id="brief-dialog"')&&html.includes("makeSpatialBrief"),
+ "embedded Ourdo logo":html.includes("data:image/svg+xml;base64,")
+};
+const missing=Object.entries(checks).filter(([,passed])=>!passed).map(([name])=>name);
+if(missing.length)throw new Error("Bundled offline video demo failed integrity checks: "+missing.join(", "));
 console.log("Standalone single-file interactive demo:",dest,bytes,"bytes");
