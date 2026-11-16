@@ -388,3 +388,49 @@ main{padding:0 clamp(20px,3.25vw,58px)}
  .compare-content::-webkit-scrollbar{height:5px}
  .compare-content::-webkit-scrollbar-thumb{background:#c7d9d8;border-radius:9px}
 }
+
+/* 2026-11-16 video freeze: make source-backed review and fictional decision mode distinct. */
+.header-mode{
+ display:inline-flex;align-items:center;min-height:35px;
+ color:#165c70;border-bottom:2px solid #167b8a;
+ font-size:11px;font-weight:800;white-space:nowrap;
+}
+.header-actions{gap:17px}
+.header-link.secondary{color:#205e71;font-weight:800}
+#asset-map,#ranking{scroll-margin-top:16px}
+.map-ranking-cta{
+ position:absolute;left:18px;bottom:105px;z-index:555;
+ display:inline-flex;align-items:center;gap:15px;
+ background:#173b4c;color:white;border:1px solid #173b4c;
+ border-radius:10px;padding:12px 15px;
+ box-shadow:0 5px 19px rgba(17,46,56,.22);
+ font-size:12px;font-weight:800;white-space:nowrap;
+}
+.map-ranking-cta span{font-size:18px;line-height:0.9;font-weight:500}
+.map-ranking-cta:hover{background:#285667;color:white}
+.map-ranking-cta:focus-visible{outline:3px solid #f4a85d;outline-offset:3px}
+.ranking-heading-actions{display:flex;flex-direction:column;align-items:flex-end;gap:12px;flex-shrink:0}
+.ranking-back-link{color:#1b7280;font-size:11px;font-weight:770;border-bottom:1px solid #aad2d5;padding:0 0 3px}
+.ranking-back-link:hover{color:#114e61}
+.compare-failure-list{margin:0;padding:0 0 0 16px;color:#986a4b}
+.compare-failure-list li{margin:0 0 4px;line-height:1.45}
+.chart-head strong{line-height:1.35}
+@media(max-width:1350px) and (min-width:721px){
+ .app-header .header-center{display:none}
+}
+@media(max-width:720px){
+ .header-mode{display:none}
+ .header-actions{gap:11px}
+ .header-actions .header-link.secondary{display:inline-flex;border:0;padding-bottom:0;font-size:10px}
+ .header-actions .header-link{font-size:10px}
+ .map-ranking-cta{left:10px;bottom:95px;padding:10px 12px;font-size:11px;gap:9px}
+ .map-ranking-cta span{font-size:15px}
+ .ranking-heading-actions{width:100%;flex-direction:row;justify-content:space-between;align-items:center;gap:10px}
+ .ranking-heading-actions .ranking-count{white-space:normal;text-align:right;padding:0}
+ .ranking-back-link{white-space:nowrap}
+}
+@media(max-width:420px){
+ .header-actions .header-link:not(.secondary){display:none}
+ .header-actions .header-link.secondary{font-size:11px}
+}
+@media print{.map-ranking-cta{display:none!important}}
