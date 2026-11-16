@@ -18,7 +18,9 @@ const assessment=src("src/assessment.js").replace(/^export\s+/gm,"");
 const scenario=src("src/spatial-scenario.js")
  .replace(/^import .*?;\s*$/gm,"")
  .replace(/^export\s+/gm,"");
-const app=src("src/spatial-demo.js").replace(/^import .*?;\s*$/gm,"");
+const app=src("src/spatial-demo.js").replace(/^import .*?;\s*$/gm,"")
+ // Standalone is a synthetic-only offline video: real evidence requires published source files.
+ .replace(/^\s*void initRealSpatialEvidence\(map\);\s*$/m,"");
 const combined=[assessment,scenario,app].join("\n;\n");
 if(/^(?:import|export)\s/m.test(combined))throw new Error("Standalone JS still contains module imports/exports");
 if(!html.includes('href="./vendor/leaflet/leaflet.css"')||
@@ -27,6 +29,7 @@ if(!html.includes('href="./vendor/leaflet/leaflet.css"')||
    !html.includes('src="./src/spatial-demo.js"'))throw new Error("Video HTML dependencies have changed; update standalone bundler");
 html=html.replace(' <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">',"");
 html=html.replace(' <link rel="stylesheet" href="./spatial-demo.css">',"");
+html=html.replace(' <link rel="stylesheet" href="./real-evidence.css">',"");
 html=html.replace(' <script defer src="./vendor/leaflet/leaflet.js"></script>',"");
 html=html.replace(' <script type="module" src="./src/spatial-demo.js"></script>',"");
 html=html.replace(/src="\.\/assets\/ourdo-tail-curve-wordmark\.svg"/g,'src="'+logo+'"');
@@ -37,6 +40,7 @@ html=html.replace(/href="\.\/\?page=assessment"/g,'href="https://sentinel.ourdo.
 html=html.replace(/href="\.\/\?page=analyst"/g,'href="https://sentinel.ourdo.id/?page=analyst" target="_blank" rel="noopener noreferrer"');
 html=html.replace(/href="\.\/workspaces\.html"/g,'href="https://sentinel.ourdo.id/workspaces.html" target="_blank" rel="noopener noreferrer"');
 html=html.replace(/href="\.\/spatial-demo\.html"/g,'href="#demo-main"');
+html=html.replace(/href="#real-evidence"/g,'href="https://sentinel.ourdo.id/spatial-demo.html#real-evidence" target="_blank" rel="noopener noreferrer"');
 html=html.replace('</head>',' <style>'+css+'</style>\n</head>');
 html=html.replace('</body>',' <script>'+escapeScript(leaflet)+'</script>\n <script>'+escapeScript(combined)+'</script>\n</body>');
 const dest="dist/baruna-spatial-demo-standalone.html";
