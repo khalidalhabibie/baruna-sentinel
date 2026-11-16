@@ -27,6 +27,10 @@ try{
  assert.match(await page.locator("#rate-value").innerText(),/92/);
  assert.equal(await page.locator("#movement-chart svg").count(),1);
  assert.ok(await page.locator(".brand-link img").evaluate(img=>img.complete&&img.naturalWidth>0),"official Ourdo wordmark displays");
+ const actionBounds=await page.locator("#open-brief").boundingBox();
+ const paneBounds=await page.locator(".decision-pane").boundingBox();
+ assert.ok(actionBounds&&paneBounds&&actionBounds.y>=paneBounds.y&&actionBounds.y+actionBounds.height<=paneBounds.y+paneBounds.height+3,
+  "Verification Brief button visible in fixed decision action area without initial scroll");
  await page.screenshot({path:"reports/baruna-spatial-desktop-high.png",fullPage:false});
  await page.locator('[data-asset-id="sim-road"]').click();
  assert.match(await page.locator("#tier-title").innerText(),/Prioritas sedang/);
