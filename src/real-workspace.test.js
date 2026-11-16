@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {selectScenes,formatDsmReading,reportSnapshot} from "./real-workspace.js";
+import {selectScenes,validateSceneInventory,formatDsmReading,reportSnapshot} from "./real-workspace.js";
 
 const data = file => JSON.parse(readFileSync(new URL("../data/"+file,import.meta.url),"utf8"));
 
@@ -37,4 +37,20 @@ test("exported evidence brief preserves all scientific no-go gates",()=>{
   assert.equal(result.evidenceGates.assetLevelInspectionPriority,false);
   assert.match(result.satelliteCatalogue.selectedScene.sourceKind,/METADATA_NOT_IMAGE_PIXELS/);
   assert.match(result.realDsm.previewPurpose,/NOT surveyed height/);
+});
+
+test("verified Sentinel catalogue may grow without changing application code",()=>{
+ const catalog=data("semarang-sentinel-scenes.json");
+ const readiness=data("semarang-real-readiness.json");
+ assert.deepEqual(validateSceneInventory(catalog,readiness),{s1Count:11,s2Count:16});
+ const updated=structuredClone(catalog);
+ updated.scenes.push([...updated.scenes.find(row=>row[0]===2)]);
+ updated.scenes.at(-1)[1]+="_ADDITIONAL_TEST_SCENE";
+ const nextManifest=structuredClone(readiness);
+ nextManifest.datasets.find(x=>x.id==="sentinel2_catalog").count=17;
+ assert.deepEqual(validateSceneInventory(updated,nextManifest),{s1Count:11,s2Count:17});
+ assert.throws(()=>validateSceneInventory(updated,readiness),/Manifest readiness berbeda/);
+ const malformed=structuredClone(updated);
+ malformed.scenes.at(-1)[2]="not-a-date";
+ assert.throws(()=>validateSceneInventory(malformed,nextManifest),/pemeriksaan sumber/);
 });
