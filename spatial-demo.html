@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="theme-color" content="#f7f8f5">
+ <meta name="description" content="BARUNA Sentinel Spatial Decision Workspace. Demonstrasi inspeksi pesisir dengan lokasi, data, dan keputusan yang seluruhnya sintetis.">
+ <title>Spatial Decision Demo · BARUNA Sentinel</title>
+ <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
+ <link rel="stylesheet" href="./spatial-demo.css">
+ <script defer src="./vendor/leaflet/leaflet.js"></script>
+ <script type="module" src="./src/spatial-demo.js"></script>
+</head>
+<body>
+ <a href="#demo-main" class="skip-link">Langsung ke workspace</a>
+ <div class="simulation-ribbon" role="status">
+  <span class="ribbon-dot" aria-hidden="true"></span>
+  SIMULASI VIDEO · SEMUA ASET, POLIGON, PERGERAKAN, DAN HASIL ADALAH DATA BUATAN
+ </div>
+ <header class="app-header">
+  <a href="./?page=why" class="brand-link" aria-label="Kembali ke BARUNA Sentinel">
+   <img src="./assets/ourdo-tail-curve-wordmark.svg" width="128" height="38" alt="OURDO — logo resmi dengan tail oranye">
+   <span class="brand-division"><b>BARUNA</b><small>SENTINEL</small></span>
+  </a>
+  <div class="header-center">Spatial Decision Workspace <span>· Concept Demo</span></div>
+  <nav class="header-actions" aria-label="Navigasi demo">
+   <a href="./?page=guide" class="header-link">Panduan</a>
+   <a href="./?page=assessment" class="header-link secondary">Bukti nyata</a>
+  </nav>
+ </header>
+ <main id="demo-main">
+  <section class="intro" aria-label="Mulai alur demo">
+   <div class="intro-text">
+    <span class="eyebrow">RGPD / BIG BHUMIREKA 2026</span>
+    <h1>Peta, bukti, lalu keputusan.</h1>
+    <p>Pilih aset contoh untuk melihat bagaimana data geospasial menjadi prioritas inspeksi yang dapat dijelaskan.</p>
+   </div>
+   <div class="progress-flow" aria-label="Tiga langkah utama">
+    <div class="flow-step"><span>01</span><b>Pilih aset</b></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-step"><span>02</span><b>Periksa bukti</b></div>
+    <span class="flow-arrow" aria-hidden="true">→</span>
+    <div class="flow-step"><span>03</span><b>Buat brief</b></div>
+   </div>
+  </section>
+
+  <section class="workbench" aria-label="Simulasi keputusan inspeksi pesisir">
+   <aside class="asset-pane" aria-label="Daftar aset simulasi">
+    <div class="pane-heading">
+     <span class="eyebrow">ASSET EXPLORER</span>
+     <div class="heading-row"><h2>Zona contoh</h2><span id="asset-count" class="count">4</span></div>
+     <p>Klik nama atau poligon pada peta.</p>
+    </div>
+    <div id="asset-list" class="asset-list" role="group" aria-label="Pilih aset contoh"></div>
+    <div class="asset-pane-bottom">
+     <span class="source-symbol">◌</span>
+     <p><strong>Zona fiktif</strong> — tidak merepresentasikan koordinat atau batas aset Tanjung Emas.</p>
+    </div>
+   </aside>
+
+   <section class="map-pane" aria-label="Peta area contoh di pesisir Semarang">
+    <div class="map-backdrop" aria-hidden="true">
+     <svg viewBox="0 0 740 630" preserveAspectRatio="xMidYMid slice">
+      <defs><pattern id="water" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M0 18L18 0" stroke="#cee4e5" stroke-width="0.6" opacity=".54"/></pattern><pattern id="street" width="68" height="64" patternUnits="userSpaceOnUse"><path d="M0 35L68 42M25 0L18 64" fill="none" stroke="#b6ceca" stroke-width="2.8" opacity=".4"/></pattern></defs>
+      <rect x="0" y="0" width="740" height="630" fill="#dcebec"/>
+      <path d="M0 0H740V250C659 272 635 250 564 297C483 348 382 319 302 380C210 446 121 415 0 489Z" fill="#e8ece3"/>
+      <path d="M0 0H740V250C659 272 635 250 564 297C483 348 382 319 302 380C210 446 121 415 0 489Z" fill="url(#street)"/>
+      <path d="M0 0H740V250C659 272 635 250 564 297C483 348 382 319 302 380C210 446 121 415 0 489Z" fill="url(#water)" opacity=".35"/>
+      <path d="M0 489C121 415 210 446 302 380C382 319 483 348 564 297C635 250 659 272 740 250" fill="none" stroke="#8bb6ba" stroke-width="5" opacity=".48"/>
+      <text x="410" y="520" font-size="48" fill="#a3c7ca" opacity=".6" font-family="Georgia,serif" font-style="italic">Laut Jawa</text>
+      <text x="48" y="280" font-size="18" fill="#aec0b9" font-weight="700" letter-spacing="3">SEMARANG</text>
+     </svg>
+    </div>
+    <div id="spatial-map" class="spatial-map" role="region" aria-label="Peta interaktif dengan empat poligon simulasi"></div>
+    <div class="map-top">
+     <span class="map-eyebrow">PETA KONTEKS · SEMARANG</span>
+     <strong>Empat zona ilustratif</strong>
+     <small>Poligon hanya untuk demo interaksi GIS</small>
+    </div>
+    <div class="map-controls">
+     <button type="button" id="reset-view" title="Tampilkan semua area contoh" aria-label="Kembalikan tampilan peta ke semua zona"><span aria-hidden="true">⤢</span> Seluruh area</button>
+    </div>
+    <div class="map-legend" aria-label="Legenda peta simulasi">
+     <span><i class="legend-spot high"></i>Tinggi</span>
+     <span><i class="legend-spot medium"></i>Sedang</span>
+     <span><i class="legend-spot monitor"></i>Monitor</span>
+     <span><i class="legend-spot blocked"></i>Perlu data</span>
+    </div>
+    <div class="map-attribution-note">Base map: OpenStreetMap bila online · Geometri warna = sintetik, bukan layer resmi</div>
+   </section>
+
+   <aside class="decision-pane" aria-label="Hasil analisis aset terpilih">
+    <div class="decision-scroll">
+     <div class="decision-label"><span>SELECTED ASSET</span><span class="decision-counter" id="selected-index">01 / 04</span></div>
+     <div class="asset-title-wrap">
+      <span class="area-code" id="detail-code">SEKTOR A</span>
+      <h2 id="detail-title">Akses pelabuhan</h2>
+      <p id="detail-type">Jalur akses</p>
+     </div>
+     <div class="decision-result" id="decision-result">
+      <span class="small-label">HASIL SCREENING · SIMULASI</span>
+      <div class="tier-row"><strong id="tier-title">Prioritas tinggi</strong><span id="tier-dot" class="tier-dot"></span></div>
+      <p id="tier-description">Kelas ilustratif berdasarkan kebijakan demo.</p>
+     </div>
+     <div class="mini-metrics" aria-label="Indikator contoh">
+      <div><span>Tren vertikal</span><strong id="rate-value">−92 <small>mm/th</small></strong></div>
+      <div><span>Kontinuitas</span><strong id="continuity-value">92%</strong></div>
+     </div>
+     <div class="chart-head"><div><strong>Riwayat pergerakan</strong><span>Grafik buatan mengikuti input skenario</span></div><span>mm</span></div>
+     <div id="movement-chart" class="movement-chart" role="img" aria-label="Grafik sintetis pergerakan vertikal aset"></div>
+     <div class="reasons">
+      <div class="detail-section-title"><strong>Mengapa hasilnya demikian?</strong><span id="reason-score"></span></div>
+      <div id="reason-list" class="reason-list" aria-live="polite"></div>
+     </div>
+     <div class="next-action">
+      <span class="small-label">NEXT ACTION</span>
+      <p id="next-action">Siapkan pemeriksaan bersama operator.</p>
+     </div>
+    </div>
+    <div class="decision-actions">
+     <button type="button" id="open-brief" class="primary-button">Lihat Verification Brief <span aria-hidden="true">↗</span></button>
+     <p>Hasil ini bukan rekomendasi inspeksi operasional.</p>
+    </div>
+   </aside>
+  </section>
+  <footer class="workbench-footer">
+   <div><span class="footer-mark">◉</span><span><strong>SIMULATION MODE</strong> · Seluruh input dan klasifikasi dibuat untuk menjelaskan alur prototype.</span></div>
+   <a href="./?page=assessment">Lihat penilaian dengan sumber penelitian sebenarnya ↗</a>
+  </footer>
+ </main>
+
+ <dialog id="brief-dialog" class="brief-dialog" aria-labelledby="brief-title">
+  <div class="dialog-header">
+   <div><span class="eyebrow">BARUNA / VERIFICATION BRIEF</span><h2 id="brief-title">Rencana tindak lanjut</h2></div>
+   <button id="close-brief" class="icon-button" type="button" aria-label="Tutup laporan">×</button>
+  </div>
+  <div class="dialog-warning">SIMULASI · BUKAN HASIL PENGUKURAN ATAU PERINTAH INSPEKSI</div>
+  <div id="brief-body" class="brief-body"></div>
+  <div class="dialog-actions">
+   <button type="button" id="copy-brief" class="secondary-button">Salin teks</button>
+   <button type="button" id="download-brief" class="secondary-button">Unduh .txt</button>
+   <button type="button" id="print-brief" class="primary-button">Cetak / PDF ↗</button>
+  </div>
+ </dialog>
+</body>
+</html>

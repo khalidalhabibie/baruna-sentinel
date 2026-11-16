@@ -4,6 +4,10 @@ import {dirname,join} from "node:path";
 const publicAssets=[
   "index.html",
   "video-demo.html",
+  "spatial-demo.html",
+  "spatial-demo.css",
+  "src/spatial-demo.js",
+  "src/spatial-scenario.js",
   "video-demo.css",
   "src/video-fixture.js",
   "src/synthetic-gnss-series.js",
@@ -60,4 +64,5 @@ const leaked=[".github/workflows/ci.yml","scripts/verify_igs_rinex.py","src/engi
 for(const path of leaked){
   if(existsSync(join("dist",path)))throw new Error("Non-public source leaked into static artifact: "+path);
 }
+await import("./build-standalone-spatial.mjs");
 console.log("BARUNA static build completed:",publicAssets.length,"approved assets in dist/");

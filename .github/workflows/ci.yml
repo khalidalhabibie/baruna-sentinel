@@ -28,6 +28,7 @@ jobs:
           python3 -m http.server 4173 -d dist >/tmp/baruna-static-server.log 2>&1 &
           sleep 2
           node scripts/product-tour-smoke.mjs
+          node scripts/spatial-demo-smoke.mjs
       - name: Upload visual review screenshots
         if: always()
         uses: actions/upload-artifact@v4
@@ -35,3 +36,11 @@ jobs:
           name: baruna-product-visual-qa
           path: reports/*.png
           if-no-files-found: ignore
+
+      - name: Export self-contained spatial video demo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baruna-spatial-standalone-html
+          path: dist/baruna-spatial-demo-standalone.html
+          if-no-files-found: error
