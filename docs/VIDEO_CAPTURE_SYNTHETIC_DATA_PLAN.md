@@ -44,3 +44,20 @@ In Scene 01, the station tabs **CSEM / CSMG** now show invented three-component 
 The visual is clearly flagged `SIMULASI DATA KOORDINAT` and `DATA SINTETIS / VIDEO ONLY` and states `CSV resmi belum bisa diunduh`. The source catalog continues to list official coordinate series as `PENDING_REAL_DATA`. Keep on-screen warnings visible in every recorded frame. No rate, subsidence, structural risk, or asset classification may be inferred. Keep this module isolated from real source-backed assessment.
 
 Replacement contract: genuine station ID, observation timestamps, XYZ/ENU reference origin, coordinate reference frame and epoch (e.g. ITRF), changes in antenna or instrument, daily standard deviations and uncertainty, processing method, official series provenance and license. Integrate through a separate validated adapter and do not relabel the synthetic fixture as real.
+
+## UPDATE: mixed-provenance real BMKG forecast demo (16 November 2026)
+
+**This section supersedes earlier claims in this document that ALL Scene 02 charts are synthetic.**
+
+- BMKG is now a **real source-backed forecast** in Scene 02 (Semarang, 16–22 Nov 2026 UTC, 1008 samples at 10-minute intervals and 24 high/low extrema).
+- Source-bundled files: `data/bmkg-semarang-tide-forecast-20261116-20261122.csv` and `data/bmkg-semarang-tide-extremes-20261116-20261122.csv`. They contain user-exported BMKG forecast values, **not actual observation/rob measurements**.
+- Client CSV adapter validates 4 fields (Date,EST,MSL,LAT), row count 1008, ten-minute continuity, start/end dates and MSL bounds (-0.48 to +0.53 m) before rendering the BMKG-labelled chart. On error, a clearly marked **simulated fallback** is shown.
+- Source CSV timestamps contain NO timezone offset. The accompanying screenshot shows portal UTC selected, so UI interprets raw strings as UTC and converts the event-day view for **18 and 19 Nov WIB**. Reconfirm if repurposed outside this demo.
+- GNSS ENU, DEMNAS elevation, GIS geometry, fictional assets and true InSAR remain synthetic or pending, not source-derived. Copernicus Sentinel-2 scene catalogue metadata (14, 21, 22 Oct 2026) is real **metadata only**, no satellite pixel imagery. BIG DEMNAS ImageServer export endpoint exists, but sample locations gave NoData and no validated elevation pixels.
+- Vertical MSL tide heights cannot be compared directly against DEMNAS elevations without datum reconciliation. No predicted flooding, subsidence rate, asset priority score or structural safety conclusion is produced.
+- New capture note: In Scene 02 select **18 Nov · WIB** then **19 Nov · WIB**; show the verified forecast/source note and keep the synthetic elevation label in shot. Show Copernicus scene candidates as catalogue metadata only.
+- Strict separation maintained: the source-backed Assessment flow is unchanged and never imports the video-only synthetic modules.
+
+## Data replacement boundary
+
+Real ingestion requires source_id, station_id / AOI, source URL and acquisition timestamp, raw immutable file and hash, license, time zone, CRS and vertical datum, units, quality flags, and validation method. Provider-specific parsers output normalized source-tagged data. Never flip a metadata-only/synthetic source to REAL merely by relabeling its status.
