@@ -41,6 +41,16 @@ try{
   assert.match(await page.locator("#elevation-readout").innerText(),/Copernicus DSM display grid/);
   await page.locator("#focus-scene").click();
   assert.match(await page.locator("#scene-details").innerText(),/Sentinel-2/);
+  assert.equal(await page.locator("#export-evidence").isDisabled(),true,"AOI required before exporting");
+  await page.locator("#full-aoi").click();
+  assert.match(await page.locator("#area-analysis-status").innerText(),/Area dianalisis/);
+  assert.match(await page.locator("#area-profile-content").innerText(),/Piksel valid/);
+  assert.match(await page.locator("#area-profile-content").innerText(),/Median/);
+  assert.equal(await page.locator("#tide-day").isDisabled(),false,"BMKG source was validated");
+  await page.locator("#tide-day").selectOption("2026-11-19");
+  assert.match(await page.locator("#tide-result").innerText(),/BMKG MSL/);
+  assert.equal(await page.locator("#tide-chart svg polyline").count(),1);
+  assert.equal(await page.locator("#export-evidence").isEnabled(),true);
   const wait=page.waitForEvent("download");
   await page.locator("#export-evidence").click();
   const download=await wait;
@@ -48,6 +58,10 @@ try{
   const report=JSON.parse(readFileSync(await download.path(),"utf8"));
   assert.equal(report.schema,"baruna-coastal-evidence-brief-v1");
   assert.equal(report.satelliteCatalogue.totalScenes,27);
+  assert.ok(report.areaScreening.validPixels>=4);
+  assert.equal(report.areaScreening.includesSeaAndStructures,true);
+  assert.equal(report.bmkgForecastContext.dateWib,"2026-11-19");
+  assert.equal(report.crossDatumComparisonAllowed,false);
   assert.equal(report.evidenceGates.realInsar,false);
   assert.equal(report.evidenceGates.assetLevelInspectionPriority,false);
   assert.equal(report.satelliteCatalogue.selectedScene.sourceKind,
