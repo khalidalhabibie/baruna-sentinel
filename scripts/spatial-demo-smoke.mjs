@@ -19,6 +19,13 @@ try{
  assert.equal(response?.status(),200);
  await page.locator("#asset-list .asset-option").first().waitFor({state:"visible",timeout:10000});
  assert.match(await page.locator(".simulation-ribbon").innerText(),/DEMO SCENARIO/);
+ assert.match(await page.locator(".simulation-ribbon").innerText(),/4 aset ilustratif, berbeda dari 6 sektor/);
+ assert.match(await page.locator(".header-actions").innerText(),/Bukti Riset · 6 sektor/);
+ assert.match(await page.locator(".chart-head").innerText(),/Perpindahan vertikal relatif/);
+ assert.match(await page.locator(".chart-head").innerText(),/Dari awal periode/);
+ assert.match(await page.locator("#rate-value").innerText(),/mm\/tahun/);
+ assert.equal(await page.locator(".map-ranking-cta").getAttribute("href"),"#ranking");
+ assert.equal(await page.locator(".ranking-back-link").getAttribute("href"),"#asset-map");
  assert.match(await page.locator(".workbench-footer").innerText(),/DEMO SCENARIO/);
  assert.equal(await page.locator(".asset-option").count(),4);
  assert.equal(await page.locator(".spatial-map .leaflet-interactive").count()>=4,true,"4 synthetic polygons rendered in Leaflet");
@@ -32,6 +39,11 @@ try{
  assert.ok(actionBounds&&paneBounds&&actionBounds.y>=paneBounds.y&&actionBounds.y+actionBounds.height<=paneBounds.y+paneBounds.height+3,
   "Verification Brief button visible in fixed decision action area without initial scroll");
  await page.screenshot({path:"reports/baruna-spatial-desktop-high.png",fullPage:false});
+ await page.locator(".map-ranking-cta").click();
+ assert.equal(new URL(page.url()).hash,"#ranking");
+ assert.equal(await page.locator("#ranking").isVisible(),true);
+ await page.locator(".ranking-back-link").click();
+ assert.equal(new URL(page.url()).hash,"#asset-map");
  await page.locator('[data-asset-id="sim-road"]').click();
  assert.match(await page.locator("#tier-title").innerText(),/Prioritas sedang/);
  assert.match(await page.locator("#rate-value").innerText(),/44/);
@@ -81,7 +93,9 @@ try{
  assert.equal(await page.locator('[data-compare-preset="blocked"]').getAttribute("aria-pressed"),"true");
  assert.match(await page.locator("#compare-content").innerText(),/Struktur tepi air/);
  assert.match(await page.locator("#compare-content").innerText(),/Tidak layak diranking/);
- assert.match(await page.locator("#compare-content").innerText(),/−103 mm\/th \(input tidak layak\)/);
+ assert.match(await page.locator("#compare-content").innerText(),/−103 mm\/tahun \(input tidak layak\)/);
+ assert.match(await page.locator("#compare-content").innerText(),/Geometri aset belum diverifikasi/);
+ assert.doesNotMatch(await page.locator("#compare-content").innerText(),/GEOMETRY, REPRESENTATIVENESS/);
  await page.evaluate(()=>window.scrollTo({top:document.querySelector(".compare-header").getBoundingClientRect().top+window.scrollY-12,behavior:"instant"}));
  await page.screenshot({path:"reports/baruna-spatial-desktop-compare-blocked.png",fullPage:false});
  await page.locator('[data-compare-id="sim-store"]').check();
@@ -111,6 +125,8 @@ try{
  assert.match(await offline.locator("#compare-content").innerText(),/Tidak layak diranking/);
 
  await offline.screenshot({path:"reports/baruna-spatial-offline-standalone.png",fullPage:false});
+ assert.match(await offline.locator(".simulation-ribbon").innerText(),/6 sektor penelitian historis/);
+ assert.equal(await offline.locator(".map-ranking-cta").count(),1);
  await offline.close();
 
  await page.setViewportSize({width:390,height:844});
@@ -129,6 +145,12 @@ try{
  assert.ok(mobile.mapHeight>=280,"interactive map remains substantial on mobile");
  assert.equal(mobile.zoneCount,4,"mobile retains real interactive polygons");
  await page.screenshot({path:"reports/baruna-spatial-mobile-high.png",fullPage:false});
+ assert.equal(await page.locator(".map-ranking-cta").isVisible(),true);
+ assert.equal(await page.locator(".header-actions .header-link.secondary").isVisible(),true);
+ await page.locator(".map-ranking-cta").click();
+ assert.equal(new URL(page.url()).hash,"#ranking");
+ await page.locator(".ranking-back-link").click();
+ assert.equal(new URL(page.url()).hash,"#asset-map");
  await page.locator('[data-asset-id="sim-incomplete"]').click();
  assert.match(await page.locator("#tier-title").innerText(),/Bukti belum cukup/);
  await page.screenshot({path:"reports/baruna-spatial-mobile-insufficient.png",fullPage:false});
@@ -140,6 +162,21 @@ try{
  await page.evaluate(()=>window.scrollTo({top:document.querySelector("#ranking").getBoundingClientRect().top+window.scrollY-8,behavior:"instant"}));
  await page.screenshot({path:"reports/baruna-spatial-mobile-ranking.png",fullPage:false});
 
+ // The research Workspace is intentionally separate from the four-asset scenario.
+ const research=await browser.newPage({viewport:{width:1440,height:900}});
+ research.on("pageerror",e=>exceptions.push(e.stack||e.message));
+ await research.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
+ await research.goto(BASE+"/?page=assessment",{waitUntil:"networkidle"});
+ await research.locator("#pw-page-assessment").waitFor({state:"visible",timeout:12000});
+ assert.match(await research.locator(".spatial-demo-entry").innerText(),/Demo Keputusan · 4 aset/);
+ await research.locator(".spatial-demo-entry").click();
+ assert.match(research.url(),/spatial-demo\.html/);
+ await research.locator(".asset-option").first().waitFor({state:"visible"});
+ assert.equal(await research.locator(".asset-option").count(),4);
+ await research.locator(".header-actions a.secondary").click();
+ assert.match(research.url(),/page=assessment/);
+ await research.locator("#pw-page-assessment").waitFor({state:"visible"});
+ await research.close();
  assert.deepEqual(exceptions,[],"no uncaught JavaScript errors");
  console.log("Spatial Decision video demo: map, 4 cases, brief, accessibility, mobile PASS");
 }finally{await browser.close()}
