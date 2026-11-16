@@ -49,7 +49,16 @@ export function analyzeDsmArea(grid,meta,requestBbox) {
   if(selectedPixels===0) return {status:"TOO_SMALL_FOR_PREVIEW_GRID",
     bounds,selectedPixels,validPixels:0,areaKm2:Number(bboxAreaKm2(bounds).toFixed(3))};
   if(samples.length===0) return {status:"NO_VALID_DSM_PIXELS",
-    bounds,selectedPixels,validPixels:0,areaKm2:Number(bboxAreaKm2(bounds).toFixed(3))};
+    bounds,selectedPixels,validPixels:0,coveragePct:0,areaKm2:Number(bboxAreaKm2(bounds).toFixed(3))};
+  // Do not export statistically misleading elevation from isolated valid
+  // cells or an AOI dominated by NoData. Display preview is already coarse.
+  const validFraction=samples.length/selectedPixels;
+  if(samples.length<4 || validFraction<0.8) return {
+    status:"INSUFFICIENT_VALID_DSM_COVERAGE",bounds,selectedPixels,
+    validPixels:samples.length,coveragePct:Number((100*validFraction).toFixed(2)),
+    areaKm2:Number(bboxAreaKm2(bounds).toFixed(3)),
+    warning:"At least 4 valid display pixels and 80% valid coverage are required for this preview screen."
+  };
   samples.sort((a,b)=>a-b);
   const quantile=p=>{
     const pos=(samples.length-1)*p,lo=Math.floor(pos),hi=Math.ceil(pos);
