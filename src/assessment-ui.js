@@ -4,6 +4,7 @@ import {parseRneu,analyzeSeries} from "./engine.js";
 import {publishedCorsComparison} from "./published-cors.js";
 import {inspectLocalStationEvidence,localStationEvidencePrint} from "./cors-evidence-bridge.js";
 import {renderStationQc} from "./station-qc.js";
+import {sourceReadiness,SITE_LOG_REFERENCES} from "./evidence-inventory.js";
 import {renderAssetIntake,loadSyntheticAssetExample,importGeoJSONFile,selectImportedAsset,clearImportedAssets,downloadAssetTemplate,printableImportedAssetReport,disposeIntakeMap,renderImportedAssetMap} from "./asset-intake-ui.js";
 import {
   ASSESSMENT_POLICY,assessRealProject,assessSyntheticScenario,buildAssessmentPrint
@@ -35,8 +36,45 @@ function sourceRows(){
      "Station position history; not linked to sector measurements"],
    ["2025 Multi-GNSS QC","BAKO","Reference only",bako?
      bako.epochCount+" epochs · "+bako.constellations+" constellations with pseudorange · no position solution":
-     "Independent Cibinong station; not a CSEM position solution"]
+     "Independent Cibinong station; not a CSEM position solution"],
+   ["2026 RINEX observation QC","CSEM / CSMG",privateStationQc?"Imported locally":"Not imported",privateStationQc?
+     "Private user-declared RINEX-derived epoch coverage; not a geodetic position solution":
+     "Import local QC JSON in Assessment; private BIG-derived data not bundled in website"],
+   ["Numeric daily position series","CSEM / CSMG","Pending official data",
+     "No numeric BIG position file supplied. Time-series PDF graphics are visual context only; no 2026 velocity estimate."]
  ].map(x=>'<div class="as-source-row"><strong>'+e(x[0])+'</strong><span>'+e(x[1])+'</span><em>'+e(x[2])+'</em><small>'+e(x[3])+'</small></div>').join("");
+}
+function evidenceRegistry(){
+ if(!real)return "";
+ const bridge=privateStationQc?inspectLocalStationEvidence(privateStationQc,real,selectedId):null;
+ const inventory=sourceReadiness(bridge);
+ const profiles=SITE_LOG_REFERENCES.map(station=>
+  '<article class="as-registry-station"><div class="as-registry-station-head"><strong>'+e(station.station)+' · '+e(station.name)+'</strong>'+
+  '<span>PROFIL STASIUN / REFERENSI</span></div>'+
+  '<p>Sejak '+e(station.installed)+' · receiver terakhir tercatat '+e(station.latestReceiverRecorded)+
+  ' (dipasang '+e(station.latestReceiverInstalled)+')</p>'+
+  '<small>'+e(station.caveat)+'</small>'+
+  '<a href="'+e(station.url)+'" target="_blank" rel="noopener noreferrer">Lihat sumber BIG SRGI ↗</a></article>'
+ ).join("");
+ const qc=inventory.observationQc.status==="LOCAL_IMPORTED"?
+  '<strong>QC OBSERVASI LOKAL TERIMPOR</strong><span>'+
+   e(inventory.observationQc.dateRange.join(" – "))+' · '+inventory.observationQc.fullDayPairs+
+   ' / '+inventory.observationQc.totalDays+' hari penuh di kedua stasiun</span>':
+  '<strong>QC OBSERVASI MENUNGGU IMPOR</strong><span>File QC privat tidak dimasukkan ke website publik. Pilih JSON di bagian bawah untuk melihat hasil asli.</span>';
+ const missing=inventory.missing.map(item=>
+  '<div class="as-registry-pending"><strong>'+e(item.label)+'</strong><span>MENUNGGU DATA</span>'+
+  '<p>'+e(item.detail)+'</p><small>Langkah lanjut: '+e(item.next)+'</small></div>'
+ ).join("");
+ return '<section class="as-evidence-registry" id="as-evidence-registry" aria-label="Inventaris bukti yang tersedia dan yang masih diperlukan">'+
+   '<div class="as-registry-head"><div><span class="as-pane-label">SOURCE READINESS / BIG SRGI</span>'+
+   '<h2>Data sudah tersedia, data yang masih menunggu</h2>'+
+   '<p>Profil stasiun dan publikasi historis adalah referensi. Hasil QC 2026 hanya muncul setelah Anda memilih file lokal. Tidak ada nilai kosong yang diartikan sebagai 0.</p></div>'+
+   '<span class="as-registry-safety">BUKAN PENILAIAN KEAMANAN ASET</span></div>'+
+   '<div class="as-registry-stations">'+profiles+'</div>'+
+   '<div class="as-registry-qc"><span class="as-registry-step">OBSERVASI 2026 / QC</span>'+qc+
+   '<a href="#as-csem-csmg-qc">Buka impor dan rincian QC ↓</a></div>'+
+   '<div class="as-registry-pending-list">'+missing+'</div>'+
+   '<p class="as-registry-footnote">Site log CSEM disusun 15 Apr 2022; CSMG disusun 28 Jan 2022. Metadata menjelaskan stasiun dan perangkat, bukan solusi posisi terkini. Time series numerik belum tersedia; jangan menurunkan laju penurunan tanah dari screenshot grafik.</p></section>';
 }
 function privateStationQcPanel(){
   if(!real)return "";
@@ -49,6 +87,8 @@ function privateStationQcPanel(){
       '<div><small>CSMG · file-days</small><strong>'+decision.stationDays.CSMG+'</strong></div>'+
       '<div><small>Matching dates</small><strong>'+decision.calendarDayPairs+'</strong></div>'+
       '<div><small>Both full days</small><strong>'+decision.full30sDayPairs+'</strong></div></div>'+
+    '<div class="as-qc-archive-coverage"><div><small>CSEM · CAKUPAN EPOCH DALAM ARSIP</small><strong>'+decision.epochCoveragePercent.CSEM.toFixed(2)+'%</strong></div><div><small>CSMG · CAKUPAN EPOCH DALAM ARSIP</small><strong>'+decision.epochCoveragePercent.CSMG.toFixed(2)+'%</strong></div></div>'+
+    '<p class="as-qc-archive-missing">Tanggal tanpa file CSMG dalam import: '+e(decision.missingArchiveDates.CSMG.join(", ")||"Tidak ada")+'. Cakupan arsip bukan uptime receiver atau akurasi posisi.</p>'+
     '<p class="as-qc-bridge-conclusion">Observation readiness: <b>'+e(state.replaceAll("_"," "))+
       '</b>. '+e(decision.explanation)+'</p>'+
     '<div class="as-qc-next"><strong>Keputusan untuk '+e(decision.sectorName)+
@@ -139,6 +179,7 @@ function renderReal(){
        '<div class="as-action-row"><button type="button" class="pw-btn pw-btn-primary" id="as-export">Export assessment brief</button>'+
          button("detail","View field records")+'</div></section>'+
    '</div>'+
+   evidenceRegistry()+
    privateStationQcPanel()+
    publishedCorsCard()+
    '<section class="as-source-panel"><div class="as-source-title"><h2>GNSS and source provenance</h2>'+

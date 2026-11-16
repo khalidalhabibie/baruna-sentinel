@@ -122,6 +122,12 @@ try {
   // P1 verified flow: user-declared LOCAL CSEM & CSMG QC from RINEX-derived JSON
   // must become a station-date comparison and a separate sector verification annex.
   assert.ok((await assessmentPage.locator(".as-qc-bridge").textContent()).includes("belum diimpor"));
+  assert.equal(await assessmentPage.locator(".as-registry-stations .as-registry-station").count(),2,
+    "SRGI CSEM and CSMG historical site logs are shown as traceable references");
+  assert.ok((await assessmentPage.locator(".as-evidence-registry").textContent()).includes("Time Series koordinat numerik"));
+  assert.ok((await assessmentPage.locator(".as-evidence-registry").textContent()).includes("MENUNGGU DATA"),
+    "Unprovided numeric geodetic data are explicitly pending, not initialized to zero");
+  assert.equal(await assessmentPage.locator(".as-registry-station a").count(),2);
   const corsSample={
     schema:"baruna-private-cors-qc-v1",
     method:"FICTITIOUS test RINEX observations; never real BIG results",
@@ -145,6 +151,15 @@ try {
     buffer:Buffer.from(JSON.stringify(corsSample))
   });
   await assessmentPage.locator("#as-qc-brief").waitFor({state:"visible",timeout:10000});
+  assert.ok((await assessmentPage.locator(".as-registry-qc").textContent()).includes("TERIMPOR"),
+    "Local QC reflects actual import state, without bundling private data in public build");
+  assert.deepEqual(await assessmentPage.locator(".as-qc-archive-coverage strong").allTextContents(),
+    ["79.51%","50.00%"],"Source-derived archive coverage includes missing CSMG station-day");
+  assert.ok((await assessmentPage.locator(".as-qc-archive-missing").textContent()).includes("2026-11-16"),
+    "Missing archive date is labelled as missing file, not a receiver failure");
+  assert.ok((await assessmentPage.locator(".as-evidence-registry").textContent()).includes("MENUNGGU DATA"),
+    "Importing QC does not fabricate numeric series or asset geometry");
+
   assert.equal(await assessmentPage.locator(".as-qc-bridge-summary strong").count(),4);
   assert.equal((await assessmentPage.locator(".as-qc-bridge-summary strong").allTextContents()).join(","),
     "2,1,1,1","Same-day CSEM–CSMG pairing counts reflect real parsing, not placeholder data");
@@ -179,6 +194,7 @@ try {
     "Rejected invalid QC cannot replace last valid, entirely local study session");
   await assessmentPage.locator("#as-qc-clear").click();
   assert.equal(await assessmentPage.locator("#as-qc-brief").count(),0);
+  assert.ok((await assessmentPage.locator(".as-registry-qc").textContent()).includes("MENUNGGU IMPOR"));
   await assessmentPage.setViewportSize({width:390,height:844});
   assert.equal(await assessmentPage.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,
     "CSEM–CSMG QC intake remains mobile-safe even without private files");
