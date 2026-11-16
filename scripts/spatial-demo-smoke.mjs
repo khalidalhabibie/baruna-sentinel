@@ -75,12 +75,14 @@ try{
  assert.equal((await page.locator('#ranking-rows [data-rank-row="sim-incomplete"] .rank-score').innerText()).trim(),"—");
  assert.match(await page.locator("#compare-content").innerText(),/Akses pelabuhan/);
  assert.match(await page.locator("#compare-content").innerText(),/Jalan pesisir/);
+ await page.evaluate(()=>window.scrollTo({top:document.querySelector("#ranking").getBoundingClientRect().top+window.scrollY-12,behavior:"instant"}));
  await page.screenshot({path:"reports/baruna-spatial-desktop-ranking.png",fullPage:false});
  await page.locator('[data-compare-preset="blocked"]').click();
  assert.equal(await page.locator('[data-compare-preset="blocked"]').getAttribute("aria-pressed"),"true");
  assert.match(await page.locator("#compare-content").innerText(),/Struktur tepi air/);
  assert.match(await page.locator("#compare-content").innerText(),/Tidak layak diranking/);
  assert.match(await page.locator("#compare-content").innerText(),/−103 mm\/th \(input tidak layak\)/);
+ await page.evaluate(()=>window.scrollTo({top:document.querySelector(".compare-header").getBoundingClientRect().top+window.scrollY-12,behavior:"instant"}));
  await page.screenshot({path:"reports/baruna-spatial-desktop-compare-blocked.png",fullPage:false});
  await page.locator('[data-compare-id="sim-store"]').check();
  assert.match(await page.locator("#compare-selection-count").innerText(),/3 dari 3 aset dipilih/);
@@ -135,6 +137,7 @@ try{
  await page.locator('[data-compare-preset="blocked"]').click();
  assert.match(await page.locator("#compare-content").innerText(),/Tidak layak diranking/);
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3),true,"ranking & compare contain their own horizontal scroll");
+ await page.evaluate(()=>window.scrollTo({top:document.querySelector("#ranking").getBoundingClientRect().top+window.scrollY-8,behavior:"instant"}));
  await page.screenshot({path:"reports/baruna-spatial-mobile-ranking.png",fullPage:false});
 
  assert.deepEqual(exceptions,[],"no uncaught JavaScript errors");
