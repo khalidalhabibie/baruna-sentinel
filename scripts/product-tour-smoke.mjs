@@ -46,7 +46,15 @@ try{
  await page.locator(".baruna-more-trigger").click();
  assert.equal(await page.locator(".baruna-more-trigger").getAttribute("aria-expanded"),"true");
  assert.equal(await page.locator(".baruna-more-menu").isVisible(),true);
- await page.locator('.baruna-more-menu [data-pw-page="compare"]').click();
+ console.log("MENU_COMPUTED",JSON.stringify(await page.evaluate(()=>{
+   const b=document.querySelector('.baruna-more-menu [data-pw-page="compare"]');
+   const m=document.querySelector(".baruna-more-menu");
+   const n=document.querySelector(".pw-primary-nav");
+   const t=document.querySelector(".topbar");
+   const info=e=>({rect:e.getBoundingClientRect().toJSON(),display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,overflow:getComputedStyle(e).overflow,hidden:e.hidden});
+   return {button:info(b),menu:info(m),nav:info(n),topbar:info(t)};
+ })));
+ await page.locator('.baruna-more-menu [data-pw-page="compare"]').click({timeout:5000});
  assert.equal(await page.locator("#pw-page-compare").isVisible(),true,"advanced pages remain reachable");
  await page.locator('.pw-primary-nav>[data-pw-page="assessment"]').click();
  await page.locator(".as-decision-panel").waitFor({state:"visible"});
