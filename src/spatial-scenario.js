@@ -182,7 +182,7 @@ export function getSyntheticScoreBreakdown(item){
  const reasons=item.result.reasons;
  if(!Array.isArray(reasons)||reasons.length!==3)throw new Error("Invalid assessment reason structure");
  const points=reasons.map(reason=>{
-  const m=reason.match(/_(\\d+)_POINTS$/);
+  const m=reason.match(/_(\d+)_POINTS$/);
   if(!m)throw new Error("Score rationale is unavailable");
   return Number(m[1]);
  });
