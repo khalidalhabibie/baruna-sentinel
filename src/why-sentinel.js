@@ -41,8 +41,8 @@ function revealActiveSectorOnMobile(){
 function render(){
  if(!root||!doc)return;
  root.innerHTML='<section class="bf-topline" aria-label="Workspace status"><div><span class="bf-eyebrow">WORKSPACE / SEMARANG</span>'+
-  '<h1>Tanjung Emas</h1><p>Periksa bukti sebelum menetapkan inspeksi.</p></div>'+
-  '<div class="bf-toplinks"><span>Studi historis · 2005</span>'+
+  '<h1>Tanjung Emas</h1><p>Enam sektor penelitian 2005. Bukti terkini belum cukup untuk memberi peringkat inspeksi aset.</p></div>'+
+  '<div class="bf-toplinks"><span>Bukti Riset · 6 sektor historis</span>'+
   '<button type="button" data-pw-page="guide">Cara kerja <span aria-hidden="true">↗</span></button></div></section>'+
  '<section class="bf-workspace" aria-label="Studi kasus dan bukti">'+
  '<aside class="bf-sidebar"><div class="bf-pane-title"><strong>Sektor penelitian</strong><span>'+doc.sectors.length+' lokasi</span></div>'+
