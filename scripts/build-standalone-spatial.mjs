@@ -39,5 +39,5 @@ html=html.replace('</body>',' <script>'+escapeScript(leaflet)+'</script>\n <scri
 const dest="dist/baruna-spatial-demo-standalone.html";
 writeFileSync(dest,html,"utf8");
 const bytes=statSync(dest).size;
-if(bytes<50000||!html.includes("SIMULASI VIDEO")||!html.includes("makeSpatialBrief"))throw new Error("Bundled offline video demo appears incomplete");
+if(bytes<50000||!html.includes("DEMO SCENARIO")||!html.includes("makeSpatialBrief"))throw new Error("Bundled offline video demo appears incomplete");
 console.log("Standalone single-file interactive demo:",dest,bytes,"bytes");
