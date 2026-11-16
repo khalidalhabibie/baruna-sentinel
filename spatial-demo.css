@@ -434,3 +434,53 @@ main{padding:0 clamp(20px,3.25vw,58px)}
  .header-actions .header-link.secondary{font-size:11px}
 }
 @media print{.map-ranking-cta{display:none!important}}
+
+/* Product shell / launch-ready workspace identity. The demo disclosure stays visible but is no longer a billboard. */
+.app-header{height:72px;padding:0 clamp(20px,3.25vw,58px);border-bottom:1px solid #e1e9e8}
+.app-header .brand-link{gap:14px}
+.app-header .brand-link img{width:120px;height:38px}
+.app-header .brand-division{padding-left:14px}
+.app-header .header-actions{gap:27px}
+.app-header .header-link{font-size:12px}
+.app-header .header-mode{font-size:12px;font-weight:800;color:#126a7c;border-bottom:2px solid #278b99;padding:13px 0}
+.app-header .header-link.secondary{border:0;padding-bottom:0;color:#536d79;font-weight:720}
+.app-header .header-link.secondary:hover,.app-header .header-link:hover{color:#08768a}
+.intro{padding:22px 0 19px;align-items:center;gap:28px;min-height:166px}
+.intro-text{min-width:0;max-width:940px}
+.intro-breadcrumb{display:flex;align-items:center;gap:8px;font-size:11px;color:#9aaaaf;margin-bottom:11px}
+.intro-breadcrumb strong{color:#3d6470;font-weight:740}
+.intro-breadcrumb a:hover{color:#0b7890}
+.intro h1{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:clamp(26px,2.4vw,34px);font-weight:800;line-height:1.12;letter-spacing:-.045em;margin:7px 0 8px;color:#203f50}
+.intro p{font-size:12px;color:#758991;line-height:1.55}
+.intro .intro-rank-link{font-size:12px;margin-left:9px;color:#0e7384}
+.intro .simulation-ribbon{height:auto;min-height:0;display:inline-flex;max-width:100%;width:auto;align-items:center;justify-content:flex-start;margin:11px 0 0;padding:5px 0;background:transparent;color:#a57d59;font-weight:650;font-size:9px;letter-spacing:0;text-align:left;line-height:1.45}
+.intro .simulation-ribbon strong{font-weight:850;color:#97663e;letter-spacing:.07em}
+.intro .ribbon-dot{width:6px;height:6px}
+.project-summary{display:flex;align-items:center;justify-content:flex-end;gap:0;flex-shrink:0}
+.project-summary>div{display:flex;flex-direction:column;min-width:105px;gap:3px;padding:0 15px;border-right:1px solid #e1e9e7}
+.project-summary>div:last-child{padding-right:0;border-right:0}
+.project-summary strong{font-size:25px;font-weight:800;color:#2d5261;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.project-summary span{font-size:9px;letter-spacing:.015em;line-height:1.35;color:#8da1a6;font-weight:650;white-space:nowrap}
+.map-top{background:rgba(255,255,254,.95)}
+.ranking-section{border-radius:12px}
+@media(max-width:1230px){.project-summary>div{min-width:80px;padding:0 10px}.project-summary strong{font-size:22px}.project-summary span{font-size:9px}.intro h1{font-size:27px}}
+@media(max-width:1000px){.project-summary{display:none}.intro-text{max-width:100%}.app-header .header-actions{gap:17px}}
+@media(max-width:720px){
+ .app-header{height:auto;min-height:92px;padding:10px 16px;display:flex;align-items:center;flex-wrap:wrap;gap:5px}
+ .app-header .brand-link{min-height:38px}
+ .app-header .brand-link img{width:101px;height:34px}
+ .app-header .brand-division{padding-left:9px;gap:2px}
+ .app-header .brand-division b{font-size:10px}
+ .app-header .brand-division small{font-size:8px}
+ .app-header .header-actions{order:2;display:flex;width:100%;gap:20px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;padding:0 0 2px}
+ .app-header .header-actions::-webkit-scrollbar{display:none}
+ .app-header .header-actions .header-link{font-size:10px}
+ .app-header .header-actions .header-link:not(.secondary){display:inline-flex}
+ .app-header .header-actions .header-link.secondary{font-size:10px}
+ .app-header .header-actions .header-mode{display:inline-flex;min-height:33px;align-items:center;font-size:10px;padding:5px 0 7px}
+ .intro{padding:18px 0 17px;min-height:0;display:block}
+ .intro-breadcrumb{margin-bottom:8px;font-size:10px}
+ .intro h1{font-size:25px;margin:6px 0}
+ .intro p{font-size:11px;line-height:1.52}
+ .intro .simulation-ribbon{font-size:9px;margin-top:8px}
+}
