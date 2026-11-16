@@ -82,3 +82,20 @@ A source-verified GeoTIFF was supplied as `BARUNA_SENTINEL2_REAL.zip`:
 - The existing scenario/demo and synthetic rankings remain isolated. No Sentinel-1 InSAR, flooding, or operational asset scoring is introduced.
 
 **Catalogue identity warning:** The imported real 14 Oct 2026 Earth Search scene ID differs from the existing 14 Oct Copernicus CDSE STAC product ID. Treat them as independent source records; a coincident date/tile is not proof of identical product lineage. The optical layer uses the Earth Search scene with independent provenance. The original 16 CDSE records remain metadata-only.
+
+
+## Real two-date optical extension (uploaded 16 Nov 2026)
+
+Source archive: `BARUNA_OPTICAL_EXTENSION_REAL.zip`. The 14 Oct baseline B11 TIFF and 21 Oct comparison four-band TIFF were opened and SHA-256 checked independently. Both have **EPSG:32749**, 10 m grid, 1218×1660 pixels, matching affine transforms and bounds. The original 14 Oct four-band raster SHA-256 was also cross-checked against the prior source upload.
+
+| Source | Exact scene | TIFF SHA-256 |
+|---|---|---|
+| 14 Oct B03/B04/B08/SCL original | S2B_T49MDN_20261014T025716_L2A | d398e1af132b23fb3daecaf6477ed8f142d25dd02b6b3218a5c572c15d294363 |
+| 14 Oct B11 | same Earth Search scene | 0f590174926613e63534d1a7cfc8a6dfb1a6b72c8d19d8b2f745d76f2b0ff3a5 |
+| 21 Oct B03/B08/B11/SCL | S2A_T49MDN_20261021T025248_L2A | 4e1534eed55ca7094477dff93a9b1874123b07edac85962c7def870f3a6cf17f |
+
+Public asset `data/semarang-s2-optical-series.json` contains real-data-derived, **not synthetic**, quantized 72×98 display grids: `baselineNdwi`, `baselineMndwi`, `comparisonNdwi`, `comparisonMndwi`, and `mndwiContrast` (21 Oct minus 14 Oct). All five grid SHA-256 values were validated during import and are checked again before browser rendering. The multi-date source manifest reports both-date valid fraction 0.99728 and SCL mask classes 4,5,6 with DN-to-reflectance scale 0.0001, offset -0.1.
+
+The source TIFFs (approximately 14 MB total) are NOT pushed to application GitHub; only previews and provenance. In `real-workspace.html`, toggle Optical water index and choose date/index or contrast. For selected AOIs, quantized **display-grid** median, P10, P90 and valid cell counts are calculated from the preview, not from original native 10 m data. Evidence JSON export includes exact scene IDs, SHA-256 hashes, index formula/mask, display statistics and scientific no-go flags.
+
+**Do not infer flood/rob extent, temporal land-cover change, inundation depth, displacement or asset risk.** A spectral-index contrast is not an event report. BMKG tide forecast and Copernicus DSM remain separate datasets with incompatible/unreconciled vertical datum; neither provides calibration for image-derived flooding. Existing CDSE STAC IDs are not treated as exact equivalents of Earth Search product IDs. `modelGate.multiDateOpticalIndexPreview=true` only certifies **exploratory index display**, while `modelGate.realOpticalAnalysis=false` continues to block validated change/flood claims.
