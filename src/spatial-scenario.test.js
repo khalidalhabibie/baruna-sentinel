@@ -67,7 +67,7 @@ test("Video GIS route packages only approved public files and permanent disclaim
  const script=readFileSync("src/spatial-demo.js","utf8");
  const build=readFileSync("scripts/build-static.mjs","utf8");
  const home=readFileSync("index.html","utf8");
- assert.match(html,/SIMULASI VIDEO · SEMUA ASET/);
+ assert.match(html,/DEMO SCENARIO · Data ilustratif/);
  assert.match(html,/spatial-map/);
  assert.match(html,/brief-dialog/);
  assert.match(html,/vendor\/leaflet\/leaflet/);
