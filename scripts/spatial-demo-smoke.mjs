@@ -168,7 +168,8 @@ try{
  await research.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
  await research.goto(BASE+"/?page=assessment",{waitUntil:"networkidle"});
  await research.locator("#pw-page-assessment").waitFor({state:"visible",timeout:12000});
- assert.match(await research.locator(".spatial-demo-entry").innerText(),/Demo Keputusan · 4 aset/);
+ assert.match(await research.locator(".spatial-demo-entry").innerText(),/Decision Lab/);
+ assert.equal(await research.locator(".workspaces-entry").getAttribute("href"),"./workspaces.html");
  await research.locator(".spatial-demo-entry").click();
  assert.match(research.url(),/spatial-demo\.html/);
  await research.locator(".asset-option").first().waitFor({state:"visible"});
