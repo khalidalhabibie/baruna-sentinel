@@ -244,9 +244,7 @@ body[data-page] .topbar .ourdo-product-name strong{color:#1f6660;font-size:11px}
 body[data-page] .topbar .ourdo-product-name small{
   display:block;font-size:8px;color:#9babaa;letter-spacing:.05em;margin-top:5px;
 }
-body[data-page="why"] .pw-primary-nav button[data-pw-page="overview"],
-body[data-page="why"] .pw-primary-nav button[data-pw-page="detail"],
-body[data-page="why"] .pw-primary-nav button[data-pw-page="compare"]{display:none!important}
+/* Advanced pages now live in the explicit accessible menu; never hide its buttons. */
 body[data-page="why"] .pw-primary-nav button{font-size:12px;padding-left:16px;padding-right:16px}
 body[data-page="why"] .ws-story-header{padding-top:34px}
 body[data-page="why"] .ws-kicker{font-size:11px;letter-spacing:.075em}
