@@ -18,6 +18,7 @@ const publicAssets=[
   "product-experience.css",
   "product-focus.css",
   "product-atmosphere.css",
+  "assets/ourdo-tail-curve-wordmark.svg",
   "src/guide-page.js",
   "src/why-sentinel-model.js",
   "src/why-sentinel.js",
