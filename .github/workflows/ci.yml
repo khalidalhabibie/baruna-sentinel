@@ -17,3 +17,20 @@ jobs:
         run: python3 -m py_compile scripts/verify_igs_rinex.py
       - name: Syntax and scientific guardrail tests
         run: npm run check
+
+      - name: Install Playwright for decision-first UI smoke
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test guided tour, assessment and responsive product
+        run: |
+          python3 -m http.server 4173 -d dist >/tmp/baruna-static-server.log 2>&1 &
+          sleep 2
+          node scripts/product-tour-smoke.mjs
+      - name: Upload visual review screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: baruna-product-visual-qa
+          path: reports/*.png
+          if-no-files-found: ignore
