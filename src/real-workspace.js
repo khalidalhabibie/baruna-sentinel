@@ -96,7 +96,7 @@ function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreen
     singleDateOptical:opticalExportEvidence(optical),
     exploratoryTwoDateOptical:opticalSeriesExport(opticalSeries,opticalView,opticalArea),
     evidenceGates:readiness.modelGate,
-    unsupported:["No multi-date optical change or validated flood extent","No Sentinel-1 InSAR displacement",
+    unsupported:["No validated land-cover change or confirmed flood/rob extent","No Sentinel-1 InSAR displacement",
       "No operator-surveyed asset polygons","No validated rob-depth model",
       "No asset safety or operational inspection ranking"],
     limitations:"Not a geodetic position solution, on-site survey, flood prediction or risk ranking."
@@ -221,7 +221,7 @@ async function bootstrap() {
       opticalSeries=candidate;
       opticalView.disabled=false;
       ndwiToggle.disabled=false;
-      $("stat-s2").textContent=s2Count+" catalog scenes · 2 optical dates";
+      $("stat-s2").textContent=s2Count+" scenes · 2 optical dates";
       $("s2-ndwi-status").textContent="Real B03/B08/B11/SCL · 14 & 21 Okt 2026 · "+
         (candidate.indices.bothDatesValidFraction*100).toFixed(2)+
         "% valid pada kedua tanggal · preview indeks, bukan rob.";
