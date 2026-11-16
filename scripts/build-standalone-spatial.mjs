@@ -33,7 +33,10 @@ html=html.replace(/src="\.\/assets\/ourdo-tail-curve-wordmark\.svg"/g,'src="'+lo
 html=html.replace('href="./assets/ourdo-tail-curve-wordmark.svg"','href="'+logo+'"');
 html=html.replace(/href="\.\/\?page=why"/g,'href="#demo-main"');
 html=html.replace(/href="\.\/\?page=guide"/g,'href="https://github.com/khalidalhabibie/baruna-sentinel/blob/main/docs/SPATIAL_DEMO_VIDEO_CAPTURE.md" target="_blank" rel="noopener noreferrer"');
-html=html.replace(/href="\.\/\?page=assessment"/g,'href="https://github.com/khalidalhabibie/baruna-sentinel" target="_blank" rel="noopener noreferrer"');
+html=html.replace(/href="\.\/\?page=assessment"/g,'href="https://sentinel.ourdo.id/?page=assessment" target="_blank" rel="noopener noreferrer"');
+html=html.replace(/href="\.\/\?page=analyst"/g,'href="https://sentinel.ourdo.id/?page=analyst" target="_blank" rel="noopener noreferrer"');
+html=html.replace(/href="\.\/workspaces\.html"/g,'href="https://sentinel.ourdo.id/workspaces.html" target="_blank" rel="noopener noreferrer"');
+html=html.replace(/href="\.\/spatial-demo\.html"/g,'href="#demo-main"');
 html=html.replace('</head>',' <style>'+css+'</style>\n</head>');
 html=html.replace('</body>',' <script>'+escapeScript(leaflet)+'</script>\n <script>'+escapeScript(combined)+'</script>\n</body>');
 const dest="dist/baruna-spatial-demo-standalone.html";
