@@ -377,3 +377,14 @@ main{padding:0 clamp(20px,3.25vw,58px)}
  body:not(:has(.brief-dialog[open])) .ranking-section{display:block!important;break-inside:auto}
  .compare-table,.ranking-table{font-size:9px}
 }
+
+/* Small-screen affordance: comparison columns are horizontally scrollable. */
+@media(max-width:720px){
+ .compare-selection-count:after{
+  content:"  ·  Geser tabel ke samping ↔";
+  display:inline;color:#247c89;font-weight:770;
+ }
+ .compare-content{scrollbar-width:auto}
+ .compare-content::-webkit-scrollbar{height:5px}
+ .compare-content::-webkit-scrollbar-thumb{background:#c7d9d8;border-radius:9px}
+}
