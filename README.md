@@ -1,5 +1,7 @@
 # BARUNA Sentinel — BIG Bhumireka 2026
 
+> **Start here (Bhumireka 2026):** Open the homepage, choose **Periksa West Breakwater** or **Panduan 2 menit**, inspect the 2005 historical evidence and its **DATA INSUFFICIENT** outcome, then print an evidence-gated verification brief. This prototype is for defensible inspection *readiness*, not current asset safety ranking, live subsidence measurement, or flood prediction. The guided tour is first-visit/replayable and nonmodal. Advanced Overview/Detail/Compare tools remain under **Eksplorasi lainnya**. See [GIS reviewer product flow](docs/PRODUCT_FLOW_FOR_GIS_REVIEWERS.md) and [video capture guide](docs/VIDEO_CAPTURE_SYNTHETIC_DATA_PLAN.md).
+
 Independent, offline-capable competition prototype. This repository does **not** import or depend on the existing BARUNA WebGIS application.
 
 ## Problem
@@ -7,7 +9,7 @@ Coastal infrastructure teams need an explainable **inspection-review queue**, no
 
 ## Product promise: evidence that leads to a defensible next step
 
-**Overview (default)** is an **evidence-first** decision workspace that answers three plain-language questions: **What do we know? What can we *not* conclude? What should we verify next?** Historical sector records and their limitations come before the map. The OSM map remains interactive geographic context; it is not an asset risk surface or a surveyed-sector map.
+**Beranda (default)** is an evidence-first introduction and **Cek bukti** is the decision workspace that answers three plain-language questions: **What do we know? What can we *not* conclude? What should we verify next?** Historical sector records and their limitations come before the map. The OSM map remains interactive geographic context; it is not an asset risk surface or a surveyed-sector map.
 
 **GNSS Analyst** is a separate technical workspace, starting with two independent proof-of-capability sources: the historic CSEM GPS-derived station series (Semarang, 2010–2021) and verified BAKO multi-GNSS observation QC (Cibinong, 1 Jan 2025). It then exposes position trends, source controls, spatial audit, and optional local CSEM / CSMG observation QC. The analyst must never imply BAKO verified CSEM displacement or site safety. View selection is handled by a standalone navigation script, so the two tabs still work even when the geospatial analysis module fails. Switching to an analyst opens its source context, not an empty optional import screen. Share a direct technical view with `?view=analyst`. Use **Enable experimental tools** to reveal local Ina-CORS GeoRinex QC import, fictional scenario markers and synthetic data controls. Closing the lab hides them again without changing core datasets.
 
