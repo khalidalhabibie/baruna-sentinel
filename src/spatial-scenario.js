@@ -128,6 +128,7 @@ export function makeSpatialBrief(item,{createdAt="2026-11-16"}={}){
  "Lokasi: Pesisir Semarang (skema ilustratif; koordinat tidak mewakili aset nyata)",
  "Aset ilustratif: "+item.label+" — "+item.name,
  "Kelas screening contoh: "+item.status.label+" ("+item.result.screeningTier+")",
+ "Peringkat sintetis: "+(()=>{const r=getRankedSpatialCases();const n=r.eligible.find(x=>x.item.id===item.id);return n?n.rank+" dari "+r.eligibleCount+" aset yang lolos Evidence Gate":"TIDAK DIRANKING (gagal Evidence Gate)";})(),
  "Laju vertikal input: "+rates,
  "Kelanjutan: "+item.status.next,
  "",
