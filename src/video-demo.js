@@ -1,6 +1,8 @@
 import {VIDEO_CONTEXT,VIDEO_ASSETS,VIDEO_SOURCES,SOURCE_STATUS,validateVideoSources} from "./video-fixture.js";
 import {parseStationQc} from "./station-qc.js";
 import {makeSyntheticEnu,ENU_DEMO_CONTRACT,ENU_DEMO_STATIONS} from "./synthetic-gnss-series.js";
+import {BMKG_TIDE_META,parseBmkgForecastCsv,selectBmkgWindow,forecastMetrics,wibTimeLabel} from "./bmkg-tide-adapter.js";
+import {PUBLIC_CATALOG} from "./public-catalog-metadata.js";
 validateVideoSources();
 
 const root=document.getElementById("video-scene");
@@ -11,6 +13,10 @@ const titles=["konteks wilayah","sektor contoh","verification brief"];
 let scene=0;
 let selectedAsset=VIDEO_ASSETS[0].id;
 let selectedEnuStation="CSEM";
+let selectedTideWindow="2026-11-18";
+let tideRecords=null;
+let tideLoadState="LOADING";
+let tideLoadError="";
 let importedQC=null;
 let importName="";
 let importError="";
@@ -19,6 +25,8 @@ const fmt=x=>Number(x).toLocaleString("id-ID",{maximumFractionDigits:2});
 function provenance(status){
  if(status===SOURCE_STATUS.LOCAL)return '<span class="status local">IMPOR LOKAL</span>';
  if(status===SOURCE_STATUS.PENDING)return '<span class="status pending">BELUM ADA DATA</span>';
+ if(status===SOURCE_STATUS.FORECAST)return '<span class="status source-backed">BMKG · PRAKIRAAN</span>';
+ if(status===SOURCE_STATUS.CATALOGUE)return '<span class="status catalogue">METADATA RESMI</span>';
  return '<span class="status mocked">SIMULASI SAJA</span>';
 }
 function qcSummary(){
@@ -39,7 +47,8 @@ function qcSummary(){
 function sourceCard(src){
  let description=src.next;
  if(src.id==="cors"&&importedQC)description="JSON observasi privat sudah diimpor untuk sesi ini; bukan sertifikat BIG.";
- return '<article class="source-item"><div class="source-top"><div><small>'+e(src.provider)+'</small><h3>'+e(src.title)+'</h3></div>'+provenance(src.status)+'</div>'+
+ if(src.id==="tide")description=tideRecords?"1.008 data prakiraan BMKG, MSL; UTC diasumsikan dari screenshot pengaturan portal.":tideLoadState==="LOADING"?"Memuat CSV prakiraan BMKG...":"CSV belum berhasil dimuat; grafik fallback simulasi.";
+ return '<article class="source-item"><div class="source-top"><div><small>'+e(src.provider)+'</small><h3>'+e(src.title)+'</h3></div>'+provenance(src.id==="tide"&&!tideRecords?SOURCE_STATUS.SYNTHETIC:src.status)+'</div>'+
  '<p>'+e(src.role)+'</p><div class="source-footer"><span>'+e(description)+'</span><a href="'+e(src.source||"#demo-missing-asset")+'" '+(src.source?'target="_blank" rel="noopener noreferrer"':'aria-disabled="true" tabindex="-1"')+'>'+
  (src.source?"Sumber ↗":"Belum ada sumber")+'</a></div></article>';
 }
@@ -111,22 +120,79 @@ function lineChart(values, width=440, height=165, label="Grafik ilustrasi"){
  '<path d="'+path+'" fill="none" stroke="#14766c" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'+
  points.map(([x,y])=>'<circle cx="'+x+'" cy="'+y+'" r="3.5" fill="#14766c" stroke="white" stroke-width="2"/>').join("")+'</svg>';
 }
+
+function tideForecastChart(rows){
+ const width=680,height=202,left=42,right=16,top=16,bottom=31,min=-0.6,max=0.65;
+ const x=i=>left+(width-left-right)*(i/Math.max(1,rows.length-1));
+ const y=v=>top+(height-top-bottom)*(1-(v-min)/(max-min));
+ const guide=[-0.5,0,0.5].map(v=>'<line x1="'+left+'" x2="'+(width-right)+'" y1="'+y(v).toFixed(1)+'" y2="'+y(v).toFixed(1)+'" stroke="'+(v===0?'#b59c7d':'#e5ebe8')+'" stroke-dasharray="'+(v===0?'5 5':'3 6')+'"/><text x="'+(left-8)+'" y="'+(y(v)+3).toFixed(1)+'" text-anchor="end" font-size="10" fill="#7a8e86">'+v.toFixed(1)+'</text>').join("");
+ const path=rows.map((r,i)=>(i?'L':'M')+x(i).toFixed(1)+','+y(r.mslM).toFixed(1)).join(' ');
+ const labels=selectedTideWindow==="all"?[0,144,288,432,576,720,864,1007].map(i=>({i,label:rows[i]?.utc.slice(5,10)})):[0,36,72,108,rows.length-1].map(i=>({i,label:wibTimeLabel(rows[i])}));
+ const ticks=labels.filter(v=>v.label).map(({i,label})=>'<text x="'+x(i).toFixed(1)+'" y="'+(height-8)+'" fill="#79968c" font-size="10" text-anchor="middle">'+e(label)+'</text>').join("");
+ return '<svg class="tide-source-plot" role="img" aria-label="Grafik data prakiraan pasut BMKG Semarang, bukan observasi aktual" viewBox="0 0 '+width+' '+height+'">'+guide+
+ '<path d="'+path+'" stroke="#14766c" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+ticks+'</svg>';
+}
+function tidePanel(){
+ if(tideLoadState==="LOADING")return '<div class="tide-loading">Memuat data prakiraan BMKG yang disimpan bersama demo...</div>';
+ if(!tideRecords){
+  return '<div class="tide-fallback"><span class="source-fallback">FALLBACK / SIMULASI VIDEO</span>'+
+   lineChart(VIDEO_CONTEXT.tide.values,440,160,"Kurva pasut sintetis, CSV BMKG tidak termuat")+
+   '<p class="chart-note">File forecast BMKG gagal dimuat. Grafik ini sepenuhnya simulasi. '+e(tideLoadError)+'</p></div>';
+ }
+ const records=selectBmkgWindow(tideRecords,selectedTideWindow),metric=forecastMetrics(records);
+ const options=[["2026-11-18","18 Nov · WIB"],["2026-11-19","19 Nov · WIB"],["all","Seluruh seri · UTC"]].map(([v,label])=>
+  '<button type="button" data-tide-window="'+v+'" class="tide-day'+(selectedTideWindow===v?' is-selected':'')+'" aria-pressed="'+(selectedTideWindow===v?'true':'false')+'">'+e(label)+'</button>').join("");
+ return '<div class="tide-days" role="group" aria-label="Periode pasut">'+options+'</div>'+
+ '<div class="tide-mini-stats">'+
+ '<div><small>Minimum MSL</small><strong>'+metric.minMslM.toFixed(2)+' <small>m</small></strong></div>'+
+ '<div><small>Maksimum MSL</small><strong>+'+metric.maxMslM.toFixed(2)+' <small>m</small></strong></div>'+
+ '<div><small>Titik data</small><strong>'+metric.count+'</strong></div></div>'+
+ tideForecastChart(records)+
+ '<div class="real-source-note"><strong>DATA EKSPOR BMKG / PRAKIRAAN, BUKAN OBSERVASI.</strong> Stasiun Semarang · MSL · interval 10 menit · '+
+ '16–22 November 2026 UTC (16 Nov 07:00 sampai 23 Nov 06:50 WIB). CSV tanpa timezone; UTC diinterpretasikan dari screenshot pengaturan saat unduh. '+
+ '<a href="'+e(BMKG_TIDE_META.sourcePage)+'" target="_blank" rel="noopener noreferrer">Sumber BMKG</a>. Tidak digunakan untuk menyimpulkan rob atau keamanan aset.</div>';
+}
+function cataloguePanel(){
+ const products=PUBLIC_CATALOG.sentinel2.products;
+ return '<section class="panel metadata-panel"><div class="panel-header"><div><span class="panel-kicker">COPERNICUS DATA SPACE · METADATA SAJA</span>'+
+ '<h2>Kandidat citra Sentinel-2 untuk Semarang</h2><p>Pencarian katalog resmi berhasil; belum ada piksel citra yang dianalisis atau dipetakan.</p></div>'+
+ '<span class="status catalogue">KATALOG TERVERIFIKASI</span></div>'+
+ '<div class="catalogue-grid">'+products.map(p=>'<article><small>'+e(p.date)+'</small><strong>S2 L2A · '+e(p.name.includes("S2A")?"Sentinel-2A":"Sentinel-2C")+'</strong>'+
+ '<p>Cloud cover tile: '+p.tileCloudPct.toFixed(2)+'%</p><span class="catalogue-id">ID '+e(p.id.slice(0,12))+'…</span></article>').join('')+'</div>'+
+ '<p class="chart-note">Persentase awan berlaku untuk produk/tile, bukan khusus lokasi aset. No InSAR processing. '+
+ '<a href="https://dataspace.copernicus.eu/browser/" target="_blank" rel="noopener noreferrer">Cari di Copernicus Browser ↗</a></p></section>';
+}
+async function loadPublicForecast(){
+ try{
+  const response=await fetch(BMKG_TIDE_META.sourceCsv,{cache:"no-store"});
+  if(!response.ok)throw new Error("HTTP "+response.status);
+  const records=parseBmkgForecastCsv(await response.text());
+  tideRecords=records;
+  tideLoadState="READY";
+  tideLoadError="";
+ }catch(error){
+  tideRecords=null;
+  tideLoadState="FALLBACK_SIMULATION";
+  tideLoadError=error instanceof Error?error.message:String(error);
+ }
+ render();
+}
+
 function contextScene(){
  return '<div class="scene-head"><div><span class="scene-index">02 / 04 · CONTEXT LAYERS</span><h2>Konteks wilayah. Bukan diagnosis penurunan tanah.</h2>'+
  '<p>Contoh bagaimana elevasi, pasut, rob, dan citra satelit akan dipetakan ke dalam satu review.</p></div>'+
- '<span class="scene-mark mock">SEMUA GRAFIK INI SIMULASI</span></div>'+
+ '<span class="scene-mark mock">'+(tideRecords?"BMKG PRAKIRAAN + SIMULASI":"DATA KONTEKS SIMULASI")+'</span></div>'+
  '<div class="context-grid"><article class="panel context-card">'+
  '<div class="panel-header"><div><span class="panel-kicker">BIG DEMNAS / ELEVASI</span><h2>Profil elevasi contoh</h2></div>'+provenance(SOURCE_STATUS.SYNTHETIC)+'</div>'+
  lineChart(VIDEO_CONTEXT.elevation.profile,440,160,"Ilustrasi profil elevasi, bukan raster BIG")+
  '<p class="chart-note">Nilai contoh ('+e(VIDEO_CONTEXT.elevation.unit)+'). Belum mengunduh atau memotong raster DEMNAS untuk area aset.</p>'+
- '</article><article class="panel context-card"><div class="panel-header"><div><span class="panel-kicker">BMKG / PASANG SURUT</span><h2>Variasi muka air contoh</h2></div>'+
- provenance(SOURCE_STATUS.SYNTHETIC)+'</div>'+
- lineChart(VIDEO_CONTEXT.tide.values,440,160,"Grafik pasut sintetis, bukan pengamatan atau prakiraan BMKG")+
- '<p class="chart-note">Angka dan waktu hipotetis. Belum ada seri pasut resmi beserta datum dan zona waktunya.</p></article></div>'+
+ '</article><article class="panel context-card"><div class="panel-header"><div><span class="panel-kicker">BMKG / SEMARANG</span><h2>Pasut — prakiraan MSL</h2></div>'+
+ provenance(tideRecords?SOURCE_STATUS.FORECAST:SOURCE_STATUS.SYNTHETIC)+'</div>'+
+ tidePanel()+'</article></div>'+
  '<div class="context-strip"><article><span>PEMKOT SEMARANG</span><strong>Layer rob & drainase</strong><small>Preview ilustratif — belum memuat geometri sumber</small></article>'+
- '<article><span>COPERNICUS</span><strong>Sentinel-1 / Sentinel-2</strong><small>Preview ilustratif — InSAR tidak dihitung</small></article>'+
+ '<article><span>COPERNICUS</span><strong>Sentinel-2 catalogue</strong><small>3 produk L2A ditemukan · citra belum diproses · InSAR tidak dihitung</small></article>'+
  '<article><span>BIG SRGI</span><strong>Koordinat harian stasiun</strong><small>Grafik ENU simulasi ada di Scene 01; estimasi vertikal asli belum tersedia</small></article></div>'+
- '<p class="context-disclaimer">'+e(VIDEO_CONTEXT.disclaimer)+'</p>';
+ cataloguePanel()+'<p class="context-disclaimer">'+e(VIDEO_CONTEXT.disclaimer)+'</p>';
 }
 function scheme(){
  return '<svg class="schematic" role="img" aria-label="Schematic fictional coastal facility layout, not a real port map" viewBox="0 0 600 330" preserveAspectRatio="xMidYMid meet">'+
@@ -170,14 +236,16 @@ function decisionScene(){
  '<p>Informasi regional dapat membantu menentukan data apa yang perlu dikumpulkan, tetapi belum cukup untuk menyatakan pergerakan, keamanan, atau prioritas operasional aset.</p></div>'+
  '<div class="brief-list"><div><b>01</b><span>Profil CSEM/CSMG</span><strong>Referensi tersedia</strong></div>'+
  '<div><b>02</b><span>QC RINEX pengguna</span><strong>'+(q?"Diimpor lokal":"Menunggu impor")+'</strong></div>'+
- '<div><b>03</b><span>DEMNAS / BMKG / GIS / Copernicus</span><strong>Mock preview</strong></div>'+
- '<div><b>04</b><span>Koordinat numerik dan pengukuran aset</span><strong>Belum ada</strong></div></div>'+
+ '<div><b>03</b><span>BMKG Semarang · prakiraan pasut MSL</span><strong>'+(tideRecords?'Data sumber tersedia':'Fallback simulasi')+'</strong></div>'+
+ '<div><b>04</b><span>DEMNAS / GIS / citra Sentinel-2</span><strong>Belum ada hasil analisis</strong></div>'+ 
+ '<div><b>05</b><span>Koordinat numerik dan pengukuran aset</span><strong>Belum ada</strong></div></div>'+
  '<div class="brief-next"><strong>Tindakan berikutnya</strong><p>'+e(a.expectedAction)+'. Lengkapi datum, ketidakpastian, geometri resmi, dan persetujuan pihak berwenang.</p></div>'+
  '<div class="print-tools"><button type="button" id="print-demo" class="btn primary">Cetak contoh brief</button>'+
  '<a href="./?page=assessment">Buka Assessment berbasis bukti ↗</a></div>'+
  '</section><aside class="panel trust-panel"><span class="panel-kicker">EVIDENCE GATE</span><h2>Yang sudah diketahui dan yang belum</h2>'+
  '<div><span class="dot green"></span>Identitas dan profil stasiun BIG</div>'+
  '<div><span class="dot '+(q?"green":"amber")+'"></span>QC RINEX ('+(q?"dimuat lokal":"belum diimpor")+')</div>'+
+ '<div><span class="dot '+(tideRecords?'green':'amber')+'"></span>Prakiraan BMKG ('+(tideRecords?'tersedia':'fallback demo')+')</div>'+ 
  '<div><span class="dot amber"></span>Time Series numerik resmi</div><div><span class="dot amber"></span>Geometri/pengukuran aset</div>'+
  '<div><span class="dot amber"></span>Hubungan geodesi stasiun–aset</div>'+
  '<p>Penentuan bahaya, laju penurunan tanah, dan level prioritas inspeksi <b>tidak dihitung</b> dalam mode video ini.</p>'+
@@ -199,6 +267,8 @@ document.addEventListener("click",ev=>{
  if(step){scene=Number(step.dataset.step);render();return;}
  const enuSelect=ev.target.closest("[data-enu-station]");
  if(enuSelect){selectedEnuStation=enuSelect.dataset.enuStation;render();return;}
+ const tideSelect=ev.target.closest("[data-tide-window]");
+ if(tideSelect){selectedTideWindow=tideSelect.dataset.tideWindow;render();return;}
  const select=ev.target.closest("[data-asset]");
  if(select){selectedAsset=select.dataset.asset;render();return;}
  if(ev.target.closest("#next-scene")){scene=Math.min(3,scene+1);render();return;}
@@ -225,3 +295,4 @@ root?.addEventListener("change",async ev=>{
  render();
 });
 render();
+loadPublicForecast();
