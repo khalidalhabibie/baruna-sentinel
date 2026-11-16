@@ -62,6 +62,17 @@
           <p class="field-help">Tinggi permukaan DSM, bukan laju penurunan tanah ataupun kedalaman genangan.</p>
         </div>
 
+        <div class="form-group aoi-chooser">
+          <span class="form-label">01 · Select area to assess</span>
+          <div class="aoi-actions">
+            <button type="button" id="draw-aoi" class="button button-secondary" disabled>Pilih AOI · 2 klik peta</button>
+            <button type="button" id="full-aoi" class="button button-secondary" disabled>Gunakan seluruh AOI</button>
+          </div>
+          <button type="button" id="clear-aoi" class="clear-aoi-button" disabled>Hapus pilihan area</button>
+          <p id="aoi-state" class="field-help" role="status" aria-live="polite">Pilih dua sudut pada peta, atau gunakan seluruh AOI penelitian.</p>
+          <p class="field-help">Perhitungan memakai grid DSM preview yang terkuantisasi, bukan raster analitik resolusi asli.</p>
+        </div>
+
         <div class="form-group">
           <label class="form-label" for="sensor">Satellite collection</label>
           <select id="sensor" class="input-select">
@@ -100,9 +111,46 @@
       </div>
     </section>
 
+    <section class="analysis-section" id="area-analysis" aria-label="AOI analysis and BMKG tide context">
+      <div class="analysis-header">
+        <div><span class="overline">03 / AOI SCREENING</span><h2>Hasil area yang dipilih</h2><p>Statistik elevasi dihitung langsung dari piksel DSM riil yang ditampilkan. Konteks pasang surut BMKG ditampilkan terpisah, tanpa menyamakan datum.</p></div>
+        <span id="area-analysis-status" class="analysis-badge">Belum ada AOI</span>
+      </div>
+      <div class="analysis-columns">
+        <article class="analysis-panel" id="area-profile">
+          <div class="analysis-panel-heading"><span class="overline">AREA ELEVATION</span><strong>Copernicus DEM GLO-30</strong></div>
+          <div id="area-profile-content" class="analysis-placeholder">
+            <strong>Mulai dari pemilihan area</strong>
+            <p>Klik “Pilih AOI” dan tentukan dua sudut pada peta, atau gunakan seluruh cakupan dataset.</p>
+          </div>
+          <div class="analysis-warning">DSM mencakup permukaan laut dan bangunan. Angka ini bukan elevasi tanah hasil survei, kedalaman rob, atau skor bahaya.</div>
+        </article>
+        <article class="analysis-panel tide-panel" id="tide-context">
+          <div class="analysis-panel-heading"><span class="overline">FORECAST CONTEXT</span><strong>BMKG Maritim · Semarang</strong></div>
+          <label class="form-label" for="tide-day">Tanggal prakiraan (WIB)</label>
+          <select id="tide-day" class="input-select" disabled>
+            <option value="2026-11-18">18 Nov 2026 · acara Bhumireka</option>
+            <option value="2026-11-19">19 Nov 2026</option>
+            <option value="2026-11-16">16 Nov 2026 · hari parsial</option>
+            <option value="2026-11-17">17 Nov 2026</option>
+            <option value="2026-11-20">20 Nov 2026</option>
+            <option value="2026-11-21">21 Nov 2026</option>
+            <option value="2026-11-22">22 Nov 2026</option>
+          </select>
+          <div id="tide-result" class="tide-result" role="status" aria-live="polite">Memuat forecast BMKG dari CSV...</div>
+          <div id="tide-chart" class="tide-chart" aria-label="Grafik tinggi pasang surut prakiraan BMKG"></div>
+          <div class="analysis-warning">Prakiraan BMKG dalam meter relatif MSL, bukan pengamatan langsung. Datum DSM Copernicus berbeda/belum direkonsiliasi; tidak dihitung kedalaman banjir.</div>
+        </article>
+      </div>
+      <div class="analysis-footer">
+        <span id="analysis-provenance">Input area bersumber dari interaksi pengguna; seluruh data tetap memiliki provenance sumber.</span>
+        <button type="button" id="jump-evidence" class="button button-tertiary">Lanjut ke Evidence Gate ↓</button>
+      </div>
+    </section>
+
     <section class="evidence-block" id="evidence" aria-label="Evidence readiness and limitations">
       <div class="evidence-header">
-        <div><span class="overline">03 / EVIDENCE GATE</span><h2>Apa yang bisa diputuskan dari data ini?</h2><p>Ketersediaan sumber tidak sama dengan kelayakan kesimpulan. Setiap kapabilitas hanya dibuka jika input dan validasinya cukup.</p></div>
+        <div><span class="overline">04 / EVIDENCE GATE</span><h2>Apa yang bisa diputuskan dari data ini?</h2><p>Ketersediaan sumber tidak sama dengan kelayakan kesimpulan. Setiap kapabilitas hanya dibuka jika input dan validasinya cukup.</p></div>
         <a href="./data/semarang-real-readiness.json" target="_blank" rel="noopener noreferrer" class="plain-link">Lihat source manifest ↗</a>
       </div>
       <div class="gate-grid" id="gate-grid" aria-live="polite">
