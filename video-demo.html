@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#173e40">
+ <meta name="description" content="BARUNA Sentinel — synthetic video storyboard. Fictitious environmental and asset context, not an official measurement.">
+ <title>BARUNA Sentinel — Video Storyboard (SYNTHETIC)</title>
+ <link rel="stylesheet" href="./video-demo.css">
+ <script type="module" src="./src/video-demo.js"></script>
+</head>
+<body>
+ <div class="demo-warning" role="status">SIMULASI VIDEO / DATA KONTEKS & ASET FIKTIF — BUKAN HASIL PENGUKURAN</div>
+ <header class="site-header">
+  <div class="brand"><span class="brand-mark" aria-hidden="true">B</span><div><strong>BARUNA<span> / SENTINEL</span></strong><small>OURDO INDONESIA · VIDEO STORYBOARD</small></div></div>
+  <div class="header-links"><a href="./?page=assessment">Kembali ke Assessment nyata</a><span class="edition">CONCEPT DEMO / V1</span></div>
+ </header>
+ <main class="demo-shell">
+  <section class="hero">
+   <div><span class="eyebrow">FROM SPATIAL EVIDENCE TO ACTIONABLE VERIFICATION</span>
+    <h1>Mulai dari bukti.<br><span>Berakhir pada langkah verifikasi.</span></h1>
+    <p>Alur demonstrasi bagaimana CORS, elevasi, pasut, data spasial, dan informasi aset dapat disatukan — dengan batas jelas antara data nyata dan simulasi.</p>
+   </div>
+   <div class="hero-aside"><b>4</b><span>langkah produk</span><small>Untuk pengambilan video · data lingkungan dan aset masih ilustratif</small></div>
+  </section>
+  <nav class="steps" aria-label="Tahapan video">
+   <button class="step is-active" type="button" data-step="0" aria-current="step"><span>01</span><b>Sumber data</b><small>Provenance</small></button>
+   <button class="step" type="button" data-step="1"><span>02</span><b>Konteks wilayah</b><small>Illustrative layers</small></button>
+   <button class="step" type="button" data-step="2"><span>03</span><b>Sektor contoh</b><small>Fictional assets</small></button>
+   <button class="step" type="button" data-step="3"><span>04</span><b>Verification brief</b><small>Explainable action</small></button>
+  </nav>
+  <section class="scene" id="video-scene" aria-live="polite"></section>
+  <footer class="stage-footer"><div class="foot-legal"><strong>DEMO SAFETY</strong><span>Angka ilustrasi bukan sumber BIG/BMKG/Copernicus. GNSS QC hanya dinilai bila Anda mengimpor JSON lokal.</span></div><div class="stage-controls"><button id="prev-scene" type="button" class="btn secondary" disabled>Sebelumnya</button><button id="next-scene" type="button" class="btn primary">Lanjut: konteks wilayah →</button></div></footer>
+ </main>
+ <footer class="site-footer"><span>BARUNA Sentinel · OURDO INDONESIA</span><span>VIDEO PROTOTYPE · SYNTHETIC DATA · NOT FOR ASSET SAFETY DECISIONS</span></footer>
+</body>
+</html>

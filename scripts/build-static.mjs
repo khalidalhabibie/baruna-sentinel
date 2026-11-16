@@ -3,6 +3,10 @@ import {dirname,join} from "node:path";
 
 const publicAssets=[
   "index.html",
+  "video-demo.html",
+  "video-demo.css",
+  "src/video-fixture.js",
+  "src/video-demo.js",
   "styles.css",
   "project-ui.css",
   "why-sentinel.css",

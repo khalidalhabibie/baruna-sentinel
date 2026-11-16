@@ -68,7 +68,7 @@ function evidenceRegistry(){
  return '<section class="as-evidence-registry" id="as-evidence-registry" aria-label="Inventaris bukti yang tersedia dan yang masih diperlukan">'+
    '<div class="as-registry-head"><div><span class="as-pane-label">SOURCE READINESS / BIG SRGI</span>'+
    '<h2>Data sudah tersedia, data yang masih menunggu</h2>'+
-   '<p>Profil stasiun dan publikasi historis adalah referensi. Hasil QC 2026 hanya muncul setelah Anda memilih file lokal. Tidak ada nilai kosong yang diartikan sebagai 0.</p></div>'+
+   '<p>Profil stasiun dan publikasi historis adalah referensi. Hasil QC 2026 hanya muncul setelah Anda memilih file lokal. Tidak ada nilai kosong yang diartikan sebagai 0.</p><a class="as-registry-video-link" href="./video-demo.html">Buka video storyboard terpisah · SIMULASI ↗</a></div>'+
    '<span class="as-registry-safety">BUKAN PENILAIAN KEAMANAN ASET</span></div>'+
    '<div class="as-registry-stations">'+profiles+'</div>'+
    '<div class="as-registry-qc"><span class="as-registry-step">OBSERVASI 2026 / QC</span>'+qc+
