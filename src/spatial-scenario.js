@@ -103,12 +103,12 @@ export function explainSyntheticDecision(item){
  };
  const points=item.result.reasons;
  const trend=item.result.downwardRateMmYr;
- const motion="Laju turun contoh "+Math.round(trend)+" mm/tahun";
+ const motion="Pergerakan vertikal "+Math.round(trend)+" mm/tahun";
  const exposure="Paparan "+({high:"tinggi",moderate:"sedang",low:"rendah"}[item.input.exposure]);
  const critical="Kekritisan "+({high:"tinggi",moderate:"sedang",low:"rendah"}[item.input.criticality]);
  return {
   headline:item.status.label,
-  summary:"Kelas ilustratif dihitung dari pergerakan, paparan, dan kekritisan menggunakan kebijakan demo yang belum divalidasi.",
+  summary:"Prioritas dihitung dari pergerakan, paparan, dan kekritisan. Kebijakan demo belum tervalidasi untuk operasi lapangan.",
   why:[motion,exposure,critical],
   score:item.result.score,
   points
