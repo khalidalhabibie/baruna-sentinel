@@ -5,9 +5,9 @@ body[data-page] .pw-primary-nav{margin-left:12px;gap:4px;min-height:46px;align-i
 body[data-page] .pw-primary-nav>button{min-height:43px;border-radius:8px;padding:10px 14px;font-size:12px}
 body[data-page] .pw-primary-nav>button[aria-current="page"]{box-shadow:none;background:#eaf5f1;color:#116558;font-weight:800}
 body[data-page] .pw-primary-nav .baruna-nav-more{position:relative;z-index:113}
-body[data-page] .pw-primary-nav .baruna-nav-more>summary{list-style:none;font-size:12px;font-weight:700;cursor:pointer;border-radius:8px;padding:12px 13px;color:#55716b}
-body[data-page] .pw-primary-nav .baruna-nav-more>summary::-webkit-details-marker{display:none}
-body[data-page] .pw-primary-nav .baruna-nav-more>summary:hover{background:#f0f6f3;color:#155e55}
+body[data-page] .pw-primary-nav .baruna-more-trigger{background:transparent;border:0;min-height:43px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;padding:10px 13px;color:#55716b}
+body[data-page] .pw-primary-nav .baruna-more-trigger:hover,body[data-page] .pw-primary-nav .baruna-more-trigger[aria-expanded="true"]{background:#f0f6f3;color:#155e55}
+body[data-page] .pw-primary-nav .baruna-more-menu[hidden]{display:none!important}
 body[data-page] .pw-primary-nav .baruna-more-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:186px;border-radius:12px;padding:7px;background:white;border:1px solid #d5e3de;box-shadow:0 18px 38px rgba(11,44,39,.14);display:flex;flex-direction:column}
 body[data-page] .pw-primary-nav .baruna-more-menu>button{border-radius:7px;min-height:40px;text-align:left;display:block;padding:9px 13px}
 body[data-page] .pw-primary-nav .baruna-more-menu>button[aria-current="page"]{background:#eaf5f1;box-shadow:none}
@@ -43,18 +43,18 @@ body[data-page] button:focus-visible,body[data-page] a:focus-visible,body[data-p
 .bs-mini-workflow span{font-size:11px;line-height:1.6;display:block;color:#708a80;margin-top:6px}
 /* Compact, nonmodal, replayable game-like onboarding */
 .baruna-guide[hidden]{display:none!important}
-.baruna-guide{position:fixed;right:24px;bottom:26px;width:min(370px,calc(100vw - 30px));z-index:380;background:#fff;border:1px solid #d3e7df;border-radius:18px;padding:21px 22px 20px;box-shadow:0 24px 85px rgba(13,49,43,.23);color:#1b413a;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.baruna-guide{position:fixed;right:24px;bottom:26px;width:min(330px,calc(100vw - 30px));z-index:380;background:#fff;border:1px solid #d3e7df;border-radius:16px;padding:17px 18px 16px;box-shadow:0 24px 85px rgba(13,49,43,.23);color:#1b413a;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .baruna-guide-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .baruna-guide-label{font-size:10px;color:#187a6a;font-weight:850;letter-spacing:.12em}
 .baruna-guide-close{border:0;background:#f0f5f3;color:#60877b;border-radius:7px;width:31px;height:31px;cursor:pointer;font-size:22px;line-height:1;display:grid;place-items:center}
-.baruna-guide-progress{display:flex;gap:7px;margin:18px 0 19px}
+.baruna-guide-progress{display:flex;gap:7px;margin:13px 0 13px}
 .baruna-guide-dot{height:5px;flex:1;border-radius:12px;background:#dce9e4;border:0;padding:0;cursor:pointer}
 .baruna-guide-dot.is-current{background:#128572}
 .baruna-guide-dot.is-complete{background:#75bea7}
 .baruna-guide-count{font-size:10px;color:#87988f;font-weight:780;letter-spacing:.1em}
-.baruna-guide-title{font-size:22px;line-height:1.25;letter-spacing:-.035em;color:#183d36;margin:8px 0 10px;font-weight:800}
-.baruna-guide-body{font-size:13px;line-height:1.7;color:#647e74;margin:0;min-height:85px}
-.baruna-guide-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:19px}
+.baruna-guide-title{font-size:19px;line-height:1.28;letter-spacing:-.035em;color:#183d36;margin:8px 0 10px;font-weight:800}
+.baruna-guide-body{font-size:12px;line-height:1.65;color:#647e74;margin:0;min-height:70px}
+.baruna-guide-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:13px}
 .baruna-guide-foot button{border-radius:8px;padding:11px 12px;font-size:11px;font-weight:820;cursor:pointer;border:0}
 .baruna-guide-secondary{color:#728a7f;background:transparent}
 .baruna-guide-primary{color:#fff;background:#146e62;min-width:145px}
