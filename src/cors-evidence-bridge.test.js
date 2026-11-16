@@ -51,7 +51,7 @@ test("same station without CSMG yields missing station; not zero-displacement",(
  const v=inspectLocalStationEvidence(sample([row("csem","2026-11-15",319)]),project,"north-breakwater");
  assert.equal(v.stationCoverageState,"MISSING_STATION");
  assert.equal(v.full30sDayPairs,0);
- assert.deepEqual(v.missingArchiveDates.CSMG,[]);
+ assert.deepEqual(v.missingArchiveDates.CSMG,["2026-11-15"]);
  assert.equal(v.epochCoveragePercent.CSMG,0);
  assert.equal(v.operatorPriorityAllowed,false);
 });
