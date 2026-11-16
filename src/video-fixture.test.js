@@ -7,7 +7,9 @@ test("video mode is isolated and every source declares its provenance",()=>{
  assert.equal(validateVideoSources().length,7);
  assert.deepEqual(VIDEO_SOURCES.filter(x=>x.status===SOURCE_STATUS.LOCAL).map(x=>x.id),["cors"]);
  assert.deepEqual(VIDEO_SOURCES.filter(x=>x.status===SOURCE_STATUS.PENDING).map(x=>x.id),["station_series"]);
- assert.equal(VIDEO_SOURCES.filter(x=>x.status===SOURCE_STATUS.SYNTHETIC).length,5);
+ assert.deepEqual(VIDEO_SOURCES.filter(x=>x.status===SOURCE_STATUS.SYNTHETIC).map(x=>x.id),["demnas","assets"]);
+ assert.deepEqual(VIDEO_SOURCES.filter(x=>x.status===SOURCE_STATUS.FORECAST).map(x=>x.id),["tide"]);
+ assert.deepEqual(VIDEO_SOURCES.filter(x=>x.status===SOURCE_STATUS.CATALOGUE).map(x=>x.id),["drainage","satellite"]);
  assert.ok(VIDEO_SOURCES.every(x=>x.source===null||x.source.startsWith("https://")));
 });
 test("synthetic assets are not real operator geometry or geodetic sites",()=>{

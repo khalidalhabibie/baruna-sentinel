@@ -11,7 +11,9 @@ export const VIDEO_FIXTURE_VERSION="baruna-video-only-v1";
 export const SOURCE_STATUS=Object.freeze({
   SYNTHETIC:"SYNTHETIC_PREVIEW",
   PENDING:"PENDING_REAL_DATA",
-  LOCAL:"LOCAL_USER_IMPORT"
+  LOCAL:"LOCAL_USER_IMPORT",
+  FORECAST:"SOURCE_BACKED_FORECAST",
+  CATALOGUE:"VERIFIED_CATALOGUE_ONLY"
 });
 export const VIDEO_SOURCES=Object.freeze([
   Object.freeze({
@@ -32,19 +34,19 @@ export const VIDEO_SOURCES=Object.freeze([
   }),
   Object.freeze({
     id:"tide",title:"Pasut / muka air",provider:"BMKG Maritim",
-    status:SOURCE_STATUS.SYNTHETIC,
+    status:SOURCE_STATUS.FORECAST,
     source:"https://maritim.bmkg.go.id/cuaca/pasut",
-    next:"Unduh seri untuk stasiun, periode, zona waktu dan datum yang benar",role:"Konteks lingkungan pesisir"
+    next:"Prakiraan 16–22 Nov 2026 dari CSV ekspor pengguna; bukan observasi/risiko rob",role:"Konteks lingkungan pesisir"
   }),
   Object.freeze({
     id:"drainage",title:"Rob & drainase",provider:"Pemkot Semarang",
-    status:SOURCE_STATUS.SYNTHETIC,
+    status:SOURCE_STATUS.CATALOGUE,
     source:"https://dataspasial.semarangkota.go.id/maps2",
     next:"Konfirmasi layer, format, lisensi dan tanggal pemutakhiran",role:"Lapisan konteks, bukan inspeksi aset"
   }),
   Object.freeze({
     id:"satellite",title:"Citra Sentinel-1 / Sentinel-2",provider:"Copernicus",
-    status:SOURCE_STATUS.SYNTHETIC,
+    status:SOURCE_STATUS.CATALOGUE,
     source:"https://dataspace.copernicus.eu/browser/",
     next:"Ambil scene dan jejak pemrosesan: Sentinel-1 SLC untuk InSAR; L2A untuk citra optik",role:"Konteks perubahan permukaan"
   }),
@@ -75,7 +77,7 @@ export const VIDEO_ASSETS=Object.freeze([
 
 export const VIDEO_CONTEXT=Object.freeze({
   provenance:"SYNTHETIC_PREVIEW",
-  disclaimer:"Angka di panel ini merupakan contoh ilustrasi, BUKAN data DEMNAS, BMKG, Copernicus maupun operator pelabuhan.",
+  disclaimer:"Profil elevasi dan sektor aset adalah simulasi. Prakiraan BMKG ditampilkan sebagai data sumber hanya bila CSV lolos validasi; metadata Sentinel-2 bukan citra teranalisis. Tidak ada klaim rob atau risiko aset.",
   elevation:Object.freeze({unit:"m (contoh)",profile:Object.freeze([1.2,1.7,2.1,1.8,2.6,3.2,2.8,3.6,4.1])}),
   tide:Object.freeze({unit:"m (contoh)",hours:Object.freeze(["00","03","06","09","12","15","18","21"]),values:Object.freeze([0.12,0.41,0.68,0.27,-0.16,-0.36,0.07,0.39])}),
   landCover:Object.freeze({label:"Ilustrasi lapisan citra",status:"Belum dihitung dari Sentinel-1/2"}),
