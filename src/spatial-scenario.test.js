@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import {ASSESSMENT_POLICY,assessSyntheticScenario} from "./assessment.js";
-import {SPATIAL_DEMO_META,getSpatialCases,getSpatialCase,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief} from "./spatial-scenario.js";
+import {SPATIAL_DEMO_META,getSpatialCases,getSpatialCase,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,getRankedSpatialCases,getSyntheticScoreBreakdown} from "./spatial-scenario.js";
 
 test("Spatial decision demo mirrors approved fictional assessment engine",()=>{
  const original=assessSyntheticScenario().records;
@@ -80,4 +80,47 @@ test("Video GIS route packages only approved public files and permanent disclaim
  assert.match(script,/assessSyntheticScenario|makeSpatialBrief/);
  assert.doesNotMatch(script,/navigator\.geolocation/);
  assert.doesNotMatch(build,/BIG_CORS_RINEX_20261115/);
+});
+
+test("Only eligible synthetic assets receive defensible demo ranks",()=>{
+ const r=getRankedSpatialCases();
+ assert.equal(r.mode,"SIMULATION_ONLY");
+ assert.equal(r.policyId,ASSESSMENT_POLICY.id);
+ assert.equal(r.eligibleCount,3);
+ assert.equal(r.excludedCount,1);
+ assert.deepEqual(r.eligible.map(x=>x.item.id),["sim-port","sim-road","sim-store"]);
+ assert.deepEqual(r.eligible.map(x=>x.rank),[1,2,3]);
+ assert.deepEqual(r.eligible.map(x=>x.item.result.score),[6,4,1]);
+ assert.equal(r.excluded[0].item.id,"sim-incomplete");
+ assert.equal(r.excluded[0].rank,null);
+ assert.equal(r.excluded[0].item.result.score,null);
+ assert.deepEqual(r.excluded[0].item.result.gateFailures.includes("GEOMETRY"),true);
+ assert.throws(()=>getRankedSpatialCases([{sourceMode:"REAL"}]),TypeError);
+});
+test("Compare uses the exact existing screening-score reasons",()=>{
+ const [a,b,c,d]=getSpatialCases();
+ assert.deepEqual(getSyntheticScoreBreakdown(a),{motion:2,exposure:2,criticality:2,total:6});
+ assert.deepEqual(getSyntheticScoreBreakdown(b),{motion:1,exposure:1,criticality:2,total:4});
+ assert.deepEqual(getSyntheticScoreBreakdown(c),{motion:0,exposure:1,criticality:0,total:1});
+ assert.equal(getSyntheticScoreBreakdown(d),null);
+ assert.throws(()=>getSyntheticScoreBreakdown({sourceMode:"REAL"}),TypeError);
+ const aBrief=makeSpatialBrief(a);
+ const dBrief=makeSpatialBrief(d);
+ assert.match(aBrief,/Peringkat sintetis: 1 dari 3 aset yang lolos Evidence Gate/);
+ assert.match(dBrief,/Peringkat sintetis: TIDAK DIRANKING/);
+ assert.match(dBrief,/SIMULASI \/ DATA FIKTIF/);
+});
+test("Ranking and Compare are present in HTML and not a new standalone scoring model",()=>{
+ const html=readFileSync("spatial-demo.html","utf8");
+ const script=readFileSync("src/spatial-demo.js","utf8");
+ assert.match(html,/id="ranking"/);
+ assert.match(html,/id="ranking-rows"/);
+ assert.match(html,/id="compare-content"/);
+ assert.match(html,/href="#ranking"/);
+ assert.match(html,/A vs D · Kualitas bukti/);
+ assert.match(script,/getRankedSpatialCases\(cases\)/);
+ assert.match(script,/getSyntheticScoreBreakdown\(item\)/);
+ assert.match(script,/data-compare-id/);
+ assert.match(script,/data-focus-asset/);
+ assert.doesNotMatch(script,/ASSESSMENT_POLICY\s*=|highScore\s*=/);
 });

@@ -1,6 +1,9 @@
-import {getSpatialCases,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,SPATIAL_DEMO_META} from "./spatial-scenario.js";
+import {getSpatialCases,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,SPATIAL_DEMO_META,getRankedSpatialCases,getSyntheticScoreBreakdown} from "./spatial-scenario.js";
 
 const cases=getSpatialCases();
+const ranking=getRankedSpatialCases(cases);
+const compareIds=new Set(["sim-port","sim-road"]);
+const comparisonMax=3;
 const $=id=>document.getElementById(id);
 const escapeHtml=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 let selectedId=cases[0]?.id||null;
@@ -110,6 +113,136 @@ function updateMapSelection(){
   }
  }
 }
+
+/** Shared map, ranking and comparison selection. No second scoring policy. */
+const exposureText=Object.freeze({high:"Tinggi",moderate:"Sedang",low:"Rendah"});
+function caseRank(item){
+ const r=ranking.eligible.find(row=>row.item.id===item.id);
+ return r?r.rank:null;
+}
+function formatRate(item,{includeInvalid=false}={}){
+ const rate=item.input.verticalRateMmYr;
+ if(item.result.screeningTier==="BLOCKED"&&!includeInvalid)return "—";
+ const value=(rate<0?"−":rate>0?"+":"")+Math.abs(rate)+" mm/th";
+ return item.result.screeningTier==="BLOCKED"?value+" (input tidak layak)":value;
+}
+function rankRow(item,rank){
+ const blocked=rank===null;
+ const selected=item.id===selectedId;
+ const checked=compareIds.has(item.id);
+ const colStatus=blocked?"Belum cukup":"Lolos";
+ return '<tr class="rank-table-row'+(blocked?" is-unranked":"")+(selected?" is-selected":"")+'" data-rank-row="'+escapeHtml(item.id)+'">'+
+  '<td class="rank-index">'+(blocked?'—':String(rank).padStart(2,"0"))+'</td>'+
+  '<td class="rank-asset-cell"><button type="button" class="rank-focus" data-focus-asset="'+escapeHtml(item.id)+'">'+escapeHtml(item.label)+' · '+escapeHtml(item.name)+' <span aria-hidden="true">↗</span></button>'+
+  '<small>'+escapeHtml(item.type)+' · contoh</small></td>'+
+  '<td class="rank-rate">'+escapeHtml(formatRate(item))+'</td>'+
+  '<td><span class="rank-gate'+(blocked?" is-blocked":"")+'">'+colStatus+'</span></td>'+
+  '<td class="numeric rank-score">'+(blocked?'—':escapeHtml(item.result.score))+'</td>'+
+  '<td><span class="rank-outcome" style="--status:'+escapeHtml(item.status.color)+'">'+escapeHtml(blocked?"Tidak diranking":item.status.label)+'</span></td>'+
+  '<td><label class="rank-compare-check"><input type="checkbox" data-compare-id="'+escapeHtml(item.id)+'" '+(checked?"checked":"")+' aria-label="Bandingkan '+escapeHtml(item.label)+'"><span>Pilih</span></label></td></tr>';
+}
+function renderRanking(){
+ const rows=[
+  ...ranking.eligible.map(({item,rank})=>rankRow(item,rank)),
+  ...ranking.excluded.map(({item})=>rankRow(item,null))
+ ];
+ $("ranking-rows").innerHTML=rows.join("");
+ $("ranking-summary").textContent=ranking.eligibleCount+" layak diranking · "+ranking.excludedCount+" perlu data";
+}
+function compareMetric(label,values,{kind=""}={}){
+ return '<tr class="'+kind+'"><th scope="row">'+escapeHtml(label)+'</th>'+
+  values.map(value=>'<td>'+value+'</td>').join("")+'</tr>';
+}
+function renderCompare(){
+ const selected=cases.filter(item=>compareIds.has(item.id));
+ const count=$("compare-selection-count");
+ count.textContent=selected.length+" dari "+comparisonMax+" aset dipilih";
+ for(const button of document.querySelectorAll("[data-compare-preset]")){
+  const preset=button.dataset.comparePreset;
+  const ids=preset==="blocked"?["sim-port","sim-incomplete"]:["sim-port","sim-road"];
+  button.setAttribute("aria-pressed",String(ids.length===selected.length&&ids.every(id=>compareIds.has(id))));
+ }
+ const area=$("compare-content");
+ if(selected.length<2){
+  area.innerHTML='<p class="compare-empty">Pilih minimal dua aset melalui kolom Compare untuk melihat perbedaannya.</p>';
+  return;
+ }
+ const cell=(item,kind)=>{
+  const blocked=item.result.screeningTier==="BLOCKED";
+  const breakdown=getSyntheticScoreBreakdown(item);
+  if(kind==="status")return '<strong class="compare-decision" style="--status:'+escapeHtml(item.status.color)+'">'+escapeHtml(item.status.label)+'</strong>';
+  if(kind==="eligible")return blocked?'<span class="compare-missing">Tidak layak diranking</span>':'<span class="compare-ok">Lolos Evidence Gate</span>';
+  if(kind==="rank")return blocked?'<span class="compare-missing">— (tidak diranking)</span>':String(caseRank(item))+" dari "+ranking.eligibleCount;
+  if(kind==="score")return blocked?'<span class="compare-missing">—</span>':String(breakdown.total)+" poin";
+  if(kind==="rate")return escapeHtml(formatRate(item,{includeInvalid:true}));
+  if(kind==="continuity")return escapeHtml(String(item.input.continuityPct))+"%";
+  if(kind==="uncertainty")return escapeHtml(String(item.input.slopeUncertaintyMmYr))+" mm/th";
+  if(kind==="period")return escapeHtml(String(item.input.spanYears).replace(".",","))+" tahun";
+  if(kind==="exposure")return escapeHtml(exposureText[item.input.exposure]||"Tidak ada");
+  if(kind==="criticality")return escapeHtml(exposureText[item.input.criticality]||"Tidak ada");
+  if(kind==="breakdown")return breakdown?
+    '<span class="compare-points">'+breakdown.motion+' gerakan + '+breakdown.exposure+' paparan + '+breakdown.criticality+' kekritisan</span>':
+    '<span class="compare-missing">Tidak dihitung karena Evidence Gate gagal</span>';
+  if(kind==="gate")return blocked?
+    '<span class="compare-missing">'+escapeHtml(item.result.gateFailures.length)+" alasan: "+item.result.gateFailures.map(code=>escapeHtml(code)).join(", ")+'</span>':
+    '<span class="compare-ok">Semua syarat contoh terpenuhi</span>';
+  if(kind==="next")return escapeHtml(item.status.next);
+  return "—";
+ };
+ const metricRows=[
+  ["Evidence Gate","eligible","is-gate"],
+  ["Hasil screening","status","is-status"],
+  ["Peringkat demo","rank",""],
+  ["Skor kebijakan","score",""],
+  ["Rincian skor","breakdown",""],
+  ["Laju vertikal INPUT","rate",""],
+  ["Kontinuitas INPUT","continuity",""],
+  ["Ketidakpastian INPUT","uncertainty",""],
+  ["Rentang INPUT","period",""],
+  ["Paparan","exposure",""],
+  ["Kekritisan","criticality",""],
+  ["Alasan gate","gate",""],
+  ["Tindakan selanjutnya","next","is-next"]
+ ];
+ const header='<thead><tr><th scope="col">Indikator · semua simulasi</th>'+
+  selected.map(item=>'<th scope="col"><span class="compare-column-code">'+escapeHtml(item.label)+'</span><strong>'+escapeHtml(item.name)+'</strong></th>').join("")+
+  '</tr></thead>';
+ const rows=metricRows.map(([name,key,kind])=>compareMetric(name,selected.map(item=>cell(item,key)),{kind})).join("");
+ area.innerHTML='<table class="compare-table">'+header+'<tbody>'+rows+'</tbody></table>'+
+  '<p class="compare-caution">Pergerakan dan skor merupakan input serta keluaran <strong>simulasi</strong>. Nilai INPUT aset yang gagal Evidence Gate tidak boleh ditafsirkan sebagai tren tervalidasi.</p>';
+}
+function setComparePreset(ids){
+ compareIds.clear();ids.forEach(id=>compareIds.add(id));
+ renderRanking();renderCompare();
+}
+function onRankingInteraction(event){
+ const focus=event.target.closest("[data-focus-asset]");
+ if(focus){
+  select(focus.dataset.focusAsset,{pan:true});
+  document.querySelector(".workbench")?.scrollIntoView({behavior:"smooth",block:"start"});
+  return;
+ }
+ const preset=event.target.closest("[data-compare-preset]");
+ if(preset){
+  setComparePreset(preset.dataset.comparePreset==="blocked"?
+    ["sim-port","sim-incomplete"]:["sim-port","sim-road"]);
+ }
+}
+function onCompareCheckbox(event){
+ const el=event.target.closest("[data-compare-id]");
+ if(!el)return;
+ const id=el.dataset.compareId;
+ if(!cases.some(item=>item.id===id))return;
+ if(el.checked&&compareIds.size>=comparisonMax){
+  el.checked=false;
+  $("compare-selection-count").textContent="Maksimal "+comparisonMax+" aset dapat dibandingkan sekaligus.";
+  return;
+ }
+ if(el.checked)compareIds.add(id);
+ else compareIds.delete(id);
+ renderRanking();renderCompare();
+}
+
 function numberFmt(n){return Number(n).toLocaleString("id-ID",{maximumFractionDigits:0})}
 function svgChart(item){
  const data=makeSyntheticAssetSeries(item);
@@ -173,6 +306,7 @@ function select(id,{pan=false}={}){
  selectedId=id;
  renderAssetList();
  renderDecision(current());
+ renderRanking();
  updateMapSelection();
  if(pan && map && polygonById.has(id)){
   const bounds=polygonById.get(id).getBounds();
@@ -183,6 +317,7 @@ function select(id,{pan=false}={}){
 }
 function renderBrief(){
  const item=current(),info=explainSyntheticDecision(item);
+ const rank=caseRank(item);
  const why=info.why.map(x=>'<li>'+escapeHtml(x)+'</li>').join("");
  const down=item.result.screeningTier==="BLOCKED"?"Tidak dapat ditetapkan":item.input.verticalRateMmYr+" mm/tahun";
  $("brief-title").textContent="Verification Brief · "+item.label;
@@ -191,7 +326,8 @@ function renderBrief(){
  '<div class="brief-status">'+escapeHtml(item.status.label)+' · hasil simulasi, bukan keputusan lapangan</div>'+
  '<div class="brief-facts"><div><span>Sumber</span><strong>100% sintetis / video</strong></div><div><span>Laju vertikal input</span><strong>'+escapeHtml(down)+'</strong></div>'+
  '<div><span>Kontinuitas contoh</span><strong>'+escapeHtml(item.input.continuityPct)+'%</strong></div>'+
- '<div><span>Aturan screening</span><strong>'+escapeHtml(SPATIAL_DEMO_META.policyId)+'</strong></div></div>'+
+ '<div><span>Aturan screening</span><strong>'+escapeHtml(SPATIAL_DEMO_META.policyId)+'</strong></div>'+ 
+ '<div><span>Peringkat sintetis</span><strong>'+(rank===null?'Tidak diranking':(rank+' dari '+ranking.eligibleCount))+'</strong></div></div>'+
  '<h4>Alasan keputusan</h4><ul>'+why+'</ul>'+
  '<h4>Langkah berikutnya</h4><p>'+escapeHtml(item.status.next)+'</p>'+
  '<h4>Sebelum dipakai secara operasional</h4>'+
@@ -228,6 +364,8 @@ async function copyBrief(){
  }
 }
 function wireUI(){
+ $("ranking").addEventListener("click",onRankingInteraction);
+ $("ranking").addEventListener("change",onCompareCheckbox);
  $("asset-list").addEventListener("click",event=>{
   const button=event.target.closest("[data-asset-id]");
   if(button)select(button.dataset.assetId,{pan:true});
@@ -254,6 +392,8 @@ function start(){
  if(!cases.length)throw new Error("Synthetic scenario contract unavailable");
  renderAssetList();
  renderDecision(current());
+ renderRanking();
+ renderCompare();
  wireUI();
  initMap();
  document.body.dataset.scenario=SPATIAL_DEMO_META.mode;

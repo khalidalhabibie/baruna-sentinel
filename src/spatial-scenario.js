@@ -128,6 +128,7 @@ export function makeSpatialBrief(item,{createdAt="2026-11-16"}={}){
  "Lokasi: Pesisir Semarang (skema ilustratif; koordinat tidak mewakili aset nyata)",
  "Aset ilustratif: "+item.label+" — "+item.name,
  "Kelas screening contoh: "+item.status.label+" ("+item.result.screeningTier+")",
+ "Peringkat sintetis: "+(()=>{const r=getRankedSpatialCases();const n=r.eligible.find(x=>x.item.id===item.id);return n?n.rank+" dari "+r.eligibleCount+" aset yang lolos Evidence Gate":"TIDAK DIRANKING (gagal Evidence Gate)";})(),
  "Laju vertikal input: "+rates,
  "Kelanjutan: "+item.status.next,
  "",
@@ -146,4 +147,47 @@ export function makeSpatialBrief(item,{createdAt="2026-11-16"}={}){
  "- Kriteria prioritas dan criticality yang disetujui operator",
  "- Review geodesist / asset engineer sebelum keputusan nyata"
  ].join("\n");
+}
+
+
+/**
+ * Ranking is ONLY meaningful for synthetic examples that pass all evidence
+ * gates. BLOCKED items are segregated rather than assigned a misleading
+ * bottom rank (or a score of zero). Equal scores share the same rank.
+ */
+export function getRankedSpatialCases(items=getSpatialCases()){
+ if(!Array.isArray(items)||items.some(item=>item?.sourceMode!=="SYNTHETIC"))
+  throw new TypeError("Ranking accepts only explicitly synthetic cases");
+ const eligible=items.filter(item=>item.result.screeningTier!=="BLOCKED"&&
+   item.result.gateFailures?.length===0&&Number.isFinite(item.result.score));
+ const excluded=items.filter(item=>!eligible.includes(item));
+ eligible.sort((a,b)=>b.result.score-a.result.score||a.id.localeCompare(b.id));
+ const ranked=eligible.map((item,i)=>Object.freeze({
+  item,rank:i&&item.result.score===eligible[i-1].result.score?
+    eligible.slice(0,i).findIndex(x=>x.result.score===item.result.score)+1:i+1
+ }));
+ return Object.freeze({
+  eligible:Object.freeze(ranked),
+  excluded:Object.freeze(excluded.map(item=>Object.freeze({item,rank:null}))),
+  eligibleCount:ranked.length,
+  excludedCount:excluded.length,
+  mode:"SIMULATION_ONLY",
+  policyId:ASSESSMENT_POLICY.id
+ });
+}
+
+/** Reuse the existing assessment calculation; do not invent a second score. */
+export function getSyntheticScoreBreakdown(item){
+ if(!item||item.sourceMode!=="SYNTHETIC")throw new TypeError("Synthetic case expected");
+ if(item.result.screeningTier==="BLOCKED"||!Number.isFinite(item.result.score))return null;
+ const reasons=item.result.reasons;
+ if(!Array.isArray(reasons)||reasons.length!==3)throw new Error("Invalid assessment reason structure");
+ const points=reasons.map(reason=>{
+  const m=reason.match(/_(\d+)_POINTS$/);
+  if(!m)throw new Error("Score rationale is unavailable");
+  return Number(m[1]);
+ });
+ const [motion,exposure,criticality]=points;
+ if(motion+exposure+criticality!==item.result.score)throw new Error("Score mismatch");
+ return Object.freeze({motion,exposure,criticality,total:item.result.score});
 }
