@@ -1,4 +1,4 @@
-import {getSpatialCases,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,SPATIAL_DEMO_META,getRankedSpatialCases,getSyntheticScoreBreakdown} from "./spatial-scenario.js";
+import {getSpatialCases,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,SPATIAL_DEMO_META,getRankedSpatialCases,getSyntheticScoreBreakdown,GATE_LABELS} from "./spatial-scenario.js";
 
 const cases=getSpatialCases();
 const ranking=getRankedSpatialCases(cases);
@@ -123,7 +123,7 @@ function caseRank(item){
 function formatRate(item,{includeInvalid=false}={}){
  const rate=item.input.verticalRateMmYr;
  if(item.result.screeningTier==="BLOCKED"&&!includeInvalid)return "—";
- const value=(rate<0?"−":rate>0?"+":"")+Math.abs(rate)+" mm/th";
+ const value=(rate<0?"−":rate>0?"+":"")+Math.abs(rate)+" mm/tahun";
  return item.result.screeningTier==="BLOCKED"?value+" (input tidak layak)":value;
 }
 function rankRow(item,rank){
@@ -171,7 +171,7 @@ function renderCompare(){
   const blocked=item.result.screeningTier==="BLOCKED";
   const breakdown=getSyntheticScoreBreakdown(item);
   if(kind==="status")return '<strong class="compare-decision" style="--status:'+escapeHtml(item.status.color)+'">'+escapeHtml(item.status.label)+'</strong>';
-  if(kind==="eligible")return blocked?'<span class="compare-missing">Tidak layak diranking</span>':'<span class="compare-ok">Lolos Evidence Gate</span>';
+  if(kind==="eligible")return blocked?'<span class="compare-missing">Tidak layak diranking — data belum cukup</span>':'<span class="compare-ok">Bukti memenuhi syarat</span>';
   if(kind==="rank")return blocked?'<span class="compare-missing">— (tidak diranking)</span>':String(caseRank(item))+" dari "+ranking.eligibleCount;
   if(kind==="score")return blocked?'<span class="compare-missing">—</span>':String(breakdown.total)+" poin";
   if(kind==="rate")return escapeHtml(formatRate(item,{includeInvalid:true}));
@@ -182,26 +182,26 @@ function renderCompare(){
   if(kind==="criticality")return escapeHtml(exposureText[item.input.criticality]||"Tidak ada");
   if(kind==="breakdown")return breakdown?
     '<span class="compare-points">'+breakdown.motion+' gerakan + '+breakdown.exposure+' paparan + '+breakdown.criticality+' kekritisan</span>':
-    '<span class="compare-missing">Tidak dihitung karena Evidence Gate gagal</span>';
+    '<span class="compare-missing">Tidak dihitung karena bukti belum cukup</span>';
   if(kind==="gate")return blocked?
-    '<span class="compare-missing">'+escapeHtml(item.result.gateFailures.length)+" alasan: "+item.result.gateFailures.map(code=>escapeHtml(code)).join(", ")+'</span>':
+    '<ul class="compare-failure-list">'+item.result.gateFailures.map(code=>'<li>'+escapeHtml(GATE_LABELS[code]||code)+'</li>').join("")+'</ul>':
     '<span class="compare-ok">Seluruh persyaratan terpenuhi</span>';
   if(kind==="next")return escapeHtml(item.status.next);
   return "—";
  };
  const metricRows=[
-  ["Evidence Gate","eligible","is-gate"],
-  ["Hasil screening","status","is-status"],
+  ["Kualitas bukti","eligible","is-gate"],
+  ["Hasil prioritas","status","is-status"],
   ["Peringkat","rank",""],
-  ["Skor kebijakan","score",""],
-  ["Rincian skor","breakdown",""],
-  ["Laju vertikal INPUT","rate",""],
-  ["Kontinuitas INPUT","continuity",""],
-  ["Ketidakpastian INPUT","uncertainty",""],
-  ["Rentang INPUT","period",""],
+  ["Skor prioritas","score",""],
+  ["Faktor pembentuk skor","breakdown",""],
+  ["Laju vertikal (input)","rate",""],
+  ["Kontinuitas data","continuity",""],
+  ["Ketidakpastian laju","uncertainty",""],
+  ["Lama pengamatan","period",""],
   ["Paparan","exposure",""],
-  ["Kekritisan","criticality",""],
-  ["Alasan gate","gate",""],
+  ["Pentingnya fungsi aset","criticality",""],
+  ["Kondisi kualitas bukti","gate",""],
   ["Tindakan selanjutnya","next","is-next"]
  ];
  const header='<thead><tr><th scope="col">Indikator</th>'+
@@ -267,7 +267,7 @@ function svgChart(item){
  const first=data[0].date.slice(0,4),last=data.at(-1).date.slice(0,4);
  const endX=x(data.length-1),endY=y(data.at(-1).upMm);
  const safeColor=statusColor(item);
- return '<svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik pergerakan sintetis dari '+escapeHtml(first)+' hingga '+escapeHtml(last)+'">'+
+ return '<svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik perpindahan vertikal relatif (mm) dari '+escapeHtml(first)+' hingga '+escapeHtml(last)+'">'+
   '<defs><linearGradient id="spatial-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="'+safeColor+'" stop-opacity=".18"/><stop offset="100%" stop-color="'+safeColor+'" stop-opacity="0"/></linearGradient></defs>'+
   lines+baselineLine+
   '<path d="'+path+' L '+endX.toFixed(1)+','+(height-margin.bottom)+' L '+margin.left+','+(height-margin.bottom)+' Z" fill="url(#spatial-fill)" />'+
@@ -289,13 +289,13 @@ function renderDecision(item){
  $("decision-result").style.setProperty("--tier-color",statusColor(item));
  $("tier-description").textContent=explanation.summary;
  $("rate-value").innerHTML=blocked?'— <small>tidak valid</small>':
-  escapeHtml("−"+numberFmt(Math.abs(item.input.verticalRateMmYr)))+' <small>mm/th</small>';
+  escapeHtml("−"+numberFmt(Math.abs(item.input.verticalRateMmYr)))+' <small>mm/tahun</small>';
  $("continuity-value").textContent=numberFmt(item.input.continuityPct)+"%";
  $("movement-chart").innerHTML=svgChart(item);
  $("movement-chart").setAttribute("aria-label",blocked?
-  "Tidak ada tren tervalidasi karena Evidence Gate gagal":
-  "Grafik pergerakan "+item.name+" pada dataset demonstrasi");
- $("reason-score").textContent=blocked?"Evidence Gate: gagal":"Skor: "+item.result.score;
+  "Tidak ada tren tervalidasi karena bukti belum cukup":
+  "Grafik perpindahan vertikal "+item.name+" relatif terhadap awal periode, satuan milimeter, data demonstrasi");
+ $("reason-score").textContent=blocked?"Bukti belum layak":"Skor: "+item.result.score;
  $("reason-list").innerHTML=explanation.why.map(value=>
   '<div class="reason-line'+(blocked?' missing':'')+'">'+escapeHtml(value)+'</div>').join("");
  $("next-action").textContent=item.status.next;
