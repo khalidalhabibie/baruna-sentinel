@@ -4,6 +4,10 @@ import {dirname,join} from "node:path";
 const publicAssets=[
   "index.html",
   "video-demo.html",
+  "spatial-demo.html",
+  "spatial-demo.css",
+  "src/spatial-demo.js",
+  "src/spatial-scenario.js",
   "video-demo.css",
   "src/video-fixture.js",
   "src/synthetic-gnss-series.js",
