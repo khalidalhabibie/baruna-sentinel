@@ -84,7 +84,7 @@ try{
  await page.screenshot({path:"reports/baruna-spatial-desktop-compare-blocked.png",fullPage:false});
  await page.locator('[data-compare-id="sim-store"]').check();
  assert.match(await page.locator("#compare-selection-count").innerText(),/3 dari 3 aset dipilih/);
- await page.locator('[data-compare-id="sim-road"]').check();
+ await page.locator('[data-compare-id="sim-road"]').click();
  assert.equal(await page.locator('[data-compare-id="sim-road"]').isChecked(),false,"cannot compare more than 3");
  await page.locator('[data-compare-preset="normal"]').click();
  assert.match(await page.locator("#compare-content").innerText(),/Jalan pesisir/);
