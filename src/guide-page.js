@@ -39,7 +39,7 @@ function render(){
  '<button type="button" class="bg-next" data-pw-page="assessment">Coba di workspace →</button>')+
  '</div></div><div class="bg-guide-visual">'+visual(step)+'</div></section></div>'+
  '<div class="bg-guide-foot"><span>Mode panduan · tidak mengubah data</span>'+
- '<button type="button" data-pw-page="why">Kembali ke workspace ↗</button></div></div>';
+ '<button type="button" data-pw-page="why">Kembali ke area ↗</button></div></div>';
 }
 root?.addEventListener("click",event=>{
  const n=event.target.closest("[data-bg-step]");
