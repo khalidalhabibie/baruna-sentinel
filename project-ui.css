@@ -911,3 +911,7 @@ body[data-page="assessment"] .pw-page[data-pw-screen="assessment"]{display:block
 @media print{
  .as-evidence-registry{display:none!important}
 }
+
+/* Video concept route is separate from the real evidence review. */
+.as-registry-video-link{display:inline-flex;align-items:center;max-width:100%;margin-top:12px;padding:9px 12px;border:1px solid #cbe1d8;border-radius:5px;color:#1b7165;background:#f2f8f6;font-size:11px;font-weight:750;text-decoration:none;line-height:1.6}
+.as-registry-video-link:hover{background:#e5f3ed;text-decoration:underline}
