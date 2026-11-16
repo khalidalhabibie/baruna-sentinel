@@ -4,14 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#0c2030">
-  <meta name="description" content="BARUNA Sentinel — dari bukti Multi-GNSS menjadi keputusan verifikasi infrastruktur pesisir yang dapat ditelusuri.">
+  <meta name="description" content="BARUNA Sentinel — dari bukti multi-GNSS dan catatan historis menuju verifikasi infrastruktur pesisir yang dapat dipertanggungjawabkan.">
   <title>BARUNA Sentinel | Bhumireka 2026</title>
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./project-ui.css">
   <link rel="stylesheet" href="./why-sentinel.css">
+  <link rel="stylesheet" href="./product-experience.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script defer src="./src/navigation.js"></script>
+  <script defer src="./src/product-onboarding.js"></script>
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/project-workspace.js"></script>
   <script type="module" src="./src/assessment-ui.js"></script>
@@ -25,14 +27,18 @@
         <span class="ourdo-wordmark"><strong>OURDO</strong><small>INDONESIA</small></span>
       </a>
       <span class="ourdo-product-name">BARUNA <strong>SENTINEL</strong> <small>PROTOTIPE RGPD 2026</small></span>
-      <nav class="workspace-switch pw-primary-nav" aria-label="Workspace pages">
-        <button type="button" data-pw-page="why" aria-current="page">Mengapa</button>
-        <button type="button" data-pw-page="projects">Proyek</button>
-        <button type="button" data-pw-page="overview">Ringkasan</button>
-        <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false" aria-label="Buka detail proyek">Detail</button>
-        <button type="button" data-pw-page="assessment">Penilaian</button>
-        <button type="button" data-pw-page="compare">Bandingkan</button>
-        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false" aria-label="Buka Data GNSS">Data GNSS</button>
+      <nav class="workspace-switch pw-primary-nav" aria-label="Navigasi produk BARUNA">
+        <button type="button" data-pw-page="why" aria-current="page">Beranda</button>
+        <button type="button" data-pw-page="projects">Studi kasus</button>
+        <button type="button" data-pw-page="assessment">Cek bukti</button>
+        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false" aria-label="Buka sumber data GNSS">Data GNSS</button>
+        <details class="baruna-nav-more"><summary>Eksplorasi lainnya ▾</summary>
+          <div class="baruna-more-menu">
+            <button type="button" data-pw-page="overview">Ringkasan proyek</button>
+            <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false">Detail lokasi</button>
+            <button type="button" data-pw-page="compare">Bandingkan bukti</button>
+          </div>
+        </details>
       </nav>
       <label class="pw-current-project" for="pw-project-switch"><span>WORKSPACE</span>
         <select id="pw-project-switch" aria-label="Selected project">
@@ -41,7 +47,7 @@
           <option value="bako-observations">BAKO / Cibinong</option>
         </select>
       </label>
-      <div class="top-actions"><span class="ourdo-signature">BUKTI → KEPUTUSAN</span></div>
+      <div class="top-actions"><button id="baruna-start-tour" type="button" aria-controls="baruna-guide-panel">◉ Panduan 2 menit</button><span class="ourdo-signature">BUKTI → KEPUTUSAN</span></div>
     </header>
 
     <main id="top">
