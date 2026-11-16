@@ -18,7 +18,7 @@ function assetOption(item){
  const color=statusColor(item);
  return '<button type="button" class="asset-option" data-asset-id="'+escapeHtml(item.id)+'" aria-pressed="'+String(active)+'" style="--status:'+color+'">'+
  '<span class="option-icon">'+escapeHtml(item.mapLabel)+'</span>'+
- '<span class="option-copy"><strong>'+escapeHtml(item.name)+'</strong><small>'+escapeHtml(item.type)+' · sintetis</small>'+
+ '<span class="option-copy"><strong>'+escapeHtml(item.name)+'</strong><small>'+escapeHtml(item.type)+'</small>'+
  '<span class="option-status"><i></i>'+escapeHtml(item.status.short)+'</span></span>'+
  '<span class="option-arrow" aria-hidden="true">›</span></button>';
 }
@@ -62,7 +62,7 @@ function initMap(){
    interactive:true
   });
   layer.addTo(map);
-  layer.bindTooltip(item.label+" · "+item.name+" (SIMULASI)",{direction:"top",sticky:true});
+  layer.bindTooltip(item.label+" · "+item.name+" (demo)",{direction:"top",sticky:true});
   layer.on("click",()=>select(item.id,{pan:true}));
   polygonById.set(item.id,layer);
   const centroid=layer.getBounds().getCenter();
@@ -71,7 +71,7 @@ function initMap(){
    html:'<span style="color:'+statusColor(item)+'">'+escapeHtml(item.mapLabel)+'</span>',
    iconSize:[24,24],iconAnchor:[12,12]
   });
-  const marker=window.L.marker(centroid,{icon,keyboard:true,alt:item.label+" "+item.name+" simulasi"}).addTo(map);
+  const marker=window.L.marker(centroid,{icon,keyboard:true,alt:item.label+" "+item.name+" contoh"}).addTo(map);
   marker.on("click",()=>select(item.id,{pan:true}));
   markerById.set(item.id,marker);
  }
@@ -134,7 +134,7 @@ function rankRow(item,rank){
  return '<tr class="rank-table-row'+(blocked?" is-unranked":"")+(selected?" is-selected":"")+'" data-rank-row="'+escapeHtml(item.id)+'">'+
   '<td class="rank-index">'+(blocked?'—':String(rank).padStart(2,"0"))+'</td>'+
   '<td class="rank-asset-cell"><button type="button" class="rank-focus" data-focus-asset="'+escapeHtml(item.id)+'">'+escapeHtml(item.label)+' · '+escapeHtml(item.name)+' <span aria-hidden="true">↗</span></button>'+
-  '<small>'+escapeHtml(item.type)+' · contoh</small></td>'+
+  '<small>'+escapeHtml(item.type)+'</small></td>'+
   '<td class="rank-rate">'+escapeHtml(formatRate(item))+'</td>'+
   '<td><span class="rank-gate'+(blocked?" is-blocked":"")+'">'+colStatus+'</span></td>'+
   '<td class="numeric rank-score">'+(blocked?'—':escapeHtml(item.result.score))+'</td>'+
@@ -185,14 +185,14 @@ function renderCompare(){
     '<span class="compare-missing">Tidak dihitung karena Evidence Gate gagal</span>';
   if(kind==="gate")return blocked?
     '<span class="compare-missing">'+escapeHtml(item.result.gateFailures.length)+" alasan: "+item.result.gateFailures.map(code=>escapeHtml(code)).join(", ")+'</span>':
-    '<span class="compare-ok">Semua syarat contoh terpenuhi</span>';
+    '<span class="compare-ok">Seluruh persyaratan terpenuhi</span>';
   if(kind==="next")return escapeHtml(item.status.next);
   return "—";
  };
  const metricRows=[
   ["Evidence Gate","eligible","is-gate"],
   ["Hasil screening","status","is-status"],
-  ["Peringkat demo","rank",""],
+  ["Peringkat","rank",""],
   ["Skor kebijakan","score",""],
   ["Rincian skor","breakdown",""],
   ["Laju vertikal INPUT","rate",""],
@@ -204,12 +204,12 @@ function renderCompare(){
   ["Alasan gate","gate",""],
   ["Tindakan selanjutnya","next","is-next"]
  ];
- const header='<thead><tr><th scope="col">Indikator · semua simulasi</th>'+
+ const header='<thead><tr><th scope="col">Indikator</th>'+
   selected.map(item=>'<th scope="col"><span class="compare-column-code">'+escapeHtml(item.label)+'</span><strong>'+escapeHtml(item.name)+'</strong></th>').join("")+
   '</tr></thead>';
  const rows=metricRows.map(([name,key,kind])=>compareMetric(name,selected.map(item=>cell(item,key)),{kind})).join("");
  area.innerHTML='<table class="compare-table">'+header+'<tbody>'+rows+'</tbody></table>'+
-  '<p class="compare-caution">Pergerakan dan skor merupakan input serta keluaran <strong>simulasi</strong>. Nilai INPUT aset yang gagal Evidence Gate tidak boleh ditafsirkan sebagai tren tervalidasi.</p>';
+  '<p class="compare-caution">Nilai pergerakan pada aset yang gagal Evidence Gate tidak boleh dipakai sebagai tren tervalidasi. Seluruh contoh mengikuti dataset Demo Scenario.</p>';
 }
 function setComparePreset(ids){
  compareIds.clear();ids.forEach(id=>compareIds.add(id));
@@ -284,7 +284,7 @@ function renderDecision(item){
  $("selected-index").textContent=String(cases.indexOf(item)+1).padStart(2,"0")+" / "+String(cases.length).padStart(2,"0");
  $("detail-code").textContent=item.label.toUpperCase();
  $("detail-title").textContent=item.name;
- $("detail-type").textContent=item.type+" · seluruh input simulasi";
+ $("detail-type").textContent=item.type;
  $("tier-title").textContent=item.status.label;
  $("decision-result").style.setProperty("--tier-color",statusColor(item));
  $("tier-description").textContent=explanation.summary;
@@ -293,9 +293,9 @@ function renderDecision(item){
  $("continuity-value").textContent=numberFmt(item.input.continuityPct)+"%";
  $("movement-chart").innerHTML=svgChart(item);
  $("movement-chart").setAttribute("aria-label",blocked?
-  "Tidak ada grafik hasil observasi karena bukti contoh gagal validasi":
-  "Grafik contoh pergerakan "+item.name+" yang sepenuhnya sintetis");
- $("reason-score").textContent=blocked?"Evidence Gate: gagal":"Skor contoh: "+item.result.score;
+  "Tidak ada tren tervalidasi karena Evidence Gate gagal":
+  "Grafik pergerakan "+item.name+" pada dataset demonstrasi");
+ $("reason-score").textContent=blocked?"Evidence Gate: gagal":"Skor: "+item.result.score;
  $("reason-list").innerHTML=explanation.why.map(value=>
   '<div class="reason-line'+(blocked?' missing':'')+'">'+escapeHtml(value)+'</div>').join("");
  $("next-action").textContent=item.status.next;
@@ -323,11 +323,11 @@ function renderBrief(){
  $("brief-title").textContent="Verification Brief · "+item.label;
  $("brief-body").innerHTML=
  '<h3>'+escapeHtml(item.name)+'</h3>'+
- '<div class="brief-status">'+escapeHtml(item.status.label)+' · hasil simulasi, bukan keputusan lapangan</div>'+
- '<div class="brief-facts"><div><span>Sumber</span><strong>100% sintetis / video</strong></div><div><span>Laju vertikal input</span><strong>'+escapeHtml(down)+'</strong></div>'+
- '<div><span>Kontinuitas contoh</span><strong>'+escapeHtml(item.input.continuityPct)+'%</strong></div>'+
+ '<div class="brief-status">'+escapeHtml(item.status.label)+' · skenario demonstrasi, bukan keputusan lapangan</div>'+
+ '<div class="brief-facts"><div><span>Sumber</span><strong>Dataset demonstrasi</strong></div><div><span>Laju vertikal input</span><strong>'+escapeHtml(down)+'</strong></div>'+
+ '<div><span>Kontinuitas data</span><strong>'+escapeHtml(item.input.continuityPct)+'%</strong></div>'+
  '<div><span>Aturan screening</span><strong>'+escapeHtml(SPATIAL_DEMO_META.policyId)+'</strong></div>'+ 
- '<div><span>Peringkat sintetis</span><strong>'+(rank===null?'Tidak diranking':(rank+' dari '+ranking.eligibleCount))+'</strong></div></div>'+
+ '<div><span>Peringkat demo</span><strong>'+(rank===null?'Tidak diranking':(rank+' dari '+ranking.eligibleCount))+'</strong></div></div>'+
  '<h4>Alasan keputusan</h4><ul>'+why+'</ul>'+
  '<h4>Langkah berikutnya</h4><p>'+escapeHtml(item.status.next)+'</p>'+
  '<h4>Sebelum dipakai secara operasional</h4>'+
@@ -345,7 +345,7 @@ function downloadBrief(){
  const url=URL.createObjectURL(blob);
  const link=document.createElement("a");
  link.href=url;
- link.download="BARUNA_SIMULASI_"+current().label.replaceAll(" ","_")+"_VERIFICATION_BRIEF.txt";
+ link.download="BARUNA_DEMO_"+current().label.replaceAll(" ","_")+"_VERIFICATION_BRIEF.txt";
  document.body.appendChild(link);link.click();link.remove();
  window.setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
