@@ -66,7 +66,7 @@ function initMap(){
  window.L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{
   maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>'
  }).addTo(map);
- window.L.control.zoom({position:"bottomright"}).addTo(map);
+ window.L.control.zoom({position:"bottomleft"}).addTo(map);
  window.requestAnimationFrame(()=>map?.invalidateSize());
 }
 function selectSector(id){
