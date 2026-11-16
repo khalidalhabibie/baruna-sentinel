@@ -437,3 +437,7 @@ body[data-page] .bg-guide-steps button:focus-visible{
   body[data-page] .topbar .ourdo-brand .ourdo-official-wordmark{width:118px!important;height:33px!important}
   body[data-page] .topbar .ourdo-brand .ourdo-country-label{font-size:7px!important;letter-spacing:.26em!important}
 }
+
+/* Give the guide title a proper editorial top margin below sticky navigation. */
+body[data-page="guide"] .bg-guide-head{padding-top:31px!important}
+@media(max-width:650px){body[data-page="guide"] .bg-guide-head{padding-top:20px!important}}
