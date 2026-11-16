@@ -44,3 +44,31 @@ test("Production static build includes separate guide and focus style",()=>{
  assert.doesNotMatch(build,/src\/product-onboarding\.js/);
  assert.doesNotMatch(build,/BIG_CORS_RINEX_20261115/);
 });
+
+test("Ourdo uses the true official Tail Curve wordmark, not a text imitation",()=>{
+ const html=read("index.html");
+ const svg=read("assets/ourdo-tail-curve-wordmark.svg");
+ const build=read("scripts/build-static.mjs");
+ assert.match(html,/src="\.\/assets\/ourdo-tail-curve-wordmark\.svg"/);
+ assert.match(html,/class="ourdo-official-wordmark"/);
+ assert.match(html,/ourdo-country-label/);
+ assert.doesNotMatch(html,/<span class="ourdo-wordmark">/);
+ assert.match(svg,/viewBox="0 0 620 175"/);
+ assert.match(svg,/stroke="#15263A"/);
+ assert.match(svg,/fill="#F36A36"/);
+ assert.match(svg,/M541 136 C558 144 578 144 596 128/);
+ assert.match(build,/assets\/ourdo-tail-curve-wordmark\.svg/);
+});
+test("Editorial map and guide styling use fewer bounded cards",()=>{
+ const style=read("product-atmosphere.css");
+ const build=read("scripts/build-static.mjs");
+ assert.match(style,/cartographic editorial/);
+ assert.match(style,/--ba-ink:#183047/);
+ assert.match(style,/--ba-ocean:#14798b/);
+ assert.match(style,/\.bf-workspace\{/);
+ assert.match(style,/border:0!important/);
+ assert.match(style,/\.bf-result-pane\{/);
+ assert.match(style,/position:absolute!important/);
+ assert.match(style,/\.bg-guide-stage\{/);
+ assert.match(build,/product-atmosphere\.css/);
+});

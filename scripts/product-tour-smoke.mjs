@@ -23,6 +23,17 @@ try{
  assert.equal(await page.locator(".leaflet-container").count(),1);
  assert.equal(await page.locator(".bf-map-pane .leaflet-marker-icon").count(),0,"no fictional surveyed sector markers");
  assert.equal(await page.locator("#baruna-guide-panel").count(),0,"no first-visit popup");
+ const logo=page.locator(".ourdo-official-wordmark");
+ assert.equal(await logo.count(),1,"genuine official wordmark embedded");
+ assert.equal(await logo.evaluate(e=>e.complete&&e.naturalWidth>0),true,"official local SVG renders");
+ assert.equal(await page.locator(".ourdo-country-label").isVisible(),true);
+ const desktopArt=await page.evaluate(()=>{
+  const w=document.querySelector(".bf-workspace"),r=document.querySelector(".bf-result-pane"),m=document.querySelector(".bf-map-pane");
+  return {workspaceBorder:getComputedStyle(w).borderTopWidth,decisionPosition:getComputedStyle(r).position,mapRadius:getComputedStyle(m).borderTopLeftRadius};
+ });
+ assert.equal(desktopArt.workspaceBorder,"0px","no enclosing card border around workspace");
+ assert.equal(desktopArt.decisionPosition,"absolute","only one floating reading surface on map");
+ assert.ok(parseFloat(desktopArt.mapRadius)>=18,"map uses softened corners");
  await page.screenshot({path:"reports/baruna-focus-home-desktop.png",fullPage:false});
  await page.locator('[data-bf-sector="container-wharf"]').click();
  assert.match(await page.locator("#bf-sector-detail").innerText(),/Container wharf/);
@@ -43,12 +54,23 @@ try{
  assert.match(await page.locator(".bg-guide-visual").innerText(),/Survei terbaru/);
  await page.locator('[data-bg-step="3"]').click();
  assert.match(await page.locator(".bg-guide-visual").innerText(),/DATA INSUFFICIENT/);
+ assert.equal(await page.locator(".bg-guide-stage").evaluate(el=>getComputedStyle(el).borderTopWidth),"0px","guide no longer nests a frame of cards");
+ assert.equal(await page.locator(".bg-guide-visual>div").evaluate(el=>getComputedStyle(el).borderTopWidth),"0px","illustration is not another bordered card");
  await page.screenshot({path:"reports/baruna-focus-guide-desktop.png",fullPage:false});
  await page.locator('.pw-primary-nav>[data-pw-page="why"]').click();
  assert.equal(await page.locator(".bf-workspace").isVisible(),true);
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:"networkidle"});
  await page.locator(".bf-workspace").waitFor({state:"visible"});
+ await page.waitForTimeout(150);
+ const activeSectorVisible=await page.evaluate(()=>{
+  const list=document.querySelector(".bf-sector-list");
+  const item=list?.querySelector('.bf-sector[aria-pressed="true"]');
+  if(!item)return false;
+  const a=item.getBoundingClientRect(),b=list.getBoundingClientRect();
+  return a.left>=b.left-8&&a.right<=b.right+8;
+ });
+ assert.equal(activeSectorVisible,true,"selected West breakwater is visible without swiping on first mobile load");
  const sizes=await page.evaluate(()=>{
   const n=document.querySelector(".pw-primary-nav");
   const items=[...n.querySelectorAll(":scope > button, :scope > .baruna-nav-more > button")];
@@ -64,6 +86,8 @@ try{
  assert.ok(sectorMetrics.viewHeight<115,"sector navigation does not swallow the viewport");
  assert.ok(sectorMetrics.rows.every(x=>x.height<110),"all case rows remain compact");
  assert.ok(sectorMetrics.scrollWidth>sectorMetrics.clientWidth,"six sectors can be reached by swiping");
+ console.log("NAV_DEBUG",JSON.stringify(sizes));
+ await page.screenshot({path:"reports/baruna-focus-home-mobile.png",fullPage:false});
  assert.ok(sizes.rects.every((r,i)=>r.width>=45&&(i===0||r.left>=sizes.rects[i-1].right-1)),"nav items nonoverlap");
  assert.ok(sizes.rects.at(-1).right<=sizes.width+3,"advanced navigation visible");
  await page.screenshot({path:"reports/baruna-focus-home-mobile.png",fullPage:false});

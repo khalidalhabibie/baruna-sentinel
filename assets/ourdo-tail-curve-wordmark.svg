@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 175" role="img" aria-label="OURDO Indonesia Tail Curve wordmark">
+  <title>OURDO Indonesia — Tail Curve wordmark</title>
+  <g fill="none" stroke="#15263A" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="69" cy="78" r="42"/>
+    <path d="M161 37 V89 C161 113 177 126 197 126 C218 126 234 113 234 89 V37"/>
+    <path d="M282 124 V75 C282 50 297 37 320 37"/>
+    <path d="M366 37 V124 M366 37 H396 C429 37 451 53 451 80 C451 106 429 124 396 124 H366"/>
+    <circle cx="550" cy="78" r="42"/>
+  </g>
+  <path fill="#F36A36" d="M541 136 C558 144 578 144 596 128 C600 125 605 130 601 135 C585 151 559 151 541 136 Z"/>
+</svg>
