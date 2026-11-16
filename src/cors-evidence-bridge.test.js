@@ -29,6 +29,10 @@ test("QC pairs CSEM & CSMG same date but cannot set asset risk",()=>{
  ]),project,"north-breakwater");
  assert.equal(v.calendarDayPairs,2);
  assert.equal(v.full30sDayPairs,1);
+ assert.equal(v.epochCoveragePercent.CSEM,100);
+ assert.equal(v.epochCoveragePercent.CSMG,79.51);
+ assert.deepEqual(v.missingArchiveDates.CSMG,[]);
+ assert.equal(v.missingArchiveDates.CSEM.length,0);
  assert.equal(v.stationCoverageState,"SHARED_FULL_DAY");
  assert.equal(v.stationDays.CSEM,2);
  assert.equal(v.stationDays.CSMG,2);
@@ -47,6 +51,8 @@ test("same station without CSMG yields missing station; not zero-displacement",(
  const v=inspectLocalStationEvidence(sample([row("csem","2026-11-15",319)]),project,"north-breakwater");
  assert.equal(v.stationCoverageState,"MISSING_STATION");
  assert.equal(v.full30sDayPairs,0);
+ assert.deepEqual(v.missingArchiveDates.CSMG,[]);
+ assert.equal(v.epochCoveragePercent.CSMG,0);
  assert.equal(v.operatorPriorityAllowed,false);
 });
 test("no overlap with both station files means no matching observation dates",()=>{
