@@ -197,8 +197,8 @@ body[data-page] .bg-guide-steps button:focus-visible,body[data-page] .bg-guide-c
  .bf-workspace{grid-template-columns:minmax(0,1fr);grid-template-areas:"sectors" "detail" "map";min-height:0}
  .bf-sidebar{border-right:0;border-bottom:1px solid var(--bf-line)}
  .bf-pane-title{padding:15px 15px 12px}
- .bf-sector-list{display:flex;overflow-x:auto;gap:0;scroll-snap-type:x mandatory}
- .bf-sector{flex:0 0 185px;min-height:66px;border-bottom:0;border-right:1px solid #e9efeb;scroll-snap-align:start}
+ .bf-sector-list{display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;gap:0;scroll-snap-type:x mandatory;scrollbar-width:thin}
+ .bf-sector{flex:0 0 185px;min-width:0;min-height:74px;max-height:82px;border-bottom:0;border-right:1px solid #e9efeb;scroll-snap-align:start;padding:12px 13px}
  .bf-side-note{display:none}
  .bf-result-pane{padding:21px 20px;border-top:0}
  .bf-detail-heading{display:block;margin-top:12px}
