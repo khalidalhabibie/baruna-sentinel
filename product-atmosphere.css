@@ -452,3 +452,18 @@ body[data-page="guide"] .bg-guide-head{padding-top:31px!important}
  }
  body[data-page] .pw-primary-nav{gap:9px!important}
 }
+
+/* Video-ready map demo entry, intentionally distinct from source-backed assessment. */
+body[data-page] .topbar .spatial-demo-entry{
+ display:inline-flex;align-items:center;justify-content:center;
+ text-decoration:none;background:#163c51;color:#fff!important;
+ border:1px solid #163c51;border-radius:8px;min-height:36px;
+ padding:9px 12px;font-size:11px;letter-spacing:0;font-weight:770;
+ white-space:nowrap;line-height:1.2;
+}
+body[data-page] .topbar .spatial-demo-entry:hover{background:#24566b;color:#fff!important}
+body[data-page] .topbar .spatial-demo-entry:focus-visible{outline:3px solid #54a4b0;outline-offset:3px}
+@media(max-width:650px){
+ body[data-page] .topbar .spatial-demo-entry{font-size:10px;padding:9px 10px;min-height:35px}
+ body[data-page] .topbar .top-actions .bf-preview-tag{display:none!important}
+}
