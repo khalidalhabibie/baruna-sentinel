@@ -133,10 +133,24 @@ async function bootstrap() {
     const [meta,catalog,readiness]=await Promise.all(responses.map(r=>r.json()));
     if(!Array.isArray(meta.aoiEpsg4326) || meta.aoiEpsg4326.join()!==AOI.join())
       throw Error("AOI metadata tidak cocok");
-    if(!Array.isArray(catalog.scenes) || catalog.scenes.length!==27 ||
-       catalog.scenes.filter(x=>x[0]===2).length!==16 ||
-       catalog.scenes.filter(x=>x[0]===1).length!==11)
-      throw Error("Katalog Sentinel tidak lolos pemeriksaan");
+    // Catalogues can grow as sentinel-helpes downloads additional real scenes.
+    // Never bind the application to the original snapshot counts (16 + 11).
+    const rows=catalog.scenes;
+    if(!Array.isArray(rows)||!rows.length||
+       !/REAL_CATALOG_METADATA_ONLY/.test(catalog.sourceMode||"")||
+       rows.some(row=>!Array.isArray(row)||![1,2].includes(row[0])||
+         typeof row[1]!=="string"||!/^(S1|S2)/.test(row[1])||
+         !/^\\d{4}-\\d{2}-\\d{2}$/.test(row[2])||
+         !Array.isArray(row[4])||row[4].length<4))
+      throw Error("Katalog Sentinel tidak lolos pemeriksaan sumber/format");
+    const s2Count=rows.filter(row=>row[0]===2).length;
+    const s1Count=rows.filter(row=>row[0]===1).length;
+    if(!s1Count||!s2Count)throw Error("Koleksi Sentinel-1/2 tidak lengkap");
+    for(const [id,count] of [["sentinel1_catalog",s1Count],["sentinel2_catalog",s2Count]]){
+      const manifest=readiness.datasets?.find(item=>item.id===id);
+      if(!manifest||!Number.isInteger(manifest.count)||manifest.count!==count)
+        throw Error("Manifest readiness berbeda dari katalog "+id);
+    }
     if(!readiness.modelGate?.surfaceLayer || !readiness.modelGate?.sceneDiscovery)
       throw Error("Data tidak lulus Evidence Gate");
     if(!window.L) throw Error("Leaflet gagal dimuat");
@@ -150,8 +164,8 @@ async function bootstrap() {
       if(event.target.checked)dsmLayer.addTo(map);else map.removeLayer(dsmLayer);
     });
     $("stat-dsm").textContent="Available";
-    $("stat-s2").textContent="16 scenes";
-    $("stat-s1").textContent="11 scenes";
+    $("stat-s2").textContent=s2Count+" scenes";
+    $("stat-s1").textContent=s1Count+" scenes";
     $("stat-status").textContent="Source ready";
     $("status-hint").textContent="2 capabilities available · 4 blocked";
     renderReadiness(readiness.modelGate);
