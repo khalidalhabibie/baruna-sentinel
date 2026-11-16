@@ -8,7 +8,7 @@ import {chromium} from "playwright";
 import {mkdirSync} from "node:fs";
 const BASE=process.env.BASE_URL||"http://127.0.0.1:4173";
 mkdirSync("reports",{recursive:true});
-const browser=await chromium.launch({headless:true,args:["--no-sandbox"]});
+const browser=await chromium.launch({headless:true,executablePath:process.env.BARUNA_CHROME_PATH||"/usr/bin/google-chrome",args:["--no-sandbox"]});
 const errors=[];
 const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
 page.on("pageerror",e=>errors.push(e.message));
