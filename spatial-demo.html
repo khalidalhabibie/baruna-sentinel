@@ -16,17 +16,18 @@
  <a href="#demo-main" class="skip-link">Langsung ke workspace</a>
  <div class="simulation-ribbon" role="status">
   <span class="ribbon-dot" aria-hidden="true"></span>
-  DEMO SCENARIO · Data ilustratif, bukan pengukuran atau lokasi aset resmi
+  DEMO SCENARIO · 4 aset ilustratif, berbeda dari 6 sektor penelitian historis 2005 · Bukan hasil pengukuran aset resmi
  </div>
  <header class="app-header">
   <a href="./?page=why" class="brand-link" aria-label="Kembali ke BARUNA Sentinel">
    <img src="./assets/ourdo-tail-curve-wordmark.svg" width="128" height="38" alt="OURDO — logo resmi dengan tail oranye">
    <span class="brand-division"><b>BARUNA</b><small>SENTINEL</small></span>
   </a>
-  <div class="header-center">Spatial Decision Workspace <span>· Tanjung Emas</span></div>
-  <nav class="header-actions" aria-label="Navigasi demo">
+  <div class="header-center">Spatial Decision Workspace <span>· Semarang</span></div>
+  <nav class="header-actions" aria-label="Navigasi BARUNA dan sumber bukti">
+   <span class="header-mode" aria-current="page">Demo Keputusan</span>
+   <a href="./?page=assessment" class="header-link secondary" aria-label="Buka Evidence Review dari enam sektor penelitian historis">Bukti Riset · 6 sektor</a>
    <a href="./?page=guide" class="header-link">Panduan</a>
-   <a href="./?page=assessment" class="header-link secondary">Bukti nyata</a>
   </nav>
  </header>
  <main id="demo-main">
@@ -34,7 +35,7 @@
    <div class="intro-text">
     <span class="eyebrow">RGPD / BIG BHUMIREKA 2026</span>
     <h1>Peta, bukti, lalu keputusan.</h1>
-    <p>Pilih aset untuk meninjau bukti, membandingkan prioritas, dan menyiapkan tindak lanjut. <a class="intro-rank-link" href="#ranking">Lihat Ranking & Compare ↓</a></p>
+    <p>Pilih satu dari empat aset untuk melihat data, alasan prioritas, dan tindakan berikutnya. <a class="intro-rank-link" href="#ranking">Lihat prioritas aset ↓</a></p>
    </div>
    <div class="progress-flow" aria-label="Tiga langkah utama">
     <div class="flow-step"><span>01</span><b>Pilih aset</b></div>
@@ -45,7 +46,7 @@
    </div>
   </section>
 
-  <section class="workbench" aria-label="Workspace keputusan inspeksi pesisir">
+  <section id="asset-map" class="workbench" aria-label="Workspace keputusan inspeksi pesisir">
    <aside class="asset-pane" aria-label="Daftar aset">
     <div class="pane-heading">
      <span class="eyebrow">ASSET EXPLORER</span>
@@ -78,6 +79,7 @@
      <strong>Empat zona aset</strong>
      <small>Pilih poligon untuk memeriksa aset</small>
     </div>
+    <a href="#ranking" class="map-ranking-cta" aria-label="Lihat daftar prioritas tiga aset yang lolos pemeriksaan bukti">Lihat 3 prioritas <span aria-hidden="true">↘</span></a>
     <div class="map-controls">
      <button type="button" id="reset-view" title="Tampilkan seluruh area" aria-label="Kembalikan tampilan peta ke semua zona"><span aria-hidden="true">⤢</span> Seluruh area</button>
     </div>
@@ -104,17 +106,17 @@
       <p id="tier-description">Penilaian berdasarkan kelengkapan bukti dan faktor prioritas.</p>
      </div>
      <div class="mini-metrics" aria-label="Indikator aset">
-      <div><span>Tren vertikal</span><strong id="rate-value">−92 <small>mm/th</small></strong></div>
-      <div><span>Kontinuitas</span><strong id="continuity-value">92%</strong></div>
+      <div><span>Laju vertikal per tahun</span><strong id="rate-value">−92 <small>mm/tahun</small></strong></div>
+      <div><span>Kontinuitas data</span><strong id="continuity-value">92%</strong></div>
      </div>
-     <div class="chart-head"><div><strong>Riwayat pergerakan</strong><span>Tren vertikal berdasarkan dataset demo</span></div><span>mm</span></div>
+     <div class="chart-head"><div><strong>Perpindahan vertikal relatif</strong><span>Dari awal periode · data demonstrasi</span></div><span>mm</span></div>
      <div id="movement-chart" class="movement-chart" role="img" aria-label="Grafik pergerakan vertikal aset"></div>
      <div class="reasons">
       <div class="detail-section-title"><strong>Mengapa hasilnya demikian?</strong><span id="reason-score"></span></div>
       <div id="reason-list" class="reason-list" aria-live="polite"></div>
      </div>
      <div class="next-action">
-      <span class="small-label">NEXT ACTION</span>
+      <span class="small-label">TINDAKAN SELANJUTNYA</span>
       <p id="next-action">Siapkan pemeriksaan bersama operator.</p>
      </div>
     </div>
@@ -132,28 +134,28 @@
      <h2 id="ranking-title">Ranking & Compare</h2>
      <p>Urutkan aset yang lolos pemeriksaan bukti. Aset dengan data kurang tidak diberi ranking.</p>
     </div>
-    <div class="ranking-count" id="ranking-summary" role="status" aria-live="polite"></div>
+    <div class="ranking-heading-actions"><a class="ranking-back-link" href="#asset-map">← Kembali ke peta</a><div class="ranking-count" id="ranking-summary" role="status" aria-live="polite"></div></div>
    </div>
    <div class="ranking-table-scroll" role="region" aria-label="Peringkat aset" tabindex="0">
     <table class="ranking-table">
      <thead><tr>
       <th scope="col" class="rank-num">Rank</th>
-      <th scope="col">Aset ilustratif</th>
-      <th scope="col">Laju vertikal</th>
-      <th scope="col">Evidence Gate</th>
+      <th scope="col">Aset</th>
+      <th scope="col">Laju (mm/tahun)</th>
+      <th scope="col">Kualitas bukti</th>
       <th scope="col" class="numeric">Skor</th>
-      <th scope="col">Hasil screening</th>
+      <th scope="col">Prioritas</th>
       <th scope="col">Compare</th>
      </tr></thead>
      <tbody id="ranking-rows"></tbody>
     </table>
    </div>
-   <p class="ranking-note"><strong>Metodologi:</strong> ranking hanya untuk aset yang lolos Evidence Gate. Skor bukan probabilitas kegagalan atau penilaian keselamatan.</p>
+   <p class="ranking-note"><strong>Cara membaca:</strong> hanya aset dengan bukti yang memenuhi syarat yang memperoleh peringkat. Skor bukan probabilitas kegagalan maupun penilaian keselamatan.</p>
    <div class="compare-header">
     <div>
      <span class="eyebrow">03 / SIDE-BY-SIDE</span>
      <h3>Bandingkan keputusan</h3>
-     <p>Pilih dua atau tiga aset pada kolom Compare untuk melihat faktor yang berbeda.</p>
+     <p>Pilih 2–3 aset untuk membandingkan kualitas bukti, skor, dan alasan tindakan.</p>
     </div>
     <div class="compare-presets" aria-label="Pilihan perbandingan">
      <button type="button" data-compare-preset="normal">A vs B</button>
@@ -163,13 +165,13 @@
    <div id="compare-selection-count" class="compare-selection-count" aria-live="polite"></div>
    <div id="compare-content" class="compare-content" role="region" aria-label="Tabel perbandingan aset" tabindex="0"></div>
    <details class="policy-details">
-    <summary>Bagaimana skor dihitung?</summary>
+    <summary>Bagaimana BARUNA menentukan prioritas?</summary>
     <p>Skor berasal dari <strong>gerakan turun (0–2)</strong>, <strong>paparan (0–2)</strong>, dan <strong>kekritisan (0–2)</strong>. Kebijakan <code>SYNTHETIC_DEMO_POLICY_V1</code> menentukan batas kelas. Aset yang gagal Evidence Gate dikeluarkan dari ranking sebelum skor dihitung. Ambang ini belum disetujui operator dan tidak boleh dipakai pada aset sebenarnya.</p>
    </details>
   </section>
   <footer class="workbench-footer">
    <div><span class="footer-mark">◉</span><span><strong>DEMO SCENARIO</strong> · Data dan batas aset ilustratif, bukan hasil survei.</span></div>
-   <a href="./?page=assessment">Lihat penilaian dengan sumber penelitian sebenarnya ↗</a>
+   <a href="./?page=assessment">Buka Evidence Review · 6 sektor penelitian 2005 ↗</a>
   </footer>
  </main>
 
