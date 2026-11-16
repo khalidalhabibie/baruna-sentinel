@@ -64,6 +64,36 @@ try{
  await page.keyboard.press("Escape");
  assert.equal(await page.locator("#brief-dialog").isVisible(),false);
 
+ // Ranking and comparison must be synchronized to the exact assessment model.
+ await page.locator("#ranking").scrollIntoViewIfNeeded();
+ assert.equal(await page.locator("#ranking-rows tr").count(),4);
+ assert.deepEqual(await page.locator("#ranking-rows tr .rank-index").allInnerTexts(),["01","02","03","—"]);
+ assert.match(await page.locator("#ranking-summary").innerText(),/3 layak diranking · 1 perlu data/);
+ assert.equal((await page.locator('#ranking-rows [data-rank-row="sim-port"] .rank-score').innerText()).trim(),"6");
+ assert.equal((await page.locator('#ranking-rows [data-rank-row="sim-road"] .rank-score').innerText()).trim(),"4");
+ assert.equal((await page.locator('#ranking-rows [data-rank-row="sim-store"] .rank-score').innerText()).trim(),"1");
+ assert.equal((await page.locator('#ranking-rows [data-rank-row="sim-incomplete"] .rank-score').innerText()).trim(),"—");
+ assert.match(await page.locator("#compare-content").innerText(),/Akses pelabuhan/);
+ assert.match(await page.locator("#compare-content").innerText(),/Jalan pesisir/);
+ await page.screenshot({path:"reports/baruna-spatial-desktop-ranking.png",fullPage:false});
+ await page.locator('[data-compare-preset="blocked"]').click();
+ assert.equal(await page.locator('[data-compare-preset="blocked"]').getAttribute("aria-pressed"),"true");
+ assert.match(await page.locator("#compare-content").innerText(),/Struktur tepi air/);
+ assert.match(await page.locator("#compare-content").innerText(),/Tidak layak diranking/);
+ assert.match(await page.locator("#compare-content").innerText(),/−103 mm\/th \(input tidak layak\)/);
+ await page.screenshot({path:"reports/baruna-spatial-desktop-compare-blocked.png",fullPage:false});
+ await page.locator('[data-compare-id="sim-store"]').check();
+ assert.match(await page.locator("#compare-selection-count").innerText(),/3 dari 3 aset dipilih/);
+ await page.locator('[data-compare-id="sim-road"]').check();
+ assert.equal(await page.locator('[data-compare-id="sim-road"]').isChecked(),false,"cannot compare more than 3");
+ await page.locator('[data-compare-preset="normal"]').click();
+ assert.match(await page.locator("#compare-content").innerText(),/Jalan pesisir/);
+ await page.locator('[data-focus-asset="sim-road"]').click();
+ assert.match(await page.locator("#tier-title").innerText(),/Prioritas sedang/);
+ assert.equal(await page.locator('[data-asset-id="sim-road"]').getAttribute("aria-pressed"),"true","ranking updates map/list selected asset");
+ await page.locator("#ranking").scrollIntoViewIfNeeded();
+
+
  const offline=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
  offline.on("pageerror",e=>exceptions.push(e.stack||e.message));
  await offline.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
@@ -74,6 +104,10 @@ try{
  assert.equal(await offline.locator(".leaflet-overlay-pane path.leaflet-interactive").count(),4,"offline interactive map still renders");
  await offline.locator('[data-asset-id="sim-road"]').click();
  assert.match(await offline.locator("#tier-title").innerText(),/Prioritas sedang/);
+ assert.equal(await offline.locator("#ranking-rows tr").count(),4,"standalone contains eligibility ranking");
+ await offline.locator('[data-compare-preset="blocked"]').click();
+ assert.match(await offline.locator("#compare-content").innerText(),/Tidak layak diranking/);
+
  await offline.screenshot({path:"reports/baruna-spatial-offline-standalone.png",fullPage:false});
  await offline.close();
 
@@ -96,6 +130,13 @@ try{
  await page.locator('[data-asset-id="sim-incomplete"]').click();
  assert.match(await page.locator("#tier-title").innerText(),/Bukti belum cukup/);
  await page.screenshot({path:"reports/baruna-spatial-mobile-insufficient.png",fullPage:false});
+ await page.locator("#ranking").scrollIntoViewIfNeeded();
+ assert.equal(await page.locator("#ranking-rows tr").count(),4);
+ await page.locator('[data-compare-preset="blocked"]').click();
+ assert.match(await page.locator("#compare-content").innerText(),/Tidak layak diranking/);
+ assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3),true,"ranking & compare contain their own horizontal scroll");
+ await page.screenshot({path:"reports/baruna-spatial-mobile-ranking.png",fullPage:false});
+
  assert.deepEqual(exceptions,[],"no uncaught JavaScript errors");
  console.log("Spatial Decision video demo: map, 4 cases, brief, accessibility, mobile PASS");
 }finally{await browser.close()}
