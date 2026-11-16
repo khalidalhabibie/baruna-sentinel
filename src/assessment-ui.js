@@ -68,7 +68,7 @@ function evidenceRegistry(){
  return '<section class="as-evidence-registry" id="as-evidence-registry" aria-label="Inventaris bukti yang tersedia dan yang masih diperlukan">'+
    '<div class="as-registry-head"><div><span class="as-pane-label">SOURCE READINESS / BIG SRGI</span>'+
    '<h2>Data sudah tersedia, data yang masih menunggu</h2>'+
-   '<p>Profil stasiun dan publikasi historis adalah referensi. Hasil QC 2026 hanya muncul setelah Anda memilih file lokal. Tidak ada nilai kosong yang diartikan sebagai 0.</p></div>'+
+   '<p>Profil stasiun dan publikasi historis adalah referensi. Hasil QC 2026 hanya muncul setelah Anda memilih file lokal. Tidak ada nilai kosong yang diartikan sebagai 0.</p><a class="as-registry-video-link" href="./video-demo.html">Buka video storyboard terpisah · SIMULASI ↗</a></div>'+
    '<span class="as-registry-safety">BUKAN PENILAIAN KEAMANAN ASET</span></div>'+
    '<div class="as-registry-stations">'+profiles+'</div>'+
    '<div class="as-registry-qc"><span class="as-registry-step">OBSERVASI 2026 / QC</span>'+qc+
@@ -227,7 +227,7 @@ function render(){
   '<button type="button" data-pw-page="overview">Tanjung Emas / Semarang</button><span>/</span> Assessment</div>'+
   '<div class="pw-heading-row as-page-heading"><div><span class="pw-kicker">PROPOSAL WORKFLOW / GNSS → EVIDENCE → DECISION</span>'+
      '<h1>Inspection assessment</h1><p>Explain what the research proves, what remains unknown, and whether an infrastructure inspection priority can be issued.</p></div>'+
-     '<div class="pw-heading-actions">'+button("analyst","GNSS evidence")+button("compare","Compare sources")+'<a class="pw-btn pw-btn-secondary" href="./video-demo.html" style="text-decoration:none;display:inline-flex;align-items:center">Video storyboard · SIMULASI</a></div></div>'+
+     '<div class="pw-heading-actions">'+button("analyst","GNSS evidence")+button("compare","Compare sources")+'</div></div>'+
   '<div class="as-mode-switch" role="group" aria-label="Assessment evidence mode">'+
      '<button type="button" id="as-real-mode" aria-pressed="'+(!showSimulation&&!assetMode)+'" class="'+(!showSimulation&&!assetMode?"is-active":"")+'">Published evidence</button>'+
      '<button type="button" id="as-asset-mode" aria-pressed="'+assetMode+'" class="'+(assetMode?"is-active":"")+'">Import asset GeoJSON</button>'+
