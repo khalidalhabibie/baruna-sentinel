@@ -90,7 +90,19 @@
     document.getElementById("baruna-start-tour")?.addEventListener("click",start);
     document.addEventListener("click",event=>{
       if(event.target.closest("[data-baruna-tour-replay]")){event.preventDefault();start()}
-      if(event.target.closest(".baruna-more-menu [data-pw-page]"))document.querySelector(".baruna-nav-more")?.removeAttribute("open");
+      const trigger=event.target.closest(".baruna-more-trigger");
+      const menu=document.querySelector("#baruna-more-menu");
+      if(trigger&&menu){
+        event.preventDefault();
+        const opening=menu.hidden;
+        menu.hidden=!opening;
+        trigger.setAttribute("aria-expanded",String(opening));
+        return;
+      }
+      if(menu && !event.target.closest(".baruna-nav-more")){
+        menu.hidden=true;
+        document.querySelector(".baruna-more-trigger")?.setAttribute("aria-expanded","false");
+      }
     });
     document.addEventListener("keydown",event=>{if(open&&event.key==="Escape"){event.preventDefault();finish()}});
     window.addEventListener("baruna:pagechange",()=>{if(open)window.setTimeout(highlight,180)});
