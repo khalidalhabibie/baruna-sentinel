@@ -15,6 +15,8 @@ const publicAssets=[
   "styles.css",
   "project-ui.css",
   "why-sentinel.css",
+  "product-experience.css",
+  "src/product-onboarding.js",
   "src/why-sentinel-model.js",
   "src/why-sentinel.js",
   "src/projects.js",
