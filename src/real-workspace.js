@@ -26,8 +26,7 @@ const rows=catalog.scenes;
 if(!Array.isArray(rows)||!rows.length||
    !/REAL_CATALOG_METADATA_ONLY/.test(catalog.sourceMode||"")||
    rows.some(row=>!Array.isArray(row)||![1,2].includes(row[0])||
-     typeof row[1]!=="string"||!/^(S1|S2)/.test(row[1])||
-     !/^\\d{4}-\\d{2}-\\d{2}$/.test(row[2])||
+     typeof row[1]!=="string"||!/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(row[2])||
      !Array.isArray(row[4])||row[4].length<4))
   throw Error("Katalog Sentinel tidak lolos pemeriksaan sumber/format");
 const s2Count=rows.filter(row=>row[0]===2).length;
