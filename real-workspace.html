@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f8f7">
+  <meta name="description" content="BARUNA Sentinel Semarang Coastal — workspace GIS data nyata: Copernicus DSM, Sentinel scene catalogue, pemeriksaan kelengkapan bukti.">
+  <title>Semarang Coastal — Real Workspace | BARUNA Sentinel</title>
+  <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="./real-workspace.css">
+  <script defer src="./vendor/leaflet/leaflet.js"></script>
+  <script type="module" src="./src/real-workspace.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Langsung ke workspace</a>
+  <header class="global-header">
+    <a class="brand" href="./workspaces.html" aria-label="BARUNA Sentinel Workspaces">
+      <img src="./assets/ourdo-tail-curve-wordmark.svg" width="118" height="34" alt="Ourdo Indonesia">
+      <span class="brand-divider"></span><span class="brand-label"><b>BARUNA</b><small>SENTINEL</small></span>
+    </a>
+    <nav class="global-nav" aria-label="Navigasi workspace">
+      <a href="./workspaces.html">Workspaces</a>
+      <a href="./real-workspace.html" class="active" aria-current="page">Semarang Coastal</a>
+      <a href="./?page=analyst" class="secondary">GNSS Research</a>
+      <a href="./spatial-demo.html" class="secondary">Scenario Lab</a>
+    </nav>
+    <span class="header-meta">OURDO INDONESIA · SPATIAL INTELLIGENCE</span>
+  </header>
+
+  <main id="workspace" class="layout">
+    <section class="hero" aria-label="Proyek aktif">
+      <div class="hero-intro">
+        <div class="breadcrumbs"><a href="./workspaces.html">Workspaces</a><span>/</span><strong>Semarang Coastal</strong></div>
+        <div class="eyebrow"><i></i> REAL DATA WORKSPACE · SEMARANG, INDONESIA</div>
+        <h1>Semarang Coastal <span>Intelligence</span></h1>
+        <p>Periksa konteks elevasi dan akuisisi satelit nyata untuk pesisir Semarang. Temukan bukti yang tersedia, batas analisis, dan data yang perlu dilengkapi sebelum membuat keputusan aset.</p>
+      </div>
+      <div class="hero-actions">
+        <div class="snapshot"><span>DATA SNAPSHOT</span><strong>16 NOV 2026</strong><small>Bukan monitoring real-time</small></div>
+        <button type="button" class="button button-primary" id="export-evidence" disabled>Export Evidence Brief <span aria-hidden="true">↗</span></button>
+      </div>
+    </section>
+
+    <section class="stat-strip" aria-label="Kesiapan sumber data">
+      <article><span>Copernicus DEM GLO-30</span><strong id="stat-dsm">Memuat...</strong><small>DSM · data piksel aktual</small></article>
+      <article><span>Sentinel-2 · L2A</span><strong id="stat-s2">—</strong><small>Scene catalogue · metadata</small></article>
+      <article><span>Sentinel-1 · GRD</span><strong id="stat-s1">—</strong><small>Scene catalogue · metadata</small></article>
+      <article class="stat-status"><span>Evidence status</span><strong id="stat-status">Memeriksa...</strong><small id="status-hint">Memuat dataset terverifikasi</small></article>
+    </section>
+
+    <section class="workbench" id="asset-map" aria-label="Geospatial exploration workspace">
+      <aside class="control-panel">
+        <div class="panel-title"><div><span class="overline">01 / DATA EXPLORER</span><h2>Layers &amp; scenes</h2></div><span class="pill-live">REAL SOURCE</span></div>
+
+        <div class="form-group">
+          <span class="form-label">Elevation</span>
+          <label class="layer-switch" for="toggle-dsm">
+            <input type="checkbox" id="toggle-dsm" checked>
+            <span class="layer-switch-copy"><strong>Copernicus Surface Model</strong><small>GLO-30 · colorized elevation preview</small></span>
+          </label>
+          <p class="field-help">Tinggi permukaan DSM, bukan laju penurunan tanah ataupun kedalaman genangan.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sensor">Satellite collection</label>
+          <select id="sensor" class="input-select">
+            <option value="2">Sentinel-2 · Optical L2A</option>
+            <option value="1">Sentinel-1 · Radar GRD</option>
+          </select>
+          <label class="form-label second-label" for="scene">Acquisition date / scene</label>
+          <select id="scene" class="input-select"></select>
+          <button id="focus-scene" class="button button-secondary" type="button" disabled>Show scene footprint</button>
+          <p class="field-help">Footprint adalah cakupan scene, bukan area banjir atau geometri aset.</p>
+        </div>
+
+        <div class="scene-details" id="scene-details" aria-live="polite"><p>Memuat metadata katalog...</p></div>
+        <div class="panel-note"><strong><span class="tiny-dot"></span> ANALYSIS BOUNDARY</strong><p>Optical change detection dan InSAR belum tersedia. Sistem tidak menghitung skor risiko aset dari metadata saja.</p></div>
+      </aside>
+
+      <div class="map-panel">
+        <div class="map-toolbar">
+          <div><span class="overline">02 / SPATIAL CANVAS</span><h2>North Semarang · Coastal AOI</h2><small>EPSG:4326 · 110.375–110.485° BT · 7.025–6.875° LS</small></div>
+          <button type="button" id="reset-map" class="button button-tertiary" disabled>↗ Fit AOI</button>
+        </div>
+        <div class="map-frame">
+          <div class="map-placeholder" id="map-fallback">Memuat peta geospasial...</div>
+          <div id="real-map" role="region" aria-label="Peta interaktif Semarang dan overlay elevasi"></div>
+          <div class="map-overlay-label">COPERNICUS DEM · ACTUAL SURFACE DATA</div>
+          <div class="map-scale">
+            <span class="scale-title">Elevation context (m)</span>
+            <div class="scale-strip" aria-hidden="true"></div>
+            <div class="scale-ticks"><span>≤0</span><span>2</span><span>5</span><span>10</span><span>20</span><span>50+</span></div>
+          </div>
+        </div>
+        <div class="map-bottom">
+          <div class="location-readout" id="elevation-readout" role="status" aria-live="polite"><strong>Explore elevation</strong><span>Klik peta untuk membaca nilai perkiraan dari raster tampilan.</span></div>
+          <div class="map-provenance">OpenStreetMap basemap · Copernicus DEM GLO-30 surface context</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="evidence-block" id="evidence" aria-label="Evidence readiness and limitations">
+      <div class="evidence-header">
+        <div><span class="overline">03 / EVIDENCE GATE</span><h2>Apa yang bisa diputuskan dari data ini?</h2><p>Ketersediaan sumber tidak sama dengan kelayakan kesimpulan. Setiap kapabilitas hanya dibuka jika input dan validasinya cukup.</p></div>
+        <a href="./data/semarang-real-readiness.json" target="_blank" rel="noopener noreferrer" class="plain-link">Lihat source manifest ↗</a>
+      </div>
+      <div class="gate-grid" id="gate-grid" aria-live="polite">
+        <p>Memeriksa kelengkapan evidence...</p>
+      </div>
+    </section>
+
+    <section class="next-step">
+      <div><span class="overline">NEXT EVIDENCE</span><h2>Siap untuk langkah yang terukur.</h2><p>Tambahkan citra Sentinel-2 dengan band valid untuk analisis optik, data geometri aset dari operator, serta model geodetik untuk penurunan tanah. Jangan menggantinya dengan asumsi simulasi.</p></div>
+      <div class="next-actions"><a class="plain-link" href="./?page=analyst">Buka GNSS Research ↗</a><a class="plain-link" href="./spatial-demo.html">Lihat Scenario Lab ↗</a></div>
+    </section>
+
+    <footer>© OURDO INDONESIA · BARUNA SENTINEL <span>Source-backed geospatial screening · bukan sertifikasi keselamatan / monitoring aset real-time</span></footer>
+  </main>
+</body>
+</html>
