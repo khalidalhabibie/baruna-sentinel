@@ -62,6 +62,15 @@ try{
  await page.setViewportSize({width:390,height:844});
  await page.reload({waitUntil:"networkidle"});
  await page.locator(".bf-workspace").waitFor({state:"visible"});
+ await page.waitForTimeout(150);
+ const activeSectorVisible=await page.evaluate(()=>{
+  const list=document.querySelector(".bf-sector-list");
+  const item=list?.querySelector('.bf-sector[aria-pressed="true"]');
+  if(!item)return false;
+  const a=item.getBoundingClientRect(),b=list.getBoundingClientRect();
+  return a.left>=b.left-8&&a.right<=b.right+8;
+ });
+ assert.equal(activeSectorVisible,true,"selected West breakwater is visible without swiping on first mobile load");
  const sizes=await page.evaluate(()=>{
   const n=document.querySelector(".pw-primary-nav");
   const items=[...n.querySelectorAll(":scope > button, :scope > .baruna-nav-more > button")];
