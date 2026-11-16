@@ -46,14 +46,6 @@ try{
  await page.locator(".baruna-more-trigger").click();
  assert.equal(await page.locator(".baruna-more-trigger").getAttribute("aria-expanded"),"true");
  assert.equal(await page.locator(".baruna-more-menu").isVisible(),true);
- console.log("MENU_COMPUTED",JSON.stringify(await page.evaluate(()=>{
-   const b=document.querySelector('.baruna-more-menu [data-pw-page="compare"]');
-   const m=document.querySelector(".baruna-more-menu");
-   const n=document.querySelector(".pw-primary-nav");
-   const t=document.querySelector(".topbar");
-   const info=e=>({rect:e.getBoundingClientRect().toJSON(),display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,overflow:getComputedStyle(e).overflow,hidden:e.hidden});
-   return {button:info(b),menu:info(m),nav:info(n),topbar:info(t)};
- })));
  await page.locator('.baruna-more-menu [data-pw-page="compare"]').click({timeout:5000});
  assert.equal(await page.locator("#pw-page-compare").isVisible(),true,"advanced pages remain reachable");
  await page.locator('.pw-primary-nav>[data-pw-page="assessment"]').click();
@@ -65,6 +57,17 @@ try{
  await page.goto(BASE,{waitUntil:"networkidle"});
  await page.locator(".bs-mission").waitFor({state:"visible"});
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+3),true,"no horizontal overflow on mobile homepage");
+ assert.equal(await page.locator("#baruna-start-tour").isVisible(),true,"guide replay button remains accessible on mobile");
+ const navMetrics=await page.evaluate(()=>{
+  const bar=document.querySelector(".pw-primary-nav");
+  const buttons=[...bar.querySelectorAll(":scope > button, :scope > .baruna-nav-more > button")];
+  return {viewport:innerWidth,rects:buttons.map(x=>({label:x.innerText,position:x.getBoundingClientRect().toJSON(),css:getComputedStyle(x).flexShrink})),
+   navScrollWidth:bar.scrollWidth,navClientWidth:bar.clientWidth,
+   topActionsDisplay:getComputedStyle(document.querySelector(".topbar .top-actions")).display};
+ });
+ assert.notEqual(navMetrics.topActionsDisplay,"none");
+ assert.ok(navMetrics.rects.every(x=>x.position.width>=49),"mobile nav targets have usable widths");
+ assert.ok(navMetrics.rects.every((x,i,a)=>i===0||x.position.left>=a[i-1].position.right-1),"mobile labels do not overlap");
  await page.screenshot({path:"reports/baruna-home-mobile.png",fullPage:false});
  assert.deepEqual(errors,[],"no browser JavaScript errors");
  console.log("BARUNA decision-first product browser QA PASS; screenshots in reports/");
