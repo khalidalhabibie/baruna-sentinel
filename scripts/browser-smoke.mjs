@@ -58,6 +58,7 @@ try {
     name:"SYNTHETIC-LOCAL-QC-FIXTURE.json",mimeType:"application/json",
     buffer:Buffer.from(JSON.stringify(videoQC))
   });
+  await videoPage.locator(".metrics strong").first().waitFor({state:"visible",timeout:10000});
   assert.equal(await videoPage.locator(".metrics strong").count(),3);
   assert.ok((await videoPage.locator(".data-provenance").textContent()).includes("DATA IMPOR LOKAL"));
   assert.deepEqual(await videoPage.locator(".metrics strong").allTextContents(),["100%","100%","1/1"]);
