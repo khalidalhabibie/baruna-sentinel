@@ -1,0 +1,83 @@
+/* BARUNA Sentinel / Ourdo 2026 — approachable decision-first enterprise shell */
+:root{--bs-ink:#142d35;--bs-teal:#0d7467;--bs-mist:#f3f7f6;--bs-border:#dce9e4}
+body[data-page] .topbar{min-height:74px;padding:10px max(22px,calc((100vw - 1460px)/2));gap:17px;background:rgba(255,255,255,.98);border-bottom:1px solid var(--bs-border);box-shadow:0 6px 25px rgba(15,41,39,.045)}
+body[data-page] .pw-primary-nav{margin-left:12px;gap:4px;min-height:46px;align-items:center}
+body[data-page] .pw-primary-nav>button{min-height:43px;border-radius:8px;padding:10px 14px;font-size:12px}
+body[data-page] .pw-primary-nav>button[aria-current="page"]{box-shadow:none;background:#eaf5f1;color:#116558;font-weight:800}
+body[data-page] .pw-primary-nav .baruna-nav-more{position:relative;z-index:113}
+body[data-page] .pw-primary-nav .baruna-nav-more>summary{list-style:none;font-size:12px;font-weight:700;cursor:pointer;border-radius:8px;padding:12px 13px;color:#55716b}
+body[data-page] .pw-primary-nav .baruna-nav-more>summary::-webkit-details-marker{display:none}
+body[data-page] .pw-primary-nav .baruna-nav-more>summary:hover{background:#f0f6f3;color:#155e55}
+body[data-page] .pw-primary-nav .baruna-more-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:186px;border-radius:12px;padding:7px;background:white;border:1px solid #d5e3de;box-shadow:0 18px 38px rgba(11,44,39,.14);display:flex;flex-direction:column}
+body[data-page] .pw-primary-nav .baruna-more-menu>button{border-radius:7px;min-height:40px;text-align:left;display:block;padding:9px 13px}
+body[data-page] .pw-primary-nav .baruna-more-menu>button[aria-current="page"]{background:#eaf5f1;box-shadow:none}
+body[data-page] .top-actions{display:flex;align-items:center;gap:7px}
+body[data-page] #baruna-start-tour{border-radius:8px;background:#12483e;color:#fff;border:1px solid #12483e;padding:11px 15px;white-space:nowrap;font-size:11px;font-weight:800;letter-spacing:0}
+body[data-page] #baruna-start-tour:hover{background:#0b685b}
+body[data-page] .ourdo-signature{display:none}
+body[data-page] .pw-shell{max-width:1390px;padding-top:27px}
+body[data-page] .pw-heading-row h1{font-size:clamp(29px,3vw,39px);letter-spacing:-.043em}
+body[data-page] .pw-heading-row p{font-size:14px;line-height:1.65}
+body[data-page] .pw-btn{min-height:42px;border-radius:8px;padding:11px 17px;font-size:12px}
+body[data-page] button:focus-visible,body[data-page] a:focus-visible,body[data-page] summary:focus-visible{outline:3px solid #5bb9a0;outline-offset:2px}
+/* Hero converts a research framework into a single, clearly actionable case */
+.bs-mission{margin:26px 0 8px;display:grid;grid-template-columns:1.15fr 1fr;background:linear-gradient(120deg,#112f37,#154c49);border-radius:18px;overflow:hidden;color:#fff;box-shadow:0 16px 40px rgba(12,46,44,.12)}
+.bs-mission-copy{padding:27px 32px 30px}
+.bs-mission-label{font-size:10px;font-weight:850;letter-spacing:.13em;color:#a8e2d5}
+.bs-mission h2{font-size:clamp(22px,2.4vw,30px);font-weight:780;letter-spacing:-.035em;line-height:1.22;margin:12px 0}
+.bs-mission p{color:#cbe1dc;font-size:13px;line-height:1.75;margin:0 0 19px;max-width:500px}
+.bs-mission .bs-mission-button{display:inline-flex;align-items:center;gap:9px;background:#ebf6ef;border:1px solid #d1ecdd;color:#105747;border-radius:8px;padding:13px 17px;font-size:12px;font-weight:850;cursor:pointer}
+.bs-mission .bs-mission-button:hover{background:#fff}
+.bs-mission .bs-mission-ghost{border:0;background:transparent;color:#cce7df;padding:11px 13px;font-size:12px;font-weight:700;cursor:pointer}
+.bs-mission-evidence{padding:25px 28px;border-left:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04)}
+.bs-mission-evidence>small{font-size:10px;color:#b7dcd3;letter-spacing:.12em;font-weight:750}
+.bs-mission-evidence>strong{display:block;font-size:35px;letter-spacing:-.05em;margin:14px 0 2px;line-height:1}
+.bs-mission-evidence>span{font-size:11px;color:#c0dbd4}
+.bs-mission-verdict{border-top:1px solid rgba(255,255,255,.18);margin-top:18px;padding-top:18px}
+.bs-mission-verdict b{display:block;font-size:15px;color:#eaf5ce;letter-spacing:.02em}
+.bs-mission-verdict p{font-size:11px;color:#cce5da;margin:6px 0 0}
+.bs-mini-workflow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:14px 0 26px}
+.bs-mini-workflow>div{background:#fff;border:1px solid #dce9e4;border-radius:11px;padding:14px 15px;min-width:0}
+.bs-mini-workflow small{display:block;font-weight:800;font-size:10px;letter-spacing:.07em;color:#148071;margin-bottom:7px}
+.bs-mini-workflow strong{font-size:13px;display:block;color:#274942}
+.bs-mini-workflow span{font-size:11px;line-height:1.6;display:block;color:#708a80;margin-top:6px}
+/* Compact, nonmodal, replayable game-like onboarding */
+.baruna-guide[hidden]{display:none!important}
+.baruna-guide{position:fixed;right:24px;bottom:26px;width:min(370px,calc(100vw - 30px));z-index:380;background:#fff;border:1px solid #d3e7df;border-radius:18px;padding:21px 22px 20px;box-shadow:0 24px 85px rgba(13,49,43,.23);color:#1b413a;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.baruna-guide-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.baruna-guide-label{font-size:10px;color:#187a6a;font-weight:850;letter-spacing:.12em}
+.baruna-guide-close{border:0;background:#f0f5f3;color:#60877b;border-radius:7px;width:31px;height:31px;cursor:pointer;font-size:22px;line-height:1;display:grid;place-items:center}
+.baruna-guide-progress{display:flex;gap:7px;margin:18px 0 19px}
+.baruna-guide-dot{height:5px;flex:1;border-radius:12px;background:#dce9e4;border:0;padding:0;cursor:pointer}
+.baruna-guide-dot.is-current{background:#128572}
+.baruna-guide-dot.is-complete{background:#75bea7}
+.baruna-guide-count{font-size:10px;color:#87988f;font-weight:780;letter-spacing:.1em}
+.baruna-guide-title{font-size:22px;line-height:1.25;letter-spacing:-.035em;color:#183d36;margin:8px 0 10px;font-weight:800}
+.baruna-guide-body{font-size:13px;line-height:1.7;color:#647e74;margin:0;min-height:85px}
+.baruna-guide-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:19px}
+.baruna-guide-foot button{border-radius:8px;padding:11px 12px;font-size:11px;font-weight:820;cursor:pointer;border:0}
+.baruna-guide-secondary{color:#728a7f;background:transparent}
+.baruna-guide-primary{color:#fff;background:#146e62;min-width:145px}
+.baruna-guide-primary:hover{background:#0c574e}
+.baruna-tour-highlight{outline:3px solid #2ba58a!important;outline-offset:5px;position:relative;z-index:111}
+.baruna-tour-sr{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}
+body[data-page] .as-decision-panel{border-radius:12px}
+@media(max-width:1200px){
+ body[data-page] .topbar{flex-wrap:wrap;gap:8px 12px;padding:10px 20px}
+ body[data-page] .pw-primary-nav{order:3;width:100%;margin:0;min-height:0}
+ body[data-page] .pw-current-project{margin-left:auto;min-width:180px}
+}
+@media(max-width:750px){
+ .bs-mission{grid-template-columns:1fr}
+ .bs-mission-copy{padding:23px}
+ .bs-mission-evidence{border-left:0;border-top:1px solid rgba(255,255,255,.15);padding:18px 23px}
+ .bs-mission-evidence>strong{font-size:29px}
+ .bs-mini-workflow{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-page] .pw-primary-nav{overflow-x:auto;scrollbar-width:thin}
+ body[data-page] .pw-primary-nav>button{white-space:nowrap;font-size:11px;padding:9px 11px}
+ body[data-page] .pw-primary-nav .baruna-nav-more{flex-shrink:0}
+ body[data-page] #baruna-start-tour{padding:10px 13px}
+ .baruna-guide{right:15px;bottom:15px;padding:18px 18px 17px}
+}
+@media print{.baruna-guide,.bs-mission-ghost,body[data-page] #baruna-start-tour{display:none!important}}
+@media(prefers-reduced-motion:reduce){.baruna-guide,.baruna-tour-highlight{scroll-behavior:auto}}
