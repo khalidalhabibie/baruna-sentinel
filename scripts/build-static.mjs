@@ -6,6 +6,7 @@ const publicAssets=[
   "video-demo.html",
   "video-demo.css",
   "src/video-fixture.js",
+  "src/synthetic-gnss-series.js",
   "src/video-demo.js",
   "styles.css",
   "project-ui.css",
