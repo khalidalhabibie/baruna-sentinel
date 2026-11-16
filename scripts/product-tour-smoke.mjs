@@ -68,6 +68,8 @@ try{
  assert.notEqual(navMetrics.topActionsDisplay,"none");
  assert.ok(navMetrics.rects.every(x=>x.position.width>=49),"mobile nav targets have usable widths");
  assert.ok(navMetrics.rects.every((x,i,a)=>i===0||x.position.left>=a[i-1].position.right-1),"mobile labels do not overlap");
+ assert.equal(await page.locator(".baruna-more-trigger").isVisible(),true,"advanced menu remains discoverable on mobile");
+ assert.ok(navMetrics.rects.at(-1).position.right<=navMetrics.viewport-8,"advanced menu visible without horizontal scrolling at 390px");
  await page.screenshot({path:"reports/baruna-home-mobile.png",fullPage:false});
  assert.deepEqual(errors,[],"no browser JavaScript errors");
  console.log("BARUNA decision-first product browser QA PASS; screenshots in reports/");
