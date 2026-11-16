@@ -19,7 +19,7 @@ try{
  assert.equal(response?.status(),200);
  await page.locator("#asset-list .asset-option").first().waitFor({state:"visible",timeout:10000});
  assert.match(await page.locator(".simulation-ribbon").innerText(),/DEMO SCENARIO/);
- assert.match(await page.locator(".workbench-footer").innerText(),/SIMULATION MODE/);
+ assert.match(await page.locator(".workbench-footer").innerText(),/DEMO SCENARIO/);
  assert.equal(await page.locator(".asset-option").count(),4);
  assert.equal(await page.locator(".spatial-map .leaflet-interactive").count()>=4,true,"4 synthetic polygons rendered in Leaflet");
  assert.equal(await page.locator(".map-zone-label").count(),4,"four illustrative zone symbols");
