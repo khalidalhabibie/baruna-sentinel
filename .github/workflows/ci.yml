@@ -18,10 +18,11 @@ jobs:
       - name: Syntax and scientific guardrail tests
         run: npm run check
 
-      - name: Install Playwright for decision-first UI smoke
+      - name: Install Playwright wrapper and locate system Chrome
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.56.1
-          npx playwright install --with-deps chromium
+          command -v google-chrome
+          google-chrome --version
       - name: Test guided tour, assessment and responsive product
         run: |
           python3 -m http.server 4173 -d dist >/tmp/baruna-static-server.log 2>&1 &
