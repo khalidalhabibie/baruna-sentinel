@@ -88,6 +88,10 @@
   }
   function init(){
     document.getElementById("baruna-start-tour")?.addEventListener("click",start);
+    document.addEventListener("click",event=>{
+      if(event.target.closest("[data-baruna-tour-replay]")){event.preventDefault();start()}
+      if(event.target.closest(".baruna-more-menu [data-pw-page]"))document.querySelector(".baruna-nav-more")?.removeAttribute("open");
+    });
     document.addEventListener("keydown",event=>{if(open&&event.key==="Escape"){event.preventDefault();finish()}});
     window.addEventListener("baruna:pagechange",()=>{if(open)window.setTimeout(highlight,180)});
     if(!stored() && (route?.getPage?.()||document.body.dataset.page)==="why"){
