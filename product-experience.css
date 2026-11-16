@@ -186,3 +186,17 @@ body[data-page] .as-decision-status{font-weight:850;letter-spacing:.02em}
  body[data-page] .pw-primary-nav>button,
  body[data-page="why"] .pw-primary-nav>button{padding:9px 10px!important}
 }
+
+/* Compact mobile labels keep the entire primary navigation discoverable. */
+.baruna-nav-compact{display:none}
+@media(max-width:750px){
+ body[data-page] .pw-primary-nav .baruna-nav-full{display:none!important}
+ body[data-page] .pw-primary-nav .baruna-nav-compact{display:inline!important}
+ body[data-page] .pw-primary-nav>button,
+ body[data-page="why"] .pw-primary-nav>button,
+ body[data-page="why"] .pw-primary-nav button,
+ body[data-page] .pw-primary-nav .baruna-more-trigger {
+  padding-left:9px!important;
+  padding-right:9px!important;
+ }
+}
