@@ -18,7 +18,7 @@ try{
  const response=await page.goto(BASE+"/spatial-demo.html",{waitUntil:"networkidle",timeout:30000});
  assert.equal(response?.status(),200);
  await page.locator("#asset-list .asset-option").first().waitFor({state:"visible",timeout:10000});
- assert.match(await page.locator(".simulation-ribbon").innerText(),/SIMULASI VIDEO/);
+ assert.match(await page.locator(".simulation-ribbon").innerText(),/DEMO SCENARIO/);
  assert.match(await page.locator(".workbench-footer").innerText(),/SIMULATION MODE/);
  assert.equal(await page.locator(".asset-option").count(),4);
  assert.equal(await page.locator(".spatial-map .leaflet-interactive").count()>=4,true,"4 synthetic polygons rendered in Leaflet");
@@ -54,12 +54,12 @@ try{
  await page.locator("#open-brief").click();
  assert.equal(await page.locator("#brief-dialog").isVisible(),true);
  assert.match(await page.locator("#brief-body").innerText(),/Akses pelabuhan/);
- assert.match(await page.locator(".dialog-warning").innerText(),/SIMULASI/);
+ assert.match(await page.locator(".dialog-warning").innerText(),/DEMO SCENARIO/);
  assert.match(await page.locator("#brief-body").innerText(),/BUKAN|bukan/);
  const waitDownload=page.waitForEvent("download");
  await page.locator("#download-brief").click();
  const download=await waitDownload;
- assert.match(download.suggestedFilename(),/BARUNA_SIMULASI_Sektor_A_VERIFICATION_BRIEF\.txt/);
+ assert.match(download.suggestedFilename(),/BARUNA_DEMO_Sektor_A_VERIFICATION_BRIEF\.txt/);
  await page.screenshot({path:"reports/baruna-spatial-desktop-brief.png",fullPage:false});
  await page.keyboard.press("Escape");
  assert.equal(await page.locator("#brief-dialog").isVisible(),false);
