@@ -1,22 +1,5 @@
 # BARUNA Sentinel — BIG Bhumireka 2026
 
-## Real Semarang data acquisition (MVP workflow)
-
-**One repository / one entry point:** [docs/REAL_DATA_ACQUISITION.md](docs/REAL_DATA_ACQUISITION.md)
-
-After cloning this repository, import the ZIP from the earlier downloader once:
-
-```bash
-bash acquire.command --import-from /Users/macpro/Code/bhimerka/baruna_mvp_data_fetcher/BARUNA_DATA_REAL.zip
-```
-
-Later runs: `bash acquire.command`. Local raster/ZIP files stay under
-`.local/baruna/` (Git-ignored). The downloader audits PDFs and DEMNAS
-pixels, acquires OSM and STAC metadata, and attempts source-backed COG
-clips; it never manufactures unavailable imagery or asset observations.
-**Acquired files are not yet automatically connected to the Decision
-Workspace**; see the data integration requirements in the guide.
-
 > **Start here (Bhumireka 2026):** Open the homepage, choose **Periksa West Breakwater** or **Panduan 2 menit**, inspect the 2005 historical evidence and its **DATA INSUFFICIENT** outcome, then print an evidence-gated verification brief. This prototype is for defensible inspection *readiness*, not current asset safety ranking, live subsidence measurement, or flood prediction. The guided tour is first-visit/replayable and nonmodal. Advanced Overview/Detail/Compare tools remain under **Eksplorasi lainnya**. See [GIS reviewer product flow](docs/PRODUCT_FLOW_FOR_GIS_REVIEWERS.md) and [video capture guide](docs/VIDEO_CAPTURE_SYNTHETIC_DATA_PLAN.md).
 
 Independent, offline-capable competition prototype. This repository does **not** import or depend on the existing BARUNA WebGIS application.
