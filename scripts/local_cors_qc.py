@@ -28,7 +28,9 @@ import zipfile
 
 MAX_ARCHIVE_BYTES = 800_000_000
 MAX_UNCOMPRESSED_MEMBER = 110_000_000
-MAX_FILES = 32
+# Monthly BIG downloads commonly contain 30 OBS + 30 NAV members.
+# Keep a bounded per-archive cap without rejecting this normal packaging.
+MAX_FILES = 128
 MAX_DAYS = 366
 STATIONS = {"csem", "csmg"}
 # Preserve original archive position and the true four-letter RINEX MARKER NAME.
@@ -45,7 +47,7 @@ def safe_members(path: Path):
         with zipfile.ZipFile(path) as archive:
             files = [info for info in archive.infolist() if not info.is_dir()]
             if len(files) > MAX_FILES:
-                raise ValueError("ZIP contains too many entries (max 32)")
+                raise ValueError("ZIP contains too many entries (max 128)")
             for info in files:
                 name = Path(info.filename).name
                 # Prevent path traversal, duplicate inner paths, encrypted entries, bombs.
