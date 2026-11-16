@@ -42,6 +42,24 @@ try{
   await page.locator("#focus-scene").click();
   assert.match(await page.locator("#scene-details").innerText(),/Sentinel-2/);
   assert.equal(await page.locator("#export-evidence").isDisabled(),true,"AOI required before exporting");
+  // Exercise the actual two-click AOI gesture, not only the full-AOI shortcut.
+  await page.locator("#draw-aoi").click();
+  assert.equal(await page.locator("#draw-aoi").getAttribute("aria-pressed"),"true");
+  const mapBounds=await page.locator("#real-map").boundingBox();
+  assert.ok(mapBounds && mapBounds.width>500 && mapBounds.height>300);
+  await page.locator("#real-map").click({position:{
+    x:Math.round(mapBounds.width*.43),y:Math.round(mapBounds.height*.40)
+  }});
+  assert.match(await page.locator("#aoi-state").innerText(),/Sudut pertama/);
+  await page.locator("#real-map").click({position:{
+    x:Math.round(mapBounds.width*.58),y:Math.round(mapBounds.height*.57)
+  }});
+  assert.match(await page.locator("#area-analysis-status").innerText(),/Area dianalisis/);
+  assert.equal(await page.locator("#draw-aoi").getAttribute("aria-pressed"),"false");
+  assert.equal(await page.locator("#export-evidence").isEnabled(),true);
+  await page.locator("#clear-aoi").click();
+  assert.equal(await page.locator("#export-evidence").isDisabled(),true);
+  assert.match(await page.locator("#area-analysis-status").innerText(),/Belum ada AOI/);
   await page.locator("#full-aoi").click();
   assert.match(await page.locator("#area-analysis-status").innerText(),/Area dianalisis/);
   assert.match(await page.locator("#area-profile-content").innerText(),/Piksel valid/);
