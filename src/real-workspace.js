@@ -183,7 +183,7 @@ async function bootstrap() {
       const response=await fetch("./data/semarang-s2-ndwi-preview.json",{cache:"no-store"});
       if(!response.ok)throw Error("Source-derived preview not found in build");
       const candidate=await response.json();
-      validateNdwiMetadata(candidate,catalog.scenes);
+      validateNdwiMetadata(candidate);
       const decoded=await decodeNdwiGrid(candidate);
       ndwiLayer=L.imageOverlay(ndwiDisplayOverlayUrl(decoded,candidate),
         [[candidate.aoiEpsg4326[1],candidate.aoiEpsg4326[0]],
@@ -265,7 +265,7 @@ async function bootstrap() {
           '<span class="detail-kicker">REAL B03 / B04 / B08 / SCL PIXELS</span>'+
           '<span>NDWI single-date terverifikasi · AOI 100% · preview 72×98 (bukan resolusi analitik).</span>'+
           '<span>Indeks optik bukan hasil pengukuran banjir rob atau perubahan antarwaktu.</span>':
-          '<span class="detail-warning">Scene ini hanya metadata katalog; tidak ada piksel yang terintegrasi untuk scene ini.</span>');
+          '<span class="detail-warning">Produk katalog ini metadata saja. Layer NDWI tersedia dari scene Earth Search terpisah (14 Okt 2026).</span>');
       $("focus-scene").disabled=false;
       $("focus-scene").textContent=footprintVisible?"Sembunyikan footprint":"Tampilkan footprint";
     };

@@ -7,10 +7,9 @@ import {validateNdwiMetadata, sampleNdwiDisplay,
         decodeNdwiGrid, opticalExportEvidence} from "./real-sentinel2-evidence.js";
 
 const meta = JSON.parse(readFileSync(new URL("../data/semarang-s2-ndwi-preview.json", import.meta.url), "utf8"));
-const scenes = JSON.parse(readFileSync(new URL("../data/semarang-sentinel-scenes.json", import.meta.url), "utf8"));
 
 test("real Sentinel-2 preview is source-traceable and geospatially aligned", () => {
-  assert.equal(validateNdwiMetadata(meta, scenes.scenes), true);
+  assert.equal(validateNdwiMetadata(meta), true);
   assert.equal(meta.sourceRasterSha256, "d398e1af132b23fb3daecaf6477ed8f142d25dd02b6b3218a5c572c15d294363");
   assert.deepEqual(meta.sourceBands, ["B03", "B04", "B08", "SCL"]);
   assert.deepEqual(meta.aoiEpsg4326, [110.375,-7.025,110.485,-6.875]);
@@ -38,8 +37,8 @@ test("single-date optical evidence never allows change, rob, InSAR or risk claim
   assert.match(evidence.previewPurpose,/DISPLAY_ONLY/);
   const missing=structuredClone(meta);
   missing.sourceRasterSha256="0".repeat(64);
-  assert.throws(()=>validateNdwiMetadata(missing,scenes.scenes),/provenance/);
+  assert.throws(()=>validateNdwiMetadata(missing),/provenance/);
   const invented=structuredClone(meta);
   invented.sceneId="S2B_T49MDN_20261015T025716_L2A";
-  assert.throws(()=>validateNdwiMetadata(invented,scenes.scenes),/catalogue/);
+  assert.throws(()=>validateNdwiMetadata(invented),/provenance/);
 });

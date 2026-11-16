@@ -80,3 +80,5 @@ A source-verified GeoTIFF was supplied as `BARUNA_SENTINEL2_REAL.zip`:
 - `modelGate.singleDateNdwiPreview` is true when the committed source-derived preview is valid, but `modelGate.realOpticalAnalysis` **remains false** because change detection and validated inundation models are not supported. SCL water class is NOT flooded area.
 - The source byte hash, grid byte hash, CRS, temporal metadata, band names and scientific no-go gates have Node tests.
 - The existing scenario/demo and synthetic rankings remain isolated. No Sentinel-1 InSAR, flooding, or operational asset scoring is introduced.
+
+**Catalogue identity warning:** The imported real 14 Oct 2026 Earth Search scene ID differs from the existing 14 Oct Copernicus CDSE STAC product ID. Treat them as independent source records; a coincident date/tile is not proof of identical product lineage. The optical layer uses the Earth Search scene with independent provenance. The original 16 CDSE records remain metadata-only.

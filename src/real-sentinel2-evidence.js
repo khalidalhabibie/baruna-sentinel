@@ -5,12 +5,13 @@
  */
 const EXPECTED_AOI = [110.375, -7.025, 110.485, -6.875];
 const EXPECTED_SOURCE_HASH = "d398e1af132b23fb3daecaf6477ed8f142d25dd02b6b3218a5c572c15d294363";
+const EXPECTED_SCENE_ID = "S2B_T49MDN_20261014T025716_L2A";
 
-export function validateNdwiMetadata(meta, scenes = []) {
+export function validateNdwiMetadata(meta) {
   if (meta?.schema !== "baruna-sentinel2-ndwi-preview-v1" ||
       meta.sourceKind !== "SOURCE_DERIVED_REAL_OPTICAL_SINGLE_DATE" ||
       meta.sourceRasterSha256 !== EXPECTED_SOURCE_HASH ||
-      !/^S2[A-C]_T49MDN_/.test(meta.sceneId) ||
+      meta.sceneId !== EXPECTED_SCENE_ID ||
       !Number.isFinite(Date.parse(meta.acquisitionUtc)) ||
       !Array.isArray(meta.aoiEpsg4326) ||
       meta.aoiEpsg4326.join(",") !== EXPECTED_AOI.join(",") ||
@@ -28,10 +29,8 @@ export function validateNdwiMetadata(meta, scenes = []) {
       typeof meta.gridSha256 !== "string" || !/^[0-9a-f]{64}$/.test(meta.gridSha256)) {
     throw Error("Sentinel-2 NDWI preview provenance / format is invalid");
   }
-  if (scenes.length && !scenes.some(row => row[0] === 2 && row[1] === meta.sceneId &&
-    row[2] === meta.acquisitionUtc.slice(0, 10))) {
-    throw Error("Sentinel-2 pixel scene is not in the real scene catalogue");
-  }
+  // Independent Earth Search scene. Existing Copernicus catalogue uses different
+  // product IDs; they must not be equated without verified cross-provider lineage.
   return true;
 }
 
