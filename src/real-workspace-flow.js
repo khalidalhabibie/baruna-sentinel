@@ -45,13 +45,15 @@ export function installScreeningFlow({map,pixels,meta,tideRecords,tideIssue,onAr
       $("area-analysis-status").textContent="Belum ada AOI";
       return;
     }
-    const valid=stats.status==="VALID_DISPLAY_GRID_STATS" && stats.selectedPixels>=4;
+    const valid=stats.status==="VALID_DISPLAY_GRID_STATS" && stats.validPixels>=4 && stats.coveragePct>=80;
     $("area-analysis-status").textContent=valid?"Area dianalisis":"Perlu AOI lebih luas";
     $("area-analysis-status").dataset.status=valid?"ready":"blocked";
     if(!valid){
       $("area-profile-content").innerHTML=
         '<div class="analysis-placeholder"><strong>Data area belum cukup</strong><p>'+
         esc(stats.status==="NO_VALID_DSM_PIXELS"?"Area tidak memiliki piksel DSM yang valid.":
+          stats.status==="INSUFFICIENT_VALID_DSM_COVERAGE"?
+          "Piksel valid tidak cukup: diperlukan minimal 4 piksel dan ≥80% cakupan valid.":
           "Perbesar area: minimal empat piksel grid tampilan diperlukan.")+
         '</p></div>';
       return;
@@ -172,7 +174,7 @@ export function installScreeningFlow({map,pixels,meta,tideRecords,tideIssue,onAr
   }
 
   function getArea(){
-    return stats?.status==="VALID_DISPLAY_GRID_STATS"&&stats.selectedPixels>=4?stats:null;
+    return stats?.status==="VALID_DISPLAY_GRID_STATS"&&stats.validPixels>=4&&stats.coveragePct>=80?stats:null;
   }
   return {
     getArea,
