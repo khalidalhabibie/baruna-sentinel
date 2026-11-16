@@ -228,7 +228,14 @@ function render(){
   '<div class="pw-heading-row as-page-heading"><div><span class="pw-kicker">PROPOSAL WORKFLOW / GNSS → EVIDENCE → DECISION</span>'+
      '<h1>Inspection assessment</h1><p>Explain what the research proves, what remains unknown, and whether an infrastructure inspection priority can be issued.</p></div>'+
      '<div class="pw-heading-actions">'+button("analyst","GNSS evidence")+button("compare","Compare sources")+'</div></div>'+
-  '<div class="as-mode-switch" role="group" aria-label="Assessment evidence mode">'+
+  
+  '<section class="as-orientation" aria-label="Alur kerja penilaian aset">'+
+   '<div><small>LOKASI</small><strong>West Breakwater / Tanjung Emas</strong><span>Studi historis tahun 2005</span></div>'+
+   '<div><small>SUMBER</small><strong>Catatan lapangan + referensi GNSS</strong><span>Sumber independen · tidak digabung jadi pergerakan aset</span></div>'+
+   '<div><small>KEPUTUSAN</small><strong>Evidence Gate</strong><span>Jika bukti tidak cukup, jangan keluarkan ranking</span></div>'+
+   '<div><small>OUTPUT</small><strong>Verification Brief</strong><span>Data dan pemeriksaan yang perlu diminta</span></div>'+
+  '</section>'+
+'<div class="as-mode-switch" role="group" aria-label="Assessment evidence mode">'+
      '<button type="button" id="as-real-mode" aria-pressed="'+(!showSimulation&&!assetMode)+'" class="'+(!showSimulation&&!assetMode?"is-active":"")+'">Published evidence</button>'+
      '<button type="button" id="as-asset-mode" aria-pressed="'+assetMode+'" class="'+(assetMode?"is-active":"")+'">Import asset GeoJSON</button>'+
      '<button type="button" id="as-demo-mode" aria-pressed="'+showSimulation+'" class="'+(showSimulation?"is-active":"")+'">Synthetic policy demo</button>'+

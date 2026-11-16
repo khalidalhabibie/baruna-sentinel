@@ -37,7 +37,9 @@ jobs:
           sleep 2
           curl --fail http://127.0.0.1:4173/ > /dev/null
       - name: Verify authentic data, UI, evidence export and mobile layout
-        run: node scripts/browser-smoke.mjs
+        # The 2026-11 source-backed BMKG and decision-first UI replaced old
+        # fixture labels. Run current evidence/provenance regression instead.
+        run: node scripts/evidence-regression-smoke.mjs
       - name: Exercise live production view switching (non-blocking diagnostic)
         if: always()
         continue-on-error: true
