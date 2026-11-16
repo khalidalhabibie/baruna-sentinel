@@ -1,5 +1,6 @@
 import {VIDEO_CONTEXT,VIDEO_ASSETS,VIDEO_SOURCES,SOURCE_STATUS,validateVideoSources} from "./video-fixture.js";
 import {parseStationQc} from "./station-qc.js";
+import {makeSyntheticEnu,ENU_DEMO_CONTRACT,ENU_DEMO_STATIONS} from "./synthetic-gnss-series.js";
 validateVideoSources();
 
 const root=document.getElementById("video-scene");
@@ -9,6 +10,7 @@ const next=document.getElementById("next-scene");
 const titles=["konteks wilayah","sektor contoh","verification brief"];
 let scene=0;
 let selectedAsset=VIDEO_ASSETS[0].id;
+let selectedEnuStation="CSEM";
 let importedQC=null;
 let importName="";
 let importError="";
@@ -59,11 +61,42 @@ function stationPanel(){
  '<span>DATA ASLI BELUM DIMUAT · BUKAN 0%</span></div>')+
  (importError?'<div role="alert" class="import-error">'+e(importError)+'</div>':"")+'</div>';
 }
+function syntheticEnuChart(records,component,title){
+ const w=760,h=106,left=52,right=14,top=12,bottom=22;
+ const vals=records.map(p=>p[component]),low=Math.min(...vals)-1.5,high=Math.max(...vals)+1.5;
+ const px=i=>left+(w-left-right)*i/(records.length-1);
+ const py=v=>top+(h-top-bottom)*(1-(v-low)/(high-low));
+ const path=vals.map((v,i)=>(i?"L":"M")+px(i).toFixed(1)+","+py(v).toFixed(1)).join(" ");
+ const grid=[0,.5,1].map(frac=>{
+  const y=top+(h-top-bottom)*frac;
+  return '<line x1="'+left+'" y1="'+y+'" x2="'+(w-right)+'" y2="'+y+'" stroke="#dbe9e3" stroke-dasharray="3 5"/>'+
+   '<text x="'+(left-7)+'" y="'+(y+3)+'" text-anchor="end" font-size="9" fill="#7f9c91">'+((high-(high-low)*frac).toFixed(1))+'</text>';
+ }).join("");
+ const yearLines=[0,12,24,36,48].map(i=>'<text x="'+px(i)+'" y="'+(h-5)+'" text-anchor="middle" font-size="9" fill="#879e95">'+records[i].month.slice(0,4)+'</text>').join("");
+ return '<div class="enu-row"><span class="enu-axis-label">'+e(title)+' <small>mm*</small></span>'+
+  '<svg role="img" aria-label="'+e(title)+' — sintetis, bukan pengukuran BIG" class="enu-plot" viewBox="0 0 '+w+' '+h+'">'+grid+
+  '<path d="'+path+'" fill="none" stroke="#18796e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'+yearLines+'</svg></div>';
+}
+function syntheticEnuPanel(){
+ const points=makeSyntheticEnu(selectedEnuStation);
+ return '<section class="panel synthetic-enu-panel">'+
+  '<div class="panel-header"><div><span class="panel-kicker">VISUALISASI KONSEP / TIDAK ADA CSV RESMI</span>'+
+  '<h2>GNSS Coordinate Time Series — contoh ENU</h2>'+
+  '<p>Januari 2022–Oktober 2026 · '+ENU_DEMO_CONTRACT.count+' titik bulanan buatan · bukan solusi posisi harian BIG.</p></div>'+
+  '<span class="status mocked">SIMULASI DATA KOORDINAT</span></div>'+
+  '<div class="enu-tabs" role="group" aria-label="Pilih stasiun simulasi">'+ENU_DEMO_STATIONS.map(s=>
+    '<button type="button" class="enu-tab'+(s===selectedEnuStation?' is-selected':'')+'" data-enu-station="'+s+'" aria-pressed="'+(s===selectedEnuStation?'true':'false')+'">'+s+'</button>'
+   ).join("")+'</div>'+
+  '<div class="enu-plots">'+syntheticEnuChart(points,"east","EAST (E)")+
+  syntheticEnuChart(points,"north","NORTH (N)")+syntheticEnuChart(points,"up","UP (U)")+'</div>'+
+  '<p class="enu-warning"><strong>*DATA SINTETIS / VIDEO ONLY.</strong> Angka dan pola dibuat secara algoritmik; tidak diambil dari BIG atau hasil olahan RINEX. '+ 
+  'Grafik ini tidak digunakan untuk menghitung tren penurunan tanah, kecepatan gerak stasiun, risiko maupun keputusan aset. CSV resmi belum bisa diunduh.</p></section>';
+}
 function sourcesScene(){
  return '<div class="scene-head"><div><span class="scene-index">01 / 04 · SOURCE READINESS</span><h2>Semua sumber dicatat. Tidak semua sumber sudah tersedia.</h2>'+
  '<p>Mulai dari bukti yang dapat ditelusuri, bukan dashboard yang berpura-pura semua data sudah lengkap.</p></div>'+
  '<span class="scene-mark">Bukti → konteks → verifikasi</span></div>'+
- stationPanel()+
+ stationPanel()+syntheticEnuPanel()+
  '<section class="panel"><div class="panel-header"><div><span class="panel-kicker">INPUT PROVIDERS</span><h2>Sumber lingkungan & aset</h2>'+
  '<p>Warna dan status memperlihatkan sumber nyata, data yang masih kosong, dan data ilustratif.</p></div></div>'+
  '<div class="sources-grid">'+VIDEO_SOURCES.filter(x=>x.id!=="cors").map(sourceCard).join("")+'</div></section>';
@@ -92,7 +125,7 @@ function contextScene(){
  '<p class="chart-note">Angka dan waktu hipotetis. Belum ada seri pasut resmi beserta datum dan zona waktunya.</p></article></div>'+
  '<div class="context-strip"><article><span>PEMKOT SEMARANG</span><strong>Layer rob & drainase</strong><small>Preview ilustratif — belum memuat geometri sumber</small></article>'+
  '<article><span>COPERNICUS</span><strong>Sentinel-1 / Sentinel-2</strong><small>Preview ilustratif — InSAR tidak dihitung</small></article>'+
- '<article><span>BIG SRGI</span><strong>Koordinat harian stasiun</strong><small>Belum ada CSV numerik; laju vertikal tetap tidak tersedia</small></article></div>'+
+ '<article><span>BIG SRGI</span><strong>Koordinat harian stasiun</strong><small>Grafik ENU simulasi ada di Scene 01; estimasi vertikal asli belum tersedia</small></article></div>'+
  '<p class="context-disclaimer">'+e(VIDEO_CONTEXT.disclaimer)+'</p>';
 }
 function scheme(){
@@ -164,6 +197,8 @@ function render(){
 document.addEventListener("click",ev=>{
  const step=ev.target.closest("[data-step]");
  if(step){scene=Number(step.dataset.step);render();return;}
+ const enuSelect=ev.target.closest("[data-enu-station]");
+ if(enuSelect){selectedEnuStation=enuSelect.dataset.enuStation;render();return;}
  const select=ev.target.closest("[data-asset]");
  if(select){selectedAsset=select.dataset.asset;render();return;}
  if(ev.target.closest("#next-scene")){scene=Math.min(3,scene+1);render();return;}
