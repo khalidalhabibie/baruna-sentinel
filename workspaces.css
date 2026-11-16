@@ -40,3 +40,23 @@
 @media(max-width:990px){.workspace-grid{grid-template-columns:1fr}.reference{grid-column:auto}.card-main{grid-template-columns:1fr minmax(100px,.3fr)}.overview{padding-top:40px}}
 @media(max-width:700px){.product{display:block}.sidebar{position:relative;height:auto;border-right:0;border-bottom:1px solid #e4ebeb;padding:12px 16px}.brand{margin:0 0 12px}.brand img{width:110px}.sidebar-label,.sidebar-bottom{display:none}.sidebar-nav{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px}.sidebar-nav a{white-space:nowrap;padding:8px 10px;min-height:38px;font-size:10px}.sidebar-nav a>span{font-size:14px;width:14px}.topbar{height:57px;padding:0 18px}.topbar-right{gap:7px}.topbar-note{display:none}.topbar-cta{font-size:10px;padding:9px 10px}.main{padding:0 18px}.overview{padding:29px 0 25px}.overview h1{font-size:29px}.overview>p{font-size:12px}.overview-statline{gap:0}.overview-statline>div{padding-right:12px;margin-right:12px;gap:5px;flex-direction:column}.overview-statline b{font-size:19px}.overview-statline span{font-size:9px}.workspace-card{padding:19px 18px 0}.card-meta{margin-bottom:21px}.card-main{grid-template-columns:1fr 80px}.card-art{width:90px}.card-description{font-size:11px}.workspace-card h3{font-size:22px}.fact-strip{gap:12px}.card-bottom{flex-wrap:wrap}.card-action{width:100%}.source-caption{max-width:none}.reference-body{grid-template-columns:1fr}.station-pair{max-width:100%}.method-strip{display:block;padding:24px 19px}.method-strip a{margin-top:17px}.footer{flex-direction:column;align-items:flex-start;gap:9px}.section-count{font-size:9px}}
 @media(max-width:390px){.card-main{grid-template-columns:1fr}.card-art{display:none}.card-meta{gap:5px}.card-id,.state{font-size:9px}.overview h1{font-size:27px}}
+/* Source-backed MVP is the portfolio's primary entry, never a fictional risk card. */
+.state.real{color:#1b775f;background:#e4f3e9}
+.state.real:before{background:#309b79}
+.workspace-card.real-primary{grid-column:1/-1;padding-bottom:0;background:linear-gradient(118deg,#fff 42%,#f1f8f5 100%);border-color:#cfe3dc;box-shadow:0 13px 30px rgba(21,83,79,.047)}
+.real-primary .card-meta{margin-bottom:21px}
+.real-primary-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(230px,.75fr);gap:26px;align-items:center}
+.real-primary h3{font-size:clamp(29px,3vw,38px);margin:9px 0 7px}
+.real-primary .card-description{max-width:680px}
+.real-overline{font-size:10px;color:#41917a;font-weight:830;letter-spacing:.12em}
+.real-card-quickfacts{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:21px 0 15px}
+.real-card-quickfacts span{background:#edf5f1;color:#5a8480;border:1px solid #dcebe3;border-radius:5px;padding:8px 10px;font-size:10px;white-space:nowrap}
+.real-card-quickfacts b{color:#1e6c72}
+.real-card-graphic{height:208px;max-width:400px;width:100%;margin-left:auto;background:#e9f3ec;border-radius:11px;position:relative;overflow:hidden;border:1px solid #d5e7da}
+.real-card-graphic svg{width:100%;height:100%;position:relative;z-index:2}
+.real-grid-lines{position:absolute;inset:0;background-image:linear-gradient(#75a29b20 1px,transparent 1px),linear-gradient(90deg,#75a29b20 1px,transparent 1px);background-size:27px 27px}
+.real-card-graphic>span{position:absolute;z-index:4;bottom:10px;right:12px;font-size:9px;color:#e9f8f1;letter-spacing:.06em;font-weight:800;text-shadow:0 1px 4px #195f64}
+.real-primary .card-bottom{border-top:1px solid #dcebe5;margin-top:9px}
+.real-primary .source-caption{max-width:580px}
+@media(max-width:950px){.real-primary-body{grid-template-columns:1fr 190px;gap:13px}.real-card-graphic{height:170px}}
+@media(max-width:600px){.real-primary-body{grid-template-columns:1fr}.real-card-graphic{height:130px;max-width:none}.real-primary .card-bottom{flex-wrap:wrap;gap:14px}.real-primary .card-action{width:100%}}
