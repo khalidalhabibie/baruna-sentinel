@@ -78,3 +78,7 @@ h1,h2,h3,p{margin-top:0}h1{font-family:Georgia,"Iowan Old Style",serif;font-size
 .analysis-footer .button{min-width:190px}
 @media(max-width:1050px){.analysis-columns{grid-template-columns:1fr}.analysis-metrics{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:660px){.analysis-section{padding-top:24px}.analysis-header{align-items:flex-start;flex-direction:column}.analysis-header h2{font-size:23px}.analysis-panel{padding:17px 16px}.analysis-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.analysis-metric strong{font-size:15px}.analysis-footer{align-items:flex-start;flex-direction:column}.analysis-footer .button{width:100%}}
+
+/* Single-date real S2 NDWI overview. It cannot be interpreted as verified flooding. */
+#ndwi-legend[hidden],.map-scale[hidden]{display:none!important}
+#ndwi-legend .ndwi-scale-strip{background:linear-gradient(90deg,#925b3c,#d5ad6f,#f3f1d0,#50aead,#115c9d)}

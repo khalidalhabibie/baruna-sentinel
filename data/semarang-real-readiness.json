@@ -1,1 +1,99 @@
-{"schema":"baruna-real-evidence-readiness-v1","generatedFrom":"BARUNA_GENERATED.zip / sentinel-helpes pipeline","asOf":"2026-11-16","aoiEpsg4326":[110.375,-7.025,110.485,-6.875],"datasets":[{"id":"copernicus_dsm","status":"REAL_PIXELS_AVAILABLE","source":"Copernicus DEM GLO-30","asset":"data/semarang-dsm-preview.json","sourceResolution":[396,540],"previewResolution":[72,98],"canUseFor":"surface-elevation-context-only","notFor":"subsidence, water-depth, ground datum or operational risk"},{"id":"sentinel2_catalog","status":"REAL_METADATA_ONLY","source":"Copernicus STAC","count":16,"asset":"data/semarang-sentinel-scenes.json","notFor":"pixel-based land cover, NDWI or flooding without spectral bands"},{"id":"sentinel1_catalog","status":"REAL_METADATA_ONLY","source":"Copernicus STAC","count":11,"asset":"data/semarang-sentinel-scenes.json","notFor":"InSAR displacement or land subsidence without suitable SLC pairs/processing"},{"id":"bpbd_rob_maps","status":"REFERENCE_PDF_AVAILABLE_LOCAL","source":"BPBD Semarang","count":2,"notFor":"operational rob polygons until extracted and validated"},{"id":"big_demnas","status":"REJECTED_INVALID_PIXEL_VALUES","source":"BIG ImageServer","notFor":"elevation"},{"id":"osm_port_context","status":"NOT_AVAILABLE","source":"OSM Overpass","notFor":"surveyor-approved asset geometry"},{"id":"operator_asset_boundaries","status":"NOT_AVAILABLE","source":"operator","notFor":"asset-level risk/inspection"}],"modelGate":{"surfaceLayer":true,"sceneDiscovery":true,"realOpticalAnalysis":false,"realInsar":false,"robDepthModel":false,"assetLevelInspectionPriority":false},"warning":"This manifest describes source readiness, not structural safety. Historical CSEM/QC and BMKG live in separate modules; imported private files are never published."}
+{
+  "schema": "baruna-real-evidence-readiness-v1",
+  "generatedFrom": "BARUNA_GENERATED.zip / sentinel-helpes pipeline",
+  "asOf": "2026-11-16",
+  "aoiEpsg4326": [
+    110.375,
+    -7.025,
+    110.485,
+    -6.875
+  ],
+  "datasets": [
+    {
+      "id": "copernicus_dsm",
+      "status": "REAL_PIXELS_AVAILABLE",
+      "source": "Copernicus DEM GLO-30",
+      "asset": "data/semarang-dsm-preview.json",
+      "sourceResolution": [
+        396,
+        540
+      ],
+      "previewResolution": [
+        72,
+        98
+      ],
+      "canUseFor": "surface-elevation-context-only",
+      "notFor": "subsidence, water-depth, ground datum or operational risk"
+    },
+    {
+      "id": "sentinel2_catalog",
+      "status": "REAL_METADATA_ONLY",
+      "source": "Copernicus STAC",
+      "count": 16,
+      "asset": "data/semarang-sentinel-scenes.json",
+      "notFor": "pixel-based land cover, NDWI or flooding without spectral bands"
+    },
+    {
+      "id": "sentinel1_catalog",
+      "status": "REAL_METADATA_ONLY",
+      "source": "Copernicus STAC",
+      "count": 11,
+      "asset": "data/semarang-sentinel-scenes.json",
+      "notFor": "InSAR displacement or land subsidence without suitable SLC pairs/processing"
+    },
+    {
+      "id": "bpbd_rob_maps",
+      "status": "REFERENCE_PDF_AVAILABLE_LOCAL",
+      "source": "BPBD Semarang",
+      "count": 2,
+      "notFor": "operational rob polygons until extracted and validated"
+    },
+    {
+      "id": "big_demnas",
+      "status": "REJECTED_INVALID_PIXEL_VALUES",
+      "source": "BIG ImageServer",
+      "notFor": "elevation"
+    },
+    {
+      "id": "osm_port_context",
+      "status": "NOT_AVAILABLE",
+      "source": "OSM Overpass",
+      "notFor": "surveyor-approved asset geometry"
+    },
+    {
+      "id": "operator_asset_boundaries",
+      "status": "NOT_AVAILABLE",
+      "source": "operator",
+      "notFor": "asset-level risk/inspection"
+    },
+    {
+      "id": "sentinel2_single_date_ndwi",
+      "status": "REAL_PIXELS_SOURCE_DERIVED_DISPLAY_PREVIEW",
+      "source": "Element84 Earth Search / Sentinel-2 L2A",
+      "sceneId": "S2B_T49MDN_20261014T025716_L2A",
+      "acquiredUtc": "2026-10-14T02:59:51.435000Z",
+      "sourceRasterSha256": "d398e1af132b23fb3daecaf6477ed8f142d25dd02b6b3218a5c572c15d294363",
+      "asset": "data/semarang-s2-ndwi-preview.json",
+      "sourceResolution": [
+        1218,
+        1660
+      ],
+      "previewResolution": [
+        72,
+        98
+      ],
+      "canUseFor": "single-date optical NDWI overview, cloud-masked display only",
+      "notFor": "verified flooding/rob, temporal change, surveyed asset boundaries or operational risk"
+    }
+  ],
+  "modelGate": {
+    "surfaceLayer": true,
+    "sceneDiscovery": true,
+    "realOpticalAnalysis": false,
+    "realInsar": false,
+    "robDepthModel": false,
+    "assetLevelInspectionPriority": false,
+    "singleDateNdwiPreview": true
+  },
+  "warning": "This manifest describes source readiness, not structural safety. Historical CSEM/QC and BMKG live in separate modules; imported private files are never published. Source-derived NDWI overview from 14 Oct 2026 true four-band pixels is now available, but temporal optical change and flood/asset inferences remain blocked."
+}

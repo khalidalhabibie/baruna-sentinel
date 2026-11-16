@@ -67,3 +67,16 @@ unlicensed data, or sensitive asset survey geometry.
 CI runs `npm run check` with tests for grid size, bounds, scene IDs,
 sensor counts and blocked conclusions, and includes all required files
 in the Vercel static artifact.
+
+## Real four-band Sentinel-2 L2A addition (16 Nov 2026)
+
+A source-verified GeoTIFF was supplied as `BARUNA_SENTINEL2_REAL.zip`:
+- Scene `S2B_T49MDN_20261014T025716_L2A`, acquisition 14 Oct 2026 02:59:51 UTC.
+- Four bands B03, B04, B08 (10 m), SCL (20 m aligned to the 10 m 4-band source COG).
+- EPSG:32749; 1218×1660 source pixels; source SHA-256 `d398e1af132b23fb3daecaf6477ed8f142d25dd02b6b3218a5c572c15d294363`.
+- The source COG (12.75 MB) is NOT committed. Only a georeferenced WGS84 72×98 **actual-data-derived** NDWI preview is public in `data/semarang-s2-ndwi-preview.json`.
+- Calculation used band reflectance DN×0.0001−0.1 and valid SCL classes 4,5,6; natural 10 m source NDWI percentiles P10/P50/P90 −0.3848 / −0.0816 / +0.4291. Rendered preview is downsampled and quantized, NOT suitable for parcel/asset analysis.
+- Real Workspace now provides a user-selectable NDWI layer alongside the existing DSM. Each uses its own legend; only one overlay is visible at once. The selected 14 Oct scene is clearly labeled as having real optical pixels; other STAC scenes remain metadata only.
+- `modelGate.singleDateNdwiPreview` is true when the committed source-derived preview is valid, but `modelGate.realOpticalAnalysis` **remains false** because change detection and validated inundation models are not supported. SCL water class is NOT flooded area.
+- The source byte hash, grid byte hash, CRS, temporal metadata, band names and scientific no-go gates have Node tests.
+- The existing scenario/demo and synthetic rankings remain isolated. No Sentinel-1 InSAR, flooding, or operational asset scoring is introduced.

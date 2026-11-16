@@ -5,6 +5,7 @@
 import {decodeDisplayGrid, sampleDisplayGrid, rasterOverlayUrl} from "./real-spatial-evidence.js";
 import {installScreeningFlow} from "./real-workspace-flow.js";
 import {parseBmkgForecastCsv} from "./real-tide-context.js";
+import {validateNdwiMetadata,decodeNdwiGrid,ndwiDisplayOverlayUrl,sampleNdwiDisplay,opticalExportEvidence} from "./real-sentinel2-evidence.js";
 
 const DATA_PATHS = {
   dsm: "./data/semarang-dsm-preview.json",
@@ -51,7 +52,7 @@ export function formatDsmReading(m, lat, lon) {
   return m === null ? "Di luar cakupan DSM atau piksel NoData" :
     "≈ " + m.toFixed(1) + " m · " + lat.toFixed(5) + ", " + lon.toFixed(5);
 }
-function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreening=null, tideForecast=null}) {
+function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreening=null, tideForecast=null, optical=null}) {
   return {
     schema:"baruna-coastal-evidence-brief-v1",
     createdAt:new Date().toISOString(),
@@ -90,8 +91,9 @@ function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreen
         sourceKind:"CATALOGUE_METADATA_NOT_IMAGE_PIXELS"
       } : null
     },
+    singleDateOptical:opticalExportEvidence(optical),
     evidenceGates:readiness.modelGate,
-    unsupported:["No imagery pixels available","No Sentinel-1 InSAR displacement",
+    unsupported:["No multi-date optical change or validated flood extent","No Sentinel-1 InSAR displacement",
       "No operator-surveyed asset polygons","No validated rob-depth model",
       "No asset safety or operational inspection ranking"],
     limitations:"Not a geodetic position solution, on-site survey, flood prediction or risk ranking."
@@ -112,8 +114,10 @@ function renderReadiness(gate) {
       detail:"Copernicus GLO-30 DSM · nilai grid tampilan, bukan elevasi survei aset"},
     {name:"Satellite acquisition discovery",enabled:gate.sceneDiscovery,
       detail:"Scene Sentinel-1/2 nyata · footprint, tanggal dan metadata produk"},
-    {name:"Optical change / water analysis",enabled:gate.realOpticalAnalysis,
-      detail:"Belum ada band raster Sentinel-2, cloud mask dan indeks yang tervalidasi"},
+    {name:"Single-date NDWI overview",enabled:gate.singleDateNdwiPreview,
+      detail:"Piksel Sentinel-2 L2A B03/B08 nyata, dikoreksi reflektansi dan mask SCL; hanya preview satu tanggal"},
+    {name:"Temporal optical change / rob validation",enabled:gate.realOpticalAnalysis,
+      detail:"Perlu scene pembanding, metode dan validasi independen; NDWI satu tanggal tidak membuktikan rob"},
     {name:"InSAR displacement",enabled:gate.realInsar,
       detail:"Sentinel-1 GRD tidak mendukung kesimpulan displacement tanpa pemrosesan yang sesuai"},
     {name:"Rob depth and flood forecast",enabled:gate.robDepthModel,
@@ -169,12 +173,68 @@ async function bootstrap() {
     $("toggle-dsm").addEventListener("change",event=>{
       if(event.target.checked)dsmLayer.addTo(map);else map.removeLayer(dsmLayer);
     });
+    // Separate source-derived optical evidence; never alter the legacy DSM source.
+    // Optional failure does not invalidate the real DEM, catalogue or BMKG input.
+    const ndwiToggle=$("toggle-ndwi");
+    let optical=null;
+    let ndwiGrid=null;
+    let ndwiLayer=null;
+    try {
+      const response=await fetch("./data/semarang-s2-ndwi-preview.json",{cache:"no-store"});
+      if(!response.ok)throw Error("Source-derived preview not found in build");
+      const candidate=await response.json();
+      validateNdwiMetadata(candidate,catalog.scenes);
+      const decoded=await decodeNdwiGrid(candidate);
+      ndwiLayer=L.imageOverlay(ndwiDisplayOverlayUrl(decoded,candidate),
+        [[candidate.aoiEpsg4326[1],candidate.aoiEpsg4326[0]],
+         [candidate.aoiEpsg4326[3],candidate.aoiEpsg4326[2]]],
+        {opacity:.82,interactive:false,zIndex:355});
+      ndwiGrid=decoded;
+      optical=candidate;
+      ndwiToggle.disabled=false;
+      $("s2-ndwi-status").textContent="Piksel asli terverifikasi · "+candidate.acquisitionUtc.slice(0,10)+
+        " · NDWI median "+candidate.sourceValidation.ndwiPercentilesP10P50P90[1].toFixed(3)+
+        " · preview 72×98, bukan peta rob.";
+      $("stat-s2").textContent=s2Count+" scenes · 1 raster";
+    }catch(error){
+      ndwiToggle.disabled=true;
+      $("s2-ndwi-status").textContent="NDWI belum tersedia: "+String(error?.message||error);
+    }
+    const dsmToggle=$("toggle-dsm");
+    const mapLabel=document.querySelector(".map-overlay-label");
+    const elevationLegend=document.querySelector(".map-scale");
+    const ndwiLegend=$("ndwi-legend");
+    const mapProvenance=document.querySelector(".map-provenance");
+    function changeOptical(on){
+      if(!ndwiLayer)return;
+      if(on){
+        ndwiLayer.addTo(map);
+        map.removeLayer(dsmLayer);
+        dsmToggle.checked=false;
+      }else{
+        map.removeLayer(ndwiLayer);
+      }
+      if(mapLabel)mapLabel.textContent=on?
+        "SENTINEL-2 L2A · REAL SINGLE-DATE NDWI":"COPERNICUS DEM · ACTUAL SURFACE DATA";
+      if(elevationLegend)elevationLegend.hidden=on;
+      if(ndwiLegend)ndwiLegend.hidden=!on;
+      if(mapProvenance)mapProvenance.textContent=on?
+        "Sentinel-2 L2A 14 Oct 2026 · source-derived NDWI preview · not verified flooding":
+        "OpenStreetMap basemap · Copernicus DEM GLO-30 surface context";
+    }
+    ndwiToggle.addEventListener("change",()=>changeOptical(ndwiToggle.checked));
+    dsmToggle.addEventListener("change",()=>{
+      if(dsmToggle.checked&&ndwiToggle.checked){
+        ndwiToggle.checked=false;
+        changeOptical(false);
+      }
+    });
     $("stat-dsm").textContent="Available";
-    $("stat-s2").textContent=s2Count+" scenes";
+    if(!optical)$("stat-s2").textContent=s2Count+" scenes";
     $("stat-s1").textContent=s1Count+" scenes";
     $("stat-status").textContent="Source ready";
-    $("status-hint").textContent="2 capabilities available · 4 blocked";
-    renderReadiness(readiness.modelGate);
+    $("status-hint").textContent=optical?"3 evidence streams · no flood or asset-risk model":"2 evidence streams · optical unavailable";
+    renderReadiness({...readiness.modelGate,singleDateNdwiPreview:Boolean(optical)});
     let footprint=null;
     let footprintVisible=false;
     let selected=null;
@@ -201,7 +261,11 @@ async function bootstrap() {
         (selected[3]===null?
           '<span>Radar GRD · footprint metadata</span>':
           '<span>Cloud cover tile: <b>'+Number(selected[3]).toFixed(2)+'%</b> · bukan cloud mask khusus AOI</span>')+
-        '<span class="detail-warning">Source metadata only — belum tersedia piksel satelit yang dapat dianalisis.</span>';
+        (optical&&selected[1]===optical.sceneId?
+          '<span class="detail-kicker">REAL B03 / B04 / B08 / SCL PIXELS</span>'+
+          '<span>NDWI single-date terverifikasi · AOI 100% · preview 72×98 (bukan resolusi analitik).</span>'+
+          '<span>Indeks optik bukan hasil pengukuran banjir rob atau perubahan antarwaktu.</span>':
+          '<span class="detail-warning">Scene ini hanya metadata katalog; tidak ada piksel yang terintegrasi untuk scene ini.</span>');
       $("focus-scene").disabled=false;
       $("focus-scene").textContent=footprintVisible?"Sembunyikan footprint":"Tampilkan footprint";
     };
@@ -210,6 +274,8 @@ async function bootstrap() {
       scene.innerHTML=list.map((row,index)=>
         '<option value="'+index+'">'+esc(FORMAT_DATE(row[2]))+
         ' · '+esc(row[1].slice(0,15))+'</option>').join("");
+      const opticalIndex=optical&&sensor.value==="2"?list.findIndex(row=>row[1]===optical.sceneId):-1;
+      if(opticalIndex>=0)scene.value=String(opticalIndex);
       showFootprint();
     };
     sensor.addEventListener("change",fillScenes);
@@ -223,9 +289,14 @@ async function bootstrap() {
     map.on("click",event=>{
       const lat=event.latlng.lat,lon=event.latlng.lng;
       const value=sampleDisplayGrid(pixels,meta,lat,lon);
+      const ndwi=optical&&ndwiGrid?sampleNdwiDisplay(ndwiGrid,optical,lat,lon):null;
       sampled={latitude:lat,longitude:lon,previewDsmMeters:value,
-        source:"COPERNICUS_DSM_QUANTIZED_DISPLAY_GRID_NOT_SURVEY"};
-      $("elevation-readout").innerHTML=
+        previewNdwi:ndwiToggle.checked?ndwi:null,
+        source:ndwiToggle.checked?"REAL_SENTINEL2_QUANTIZED_NDWI_PREVIEW_NOT_FLOOD":
+          "COPERNICUS_DSM_QUANTIZED_DISPLAY_GRID_NOT_SURVEY"};
+      $("elevation-readout").innerHTML=ndwiToggle.checked?
+        '<strong>'+(ndwi===null?"NDWI NoData":"NDWI tampilan ≈ "+ndwi.toFixed(2))+'</strong>'+
+        '<span>Sentinel-2 14 Okt 2026 · single-date display pixel, bukan bukti rob atau risiko aset.</span>':
         '<strong>'+esc(formatDsmReading(value,lat,lon))+'</strong>'+
         '<span>Copernicus DSM display grid · bukan pengukuran aset, deformasi, atau kedalaman rob.</span>';
       if(sampleMarker)map.removeLayer(sampleMarker);
@@ -254,7 +325,7 @@ async function bootstrap() {
       const area=flow.getArea();
       if(!area)return;
       downloadJson(reportSnapshot({meta,scenes:catalog.scenes,readiness,
-        selection:selected,sampled,areaScreening:area,tideForecast:flow.getTide()}),
+        selection:selected,sampled,areaScreening:area,tideForecast:flow.getTide(),optical}),
         "BARUNA_Semarang_Real_Evidence_Brief.json");
     });
     document.body.dataset.evidenceState="ready";
