@@ -1,8 +1,8 @@
 /* BARUNA product navigation. Route workspaces without conflating independent datasets. */
 (function(){
   "use strict";
-  const PAGES=new Set(["why","projects","overview","detail","assessment","compare","analyst"]);
-  const LABELS={why:"Why Sentinel",projects:"Projects",overview:"Overview",detail:"Project detail",assessment:"Inspection assessment",compare:"Evidence compare",analyst:"GNSS Lab"};
+  const PAGES=new Set(["why","guide","projects","overview","detail","assessment","compare","analyst"]);
+  const LABELS={why:"Workspace",guide:"Panduan",projects:"Projects",overview:"Overview",detail:"Project detail",assessment:"Inspection assessment",compare:"Evidence compare",analyst:"GNSS Lab"};
   const $=id=>document.getElementById(id);
   const pageFromLegacy=view=>view==="analyst"?"analyst":"detail";
   let selectedProject="semarang-port";
