@@ -31,3 +31,16 @@ test("tiny area fails closed rather than inventing elevation",()=>{
  assert.equal(result.status,"TOO_SMALL_FOR_PREVIEW_GRID");
  assert.equal(result.validPixels,0);
 });
+
+test("sparse DSM valid pixels must not produce exportable AOI statistics",()=>{
+ const sparse=new Uint8Array(grid.length).fill(meta.nodataCode);
+ sparse[0]=20;
+ sparse[1]=21;
+ sparse[2]=22;
+ const result=analyzeDsmArea(sparse,meta,meta.aoiEpsg4326);
+ assert.equal(result.status,"INSUFFICIENT_VALID_DSM_COVERAGE");
+ assert.equal(result.validPixels,3);
+ assert.equal(result.selectedPixels,grid.length);
+ assert.ok(result.coveragePct<80);
+ assert.equal(result.medianM,undefined,"no misleading statistics reported");
+});
