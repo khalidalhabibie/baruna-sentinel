@@ -34,7 +34,7 @@
         <div class="breadcrumbs"><a href="./workspaces.html">Workspaces</a><span>/</span><strong>Semarang Coastal</strong></div>
         <div class="eyebrow"><i></i> REAL DATA WORKSPACE · SEMARANG, INDONESIA</div>
         <h1>Semarang Coastal <span>Intelligence</span></h1>
-        <p>Periksa konteks elevasi dan akuisisi satelit nyata untuk pesisir Semarang. Temukan bukti yang tersedia, batas analisis, dan data yang perlu dilengkapi sebelum membuat keputusan aset.</p>
+        <p>Eksplorasi elevasi dan indeks air Sentinel-2 14/21 Oktober berbasis piksel nyata untuk pesisir Semarang. Hasil spektral bukan konfirmasi banjir rob.</p>
       </div>
       <div class="hero-actions">
         <div class="snapshot"><span>DATA SNAPSHOT</span><strong>16 NOV 2026</strong><small>Bukan monitoring real-time</small></div>
@@ -62,13 +62,22 @@
           <p class="field-help">Tinggi permukaan DSM, bukan laju penurunan tanah ataupun kedalaman genangan.</p>
         </div>
         <div class="form-group">
-          <span class="form-label">Sentinel-2 · NDWI satu tanggal</span>
+          <span class="form-label">Sentinel-2 · Optical Indices</span>
           <label class="layer-switch" for="toggle-ndwi">
             <input type="checkbox" id="toggle-ndwi" disabled>
-            <span class="layer-switch-copy"><strong>Optical water index</strong><small>B03 + B08 · SCL cloud mask · 14 Okt 2026</small></span>
+            <span class="layer-switch-copy"><strong>Optical water index</strong><small>NDWI / MNDWI · 14 &amp; 21 Okt 2026 · real data</small></span>
           </label>
+          <label class="form-label second-label" for="optical-view">Pilih indeks / tanggal</label>
+          <select id="optical-view" class="input-select" disabled>
+            <option value="baselineNdwi">NDWI · 14 Okt 2026</option>
+            <option value="baselineMndwi">MNDWI · 14 Okt 2026</option>
+            <option value="comparisonNdwi">NDWI · 21 Okt 2026</option>
+            <option value="comparisonMndwi">MNDWI · 21 Okt 2026</option>
+            <option value="mndwiContrast">Δ MNDWI · 21 − 14 Okt 2026</option>
+          </select>
           <p class="field-help" id="s2-ndwi-status" role="status">Memverifikasi piksel Sentinel-2...</p>
-          <p class="field-help">Warna biru menunjukkan NDWI relatif tinggi, bukan banjir rob. Preview 72×98, bukan piksel resolusi analitik.</p>
+          <div class="optical-aoi-stats" id="optical-aoi-stats" aria-live="polite">Memuat statistik indeks optik...</div>
+          <p class="field-help">Warna menunjukkan nilai indeks, bukan genangan rob. Δ MNDWI merupakan selisih spektral belum tervalidasi sebagai banjir. Raster 10 m ditampilkan sebagai preview 72×98.</p>
         </div>
 
         <div class="form-group aoi-chooser">
@@ -95,7 +104,7 @@
         </div>
 
         <div class="scene-details" id="scene-details" aria-live="polite"><p>Memuat metadata katalog...</p></div>
-        <div class="panel-note"><strong><span class="tiny-dot"></span> ANALYSIS BOUNDARY</strong><p>NDWI optik satu tanggal tersedia untuk scene yang tervalidasi. Change detection, rob terukur, InSAR, dan ranking risiko aset tetap belum tersedia.</p></div>
+        <div class="panel-note"><strong><span class="tiny-dot"></span> ANALYSIS BOUNDARY</strong><p>Indeks NDWI/MNDWI 14 dan 21 Okt serta Δ MNDWI nyata tersedia. Tidak tersedia deteksi rob, change detection tutupan lahan tervalidasi, InSAR, atau ranking aset.</p></div>
       </aside>
 
       <div class="map-panel">
