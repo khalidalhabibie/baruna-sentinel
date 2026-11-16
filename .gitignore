@@ -14,3 +14,12 @@ baruna_private_cors_qc_*
 *.crx
 *.rnx.gz
 *.crx.gz
+
+# Locally acquired geospatial evidence (BIG/BPBD/ESA/OSM)
+# Keep raw imagery, downloads, private GNSS, and generated archives out of Git
+.local/
+.venv/
+BARUNA_DATA_REAL/
+BARUNA_DATA_REAL.zip
+*.tif
+*.tiff
