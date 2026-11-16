@@ -197,8 +197,10 @@ try{
  portfolio.on("pageerror",e=>exceptions.push(e.stack||e.message));
  const portfolioResponse=await portfolio.goto(BASE+"/workspaces.html",{waitUntil:"networkidle"});
  assert.equal(portfolioResponse.status(),200,"project portfolio is published in dist");
- assert.match(await portfolio.locator("h1").innerText(),/Satu tempat untuk bukti/);
- assert.equal(await portfolio.locator(".workspace-card").count(),3);
+ assert.match(await portfolio.locator("h1").innerText(),/Data nyata untuk keputusan/);
+ assert.equal(await portfolio.locator(".workspace-card").count(),4);
+ assert.match(await portfolio.locator(".workspace-grid").innerText(),/Semarang Coastal/);
+ assert.equal(await portfolio.locator(".workspace-card.real-primary").count(),1);
  assert.match(await portfolio.locator(".workspace-grid").innerText(),/Tanjung Emas/);
  assert.match(await portfolio.locator(".workspace-grid").innerText(),/Spatial Decision Lab/);
  assert.match(await portfolio.locator(".workspace-grid").innerText(),/GNSS Evidence Lab/);
