@@ -4,7 +4,7 @@
  <meta charset="utf-8">
  <meta name="viewport" content="width=device-width,initial-scale=1">
  <meta name="theme-color" content="#f5f7f7">
- <meta name="description" content="BARUNA Sentinel — workspaces untuk riset infrastruktur pesisir, pemeriksaan bukti multi-GNSS, dan simulasi prioritas inspeksi.">
+ <meta name="description" content="BARUNA Sentinel — workspaces untuk analisis data spasial nyata Semarang, riset GNSS historis, dan skenario terpisah.">
  <title>Workspaces | BARUNA Sentinel</title>
  <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
  <link rel="stylesheet" href="./workspaces.css">
@@ -21,7 +21,8 @@
     <span class="sidebar-label">WORKSPACES</span>
     <nav class="sidebar-nav" aria-label="Menu utama">
      <a class="active" href="./workspaces.html" aria-current="page"><span aria-hidden="true">▦</span> Semua workspace</a>
-     <a href="./spatial-demo.html"><span aria-hidden="true">◈</span> Decision Lab</a>
+     <a href="./real-workspace.html"><span aria-hidden="true">◈</span> Semarang Coastal · Real</a>
+     <a href="./spatial-demo.html"><span aria-hidden="true">◇</span> Scenario Lab</a>
      <a href="./?page=assessment"><span aria-hidden="true">▤</span> Evidence Review</a>
      <a href="./?page=analyst"><span aria-hidden="true">⌁</span> GNSS Lab</a>
     </nav>
@@ -31,24 +32,49 @@
   <div class="stage">
    <header class="topbar">
     <div class="topbar-breadcrumb"><span>BARUNA</span><span aria-hidden="true">/</span><strong>Workspaces</strong></div>
-    <div class="topbar-right"><span class="topbar-note">Coastal infrastructure intelligence</span><a class="topbar-cta" href="./spatial-demo.html">Buka Decision Lab <span aria-hidden="true">↗</span></a></div>
+    <div class="topbar-right"><span class="topbar-note">Coastal infrastructure intelligence</span><a class="topbar-cta" href="./real-workspace.html">Buka Real Workspace <span aria-hidden="true">↗</span></a></div>
    </header>
    <main id="projects" class="main">
     <section class="overview" aria-labelledby="heading">
      <span class="eyebrow">PROJECT PORTFOLIO · OURDO INDONESIA</span>
-     <h1 id="heading">Satu tempat untuk bukti, aset, dan keputusan.</h1>
-     <p>Tinjau kasus infrastruktur pesisir, periksa kualitas data geodetik, lalu susun langkah verifikasi. Mulai dari workspace yang sesuai dengan pekerjaan Anda.</p>
+     <h1 id="heading">Data nyata untuk keputusan yang dapat ditelusuri.</h1>
+     <p>Mulai dari workspace pesisir Semarang dengan DSM Copernicus nyata dan katalog scene Sentinel. Modul riset historis dan skenario simulasi dipisahkan dengan jelas.</p>
      <div class="overview-statline" aria-label="Ruang kerja tersedia">
+      <div><b>01</b><span>Workspace data nyata</span></div>
       <div><b>01</b><span>Kasus riset</span></div>
       <div><b>01</b><span>Skenario keputusan</span></div>
       <div><b>02</b><span>Referensi stasiun GNSS</span></div>
      </div>
     </section>
     <section class="project-section" aria-labelledby="project-section-heading">
-     <div class="section-heading"><div><span class="eyebrow">AVAILABLE WORKSPACES</span><h2 id="project-section-heading">Pilih workspace</h2></div><span class="section-count">3 modul tersedia</span></div>
+     <div class="section-heading"><div><span class="eyebrow">AVAILABLE WORKSPACES</span><h2 id="project-section-heading">Pilih workspace</h2></div><span class="section-count">4 workspace · 1 real-source MVP</span></div>
      <div class="workspace-grid">
+      <article class="workspace-card real-primary">
+        <div class="card-meta"><span class="card-id">BRN–001 / ACTIVE WORKSPACE</span><span class="state real">Source-backed MVP</span></div>
+        <div class="real-primary-body">
+          <div>
+            <span class="real-overline">COASTAL GEOSPATIAL INTELLIGENCE · 16 NOV 2026</span>
+            <h3>Semarang Coastal</h3><p class="place">Pesisir Semarang · WGS84</p>
+            <p class="card-description">Analisis spasial berbasis data nyata. Jelajahi elevasi permukaan Copernicus DEM, pilih scene Sentinel berdasarkan tanggal, lihat footprint, dan ekspor Evidence Brief. Fungsi yang belum memiliki bukti ditandai belum tersedia, bukan diisi angka simulasi.</p>
+            <div class="real-card-quickfacts"><span><b>DSM</b> actual pixels</span><span><b>16</b> Sentinel-2 scenes</span><span><b>11</b> Sentinel-1 scenes</span></div>
+          </div>
+          <div class="real-card-graphic" aria-hidden="true">
+            <div class="real-grid-lines"></div>
+            <svg viewBox="0 0 360 208" preserveAspectRatio="xMidYMid meet" role="presentation">
+              <defs><linearGradient id="rwc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d8e9dc"/><stop offset=".53" stop-color="#91c0b6"/><stop offset="1" stop-color="#2f7e8d"/></linearGradient></defs>
+              <path d="M-6 36L77 47L113 13L198 29L231 86L371 96V223H-6Z" fill="url(#rwc)" opacity=".9"/>
+              <g stroke="#d1ebde" fill="none" stroke-width="2" opacity=".9"><path d="M-10 73Q80 2 149 90T370 69"/><path d="M-10 105Q80 34 149 122T370 101"/><path d="M-10 138Q80 67 149 155T370 134"/><path d="M-10 171Q80 100 149 188T370 167"/></g>
+              <path d="M16 28H264V174H16Z" fill="none" stroke="#f6fff7" stroke-width="2" stroke-dasharray="6 5"/>
+              <circle cx="150" cy="100" r="6" fill="#fff" stroke="#277888" stroke-width="3"/>
+              <path d="M151 95L220 51" stroke="#f4fff9" stroke-width="1.5" stroke-dasharray="3 5"/>
+            </svg>
+            <span>SEM · COASTAL AOI / 110.43° E</span>
+          </div>
+        </div>
+        <div class="card-bottom"><div class="source-caption">Source-backed geospatial exploration · belum tersedia pemeringkatan aset operasional</div><a class="card-action" href="./real-workspace.html">Open Real Workspace <span aria-hidden="true">↗</span></a></div>
+      </article>
       <article class="workspace-card featured">
-       <div class="card-meta"><span class="card-id">BRN–001 / RESEARCH CASE</span><span class="state source">Bukti penelitian</span></div>
+       <div class="card-meta"><span class="card-id">BRN–002 / HISTORIC RESEARCH</span><span class="state source">Bukti penelitian</span></div>
        <div class="card-main"><div><h3>Tanjung Emas</h3><p class="place">Semarang, Jawa Tengah</p><p class="card-description">Periksa enam sektor pengukuran historis, bukti yang tersedia, dan data apa yang perlu dilengkapi sebelum inspeksi dapat diprioritaskan.</p></div>
         <svg class="card-art" viewBox="0 0 260 190" aria-hidden="true" preserveAspectRatio="xMidYMid meet">
          <path d="M0 0H260V112C208 95 173 127 128 137C81 154 43 143 0 169Z" fill="#d8ecec"/><path d="M0 0H260V112C208 95 173 127 128 137C81 154 43 143 0 169Z" fill="#f3f5ef"/><path d="M0 169C43 143 81 154 128 137C173 127 208 95 260 112" fill="none" stroke="#a4c8cb" stroke-width="3"/><path d="M-5 37L133 117L285 39M25 0L157 101L243 -10M-15 90L107 159L220 93" fill="none" stroke="#d5ddda" stroke-width="3"/><g fill="#fff" stroke="#3f8b8e" stroke-width="2"><circle cx="105" cy="128" r="6"/><circle cx="163" cy="123" r="6"/><circle cx="193" cy="113" r="6"/></g><path d="M176 145l9 10 19-25" fill="none" stroke="#5e9296" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -57,7 +83,7 @@
        <div class="card-bottom"><div class="source-caption">Published field study · status bukti: belum cukup</div><a class="card-action" href="./?page=assessment">Buka Evidence Review <span aria-hidden="true">↗</span></a></div>
       </article>
       <article class="workspace-card">
-       <div class="card-meta"><span class="card-id">BRN–LAB / SCENARIO</span><span class="state demo">Demo Scenario</span></div>
+       <div class="card-meta"><span class="card-id">BRN–LAB / SYNTHETIC SCENARIO</span><span class="state demo">Experimental / simulated</span></div>
        <h3>Spatial Decision Lab</h3><p class="place">Pesisir Semarang · aset ilustratif</p>
        <p class="card-description">Jelajahi peta empat aset, hasil screening, ranking, perbandingan kualitas bukti, dan Verification Brief dalam satu alur interaktif.</p>
        <div class="mini-process" aria-label="Alur Decision Lab"><span>Map</span><i>→</i><span>Ranking</span><i>→</i><span>Brief</span></div>
@@ -65,7 +91,7 @@
        <div class="card-bottom"><div class="source-caption">Data ilustratif · bukan survei operator</div><a class="card-action" href="./spatial-demo.html">Buka Decision Lab <span aria-hidden="true">↗</span></a></div>
       </article>
       <article class="workspace-card reference">
-       <div class="card-meta"><span class="card-id">DATA LIBRARY / REFERENCE</span><span class="state source">Referensi terpisah</span></div>
+       <div class="card-meta"><span class="card-id">DATA LIBRARY / HISTORIC REFERENCE</span><span class="state source">Riset historis</span></div>
        <div class="reference-body"><div><h3>GNSS Evidence Lab</h3><p class="place">CSEM · Semarang / BAKO · Cibinong</p><p class="card-description">Tinjau posisi GPS CSEM historis dan QC pengamatan multi-GNSS BAKO. Kedua sumber tidak mengukur pergerakan aset pelabuhan secara langsung.</p></div>
         <div class="station-pair"><div><span>CSEM</span><strong>3.561</strong><small>rekaman posisi historis</small></div><div><span>BAKO</span><strong>41</strong><small>epoch sampel QC</small></div></div>
        </div>
@@ -74,7 +100,7 @@
      </div>
     </section>
     <section class="method-strip" aria-labelledby="method-title"><div><span class="eyebrow">EVIDENCE BEFORE ACTION</span><h2 id="method-title">Prioritas hanya sekuat buktinya.</h2><p>BARUNA membedakan pengamatan regional, kualitas data, hubungan ke aset, dan rekomendasi verifikasi. Informasi yang belum cukup tidak otomatis berarti aset aman atau berbahaya.</p></div><a href="./?page=assessment">Lihat metode pemeriksaan <span aria-hidden="true">↗</span></a></section>
-    <footer class="footer"><span>© OURDO INDONESIA · BARUNA SENTINEL</span><span>Prototype · Screening & verification, bukan sertifikasi keselamatan</span></footer>
+    <footer class="footer"><span>© OURDO INDONESIA · BARUNA SENTINEL</span><span>MVP · 1 real-source workspace · riset dan simulasi terpisah</span></footer>
    </main>
   </div>
 </div>
