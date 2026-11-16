@@ -120,7 +120,22 @@ function render(){
     '<div class="ws-aside-bottom"><span>Hasil: butuh verifikasi lapangan</span><span>DATA / 2005</span></div></div></div>'+
     '<div class="ws-fact-strip" aria-label="Masalah, cara kerja dan hasil BARUNA">'+
     STORY_HIGHLIGHTS.map(h=>'<div class="ws-fact"><strong>'+esc(h.label)+'</strong><span>'+esc(h.detail)+'</span></div>').join("")+'</div></div>'+
-    '<section class="ws-workflow" id="ws-workflow" aria-labelledby="ws-flow-heading">'+
+    
+    '<section class="bs-mission" aria-label="Contoh hasil BARUNA Sentinel">'+
+      '<div class="bs-mission-copy"><span class="bs-mission-label">COBA MISI PERTAMA · TANJUNG EMAS</span>'+
+       '<h2>Satu kasus nyata. Satu keputusan yang bisa dipertanggungjawabkan.</h2>'+
+       '<p>Pilih West Breakwater, periksa catatan historis 2005, lihat celah bukti, lalu hasilkan laporan permintaan verifikasi yang konkret.</p>'+
+       '<button class="bs-mission-button" type="button" data-pw-page="assessment">Periksa West Breakwater →</button>'+
+       '<button class="bs-mission-ghost" type="button" data-baruna-tour-replay>Ikuti panduan interaktif ◉</button></div>'+
+      '<div class="bs-mission-evidence"><small>HASIL STUDI HISTORIS · 2005</small>'+
+       '<strong>74–140 cm</strong><span>Penurunan kumulatif historis West Breakwater, bukan laju tahunan atau kondisi 2026</span>'+
+       '<div class="bs-mission-verdict"><b>DATA INSUFFICIENT</b><p>Belum ada geometri aset yang tervalidasi dan pengukuran terbaru. Perlu verifikasi lapangan, bukan klaim risiko tinggi.</p></div></div></section>'+
+    '<div class="bs-mini-workflow" aria-label="Alur verifikasi berbasis bukti">'+
+     '<div><small>01 · LOKASI</small><strong>Pilih sektor</strong><span>Catatan historis yang dapat dirujuk</span></div>'+
+     '<div><small>02 · SUMBER</small><strong>Telusuri data</strong><span>GNSS, periode, mutu dan provenance</span></div>'+
+     '<div><small>03 · KELAYAKAN</small><strong>Evidence Gate</strong><span>Cukup untuk prioritas atau belum?</span></div>'+
+     '<div><small>04 · TINDAKAN</small><strong>Verification Brief</strong><span>Permintaan data dan inspeksi berikutnya</span></div></div>'+
+'<section class="ws-workflow" id="ws-workflow" aria-labelledby="ws-flow-heading">'+
     '<div class="ws-section-head"><div><span class="ws-section-kicker">COBA JELAJAHI</span>'+
     '<h2 id="ws-flow-heading">Lima langkah dari masalah ke tindakan.</h2>'+
     '<p>Tekan setiap titik untuk melihat apa yang diketahui, bagaimana BARUNA memeriksa, dan hasilnya.</p></div>'+
