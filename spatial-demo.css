@@ -266,3 +266,12 @@ main{padding:0 clamp(20px,3.25vw,58px)}
  .dialog-actions,.icon-button{display:none!important}
  .dialog-warning{background:transparent!important;border:2px solid #b67840!important}
 }
+
+/* Ensure the action remains in-view while evidence is scrollable at 768/900px. */
+@media(min-width:1081px){
+ .workbench{grid-template-rows:minmax(0,1fr)}
+ .asset-pane,.map-pane,.decision-pane{min-height:0}
+ .decision-pane{overflow:hidden}
+ .decision-scroll{min-height:0;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
+ .decision-actions{flex:0 0 auto;position:relative;z-index:3;box-shadow:0 -5px 18px rgba(21,49,63,.035)}
+}
