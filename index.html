@@ -32,13 +32,13 @@
         <button type="button" data-pw-page="projects">Studi kasus</button>
         <button type="button" data-pw-page="assessment">Cek bukti</button>
         <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false" aria-label="Buka sumber data GNSS">Data GNSS</button>
-        <details class="baruna-nav-more"><summary>Eksplorasi lainnya ▾</summary>
-          <div class="baruna-more-menu">
+        <div class="baruna-nav-more"><button type="button" class="baruna-more-trigger" aria-expanded="false" aria-controls="baruna-more-menu">Eksplorasi lainnya ▾</button>
+          <div class="baruna-more-menu" id="baruna-more-menu" hidden>
             <button type="button" data-pw-page="overview">Ringkasan proyek</button>
             <button type="button" id="view-decision" data-pw-page="detail" aria-pressed="false">Detail lokasi</button>
             <button type="button" data-pw-page="compare">Bandingkan bukti</button>
           </div>
-        </details>
+        </div>
       </nav>
       <label class="pw-current-project" for="pw-project-switch"><span>WORKSPACE</span>
         <select id="pw-project-switch" aria-label="Selected project">
