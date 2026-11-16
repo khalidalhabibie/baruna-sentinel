@@ -30,6 +30,14 @@ function panel(s){
  '<div class="bf-detail-actions"><button class="bf-primary" type="button" id="bf-open-review">Buka pemeriksaan <span aria-hidden="true">→</span></button>'+
  '<button class="bf-subtle" type="button" data-pw-page="guide">Lihat alur penggunaan</button></div>';
 }
+function revealActiveSectorOnMobile(){
+ const list=root?.querySelector(".bf-sector-list");
+ const active=root?.querySelector('.bf-sector[aria-pressed="true"]');
+ if(!list||!active||!window.matchMedia("(max-width: 650px)").matches)return;
+ const bounds=list.getBoundingClientRect();
+ const activeBounds=active.getBoundingClientRect();
+ list.scrollLeft+=activeBounds.left-bounds.left-(bounds.width-activeBounds.width)/2;
+}
 function render(){
  if(!root||!doc)return;
  root.innerHTML='<section class="bf-topline" aria-label="Workspace status"><div><span class="bf-eyebrow">WORKSPACE / SEMARANG</span>'+
@@ -51,6 +59,7 @@ function render(){
   '<span><b>BATAS ANALISIS</b> Belum ada geometri/pengukuran terkini</span>'+
   '<button type="button" data-pw-page="analyst">Buka data GNSS <span aria-hidden="true">↗</span></button></div>';
  initMap();
+ window.requestAnimationFrame(revealActiveSectorOnMobile);
 }
 function initMap(){
  if(map){map.remove();map=null}
