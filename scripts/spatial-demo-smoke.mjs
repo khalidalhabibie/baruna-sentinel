@@ -64,6 +64,19 @@ try{
  await page.keyboard.press("Escape");
  assert.equal(await page.locator("#brief-dialog").isVisible(),false);
 
+ const offline=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFactor:1});
+ offline.on("pageerror",e=>exceptions.push(e.stack||e.message));
+ await offline.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
+ const standaloneUrl="file://"+process.cwd()+"/dist/baruna-spatial-demo-standalone.html";
+ await offline.goto(standaloneUrl,{waitUntil:"load"});
+ await offline.locator("#asset-list .asset-option").first().waitFor({state:"visible",timeout:10000});
+ assert.equal(await offline.locator(".asset-option").count(),4,"file:// standalone HTML contains all scenarios");
+ assert.equal(await offline.locator(".leaflet-overlay-pane path.leaflet-interactive").count(),4,"offline interactive map still renders");
+ await offline.locator('[data-asset-id="sim-road"]').click();
+ assert.match(await offline.locator("#tier-title").innerText(),/Prioritas sedang/);
+ await offline.screenshot({path:"reports/baruna-spatial-offline-standalone.png",fullPage:false});
+ await offline.close();
+
  await page.setViewportSize({width:390,height:844});
  await page.goto(BASE+"/spatial-demo.html",{waitUntil:"networkidle"});
  await page.locator("#asset-list .asset-option").first().waitFor({state:"visible"});
