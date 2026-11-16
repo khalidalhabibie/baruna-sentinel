@@ -140,13 +140,19 @@ export async function initRealSpatialEvidence(map) {
     ]);
     if (responses.some(r => !r.ok)) throw Error("Public evidence files missing from build");
     const [meta, catalog, readiness] = await Promise.all(responses.map(r => r.json()));
-    if (catalog.scenes?.length !== 27 || catalog.scenes.some(x => ![1,2].includes(x[0])))
-      throw Error("Scene index failed validation");
+    const s2Count = catalog.scenes?.filter(x => x[0]===2).length ?? 0;
+    const s1Count = catalog.scenes?.filter(x => x[0]===1).length ?? 0;
+    if (!Array.isArray(catalog.scenes) || !s2Count || !s1Count ||
+        !/REAL_CATALOG_METADATA_ONLY/.test(catalog.sourceMode||"") ||
+        s1Count+s2Count!==catalog.scenes.length ||
+        readiness.datasets?.find(x=>x.id==="sentinel1_catalog")?.count!==s1Count ||
+        readiness.datasets?.find(x=>x.id==="sentinel2_catalog")?.count!==s2Count)
+      throw Error("Scene index / manifest failed validation");
     if (!readiness.modelGate?.surfaceLayer) throw Error("Elevation source failed evidence gate");
     const grid = await decodeDisplayGrid(meta);
     const [west, south, east, north] = meta.aoiEpsg4326;
     const layer = window.L.imageOverlay(rasterOverlayUrl(grid, meta),
-      [[south, west], [north, east]], {opacity: .64, interactive: false, zIndex: 350});
+      [[south, west], [north, east]], {opacity: .36, interactive: false, zIndex: 350});
     const toggle = $("real-dsm-toggle");
     toggle.addEventListener("change", () => toggle.checked ? layer.addTo(map) : map.removeLayer(layer));
     layer.addTo(map);
