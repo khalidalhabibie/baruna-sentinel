@@ -23,6 +23,17 @@ try{
  assert.equal(await page.locator(".leaflet-container").count(),1);
  assert.equal(await page.locator(".bf-map-pane .leaflet-marker-icon").count(),0,"no fictional surveyed sector markers");
  assert.equal(await page.locator("#baruna-guide-panel").count(),0,"no first-visit popup");
+ const logo=page.locator(".ourdo-official-wordmark");
+ assert.equal(await logo.count(),1,"genuine official wordmark embedded");
+ assert.equal(await logo.evaluate(e=>e.complete&&e.naturalWidth>0),true,"official local SVG renders");
+ assert.equal(await page.locator(".ourdo-country-label").isVisible(),true);
+ const desktopArt=await page.evaluate(()=>{
+  const w=document.querySelector(".bf-workspace"),r=document.querySelector(".bf-result-pane"),m=document.querySelector(".bf-map-pane");
+  return {workspaceBorder:getComputedStyle(w).borderTopWidth,decisionPosition:getComputedStyle(r).position,mapRadius:getComputedStyle(m).borderTopLeftRadius};
+ });
+ assert.equal(desktopArt.workspaceBorder,"0px","no enclosing card border around workspace");
+ assert.equal(desktopArt.decisionPosition,"absolute","only one floating reading surface on map");
+ assert.ok(parseFloat(desktopArt.mapRadius)>=18,"map uses softened corners");
  await page.screenshot({path:"reports/baruna-focus-home-desktop.png",fullPage:false});
  await page.locator('[data-bf-sector="container-wharf"]').click();
  assert.match(await page.locator("#bf-sector-detail").innerText(),/Container wharf/);
@@ -43,6 +54,8 @@ try{
  assert.match(await page.locator(".bg-guide-visual").innerText(),/Survei terbaru/);
  await page.locator('[data-bg-step="3"]').click();
  assert.match(await page.locator(".bg-guide-visual").innerText(),/DATA INSUFFICIENT/);
+ assert.equal(await page.locator(".bg-guide-stage").evaluate(el=>getComputedStyle(el).borderTopWidth),"0px","guide no longer nests a frame of cards");
+ assert.equal(await page.locator(".bg-guide-visual>div").evaluate(el=>getComputedStyle(el).borderTopWidth),"0px","illustration is not another bordered card");
  await page.screenshot({path:"reports/baruna-focus-guide-desktop.png",fullPage:false});
  await page.locator('.pw-primary-nav>[data-pw-page="why"]').click();
  assert.equal(await page.locator(".bf-workspace").isVisible(),true);
