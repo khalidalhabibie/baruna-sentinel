@@ -32,6 +32,7 @@ test("Site selection produces distinct source-labeled trends and evidence explan
  for(const item of [a,b,c]){
   const series=makeSyntheticAssetSeries(item);
   assert.ok(series.length>=20);
+  assert.equal(series[0].upMm,0,"relative displacement chart starts at zero for each scenario");
   assert.match(series[0].date,/^202\d-\d\d$/);
   assert.ok(series.at(-1).upMm<series[0].upMm,"fake down-motion sequence follows synthetic input");
   const summary=explainSyntheticDecision(item);
@@ -123,4 +124,24 @@ test("Ranking and Compare are present in HTML and not a new standalone scoring m
  assert.match(script,/data-compare-id/);
  assert.match(script,/data-focus-asset/);
  assert.doesNotMatch(script,/ASSESSMENT_POLICY\s*=|highScore\s*=/);
+});
+
+test("Video clarity preserves four fictional versus six historical sectors",()=>{
+ const html=readFileSync("spatial-demo.html","utf8");
+ const homepage=readFileSync("index.html","utf8");
+ const sourceWorkspace=readFileSync("src/why-sentinel.js","utf8");
+ const code=readFileSync("src/spatial-demo.js","utf8");
+ assert.match(html,/4 aset ilustratif, berbeda dari 6 sektor penelitian historis/);
+ assert.match(html,/href="\.\/\?page=assessment"/);
+ assert.match(html,/class="map-ranking-cta"/);
+ assert.match(html,/href="#ranking"/);
+ assert.match(html,/class="ranking-back-link" href="#asset-map"/);
+ assert.match(html,/Laju vertikal per tahun/);
+ assert.match(html,/Perpindahan vertikal relatif/);
+ assert.match(html,/Dari awal periode/);
+ assert.match(html,/mm\/tahun/);
+ assert.match(homepage,/Demo Keputusan · 4 aset/);
+ assert.match(sourceWorkspace,/Enam sektor penelitian 2005/);
+ assert.match(code,/GATE_LABELS\[code\]/);
+ assert.match(code,/mm\/tahun/);
 });
