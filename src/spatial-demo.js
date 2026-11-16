@@ -1,3 +1,4 @@
+import {initRealSpatialEvidence} from "./real-spatial-evidence.js";
 import {getSpatialCases,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,SPATIAL_DEMO_META,getRankedSpatialCases,getSyntheticScoreBreakdown,GATE_LABELS} from "./spatial-scenario.js";
 
 const cases=getSpatialCases();
@@ -396,6 +397,7 @@ function start(){
  renderCompare();
  wireUI();
  initMap();
+ void initRealSpatialEvidence(map);
  document.body.dataset.scenario=SPATIAL_DEMO_META.mode;
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});
