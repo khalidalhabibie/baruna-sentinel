@@ -92,3 +92,97 @@ body[data-page] .as-orientation span{display:block;font-size:10px;color:#7b9187;
 body[data-page] .as-decision-status{font-weight:850;letter-spacing:.02em}
 @media(max-width:930px){body[data-page] .as-orientation{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-page] .as-orientation>div:nth-child(2){border-right:0}body[data-page] .as-orientation>div:nth-child(-n+2){border-bottom:1px solid #e7eeea}}
 @media(max-width:550px){body[data-page] .as-orientation{grid-template-columns:1fr}body[data-page] .as-orientation>div{border-right:0!important;border-bottom:1px solid #e7eeea}body[data-page] .as-orientation>div:last-child{border-bottom:0}}
+
+/*
+ * Mobile shell: brand and guided help on row one, actual scrollable navigation
+ * on row two. Prevent prior why-sentinel.css flex:1 rules from collapsing labels.
+ * Advanced menu is fixed so it does not get clipped by overflow-x navigation.
+ */
+@media (max-width:750px){
+ body[data-page] .topbar,
+ body[data-page="why"] .topbar {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-rows:auto auto!important;
+  align-items:center!important;
+  gap:7px 10px!important;
+  padding:10px 14px 0!important;
+  min-height:0!important;
+ }
+ body[data-page] .topbar .ourdo-brand {
+  grid-column:1!important;
+  grid-row:1!important;
+  justify-self:start;
+  min-width:0;
+ }
+ body[data-page] .topbar .ourdo-product-name {display:none!important}
+ body[data-page] .topbar .top-actions,
+ body[data-page="why"] .topbar .top-actions {
+  display:flex!important;
+  grid-column:2!important;
+  grid-row:1!important;
+  align-items:center;
+  justify-self:end;
+  margin:0!important;
+ }
+ body[data-page] #baruna-start-tour {
+  display:inline-flex!important;
+  align-items:center;
+  min-height:37px;
+  padding:9px 12px!important;
+  white-space:nowrap;
+  font-size:10px;
+ }
+ body[data-page] .topbar .pw-current-project {display:none!important}
+ body[data-page] .pw-primary-nav,
+ body[data-page="why"] .pw-primary-nav,
+ body[data-page="why"] .topbar .pw-primary-nav {
+  grid-column:1/-1!important;
+  grid-row:2!important;
+  width:100%!important;
+  min-width:0;
+  min-height:0!important;
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center;
+  justify-content:flex-start!important;
+  gap:6px!important;
+  margin:0!important;
+  padding:0 0 9px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scrollbar-width:none;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+ }
+ body[data-page] .pw-primary-nav::-webkit-scrollbar {display:none}
+ body[data-page] .pw-primary-nav>button,
+ body[data-page="why"] .pw-primary-nav>button,
+ body[data-page="why"] .pw-primary-nav button {
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:max-content!important;
+  min-height:39px!important;
+  padding:9px 12px!important;
+  font-size:11px!important;
+  line-height:1.35;
+  white-space:nowrap!important;
+  scroll-snap-align:start;
+ }
+ body[data-page] .pw-primary-nav .baruna-nav-more{flex:0 0 auto!important;z-index:180}
+ body[data-page] .pw-primary-nav .baruna-more-trigger{min-height:39px!important;padding:9px 12px!important;font-size:11px!important}
+ body[data-page] .pw-primary-nav .baruna-more-menu{
+  position:fixed!important;
+  left:auto!important;
+  right:14px!important;
+  top:96px!important;
+  max-height:calc(100dvh - 110px);
+  overflow-y:auto;
+  z-index:500!important;
+ }
+}
+@media (max-width:370px){
+ body[data-page] #baruna-start-tour{font-size:9px;padding:8px 9px!important}
+ body[data-page] .pw-primary-nav>button,
+ body[data-page="why"] .pw-primary-nav>button{padding:9px 10px!important}
+}
