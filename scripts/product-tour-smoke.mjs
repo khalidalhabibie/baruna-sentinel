@@ -43,7 +43,9 @@ try{
  assert.equal(await guide.isVisible(),true,"tour is replayable");
  await page.keyboard.press("Escape");
  assert.equal(await guide.isVisible(),false,"Escape closes tour");
- await page.locator(".baruna-nav-more summary").click();
+ await page.locator(".baruna-more-trigger").click();
+ assert.equal(await page.locator(".baruna-more-trigger").getAttribute("aria-expanded"),"true");
+ assert.equal(await page.locator(".baruna-more-menu").isVisible(),true);
  await page.locator('.baruna-more-menu [data-pw-page="compare"]').click();
  assert.equal(await page.locator("#pw-page-compare").isVisible(),true,"advanced pages remain reachable");
  await page.locator('.pw-primary-nav>[data-pw-page="assessment"]').click();
