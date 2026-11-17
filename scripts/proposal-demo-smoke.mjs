@@ -17,6 +17,15 @@ try{
  assert.equal(await page.locator('.gate-item').count(),5);
  assert.match(await page.locator('.print-brief').innerText(),/DATA INSUFFICIENT/);
  assert.equal(await page.locator('#demo-sector option').count(),6);
+ // Additional published survey table is visible but fails the geodetic source QA.
+ await page.locator('.public-reference summary').click();
+ assert.match(await page.locator('#demo-public-reference').innerText(),/TB 1 dan TB 2/);
+ assert.equal(await page.locator('#demo-public-reference tbody tr').count(),6);
+ await page.locator('#demo-sector').selectOption('coaster-street');
+ assert.match(await page.locator('#demo-coaster-evidence').innerText(),/725/);
+ assert.match(await page.locator('#demo-coaster-evidence').innerText(),/Universitas Trisakti/);
+ assert.match(await page.locator('#demo-real-outcome').innerText(),/DATA INSUFFICIENT/);
+ 
  await page.locator('#demo-sector').selectOption('container-wharf');
  assert.match(await page.locator('.print-brief').innerText(),/Container wharf/i);
  const downloadPromise=page.waitForEvent('download');await page.locator('#demo-download').click();
@@ -25,6 +34,9 @@ try{
  assert.equal(payload.decision.rankedRealAssets,0);assert.equal(payload.stationPublication.stations.length,2);
  assert.equal(payload.syntheticAnnex.records.length,4);
  assert.equal(payload.syntheticAnnex.records[3].score,null);
+ assert.equal(payload.publishedSecondaryContext.historicalBenchmarkReference.rankAllowed,false);
+ assert.equal(payload.publishedSecondaryContext.linkedCoasterRoadContext,null);
+ 
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});mobile.on('pageerror',e=>errors.push(e.message));
  assert.equal((await mobile.goto(BASE+'/proposal-demo.html',{waitUntil:'networkidle',timeout:30000})).status(),200);
  await mobile.locator('.station-card').first().waitFor({state:'visible'});

@@ -1,0 +1,163 @@
+{
+  "schema": "baruna-public-secondary-evidence-addendum-v1",
+  "version": "2026-11-17",
+  "purpose": "Historical control-point provenance and asset-specific published exposure context, not current on-asset GNSS or an operational ranking",
+  "workspaceId": "semarang-coastal",
+  "region": "Tanjung Emas–Genuk, Semarang, Indonesia",
+  "surveyReference": {
+    "id": "raharjo-yosi-2017-benchmarks",
+    "title": "The Identification of Land Subsidance by Levelling Measurement and GPR Data at Tanjung Emas Harbour, Semarang",
+    "authors": [
+      "Purnomo Raharjo",
+      "Mira Yosi"
+    ],
+    "publicationYear": 2017,
+    "methodPeriod": "2004 benchmark/tide reference; 2005 levelling; historic comparator 1995",
+    "doi": "10.32693/bomg.32.1.2017.351",
+    "url": "https://journal.esdm.go.id/bomg/article/view/12755",
+    "fullTextUrl": "https://media.neliti.com/media/publications/230139-the-identification-of-land-subsidance-by-4289e088.pdf",
+    "citation": "Table 1, printed p.48: Coordinates and measurement points elevation",
+    "rawCoordinateReference": "Paper says local coordinates transformed to WGS84 UTM; the particular UTM zone and transcription require independent verification. The values here are transcribed as printed (not certified GNSS reference coordinates).",
+    "verticalDatum": "Historical LWS tide survey as described in article; do not mix with DSM ellipsoid heights, mLWS of other studies, BMKG tides, or current asset elevations without common datum",
+    "benchmarkPoints": [
+      {
+        "id": "BM BIG",
+        "localXY": [
+          667.219,
+          649.514
+        ],
+        "utmXY": [
+          436450.13,
+          9232120.464
+        ],
+        "elevationMReferencedToHistoricalLws": 3.105,
+        "geomStatus": "PUBLISHED_TABLE_COORDINATE_NOT_SURVEY_VERIFIED"
+      },
+      {
+        "id": "BM 1 SPP II-1",
+        "localXY": [
+          1009.034,
+          838.212
+        ],
+        "utmXY": [
+          436771.945,
+          9232309.162
+        ],
+        "elevationMReferencedToHistoricalLws": 3.895,
+        "geomStatus": "PUBLISHED_TABLE_COORDINATE_NOT_SURVEY_VERIFIED"
+      },
+      {
+        "id": "BM 6",
+        "localXY": [
+          978.157,
+          678.908
+        ],
+        "utmXY": [
+          436741.068,
+          9232149.858
+        ],
+        "elevationMReferencedToHistoricalLws": 2.431,
+        "geomStatus": "PUBLISHED_TABLE_COORDINATE_NOT_SURVEY_VERIFIED"
+      },
+      {
+        "id": "TB 1",
+        "localXY": [
+          946.719,
+          841.193
+        ],
+        "utmXY": [
+          436685.323,
+          9232412.82
+        ],
+        "elevationMReferencedToHistoricalLws": 2.339,
+        "geomStatus": "PUBLISHED_TABLE_COORDINATE_NOT_SURVEY_VERIFIED"
+      },
+      {
+        "id": "TB 2",
+        "localXY": [
+          922.412,
+          941.87
+        ],
+        "utmXY": [
+          436685.322,
+          9232412.82
+        ],
+        "elevationMReferencedToHistoricalLws": 2.494,
+        "geomStatus": "PUBLISHED_TABLE_COORDINATE_NOT_SURVEY_VERIFIED"
+      },
+      {
+        "id": "TB 3",
+        "localXY": [
+          659.91,
+          871.562
+        ],
+        "utmXY": [
+          436422.821,
+          9232342.512
+        ],
+        "elevationMReferencedToHistoricalLws": 1.623,
+        "geomStatus": "PUBLISHED_TABLE_COORDINATE_NOT_SURVEY_VERIFIED"
+      }
+    ],
+    "qa": {
+      "rawTableCrossCheckedAgainstRenderedPdf": false,
+      "duplicateOrNearlyIdenticalUtmPair": [
+        "TB 1",
+        "TB 2"
+      ],
+      "status": "SOURCE_TABLE_QA_REQUIRED",
+      "otherWarning": "Several local-to-UTM differences are not geometrically consistent; check original table, transformation and geodetic metadata before mapping.",
+      "safeToPlotAsVerifiedAssets": false,
+      "validForCurrentAssetGeometry": false,
+      "assetVelocityMmYr": null
+    },
+    "limitations": [
+      "Historical benchmark references, not asset polygons or surveyed current port infrastructure",
+      "No current 2026 on-asset measurement, benchmark stability proof or common reference-frame solution",
+      "Published TB 1/TB 2 UTM values are nearly identical although source local coordinates differ substantially",
+      "Do not map coordinates as authoritative or derive sector-specific deformation rates from the elevations in this table"
+    ]
+  },
+  "assetExposureCase": {
+    "id": "coaster-street-south-2026-secondary-study",
+    "linkedPublishedHistoricalSectorId": "coaster-street",
+    "title": "Evaluasi perkerasan jalan di Pelabuhan Tanjung Emas Semarang",
+    "author": "Fuan Maharani",
+    "publicationYear": 2026,
+    "documentType": "Undergraduate thesis abstract, FTSP Universitas Trisakti",
+    "url": "https://repository.trisakti.ac.id/usaktiana/index.php/home/detail/detail_koleksi/7/SKR/abstraksi/00000000000000075543/komposit",
+    "reportedStudySegment": "Southern Coaster Road segment, approximately 725 m",
+    "segmentLengthMApprox": 725,
+    "reportedRoadElevationMlwsRangeM": [
+      0.5,
+      0.7
+    ],
+    "reportedMaximumSeaLevelMlwsM": 1.1,
+    "reportedContext": "The abstract reports road inundation/rob, subsidence context and heavy-vehicle loads, plus comparative pavement-design calculations.",
+    "evidenceMode": "PUBLISHED_SECONDARY_EXPOSURE_CONTEXT_NOT_GNSS",
+    "dataQuality": "ABSTRACT_ONLY_NOT_OPERATOR_FIELD_DATA",
+    "measurementDate": "NOT_VERIFIED",
+    "geometryGeojson": null,
+    "onAssetGnssOrLevellingSolution": null,
+    "operatorApprovedCriticality": null,
+    "fieldRiskRank": null,
+    "linkageCaveat": "Named Coaster Road in 2017 historical study and 2026 pavement thesis may not be identical surveyed segment; segment matching is UNVERIFIED.",
+    "verticalDatumCaveat": "mLWS as reported in 2026 thesis. Do not combine with historical LWS elevation or Copernicus DSM without verified vertical datum conversion.",
+    "limitations": [
+      "No independently verified geometry/monitoring positions for surveyed 725 m segment",
+      "The reported elevation and max water level alone are not a flood depth, frequency, annual deformation, asset failure probability or official operational condition",
+      "Thesis analytical engineering assessment, not certified operator inspection or geodetic velocity",
+      "No rights or endorsement by port operator inferred"
+    ]
+  },
+  "decisionBoundary": {
+    "operationalAssetRankAllowed": false,
+    "qualityGateStatus": "DATA_INSUFFICIENT",
+    "followup": [
+      "Verify historic benchmark coordinates against article original PDF and survey document",
+      "Request current surveyed Coaster segment geometry and a representative movement benchmark",
+      "Verify current asset elevation and water datum and observation dates",
+      "Get owner-approved criticality and qualified technical review of ranking policy"
+    ]
+  }
+}

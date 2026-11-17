@@ -12,6 +12,12 @@ Status: prototype demo; **no backend**, cloud sync, per-AOI scheduler, real-asse
 3. **Decision** (70 s): Select any of six *2005 historical study sectors*. Actual outcome remains `DATA_INSUFFICIENT` because surveyed sector geometry, representative current on-asset movement, exposure and approved criticality/policy are unavailable. Four explicitly **SYNTHETIC** examples show a policy from `src/assessment.js`: movement (0–2) + exposure (0–2) + criticality (0–2), with hard quality gates. They are **not** estimates for the real six sectors.
 4. **Evidence Brief** (45 s): Download JSON or browser Print/Save PDF. Show provenance, periods, limits, reason for withholding ranks, and follow-up requests. JSON synthetic annex carries a separate `SYNTHETIC_POLICY_EXERCISE` label.
 
+## Source expansion (17 November 2026)
+- `data/tanjung-emas-published-evidence-addendum.json` adds six **published 2004 control-point coordinates/elevations** from Raharjo & Yosi (2017), Table 1. Their printed UTM coordinates are **NOT accepted as survey-verified assets**: TB 1 and TB 2 have virtually identical UTM positions despite different local coordinates; other transformation/datum uncertainties remain. No definitive pins are plotted. Check the original full text and source survey before georeferencing.
+- One explicitly secondary, 2026 thesis abstract (Fuan Maharani, Universitas Trisakti) reports South Coaster Road ±725 m, road elevation +0.50–0.70 mLWS and maximum sea level +1.10 mLWS. This adds context for **exposure** only; it is not an on-asset GNSS position solution, current operator risk assessment, certified flood depth, surveyed road polygon or approved asset criticality.
+- The names Coaster Street in a 2005 study and South Coaster Road in the 2026 thesis do not confirm identical surveyed segments; the link is pending field verification.
+- The guided demo includes a collapsible historical benchmark table plus the source-linked Coaster context only when that historic sector is selected. Every report stays `DATA_INSUFFICIENT`. The ranking of fictional assets is unchanged.
+
 ## Dataset and science gaps relative to the original proposal
 | Proposal methodology | Actual demo available | Missing for operational asset ranking |
 |---|---|---|
