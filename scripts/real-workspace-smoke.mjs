@@ -104,6 +104,11 @@ try{
   assert.equal(report.bmkgForecastContext.dateWib,"2026-11-19");
   assert.equal(report.crossDatumComparisonAllowed,false);
   assert.equal(report.evidenceGates.realInsar,false);
+  assert.equal(report.insarProcessedQualityEvidence.status,"REAL_HYP3_PROCESSED_RESEARCH_SCREENING_ONLY");
+  assert.equal(report.insarProcessedQualityEvidence.portUnwrappedPhaseRadians,null);
+  assert.equal(report.insarProcessedQualityEvidence.annualVerticalSubsidenceRate,null);
+  assert.equal(report.insarProcessedQualityEvidence.validatedPortLOSDisplacement,null);
+  assert.equal(report.insarProcessedQualityEvidence.assetRiskRankingAllowed,false);
   assert.equal(report.evidenceGates.multiDateOpticalIndexPreview,true);
   assert.equal(report.exploratoryTwoDateOptical.viewKey,"mndwiContrast");
   assert.equal(report.exploratoryTwoDateOptical.validatedFloodOrRobExtent,false);
