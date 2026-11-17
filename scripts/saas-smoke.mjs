@@ -17,6 +17,8 @@ try{
  let response=await page.goto(BASE+"/",{waitUntil:"networkidle",timeout:30000});
  assert.equal(response?.status(),200);
  assert.equal(await page.locator(".saas-sidebar").count(),1);
+ assert.equal(await page.locator('.saas-org-brand img[src="./assets/ourdo-tail-curve-wordmark.svg"]').count(),1,"use official Ourdo wordmark once");
+ assert.equal(await page.locator('.saas-symbol,.saas-org-icon').count(),0,"do not invent branding glyphs");
  assert.match(await page.locator(".portfolio-intro h1").innerText(),/Your spatial portfolio/);
  assert.equal(await page.locator(".workspace-tile").count(),3);
  assert.equal(await page.locator('a[href="./workspaces.html"]').count()>0,true);
@@ -50,7 +52,19 @@ try{
  assert.equal(await page.locator("#panel-intelligence").isVisible(),true);
  assert.equal(await page.locator("#panel-explorer").isVisible(),false);
  assert.match(await page.locator("#panel-intelligence").innerText(),/Not validated/);
- assert.match(await page.locator("#panel-intelligence").innerText(),/Data insufficient/);
+ assert.equal(await page.locator("[data-intel-tab]").count(),3);
+ await page.locator('[data-intel-tab="ranking"]').click();
+ assert.equal(await page.locator("#intel-ranking").isVisible(),true);
+ assert.equal(await page.locator("#intel-findings").isVisible(),false);
+ assert.equal(await page.locator("#intel-ranking-rows tr").count(),6);
+ assert.match(await page.locator("#intel-ranking").innerText(),/NOT AVAILABLE/);
+ assert.equal(await page.locator("#intel-ranking-rows .saas-chip-warn").count(),6);
+ assert.equal(await page.locator('#intel-ranking a[href="./spatial-demo.html#ranking"]').count(),1);
+ assert.match(page.url(),/intel=ranking/);
+ await page.locator('[data-intel-tab="gate"]').click();
+ assert.equal(await page.locator("#intel-gate").isVisible(),true);
+ assert.match(await page.locator("#intel-gate").innerText(),/Data insufficient/);
+ await page.locator('[data-intel-tab="findings"]').click();
  assert.equal(await page.locator("#panel-intelligence .area-chart-placeholder").count(),1,
   "No invented annual displacement time series chart");
  await page.screenshot({path:"reports/baruna-saas-intelligence-desktop.png",fullPage:false});
@@ -65,7 +79,13 @@ try{
  assert.equal(await page.locator("tbody tr").count(),1);
  await page.goto(BASE+"/data-catalog.html",{waitUntil:"domcontentloaded"});
  assert.equal(await page.locator("tbody tr").count(),7);
+ for(const path of ["/real-workspace.html","/subsidence-evidence.html","/spatial-demo.html"]){
+  await page.goto(BASE+path,{waitUntil:"domcontentloaded"});
+  assert.equal(await page.locator(".baruna-routebar").count(),1,"legacy navigation bridge at "+path);
+  assert.equal(await page.locator('link[href="./legacy-saas-bridge.css"]').count(),1);
+ }
  await page.goto(BASE+"/evidence-lab.html?page=analyst",{waitUntil:"domcontentloaded"});
+ assert.equal(await page.locator(".baruna-routebar").count(),1);
  assert.equal(await page.locator(".ourdo-official-wordmark").count(),1,
   "existing evidence lab preserved at its new route");
 
