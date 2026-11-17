@@ -3,6 +3,8 @@ import {dirname,join} from "node:path";
 
 const publicAssets=[
   "index.html",
+  "homepage-evidence.css",
+  "evidence-brief-coaster.html",
   "video-demo.html",
   "spatial-demo.html",
   "real-workspace.html",
