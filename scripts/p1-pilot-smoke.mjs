@@ -18,7 +18,7 @@ try{
  assert.match(await page.locator("#p1-demnas-import-result").innerText(),/Belum ada raster DEMNAS asli/);
  await page.locator("#p1-station-file").setInputFiles(file("station.geojson",station));
  await page.locator("#p1-asset-file").setInputFiles(file("asset.geojson",asset));
- await page.locator("#p1-link-result").getByText(/TEST-ASSET-001/).waitFor();
+ await page.waitForFunction(()=>document.getElementById("p1-link-result").textContent.includes("TEST-ASSET-001"));
  assert.match(await page.locator("#p1-link-result").innerText(),/jarak geometris perkiraan/);
  assert.match(await page.locator("#p1-link-result").innerText(),/TIDAK memvalidasi laju gerak aset/);
  const ppp={schema:"baruna-processed-multignss-station-series-v1",station:"CSMG",
@@ -33,7 +33,7 @@ try{
   properties:{Values:["1.13427e+38","2.2"]}};
  await page.route("https://geoservices.big.go.id/**",route=>route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(nodata)}));
  await page.locator("#p1-demnas-check").click();
- await page.locator("#p1-demnas-result").getByText(/TIDAK VALID/).waitFor();
+ await page.waitForFunction(()=>document.getElementById("p1-demnas-result").textContent.includes("TIDAK VALID"));
  assert.match(await page.locator("#p1-demnas-result").innerText(),/1.13427e\+38/);
  assert.doesNotMatch(await page.locator("#p1-demnas-result").innerText(),/2,2 m/);
  const grid=Array.from({length:20},()=>Array(20).fill(3.2));
