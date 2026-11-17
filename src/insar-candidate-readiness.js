@@ -90,8 +90,9 @@ export function renderInsarCandidateReview(doc,root=document){
   note.textContent="Jeda "+pair.daysApart+" hari · burst/baseline belum diverifikasi";
   li.append(dates,note);examples.appendChild(li);
  }
- limits.textContent="Belum ada interferogram, coherence, unwrapping, LOS displacement, "+
-  "atau validasi GNSS untuk menyimpulkan penurunan tanah. Tidak bisa dipakai untuk ranking aset.";
+ limits.textContent="Arsip pencarian SLC ini hanya memuat kandidat sebelum pemrosesan. "+
+  "Hasil ASF HyP3 2–14 Oktober 2026 tersedia pada panel QA di atas, tetapi belum memvalidasi "+
+  "perpindahan LOS, penurunan tanah tahunan, atau ranking risiko aset.";
 }
 export async function loadInsarCandidateReview(root=document,loader=fetch){
  try{
