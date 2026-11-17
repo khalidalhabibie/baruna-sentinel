@@ -1,0 +1,23 @@
+/* Real ASF HyP3 quality evidence — distinct from the illustrative lab. */
+.real-insar-qa{margin-top:20px;padding:22px;border:1px solid #cee5df;border-radius:16px;background:linear-gradient(135deg,#f5faf8,#f9fbfa 75%);color:#264851}
+.real-insar-head{display:flex;justify-content:space-between;gap:18px;align-items:start}
+.real-insar-head h3{font-size:20px;line-height:1.25;margin:4px 0 6px;letter-spacing:-.4px}
+.real-insar-head p{font-size:12px;color:#59747a;line-height:1.65;margin:0;max-width:650px}
+.real-insar-head .overline{font-size:10px;letter-spacing:.12em;color:#478b78}
+.real-insar-status{white-space:nowrap;background:#e1efe9;color:#286451;border:1px solid #c9e5d7;border-radius:999px;padding:8px 11px;font-size:10px;font-weight:750;letter-spacing:.02em}
+.real-insar-meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin-top:18px;color:#567278;font-size:11px}
+.real-insar-meta strong{color:#2c5961;font-size:12px}
+.real-insar-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 12px}
+.real-insar-card{display:grid;gap:7px;background:#fff;border:1px solid #dce8e4;border-radius:11px;padding:16px;min-width:0}
+.real-insar-card strong{color:#176b62;font-size:32px;line-height:1.05;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.real-insar-card-port{background:#fffdf8;border-color:#eedfc5}
+.real-insar-card-port strong{color:#a86b35}
+.real-insar-kicker{font-size:10px;font-weight:800;letter-spacing:.06em;color:#627d7b}
+.real-insar-card small{font-size:12px;color:#4f6668;line-height:1.5;font-weight:650}
+.real-insar-card-note{color:#73868a;font-size:11px;line-height:1.5}
+.real-insar-caution{background:#fff8ed;border-left:3px solid #bb8748;border-radius:6px;padding:11px 14px;font-size:12px;line-height:1.6;color:#6c5839}
+.real-insar-caution strong{font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+.real-insar-caution p{margin:4px 0 0}
+.real-insar-foot{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-top:13px;font-size:11px;color:#678085;line-height:1.6}
+.real-insar-foot strong{color:#476970}
+@media(max-width:720px){.real-insar-qa{padding:16px}.real-insar-head,.real-insar-foot{flex-direction:column}.real-insar-cards{grid-template-columns:1fr}.real-insar-status{white-space:normal}}
