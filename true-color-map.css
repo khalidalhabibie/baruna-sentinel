@@ -1,0 +1,25 @@
+/* Dedicated real optical imagery layer controls, distinct from fictional site screening. */
+.map-controls{display:flex;flex-direction:column;align-items:flex-end;gap:7px;max-width:min(245px,47%)}
+.map-base-switch{display:flex;gap:2px;padding:3px;background:rgba(255,255,253,.97);border:1px solid #d5e4e1;border-radius:10px;box-shadow:0 4px 18px rgba(20,56,65,.12)}
+.map-controls .map-base-switch button{box-shadow:none;border:0;background:transparent;color:#3d6973;padding:8px 11px;border-radius:7px;font-size:11px;min-height:33px}
+.map-controls .map-base-switch button[aria-pressed="true"]{background:#173e4b;color:#fff}
+.map-controls .map-base-switch button:disabled{opacity:.4;cursor:not-allowed}
+.map-controls .map-base-switch button:focus-visible,.map-controls input:focus-visible{outline:3px solid #278f93;outline-offset:2px}
+.map-controls .basemap-opacity{display:flex;gap:9px;align-items:center;width:100%;min-height:30px;padding:8px 10px;background:rgba(255,255,253,.96);border:1px solid #d5e4e1;border-radius:9px;box-shadow:0 4px 18px rgba(20,56,65,.1);font-size:10px;font-weight:750;color:#3d6973}
+.map-controls .basemap-opacity[hidden]{display:none!important}
+.map-controls .basemap-opacity input{width:100%;accent-color:#187a76;min-width:0}
+.map-controls .basemap-opacity output{font-variant-numeric:tabular-nums;white-space:nowrap}
+.map-controls .satellite-source-note{display:block;max-width:240px;padding:5px 9px;border-radius:7px;background:rgba(255,255,253,.94);color:#315661;font-size:10px;line-height:1.35;text-align:right}
+.map-controls .satellite-source-note[data-state="error"]{color:#a04737}
+.map-controls #reset-view{font-size:10px}
+@media(max-width:720px){
+ .map-controls{right:8px;top:8px;max-width:164px;gap:5px}
+ .map-controls .map-base-switch button{font-size:10px;padding:7px 9px;min-height:31px}
+ .map-controls .satellite-source-note{max-width:160px;font-size:9px;padding:4px 7px}
+ .map-controls .basemap-opacity{padding:5px 7px;font-size:9px}
+ .map-controls #reset-view{font-size:10px;min-height:29px;padding:6px 9px;gap:4px}
+ .map-controls #reset-view span{font-size:13px}
+ .map-top{max-width:125px;padding:8px 9px;top:8px;left:8px}
+ .map-top small{display:none}
+ .map-top strong{font-size:11px}
+}
