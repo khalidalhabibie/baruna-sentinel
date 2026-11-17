@@ -25,6 +25,7 @@ const publicAssets=[
   "data/semarang-s2-optical-series.json",
   "workspaces.html",
   "workspaces.css",
+  "regional-workspaces.css",
   "src/spatial-demo.js",
   "src/true-color-layer.js",
   "src/spatial-scenario.js",
