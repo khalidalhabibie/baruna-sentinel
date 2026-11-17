@@ -101,7 +101,7 @@ $("p1-export").addEventListener("click",()=>{
   schema:"baruna-p1-evidence-integration-audit-v1",generatedAt:new Date().toISOString(),
   description:"Status integrasi data user-supplied / BIG without remote upload",
   rinexQc:state.cors,processedPositionSource:state.position,
-  demnasIdentify:state.demnas,demnasLocalPreview:state.demnasLocal,
+  demnasIdentify:state.demnas?{status:state.demnas.status,valueMeters:state.demnas.valueMeters,rawValue:state.demnas.rawValue,source:state.demnas.source,warning:state.demnas.warning}:null,\n  demnasLocalPreview:state.demnasLocal,
   stationAssetProximity:state.proximity,
   operatorAuthoritativeAssetRelationship:false,realAssetOperationalRankingAllowed:false,
   evidenceGate:"DATA_INSUFFICIENT",
