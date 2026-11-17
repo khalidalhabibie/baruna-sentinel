@@ -25,7 +25,7 @@
   <div class="section-head"><span class="eyebrow">01 / OBSERVASI DAN POSISI</span><h2>GNSS: observasi dan solusi posisi adalah dua hal berbeda.</h2><p>RINEX dapat menunjukkan mutu pengamatan. Tren vertikal baru boleh dikaji dari seri solusi koordinat bertanggal yang telah diproses dan diverifikasi secara geodetik.</p></div>
   <div class="grid two">
    <article class="card">
-    <div class="card-top"><span>OBSERVASI / BERKAS LOKAL</span><span class="state state-ready">QC READY</span></div>
+    <div class="card-top"><span>OBSERVASI / BERKAS LOKAL</span><span class="state state-pending">BUTUH QC LOKAL</span></div>
     <h3>QC RINEX CSEM + CSMG</h3><p>Buka ringkasan JSON yang dihasilkan oleh script <code>scripts/local_cors_qc.py</code> dari arsip BIG yang diizinkan. Tidak perlu menyalin RINEX ke server.</p>
     <label class="file-label" for="p1-qc-file">Pilih file QC JSON</label><input id="p1-qc-file" type="file" accept=".json,application/json">
     <div id="p1-qc-result" class="output" role="status" aria-live="polite">Belum ada file QC dipilih. Stasiun dan kualitas arsip tidak diasumsikan tersedia.</div>
@@ -60,7 +60,7 @@
    </article>
   </div>
 
-  <div class="section-head" id="p1-asset-link"><span class="eyebrow">03 / KETERKAITAN SPASIAL</span><h2>Berapa jauh stasiun dari aset? Dan apa artinya?</h2><p>Ukuran jarak dihitung dari koordinat stasiun Point dan polygon aset dalam GeoJSON. **Kedekatan saja tidak membuktikan representativitas deformasi**—masih diperlukan hubungan benchmark, datum, periode, dan validasi ahli.</p></div>
+  <div class="section-head" id="p1-asset-link"><span class="eyebrow">03 / KETERKAITAN SPASIAL</span><h2>Berapa jauh stasiun dari aset? Dan apa artinya?</h2><p>Ukuran jarak dihitung dari koordinat stasiun Point dan polygon aset dalam GeoJSON. <strong>Kedekatan saja tidak membuktikan representativitas deformasi</strong>—masih diperlukan hubungan benchmark, datum, periode, dan validasi ahli.</p></div>
   <div class="card asset-card">
    <div class="grid two">
     <div><label class="file-label" for="p1-station-file">File stasiun Point · CSEM / CSMG</label><input id="p1-station-file" type="file" accept=".geojson,.json,application/geo+json,application/json"><p class="field-note">WGS84; properties: <code>stationCode</code>, <code>sourceReference</code>.</p></div>
