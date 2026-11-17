@@ -215,6 +215,10 @@ try{
  const portfolioResponse=await portfolio.goto(BASE+"/workspaces.html",{waitUntil:"networkidle"});
  assert.equal(portfolioResponse.status(),200,"project portfolio is published in dist");
  assert.match(await portfolio.locator("h1").innerText(),/Data nyata untuk keputusan/);
+ assert.equal(await portfolio.locator(".rw-card").count(),3);
+ assert.equal(await portfolio.locator(".rw-card--disabled").count(),2);
+ assert.equal(await portfolio.locator(".rw-card--disabled a, .rw-card--disabled button").count(),0);
+ assert.match(await portfolio.locator(".rw-scope").innerText(),/Ranking per area kajian \(AOI\)/);
  assert.equal(await portfolio.locator(".workspace-card").count(),4);
  assert.match(await portfolio.locator(".workspace-grid").innerText(),/Semarang Coastal/);
  assert.equal(await portfolio.locator(".workspace-card.real-primary").count(),1);
