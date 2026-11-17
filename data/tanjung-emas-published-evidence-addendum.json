@@ -106,10 +106,27 @@
         "TB 2"
       ],
       "status": "SOURCE_TABLE_QA_REQUIRED",
-      "otherWarning": "Several local-to-UTM differences are not geometrically consistent; check original table, transformation and geodetic metadata before mapping.",
+      "otherWarning": "Compared Table 1 via two independently served public PDF text extractions; TB 1 and TB 2 UTM coordinate collision is present in the published text, not a BARUNA interpolation. Visual-page verification and survey transformation/documentation remain pending.",
       "safeToPlotAsVerifiedAssets": false,
       "validForCurrentAssetGeometry": false,
-      "assetVelocityMmYr": null
+      "assetVelocityMmYr": null,
+      "publishedTableTextCrossChecked": true,
+      "publishedTableCrossCheckSources": [
+        "https://media.neliti.com/media/publications/230139-the-identification-of-land-subsidance-by-4289e088.pdf",
+        "https://ejournal.mgi.esdm.go.id/index.php/bomg/article/download/351/290"
+      ],
+      "pdfPageVisualReviewed": false,
+      "coordinateCollisionAudit": {
+        "sourceTableRowIds": [
+          "TB 1",
+          "TB 2"
+        ],
+        "publishedUtmDistanceM": 0.001,
+        "publishedLocalDistanceUnits": 103.57,
+        "unitScope": "Local coordinates are published as numeric X/Y; not assumed meters without confirmed documentation",
+        "disposition": "CONFIRMED_IN_PUBLIC_PDF_TEXT_TABLE_BUT_GEODETIC_CORRECTION_UNRESOLVED",
+        "reason": "UTM position almost identical for two rows whose local coordinates differ; retain original published values, do not infer corrected coordinates or place authoritative map pins"
+      }
     },
     "limitations": [
       "Historical benchmark references, not asset polygons or surveyed current port infrastructure",
