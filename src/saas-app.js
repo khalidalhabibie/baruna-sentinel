@@ -261,6 +261,7 @@ function area(){
  +fieldRow("Area type","Research study AOI","Not surveyed port asset")
  +fieldRow("Sentinel-2","True color available","14 Oct 2026 · display")
  +fieldRow("Sentinel-1","HyP3 QA available","2–14 Oct 2026")
+ +fieldRow("Multi-GNSS","Source review","CSEM historical · BAKO QC; no common solution")
  +fieldRow("Current subsidence","Not verified","No annual mm/year")
  +'</dl><div class="saas-note is-warning">Quality gate: The BIG port locator is not an asset survey point. Unwrapped phase at the locator is NoData. Do not infer port deformation or asset risk.</div>'
  +'<div style="margin-top:15px"><a class="saas-link" href="#intelligence" id="inspect-intelligence-link">Review intelligence →</a></div></aside></div>'
@@ -289,7 +290,7 @@ function area(){
  +'<div class="intel-tabs" role="tablist" aria-label="Intelligence views"><button type="button" data-intel-tab="findings" role="tab" aria-controls="intel-findings" aria-selected="true">Findings</button><button type="button" data-intel-tab="gate" role="tab" aria-controls="intel-gate" aria-selected="false">Evidence Gate</button><button type="button" data-intel-tab="ranking" role="tab" aria-controls="intel-ranking" aria-selected="false">Ranking &amp; Compare</button></div>'
  +'<div class="intel-panel" id="intel-findings" role="tabpanel">'
  +'<div class="area-insight-grid">'
- +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">MULTI-GNSS / EVIDENCE QUALITY</span><h3>CSEM, CSMG &amp; BAKO sources</h3><strong class="area-evidence-value">Source review</strong><p>Historic station positions and independent multi-constellation RINEX QC are available. A common CSEM/CSMG geodetic solution is not.</p><div class="area-evidence-footer"><a class="saas-link" href="./gnss-center.html">Open station evidence &amp; priorities →</a></div></article>'
+ +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">MULTI-GNSS / EVIDENCE QUALITY</span><h3>CSEM, CSMG &amp; BAKO sources</h3><strong class="area-evidence-value" id="int-gnss-status">Checking...</strong><p>Historic station positions and independent multi-constellation RINEX QC are available. A common CSEM/CSMG geodetic solution is not.</p><div class="area-evidence-footer"><a class="saas-link" href="./gnss-center.html">Open station evidence &amp; priorities →</a></div></article>'
  +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">RADAR / SOURCE QUALITY</span><h3>ASF HyP3 coherence screening</h3>'
  +'<strong class="area-evidence-value" id="int-qa-share">Loading...</strong><p id="int-qa-denominator">Checking real QA manifest and data gates.</p>'
  +'<div class="area-evidence-footer">'+chip("Processed product","active")+chip("Quality ≠ movement","blue")+'</div></article>'
@@ -468,9 +469,11 @@ async function bootAreaGnssPriority(){
    detail.append(title,caption);item.append(ordinal,detail);table.appendChild(item);
   }
   container.replaceChildren(table);
+  const status=$("int-gnss-status");if(status)status.textContent=fmt(d.csem.epochs)+" CSEM epochs · "+fmt(d.bako.epochs)+" BAKO QC epochs";
   container.setAttribute("aria-label",d.reviewPriority.length+" GNSS evidence verification steps. No asset risks ranked.");
  }catch(error){
   container.textContent="GNSS source verification unavailable. Evidence prioritization is disabled; no risk rankings have been inferred.";
+  const status=$("int-gnss-status");if(status)status.textContent="Source unavailable";
  }
 }
 
