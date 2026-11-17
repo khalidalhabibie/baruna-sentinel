@@ -56,6 +56,11 @@ try{
  assert.equal((await mobile.goto(BASE+'/proposal-demo.html',{waitUntil:'networkidle',timeout:30000})).status(),200);
  await mobile.locator('.station-card').first().waitFor({state:'visible'});
  const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2);
+ if(overflow){
+  const offenders=await mobile.evaluate(()=>[...document.querySelectorAll('body *')].map(e=>({tag:e.tagName.toLowerCase(),cls:String(e.className||'').slice(0,80),id:e.id,x:e.getBoundingClientRect().x,right:e.getBoundingClientRect().right,w:e.getBoundingClientRect().width})).filter(x=>x.right>innerWidth+2||x.x<-2).slice(0,18));
+  console.log('MOBILE_OVERFLOW_DEBUG',JSON.stringify({scrollWidth:await mobile.evaluate(()=>document.documentElement.scrollWidth),offenders}));
+ }
+
  assert.equal(overflow,false,'guided demo should not horizontally overflow mobile screen');
  assert.deepEqual(errors,[]);
  console.log('BARUNA four-step demo: source-backed CORS, six historic sectors, synthetic ranking, export, mobile PASS');
