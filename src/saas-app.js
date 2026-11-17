@@ -53,7 +53,7 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  +'<div class="saas-divider"></div><div class="saas-section-label">RESEARCH &amp; REPORTS</div><nav class="saas-recent">'
  +'<a href="'+LINKS.advanced+'">Advanced GIS</a>'
  +'<a href="'+LINKS.subsidence+'">Subsidence Evidence</a>'
- +'<a href="'+LINKS.legacy+'?page=analyst">GNSS / Evidence Lab</a></nav>'
+ +'<a href="'+LINKS.legacy+'?page=analyst">GNSS / Evidence Lab</a><a href="./spatial-demo.html#ranking">Scenario Lab · Simulated</a></nav>'
  +'<div class="saas-org"><a class="saas-org-brand" href="https://ourdo.id/" target="_blank" rel="noopener noreferrer" aria-label="Ourdo Indonesia official website"><span class="saas-org-credit">A PRODUCT BY</span><span class="saas-org-identity"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="Ourdo Indonesia" width="116" height="33"><small>INDONESIA</small></span></a></div>'
  +'</aside><div class="saas-main">'
  +'<header class="saas-topbar"><button class="saas-mobile-nav-toggle" id="saas-menu-toggle" type="button" aria-expanded="false" aria-controls="saas-sidebar" aria-label="Buka menu navigasi">☰</button>'
