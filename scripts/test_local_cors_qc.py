@@ -105,7 +105,7 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
             fake=types.SimpleNamespace(load=lambda path: (_ for _ in ()).throw(ValueError("synthetic malformed epoch")))
             with patch.dict(sys.modules,{"georinex":fake}):
                 with self.assertRaisesRegex(ValueError,
-                    r"Failed station CSEM observation file csem3130\\.26o: ValueError: synthetic malformed epoch"):
+                    r"Failed station CSEM observation file csem3130\.26o: ValueError: synthetic malformed epoch"):
                     convert_pair(csem,csmg)
 
     def test_no_observation_in_archive_fails_without_creating_qc(self):
