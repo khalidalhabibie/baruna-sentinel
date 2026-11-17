@@ -50,9 +50,9 @@
  .source-table td{padding:12px 10px;border-bottom:1px solid #edf1ee;color:#5f7774;vertical-align:top;overflow-wrap:anywhere}
  .source-table a{font-weight:730}
  .limits{padding:14px 16px;background:#f1f6f3;border-radius:8px;font-size:11px;line-height:1.7;color:#58746b}
- .doc-footer{font-size:10px;color:#82958d;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}
+ .qc-import-control{margin:13px 0;display:grid;gap:7px;font-size:11px;color:#58746b}.qc-import-control input{font:inherit;max-width:100%}.qc-brief-days{overflow-x:auto;margin-top:12px}.qc-brief-days table{width:100%;border-collapse:collapse;font-size:10px}.qc-brief-days th,.qc-brief-days td{text-align:left;padding:7px;border-bottom:1px solid #edf1ee}.qc-brief-days th{background:#f4f8f5;color:#477366}.doc-footer{font-size:10px;color:#82958d;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}
  @media(max-width:660px){.toolbar{padding:13px}.page{margin:0 10px 20px;padding:22px 17px}.status{grid-template-columns:1fr}.status aside{border-left:0;border-top:1px solid #e6d5bc;padding:11px 0 0}.metrics,.action-grid{grid-template-columns:1fr}.doc-footer{flex-direction:column}.source-table{font-size:10px}.source-table td{padding:9px 5px}}
- @media print{@page{size:A4;margin:12mm}body{background:#fff;font-size:10pt}.toolbar{display:none}.page{width:100%;max-width:none;border:none;box-shadow:none;margin:0;padding:0}.doc-top{padding-bottom:12px}.doc-title{padding:16px 0}.status{padding:12px}.status strong{font-size:17pt}.metrics{margin:12px 0}.metric{padding:10px}.metric strong{font-size:20pt}.section{padding:11px 0;break-inside:avoid}.action-grid{gap:7px;margin:9px 0}.action{padding:9px;break-inside:avoid}.source-table th,.source-table td{padding:5px}.doc-footer{margin-top:9px}.limits{padding:9px}.source-table a{color:#28594b;text-decoration:none}}
+ @media print{@page{size:A4;margin:12mm}.qc-import-control{display:none}body{background:#fff;font-size:10pt}.toolbar{display:none}.page{width:100%;max-width:none;border:none;box-shadow:none;margin:0;padding:0}.doc-top{padding-bottom:12px}.doc-title{padding:16px 0}.status{padding:12px}.status strong{font-size:17pt}.metrics{margin:12px 0}.metric{padding:10px}.metric strong{font-size:20pt}.section{padding:11px 0;break-inside:avoid}.action-grid{gap:7px;margin:9px 0}.action{padding:9px;break-inside:avoid}.source-table th,.source-table td{padding:5px}.doc-footer{margin-top:9px}.limits{padding:9px}.source-table a{color:#28594b;text-decoration:none}}
  </style>
 </head>
 <body>
@@ -66,6 +66,14 @@
    <div class="metric"><span>KAJIAN TERPISAH · 2026</span><strong>±725 <small>m</small></strong><p>Ruas selatan Jalan Coaster dari kajian Fuan Maharani. Identitas geometri dan kesesuaian ruas studi 2005 belum diverifikasi.</p></div>
   </div>
   <section class="section" aria-labelledby="known"><h2 id="known">01 / Bukti tersedia</h2><p>Penelitian historis Tanjung Emas melaporkan rentang penurunan kumulatif pada sektor bernama Coaster Street. Penelitian jalan tahun 2026 melaporkan konteks elevasi/paparan pada ruas selatan. Publikasi PPP CSMG dan CSEM (2021–2023) memperlihatkan perbedaan pergerakan <em>stasiun</em>: CSMG −94,03 ± 4,92 mm/tahun dan CSEM +3,23 ± 1,76 mm/tahun. RINEX BAKO (Cibinong, 2025) adalah QC observasi independen, bukan solusi posisi Semarang.</p></section>
+  <section class="section" id="qc-private-annex" aria-labelledby="qc-local-heading">
+   <h2 id="qc-local-heading">Lampiran opsional / Observasi GNSS lokal 2026</h2>
+   <p>Data CSEM/CSMG terkini tidak otomatis dipublikasikan pada brief ini. Jika pemilik memiliki ZIP handoff yang telah diproses, pilih arsip lokal untuk mencetak ringkasan QC sebagai lampiran. Data tidak dikirim ke server. QC observasi tidak mengubah keputusan <strong>DATA INSUFFICIENT</strong>.</p>
+   <div class="qc-import-control"><label for="qc-brief-file">Impor ZIP handoff P1 atau QC JSON lokal</label>
+   <input id="qc-brief-file" type="file" accept=".zip,.json,application/zip,application/json"></div>
+   <p id="qc-brief-result" aria-live="polite">Belum ada QC lokal yang dilampirkan; sumber publik 2005, 2021–2023 dan 2026 tetap terpisah.</p>
+   <div id="qc-brief-days" class="qc-brief-days"></div>
+  </section>
   <section class="section" aria-labelledby="unknown"><h2 id="unknown">02 / Batas kesimpulan</h2><p>Belum tersedia geometri aset resmi, kecocokan pasti ruas antara dua penelitian, pengukuran GNSS/levelling terbaru pada atau representatif terhadap jalan, datum elevasi terharmonisasi, dan kekritisan yang disahkan operator. Benchmark TB1/TB2 pada tabel publikasi historis memiliki koordinat UTM yang hampir sama; titik tersebut belum boleh dipetakan sebagai lokasi tersurvei terkini. Tidak ada ranking risiko, probabilitas kerusakan, estimasi banjir, atau alarm real-time.</p></section>
   <section class="section" aria-labelledby="actions"><h2 id="actions">03 / Tindakan verifikasi yang diminta</h2><div class="action-grid">
    <div class="action"><span class="no">01 · GEOMETRI</span><h3>Konfirmasi ruas dan titik survei</h3><p>Identifikasi polygon resmi Jalan Coaster, cocokkan lokasi dua studi, dan dokumentasikan datum serta ID aset.</p><small>Operator aset + tim GIS</small></div>
@@ -83,5 +91,14 @@
   <div class="doc-footer"><span>BARUNA SENTINEL · OURDO INDONESIA · BHUMIREKA 2026</span><span>Contoh publik berbasis publikasi · 17 November 2026</span></div>
  </main>
  <script>document.getElementById("print-evidence-brief").addEventListener("click",()=>window.print());</script>
+ <script type="module">
+ import {readP1InputFile,reviewText,reviewDayGrid} from "./src/p1-handoff-reader.js";
+ const input=document.getElementById("qc-brief-file"),result=document.getElementById("qc-brief-result"),days=document.getElementById("qc-brief-days");
+ input.addEventListener("change",async()=>{
+  days.replaceChildren();const file=input.files?.[0];if(!file)return;
+  try{const data=await readP1InputFile(file);result.textContent=reviewText(data);days.appendChild(reviewDayGrid(data));}
+  catch(e){result.textContent="Lampiran QC ditolak: "+e.message;days.replaceChildren();}
+ });
+ </script>
 </body>
 </html>
