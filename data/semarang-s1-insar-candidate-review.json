@@ -1,0 +1,71 @@
+{
+  "schema": "baruna-sentinel1-insar-discovery-review-v1",
+  "source": "ASF Search API / Sentinel-1 IW SLC scene metadata",
+  "sourceUrl": "https://api.daac.asf.alaska.edu/services/search/param",
+  "reviewOrigin": "BARUNA_ALL_DATA_REVIEW_20261117_121120.zip, local cached catalogue",
+  "reviewDateUtc": "2026-11-17T12:11:20Z",
+  "aoiEpsg4326": [
+    110.375,
+    -7.025,
+    110.485,
+    -6.875
+  ],
+  "searchStart": "2026-07-20",
+  "searchEnd": "2026-11-17",
+  "sourceCompleteness": "SNAPSHOT_SUMMARY_NOT_FULL_CATALOGUE",
+  "matchingScenes": 19,
+  "candidatePairs": 48,
+  "samplePairCount": 5,
+  "samplePairs": [
+    {
+      "referenceScene": "S1C_IW_SLC__1SDV_20260720T105716_20260720T105757_008625_01116E_B13C",
+      "secondaryScene": "S1C_IW_SLC__1SDV_20260801T105717_20260801T105758_008800_011730_EF8C",
+      "daysApart": 12,
+      "pairStatus": "CANDIDATE_ONLY_BURST_BASELINE_UNVERIFIED"
+    },
+    {
+      "referenceScene": "S1C_IW_SLC__1SDV_20260801T105717_20260801T105758_008800_011730_EF8C",
+      "secondaryScene": "S1C_IW_SLC__1SDV_20260813T105718_20260813T105759_008975_011D00_A070",
+      "daysApart": 12,
+      "pairStatus": "CANDIDATE_ONLY_BURST_BASELINE_UNVERIFIED"
+    },
+    {
+      "referenceScene": "S1C_IW_SLC__1SDV_20260813T105718_20260813T105759_008975_011D00_A070",
+      "secondaryScene": "S1C_IW_SLC__1SDV_20260825T105718_20260825T105759_009150_0122D2_9940",
+      "daysApart": 12,
+      "pairStatus": "CANDIDATE_ONLY_BURST_BASELINE_UNVERIFIED"
+    },
+    {
+      "referenceScene": "S1C_IW_SLC__1SDV_20260825T105718_20260825T105759_009150_0122D2_9940",
+      "secondaryScene": "S1C_IW_SLC__1SDV_20260906T105719_20260906T105800_009325_0128BA_3F0E",
+      "daysApart": 12,
+      "pairStatus": "CANDIDATE_ONLY_BURST_BASELINE_UNVERIFIED"
+    },
+    {
+      "referenceScene": "S1C_IW_SLC__1SDV_20260906T105719_20260906T105800_009325_0128BA_3F0E",
+      "secondaryScene": "S1C_IW_SLC__1SDV_20260918T105719_20260918T105800_009500_012E7D_1C53",
+      "daysApart": 12,
+      "pairStatus": "CANDIDATE_ONLY_BURST_BASELINE_UNVERIFIED"
+    }
+  ],
+  "verifiedProcessing": {
+    "commonBurst": false,
+    "perpendicularBaseline": false,
+    "coherence": false,
+    "interferogram": false,
+    "unwrappedPhase": false,
+    "groundValidation": false
+  },
+  "scientificGates": {
+    "insarDisplacementProduced": false,
+    "annualSubsidenceMeasured": false,
+    "operationalAssetRankingAllowed": false
+  },
+  "nextRequired": [
+    "Validate identical burst coverage and perpendicular baseline",
+    "Process an authorized SLC/burst pair with orbital and DEM corrections",
+    "Inspect geocoded coherence, phase unwrapping and LOS sign convention",
+    "Validate displacement against independent GNSS/ground observations"
+  ],
+  "note": "Snapshot cached metadata only; 5 sample pairs from 48 candidates. No InSAR displacement, asset movement or safety inference."
+}
