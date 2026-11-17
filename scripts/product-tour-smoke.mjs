@@ -15,6 +15,27 @@ page.on("pageerror",err=>errors.push(err.stack||err.message));
 await page.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
 try{
  assert.equal((await page.goto(BASE,{waitUntil:"networkidle",timeout:30000})).status(),200);
+ // Reviewer-driven 30-second outcome: source-backed Coaster brief before the region directory.
+ assert.equal(await page.locator("#rgpd-landing").isVisible(),true);
+ assert.match(await page.locator("#rgpd-headline").innerText(),/Ketahui apa yang perlu diverifikasi/);
+ assert.match(await page.locator(".rgpd-preview").innerText(),/Coaster Street/);
+ assert.match(await page.locator(".rgpd-preview").innerText(),/21–41/);
+ assert.match(await page.locator(".rgpd-preview").innerText(),/725/);
+ assert.match(await page.locator(".rgpd-preview").innerText(),/DATA INSUFFICIENT/);
+ assert.equal(await page.locator(".rgpd-evidence-strip>div").count(),4);
+ assert.equal(await page.locator(".rw-card--disabled").first().isVisible(),false);
+ assert.equal(await page.locator(".rgpd-action-primary").getAttribute("href"),"./evidence-brief-coaster.html");
+ const sample=await browser.newPage({viewport:{width:1180,height:880}});
+ try{
+  assert.equal((await sample.goto(BASE+"/evidence-brief-coaster.html",{waitUntil:"domcontentloaded",timeout:30000})).status(),200);
+  assert.match(await sample.locator("h1").innerText(),/Coaster Street/);
+  assert.match(await sample.locator(".status").innerText(),/DATA INSUFFICIENT/);
+  assert.equal(await sample.locator(".action").count(),4);
+  assert.equal(await sample.locator(".source-table tbody tr").count(),4);
+  assert.equal(await sample.locator("#print-evidence-brief").isVisible(),true);
+  await sample.screenshot({path:"reports/baruna-evidence-brief-example.png",fullPage:false});
+ }finally{await sample.close();}
+ 
  // Root index is now a region directory, not a cross-city asset ranking.
  assert.equal(await page.locator('#regional-workspaces .rw-card').count(),3);
  assert.equal(await page.locator('#regional-workspaces .rw-card--active').count(),1);
@@ -47,6 +68,7 @@ try{
  assert.match(await page.locator("#bf-sector-detail").innerText(),/62–94/);
  await page.locator("#bf-open-review").click();
  assert.equal(await page.locator("#pw-page-assessment").isVisible(),true);
+ assert.equal(await page.locator("#rgpd-landing").isVisible(),false,"home hero must not cover evidence review");
  await page.locator(".as-decision-panel").waitFor({state:"visible"});
  assert.match(await page.locator(".as-decision-panel").innerText(),/Container wharf/);
  assert.match(await page.locator(".as-decision-panel").innerText(),/DATA INSUFFICIENT/);
@@ -84,6 +106,8 @@ try{
   return {width:innerWidth,document:document.documentElement.scrollWidth,rects:items.map(i=>i.getBoundingClientRect().toJSON())};
  });
  assert.ok(sizes.document<=sizes.width+3,"no page-wide horizontal scrolling");
+ assert.equal(await page.locator("#rgpd-landing").isVisible(),true);
+ assert.equal(await page.locator(".rgpd-preview").isVisible(),true);
  const sectorMetrics=await page.evaluate(()=>{
   const el=document.querySelector(".bf-sector-list");
   const rows=[...document.querySelectorAll(".bf-sector")].map(n=>n.getBoundingClientRect().toJSON());
