@@ -103,7 +103,7 @@ function renderEvidence(){const root=$("evidence-content"),item=selected();if(!i
  root.innerHTML='<div class="scan-meta"><strong>Checked '+esc(dateShort(data.checkedAt))+'</strong><span>Snapshot sumber: '+esc(dateOnly(data.sourceSnapshotAsOf))+'</span></div>'+ 
   '<div class="scene-summary"><div><span>SENTINEL-2 · L2A</span><strong>'+data.s2L2a.length+'</strong><small>Metadata footprint · terbaru '+esc(dateOnly(lastS2))+'</small></div><div><span>SENTINEL-1 · GRD</span><strong>'+data.s1Grd.length+'</strong><small>Metadata footprint · terbaru '+esc(dateOnly(lastS1))+'</small></div></div>'+ 
   '<div class="scan-change'+(change?.isBaseline?' baseline':'')+'">'+esc(changeText)+'</div>'+ 
-  '<p class="source-warning">Scene dihitung dari irisan polygon AOI dengan <b>footprint katalog</b>, bukan cakupan piksel bersih. Refresh sumber terjadwal dapat tersedia, tetapi pemeriksaan AOI lokal tetap manual. Tidak ada deteksi banjir rob atau hasil deformasi InSAR; GRD tidak bisa dijadikan pengukuran penurunan tanah.</p>'+renderMonitorHistory(item.monitorHistory);
+  '<p class="source-warning">Scene dihitung dari irisan polygon AOI dengan <b>footprint katalog</b>, bukan cakupan piksel bersih. Katalog JSON dibekukan selama demo; pemeriksaan AOI lokal dijalankan manual. Tidak ada deteksi banjir rob atau hasil deformasi InSAR; GRD tidak bisa dijadikan pengukuran penurunan tanah.</p>'+renderMonitorHistory(item.monitorHistory);
 }
 function renderQueue(){const root=$("queue-content"),item=selected();if(!item){root.innerHTML='<div class="placeholder-mark">✓</div><strong>Belum ada area terpilih</strong><p>Daftarkan AOI untuk melihat kebutuhan verifikasi.</p>';return;}
  const tasks=verificationQueue(item);
