@@ -25,7 +25,7 @@ test("asset polygons reject invalid CRS, missing ID, unclosed geometry, self-int
  const noRef=asset();delete noRef.properties.sourceReference;
  assert.throws(()=>parseAssetFeature(noRef),/sourceReference/);
  const other=asset();other.crs={type:"name",properties:{name:"EPSG:3857"}};
- assert.throws(()=>parseAssetFeature(other),/EPSG:4326/);
+ assert.throws(()=>parseAssetFeature(other),/WGS84/);
  const broken=asset();broken.geometry.coordinates[0][4]=[110.422,-6.956];
  assert.throws(()=>parseAssetFeature(broken),/tertutup/);
  const crossed=asset();crossed.geometry.coordinates=[[ [110.420,-6.956],[110.421,-6.955],[110.421,-6.956],[110.420,-6.955],[110.420,-6.956] ]];
@@ -101,7 +101,7 @@ test("pilot integration UI is a separate, source-honest static route rather than
  const build=readFileSync(new URL("../scripts/build-static.mjs",import.meta.url),"utf8");
  for(const id of ["p1-qc-file","p1-position-file","p1-demnas-check","p1-demnas-file","p1-station-file","p1-asset-file","p1-export"])assert.match(html,new RegExp('id="'+id+'"'));
  assert.match(html,/DATA INSUFFICIENT/);
- assert.match(html,/Geometri/);
+ assert.match(html,/geometri/i);
  assert.match(build,/"pilot-data-lab.html"/);
  assert.match(build,/"src\/p1-pilot-integration.js"/);
  assert.match(build,/"src\/p1-pilot-ui.js"/);
