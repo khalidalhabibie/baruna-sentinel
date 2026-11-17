@@ -42,6 +42,8 @@ jobs:
         run: node scripts/evidence-regression-smoke.mjs
       - name: Verify private QC ZIP parsing and Evidence Brief annex
         run: node scripts/p1-handoff-smoke.mjs
+      - name: Verify Sentinel-1 SLC candidate-only research gates
+        run: node scripts/insar-candidate-smoke.mjs
       - name: Exercise live production view switching (non-blocking diagnostic)
         if: always()
         continue-on-error: true
