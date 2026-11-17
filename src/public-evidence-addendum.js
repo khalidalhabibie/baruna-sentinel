@@ -8,7 +8,9 @@ export function verifyPublicAddendum(doc){
  if(b?.doi!=="10.32693/bomg.32.1.2017.351"||!Array.isArray(b.benchmarkPoints)||b.benchmarkPoints.length!==6)
   throw new TypeError("Published benchmark source or count not validated.");
  if(b.qa?.status!=="SOURCE_TABLE_QA_REQUIRED"||b.qa.safeToPlotAsVerifiedAssets!==false||b.qa.validForCurrentAssetGeometry!==false||
-   b.qa.assetVelocityMmYr!==null||b.qa.rawTableCrossCheckedAgainstRenderedPdf!==false)
+   b.qa.assetVelocityMmYr!==null||b.qa.rawTableCrossCheckedAgainstRenderedPdf!==false||
+   b.qa.publishedTableTextCrossChecked!==true||b.qa.pdfPageVisualReviewed!==false||
+   b.qa.coordinateCollisionAudit?.disposition!=="CONFIRMED_IN_PUBLIC_PDF_TEXT_TABLE_BUT_GEODETIC_CORRECTION_UNRESOLVED")
   throw new TypeError("Historical benchmark uncertainty must be retained.");
  const ids=new Set();
  for(const item of b.benchmarkPoints){
@@ -18,7 +20,9 @@ export function verifyPublicAddendum(doc){
   ids.add(item.id);
  }
  const tb1=b.benchmarkPoints.find(x=>x.id==="TB 1"),tb2=b.benchmarkPoints.find(x=>x.id==="TB 2");
- if(!tb1||!tb2||distance2(tb1.utmXY,tb2.utmXY)>1||distance2(tb1.localXY,tb2.localXY)<1000)
+ if(!tb1||!tb2||distance2(tb1.utmXY,tb2.utmXY)>1||distance2(tb1.localXY,tb2.localXY)<1000||
+   Math.abs(Math.sqrt(distance2(tb1.utmXY,tb2.utmXY))-b.qa.coordinateCollisionAudit.publishedUtmDistanceM)>0.0001||
+   Math.abs(Math.sqrt(distance2(tb1.localXY,tb2.localXY))-b.qa.coordinateCollisionAudit.publishedLocalDistanceUnits)>0.001)
   throw new TypeError("Known source-table coordinate collision must be flagged.");
  if(p?.id!=="coaster-street-south-2026-secondary-study"||p.linkedPublishedHistoricalSectorId!=="coaster-street"||
   p.publicationYear!==2026||p.evidenceMode!=="PUBLISHED_SECONDARY_EXPOSURE_CONTEXT_NOT_GNSS"||
@@ -45,5 +49,8 @@ export function historicalBenchmarkSummary(addendum){
  return {sourceMode:"PUBLISHED_HISTORICAL_REFERENCE_ONLY",
   count:d.surveyReference.benchmarkPoints.length,year:2004,
   qaStatus:d.surveyReference.qa.status,collisionIds:[...d.surveyReference.qa.duplicateOrNearlyIdenticalUtmPair],
+  pdfTextAudit:d.surveyReference.qa.publishedTableTextCrossChecked,
+  visualAudit:d.surveyReference.qa.pdfPageVisualReviewed,
+  pairUtmDistanceM:d.surveyReference.qa.coordinateCollisionAudit.publishedUtmDistanceM,
   sourceUrl:d.surveyReference.url,rankAllowed:false,verifiedAssetGeometry:false};
 }
