@@ -7,6 +7,8 @@ const publicAssets=[
   "saas.css",
   "legacy-saas-bridge.css",
   "src/insight-ranking.js",
+  "src/multi-gnss-evidence.js",
+  "gnss-center.html",
   "src/saas-app.js",
   "workspace-semarang.html",
   "workspace-demo.html",
