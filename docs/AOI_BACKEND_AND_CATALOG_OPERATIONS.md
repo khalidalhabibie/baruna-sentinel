@@ -1,3 +1,7 @@
+> **RGPD 2026 update — ARCHIVED DESIGN ONLY (17 Nov 2026).** Backend endpoints, Vercel Cron, operator-token cloud sync and its persistent database pilot have been removed from the deployed project. BARUNA currently uses `data/*.json` plus browser `localStorage` and user-controlled JSON backup/restore. The GitHub STAC updater is **manual workflow_dispatch** only during the competition to avoid uncontrolled production rebuilds. See [RGPD four-step guide](./RGPD_FOUR_STEP_DEMO.md). Nothing below this line is currently an active deployment procedure.
+
+---
+
 # BARUNA Sentinel — AOI cloud backend, catalog scheduler and verification history
 
 Status: **code delivered; operator credentials not installed by code or repository**. This is a **single-operator experimental system**, not multi-user enterprise RBAC, validated subsidence monitoring, hazard alerts, or certification.
