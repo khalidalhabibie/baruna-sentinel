@@ -90,3 +90,35 @@
 @media(max-width:1000px){.pilot-readiness-grid{grid-template-columns:1fr 1fr}.pilot-status-card:last-child{grid-column:1/-1}.pilot-scope-head{align-items:flex-start;flex-direction:column;gap:6px}.pilot-intro{align-items:flex-start;flex-direction:column;gap:12px}}
 @media(max-width:640px){.pilot-readiness{padding:43px 17px 46px}.pilot-readiness-grid,.pilot-plan-grid,.pilot-conversation{grid-template-columns:1fr}.pilot-status-card:last-child{grid-column:auto}.pilot-status-card{padding:18px}.pilot-scope{padding:19px 17px}.pilot-scope h3{font-size:21px}.pilot-scope-metrics{gap:12px}.pilot-scope-metrics b{font-size:19px}.pilot-plan-grid{gap:13px}.pilot-plan-grid>div+div{border-left:0;border-top:1px solid #e9efea;padding-left:0;padding-top:13px}.pilot-conversation{gap:14px}.pilot-conversation>p{grid-column:auto}.pilot-intro-link{white-space:normal}}
 @media print{.pilot-readiness{display:none!important}}
+
+/* Reviewer-visible evidence chain: actual historical CSEM GPS regression + proposal audit. */
+.historical-ols{margin:23px 0 0;border:1px solid #d5e5de;border-radius:13px;padding:23px;background:#fbfdfb}
+.historical-ols-head h3{margin:8px 0;color:#204b40;font-size:20px;letter-spacing:-.02em}
+.historical-ols-head p,.historical-ols-note{font-size:11px;line-height:1.75;color:#648076;margin:8px 0}
+.historical-ols-note{margin-top:15px}
+.historical-ols-note a{color:#126b56;text-decoration:underline}
+.historical-ols-body{margin-top:17px}
+.historical-ols-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.historical-ols-grid>div{border:1px solid #dfeae3;border-radius:9px;padding:14px;background:white;min-width:0}
+.historical-ols-grid small{display:block;line-height:1.4;color:#608576;letter-spacing:.045em;font-size:9px;font-weight:790}
+.historical-ols-grid strong{display:block;margin:8px 0 3px;color:#1c6353;font-size:25px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.historical-ols-grid strong em{font-size:10px;letter-spacing:normal;font-style:normal}
+.historical-ols-grid span{font-size:10px;line-height:1.55;color:#7d9187}
+.historical-ols-verdict{background:#f3f8f4;border-left:3px solid #7caa92;border-radius:4px;padding:12px 15px;margin-top:13px}
+.historical-ols-verdict strong{display:block;font-size:9px;letter-spacing:.09em;color:#497f66}
+.historical-ols-verdict p{font-size:11px;line-height:1.75;color:#587a6a;margin:5px 0 0}
+.proposal-alignment{background:#fff;border-top:1px solid #e4ebe7;padding:50px clamp(18px,4.8vw,77px)}
+.proposal-alignment h2{font-size:clamp(23px,2.5vw,35px);line-height:1.2;letter-spacing:-.035em;color:#20463f;margin:11px 0}
+.proposal-alignment-top p{font-size:12px;line-height:1.75;color:#73877f;max-width:880px}
+.proposal-methodology-details{border:1px solid #d7e5dd;border-radius:10px;margin-top:20px;padding:17px 21px;background:#fbfdfb}
+.proposal-methodology-details summary{font-size:12px;font-weight:830;color:#276855;cursor:pointer;line-height:1.65}
+.proposal-methodology-details[open] summary{margin-bottom:16px}
+.proposal-methodology-table-wrap{overflow-x:auto}
+.proposal-methodology-table{border-collapse:collapse;width:100%;min-width:740px;table-layout:fixed}
+.proposal-methodology-table th{background:#eaf3ed;text-align:left;font-size:10px;color:#3d785c;padding:12px;letter-spacing:.03em}
+.proposal-methodology-table td{padding:13px 12px;font-size:11px;line-height:1.75;color:#668077;border-bottom:1px solid #e3eee8;vertical-align:top;overflow-wrap:anywhere}
+.proposal-methodology-table td:first-child{width:27%;color:#235a47}
+.proposal-methodology-caveat{font-size:10px;line-height:1.7;color:#7b8e83;margin:14px 0 0}
+@media(max-width:900px){.historical-ols-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:580px){.historical-ols{padding:17px 14px}.historical-ols-grid{grid-template-columns:1fr 1fr;gap:6px}.historical-ols-grid>div{padding:10px}.historical-ols-grid strong{font-size:20px}.proposal-alignment{padding:37px 17px}.proposal-methodology-details{padding:15px 13px}}
+@media print{.historical-ols,.proposal-alignment{display:none!important}}
