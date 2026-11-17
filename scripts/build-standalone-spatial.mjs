@@ -20,7 +20,9 @@ const scenario=src("src/spatial-scenario.js")
  .replace(/^export\s+/gm,"");
 const app=src("src/spatial-demo.js").replace(/^import .*?;\s*$/gm,"")
  // Standalone is a synthetic-only offline video: real evidence requires published source files.
- .replace(/^\s*void initRealSpatialEvidence\(map\);\s*$/m,"");
+ .replace(/^\s*void initRealSpatialEvidence\(map\);\s*$/m,"")
+ // A self-contained file:// demo cannot fetch the separate source-backed optical JSON.
+ .replace(/^\s*void installTrueColorLayer\(map\);\s*$/m,"");
 const combined=[assessment,scenario,app].join("\n;\n");
 if(/^(?:import|export)\s/m.test(combined))throw new Error("Standalone JS still contains module imports/exports");
 if(!html.includes('href="./vendor/leaflet/leaflet.css"')||
@@ -30,6 +32,9 @@ if(!html.includes('href="./vendor/leaflet/leaflet.css"')||
 html=html.replace(' <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">',"");
 html=html.replace(' <link rel="stylesheet" href="./spatial-demo.css">',"");
 html=html.replace(' <link rel="stylesheet" href="./real-evidence.css">',"");
+html=html.replace(' <link rel="stylesheet" href="./true-color-map.css">',"");
+// Offline video is intentionally simulation-only; omit inactive online map switches.
+html=html.replace(/<div class="map-base-switch"[\s\S]*?<\/div>\s*<label class="basemap-opacity"[\s\S]*?<\/label>\s*<small class="satellite-source-note"[^>]*>[\s\S]*?<\/small>/m,"");
 html=html.replace(' <script defer src="./vendor/leaflet/leaflet.js"></script>',"");
 html=html.replace(' <script type="module" src="./src/spatial-demo.js"></script>',"");
 html=html.replace(/src="\.\/assets\/ourdo-tail-curve-wordmark\.svg"/g,'src="'+logo+'"');
