@@ -24,8 +24,11 @@ try {
  assert.match(await live.locator("#insar-review-summary").innerText(),/19 Sentinel-1 IW SLC scene/);
  assert.match(await live.locator("#insar-review-summary").innerText(),/48 kandidat pasangan/);
  assert.equal(await live.locator("#insar-review-pairs li").count(),5);
- assert.match(await live.locator("#insar-review-limits").innerText(),/Belum ada interferogram/);
- assert.match(await live.locator("#gate-grid").innerText(),/InSAR displacement/);
+ assert.match(await live.locator("#insar-review-limits").innerText(),/Arsip pencarian SLC ini hanya memuat kandidat/);
+ assert.match(await live.locator("#gate-grid").innerText(),/Verified InSAR deformation/);
+ assert.match(await live.locator("#real-insar-status").innerText(),/REAL PRODUCT/);
+ assert.match(await live.locator("#real-insar-coverage").innerText(),/91,3%/);
+ assert.match(await live.locator("#real-insar-port-status").innerText(),/Insufficient InSAR Evidence/);
  await live.close();
 
  const blocked=await page();
