@@ -5,6 +5,8 @@ const publicAssets=[
   "index.html",
   "evidence-lab.html",
   "saas.css",
+  "legacy-saas-bridge.css",
+  "src/insight-ranking.js",
   "src/saas-app.js",
   "workspace-semarang.html",
   "workspace-demo.html",
