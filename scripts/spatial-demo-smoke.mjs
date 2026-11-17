@@ -21,13 +21,30 @@ try{
  // Real source-backed GIS layer is separate from the four synthetic assets.
  await page.locator("#real-source-state[data-state=ok]").waitFor({timeout:10000});
  assert.match(await page.locator("#real-dsm-state").innerText(),/Tersedia/);
+ // Real source-backed True Color basemap; pixel image integrity is checked before enabling.
+ await page.locator('#basemap-satellite[aria-pressed="true"]').waitFor({timeout:10000});
+ assert.equal(await page.locator('#basemap-satellite').isDisabled(),false);
+ assert.match(await page.locator('#satellite-source-note').innerText(),/Sentinel-2 L2A · 14 Okt 2026/);
+ assert.equal(await page.locator('.baruna-true-color-overlay').count(),0,"pane is dedicated, not a CSS fake map");
+ assert.equal(await page.locator('.leaflet-image-layer').count()>=1,true,"real optical image is visible");
+ await page.locator('#basemap-street').click();
+ assert.equal(await page.locator('#basemap-street').getAttribute('aria-pressed'),'true');
+ assert.equal(await page.locator('#satellite-opacity-control').isVisible(),false);
+ await page.locator('#basemap-satellite').click();
+ assert.equal(await page.locator('#basemap-satellite').getAttribute('aria-pressed'),'true');
+ assert.equal(await page.locator('#satellite-opacity-control').isVisible(),true);
+ await page.locator('#satellite-opacity').evaluate(input=>{
+  input.value='65';input.dispatchEvent(new Event('input',{bubbles:true}));
+ });
+ assert.equal(await page.locator('#satellite-opacity-value').innerText(),'65%');
+ 
  assert.match(await page.locator("#real-s2-count").innerText(),/16 scene/);
  assert.match(await page.locator("#real-s1-count").innerText(),/11 scene/);
  assert.equal(await page.locator("#real-scene option").count(),16);
  assert.equal(await page.locator(".leaflet-image-layer").count()>=1,true,"actual DSM preview overlay mounted");
  await page.locator("#real-sensor").selectOption("1");
  assert.equal(await page.locator("#real-scene option").count(),11);
- assert.match(await page.locator("#real-scene-details").innerText(),/Belum ada raster\/piksel Sentinel/);
+ assert.match(await page.locator("#real-scene-details").innerText(),/Katalog GRD bukan data InSAR atau displacement/);
  await page.locator("#real-sensor").selectOption("2");
  assert.equal(await page.locator("#real-scene option").count(),16);
  await page.locator("#real-evidence").scrollIntoViewIfNeeded();
