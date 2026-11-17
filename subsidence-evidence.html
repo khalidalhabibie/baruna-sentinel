@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="id">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#0d2932">
+ <meta name="description" content="BARUNA Sentinel — evidence amblesan historis Tanjung Emas, temuan InSAR regional, dan QA Sentinel-1 ASF HyP3 Oktober 2026. Angka asli dengan batas ilmiah.">
+ <title>Subsidence Evidence — Semarang | BARUNA Sentinel</title>
+ <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="./subsidence-evidence.css">
+ <script type="module" src="./src/subsidence-evidence.js"></script>
+</head>
+<body data-source-state="loading">
+ <a class="skip-link" href="#evidence-content">Lewati navigasi</a>
+ <header class="site-header">
+  <div class="head-inner">
+   <a class="brand" href="./workspaces.html" aria-label="BARUNA Workspaces"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="Ourdo Indonesia" width="116" height="38"><span class="brand-rule"></span><span class="brand-copy">BARUNA <b>SENTINEL</b></span></a>
+   <nav aria-label="Navigasi"><a href="./workspaces.html">Workspaces</a><a href="./real-workspace.html">Spatial workspace</a><a href="./subsidence-evidence.html" class="active" aria-current="page">Subsidence evidence</a></nav>
+   <span class="research-tag">SEMARANG · RESEARCH</span>
+  </div>
+ </header>
+ <main id="evidence-content">
+  <section class="hero">
+   <div class="shell hero-inner">
+    <div class="hero-copy">
+     <div class="kicker"><span class="live-dot"></span> OURDO INDONESIA / BARUNA SENTINEL · REAL EVIDENCE</div>
+     <h1>Tanah ambles.<br><em>Buktinya harus jelas.</em></h1>
+     <p>Bandingkan <b>pengukuran historis pelabuhan</b>, <b>hasil studi regional</b>, dan <b>kualitas radar terbaru</b> tanpa mengubahnya menjadi kesimpulan aset yang tidak didukung data.</p>
+     <div class="hero-actions"><a class="primary-link" href="#historic">Jelajahi 6 sektor historis <span>↘</span></a><a class="quiet-link" href="#radar">Lihat quality gate InSAR ↗</a></div>
+     <div id="atlas-status" class="load-status" role="status">Memverifikasi tiga sumber data...</div>
+    </div>
+    <aside class="hero-panel">
+      <div class="panel-top"><span>ANALYSIS BRIEF / SEMARANG</span><span>2026</span></div>
+      <div class="panel-heading">Tiga periode, tiga jenis bukti.</div>
+      <div class="period-row"><div class="period-dot"></div><span>2005</span><div><strong>Field levelling</strong><small>Amblesan kumulatif, enam sektor pelabuhan</small></div></div>
+      <div class="period-row"><div class="period-dot second"></div><span>2015–22</span><div><strong>Regional InSAR study</strong><small>Laju maksimum wilayah luas, bukan titik aset</small></div></div>
+      <div class="period-row"><div class="period-dot third"></div><span>2026</span><div><strong>ASF HyP3 radar quality</strong><small>Coherence + phase QC; belum ada mm/tahun</small></div></div>
+      <div class="panel-bottom"><span>DISPLACEMENT AT PORT IN 2026</span><strong>NOT VERIFIED</strong></div>
+    </aside>
+   </div>
+  </section>
+  <section class="shell overview" aria-label="Ringkasan berbagai sumber">
+    <div class="summary-box"><span class="meta-label">01 · MEASURED IN 2005</span><strong id="historical-count">—</strong><p>Enam sektor pelabuhan dengan rentang penurunan tanah kumulatif dari publikasi.</p><span class="small-tag">HISTORICAL · NOT CURRENT</span></div>
+    <div class="summary-box"><span class="meta-label">02 · PUBLISHED REGIONAL STUDY</span><strong id="regional-rate">—</strong><p>Laju maksimum yang dilaporkan untuk wilayah utara/timur Semarang dan Demak (2015–2022).</p><span class="small-tag">REGIONAL MAXIMUM · NOT PORT ASSET</span></div>
+    <div class="summary-box"><span class="meta-label">03 · RECENT RADAR QC</span><strong id="radar-coverage">—</strong><p>Proporsi pixel darat berfase valid yang lolos ambang QC coherence ≥ 0,7.</p><span class="small-tag">SCREENING QUALITY · NOT ACCURACY</span></div>
+  </section>
+  <section id="historic" class="shell section" aria-labelledby="historic-heading">
+   <div class="section-header">
+    <div><span class="overline">01 / OBSERVED HISTORY</span><h2 id="historic-heading">Penurunan tanah pada enam sektor pelabuhan</h2><p>Data lapangan dipublikasikan oleh Raharjo &amp; Yosi (2017), dari pengukuran levelling pada 2005. Nilai berikut adalah <b>kumulatif historis dalam cm</b>, bukan laju per tahun.</p></div>
+    <a id="historic-source-link" class="source-link" target="_blank" rel="noopener noreferrer" href="https://journal.esdm.go.id/bomg/article/view/12755">Buka penelitian asli ↗</a>
+   </div>
+   <div class="historic-layout">
+     <article class="chart-card">
+       <div class="chart-top"><div><span class="mini-label">PUBLISHED SETTLEMENT RANGE</span><h3>Historical field measurements</h3></div><span class="unit-chip">cm · cumulative</span></div>
+       <div class="filters" id="sector-filters" role="group" aria-label="Filter sektor historis">
+        <button type="button" data-filter="all" aria-pressed="true">Semua sektor</button>
+        <button type="button" data-filter="coastal" aria-pressed="false">Struktur pesisir</button>
+        <button type="button" data-filter="port" aria-pressed="false">Operasi pelabuhan</button>
+        <button type="button" data-filter="road" aria-pressed="false">Akses jalan</button>
+       </div>
+       <div class="chart-axis" aria-hidden="true"><span>0</span><span>35</span><span>70</span><span>105</span><span>140 cm</span></div>
+       <div class="hist-rows" id="historic-bars" aria-label="Rentang amblesan kumulatif enam sektor">Memuat sumber penelitian...</div>
+       <div class="chart-note"><b>Catatan geometri:</b> koordinat pengukuran masing-masing sektor tidak tersedia pada dataset BARUNA. Kami tidak membuat marker palsu atau menggabungkan sektor dengan titik BIG.</div>
+     </article>
+     <aside class="detail-card" aria-label="Detail sektor terpilih">
+      <span class="mini-label">SELECTED HISTORICAL SECTOR</span>
+      <h3 id="selected-name">Memuat...</h3>
+      <span class="sector-subtitle" id="selected-type">Menunggu data</span>
+      <div class="detail-number" id="selected-range">—</div>
+      <p id="selected-evidence">Pilih sektor untuk melihat provenance dan keterbatasan.</p>
+      <div class="detail-divider"></div><span class="mini-label">TO VERIFY BEFORE A DECISION</span>
+      <div id="selected-gaps" class="gaps"></div>
+      <a href="./evidence-brief-coaster.html">Lihat contoh Evidence Brief ↗</a>
+     </aside>
+   </div>
+  </section>
+  <section id="radar" class="radar-section" aria-labelledby="radar-heading">
+   <div class="shell">
+    <div class="section-header">
+     <div><span class="overline">02 / ACTUAL SATELLITE PROCESSING</span><h2 id="radar-heading">Sentinel-1 InSAR — kualitas sinyal, bukan laju amblesan</h2><p>HyP3 memproses pasangan 2–14 Oktober 2026 menjadi coherence dan fase. Data 12 hari belum dapat menggantikan time-series deformasi multi-tahun.</p></div>
+     <a class="source-link" href="./data/semarang-real-hyp3-insar-qa.json" target="_blank" rel="noopener noreferrer">Lihat manifest HyP3 ↗</a>
+    </div>
+    <div class="radar-layout">
+      <article class="radar-main">
+       <div class="radar-label"><span class="ok-dot"></span> REAL ASF HYP3 PRODUCT · RESEARCH SCREENING</div>
+       <div class="radar-card-top"><strong>Coherence QC</strong><span>15.105 / 16.542 valid land pixels</span></div>
+       <div class="progress-line"><span id="radar-valid-bar" style="width:0"></span></div>
+       <div class="radar-numbers"><div><span>Qualified QC pixels</span><strong id="radar-qualified">—</strong></div><div><span>Amblesan tahunan terverifikasi</span><strong class="unavailable">NOT AVAILABLE</strong></div></div>
+       <p>Angka coherence menggambarkan konsistensi sinyal radar. Tidak menyatakan peluang benar, mm/tahun, genangan, atau kondisi struktur.</p>
+       <div class="radar-footnote">ASF HyP3 · VV descending · 80 m · EPSG:32749 · <span id="radar-id">—</span></div>
+      </article>
+      <article class="radar-port">
+       <span class="mini-label">TANJUNG EMAS / BIG RBI PORT POINT</span>
+       <h3>Evidence insufficient at locator</h3>
+       <p>Titik BIG adalah referensi kartografis, <b>bukan titik pengamatan aset tersurvei.</b></p>
+       <div class="port-number" id="radar-port">—</div>
+       <div class="port-caption">Coherence pada titik referensi · phase NoData · water-masked</div>
+       <div class="port-radius" id="radar-radius">Menunggu pemeriksaan mask...</div>
+       <div class="port-warning">Tidak ada pengukuran valid untuk menyimpulkan amblesan aset pada titik ini. NoData ≠ tidak ada amblesan.</div>
+      </article>
+    </div>
+   </div>
+  </section>
+  <section id="regional" class="shell section research-section" aria-labelledby="regional-heading">
+   <div class="section-header">
+    <div><span class="overline">03 / PUBLISHED RESEARCH CONTEXT</span><h2 id="regional-heading">Laju amblesan nyata ada di literatur, bukan di satu pasangan HyP3</h2><p>Studi C-band InSAR 2015–2022 melaporkan laju maksimum regional 100–120 mm/tahun pada kawasan utara/timur Semarang dan Demak. Ini <b>bukan</b> angka yang dapat ditempel pada setiap titik Tanjung Emas.</p></div>
+    <a id="regional-source-link" class="source-link" target="_blank" rel="noopener noreferrer" href="https://doi.org/10.1016/j.jag.2023.103579">Buka studi InSAR ↗</a>
+   </div>
+   <div class="research-grid">
+    <article><span class="research-step">01</span><h3>Historical observation</h3><p>Data enam sektor 2005 dipakai sebagai alasan investigasi, bukan dasar keputusan kerusakan aset 2026.</p></article>
+    <article><span class="research-step">02</span><h3>Multi-date velocity raster</h3><p>Butuh produk velocity geo-referenced, model referensi stabil, koreksi atmosfer, serta metadata periode dan kualitas. Kandidat data: COMET LiCSAR + LiCSBAS.</p><a href="https://comet.nerc.ac.uk/comet-lics-portal/" target="_blank" rel="noopener noreferrer">COMET LiCSAR ↗</a></article>
+    <article><span class="research-step">03</span><h3>Independent site check</h3><p>Validasi dengan seri GNSS/levelling representatif, geometri resmi aset dari operator, dan pemeriksaan penanggung jawab geodesi.</p><a href="./?page=analyst">Bukti GNSS BARUNA ↗</a></article>
+   </div>
+   <div class="research-limitation"><strong>METODOLOGI TIDAK BOLEH DICAMPUR.</strong><span>Levelling 2005 adalah penurunan kumulatif; publikasi regional 2015–2022 adalah laju maksimum wilayah luas; HyP3 2026 adalah screening kualitas radar. Tidak ada grafik tren tunggal atau nilai risiko aset yang sah dari ketiga angka ini.</span></div>
+  </section>
+  <section class="shell action-footer"><div><span class="overline">SOURCE-TRACEABLE OUTPUT</span><h2>Gunakan data yang ada. Tunjukkan kekosongannya.</h2><p>Ekspor ringkasan JSON akan menyertakan seluruh evidence gate dan mempertahankan status "belum diverifikasi" untuk amblesan 2026.</p></div><div><button id="export-evidence" type="button" disabled>Export Evidence JSON ↓</button><a href="./real-workspace.html#real-insar-qa">Kembali ke Spatial Workspace ↗</a></div></section>
+ </main>
+ <footer><div class="shell footer-inner"><span>© OURDO INDONESIA · BARUNA SENTINEL</span><span>Public evidence screening · no real-time monitoring · no structural safety certification</span></div></footer>
+</body>
+</html>
