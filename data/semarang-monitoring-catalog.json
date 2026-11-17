@@ -1,0 +1,16 @@
+{
+  "schema": "baruna-real-scene-index-v1",
+  "status": "NOT_RUN",
+  "sourceMode": "REAL_CATALOG_METADATA_ONLY_NOT_SATELLITE_PIXELS_NOT_INSAR",
+  "source": "Copernicus Data Space STAC public catalogue",
+  "sourceEndpoint": "https://stac.dataspace.copernicus.eu/v1/search",
+  "generatedUtc": null,
+  "aoiEpsg4326": [110.375, -7.025, 110.485, -6.875],
+  "count": 0,
+  "scenes": [],
+  "limitations": [
+    "First scheduled catalogue refresh has not completed",
+    "No InSAR, asset deformation, flood map or structural safety measurement",
+    "The historic static catalogue remains the UI fallback"
+  ]
+}

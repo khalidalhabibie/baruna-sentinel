@@ -157,7 +157,7 @@ export function makeEvidenceBrief(aoi){
  const record=validateRecord(aoi);
  return {schema:"baruna-aoi-verification-brief-v1",createdAt:new Date().toISOString(),
   aoi:{id:record.id,name:record.name,purpose:record.purpose,regionId:"semarang",workspaceId:"semarang-coastal",geometry:record.geometry,boundarySource:record.boundarySource,sourceStatus:record.sourceStatus},
-  evidenceCheck:record.lastEvidenceCheck||null,verificationQueue:verificationQueue(record),
+  evidenceCheck:record.lastEvidenceCheck||null,monitorHistory:(record.monitorHistory||[]).slice(0,20),verificationQueue:verificationQueue(record),
   decision:{operationalRanking:"DATA_INSUFFICIENT",rankedAssets:0,reason:"No verified on-asset representative measurements, owner-approved criticality or operational ranking policy."},
-  limitations:["Browser-local registry, not cloud registration or automated monitoring","Scene footprint intersection does not confirm imagery pixel coverage or detected change","No Sentinel-1 interferogram, GNSS asset deformation or structural safety conclusion","DSM and optical layers do not establish flood/rob depth"]};
+  limitations:["Browser-local records by default; private operator cloud persistence only when configured, without certified asset monitoring","Scene footprint intersection does not confirm imagery pixel coverage or detected change","No Sentinel-1 interferogram, GNSS asset deformation or structural safety conclusion","DSM and optical layers do not establish flood/rob depth"]};
 }

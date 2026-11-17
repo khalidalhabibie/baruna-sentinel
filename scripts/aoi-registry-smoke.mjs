@@ -32,6 +32,9 @@ try{
  await page.locator("#evidence-content .scene-summary").waitFor({state:"visible",timeout:16000});
  assert.match(await page.locator("#evidence-content").innerText(),/Scene dihitung dari irisan polygon AOI dengan footprint katalog/);
  assert.match(await page.locator("#evidence-content").innerText(),/GRD/);
+ assert.equal(await page.locator("#evidence-content .monitor-event").count(),1);
+ assert.match(await page.locator("#evidence-content .monitor-history").innerText(),/METADATA|RIWAYAT PEMERIKSAAN/);
+ assert.match(await page.locator("#cloud-state").innerText(),/Cloud belum dikonfigurasi|Backend tidak tersedia/);
  await page.screenshot({path:"reports/baruna-aoi-registry-checked.png",fullPage:false});
  const dl=page.waitForEvent("download");
  await page.locator("#export-brief").click();

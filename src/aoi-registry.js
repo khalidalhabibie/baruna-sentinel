@@ -4,6 +4,7 @@ import {
  validateAoiPolygon,parseAoiGeoJSON,evaluateEvidenceSnapshot,diffEvidenceSnapshots,
  verificationQueue,makeEvidenceBrief
 } from "./aoi-registry-model.js";
+import {historyEvent,appendHistory,choosePublishedCatalog} from "./aoi-monitor-client.js";
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -74,7 +75,8 @@ function save(event){event.preventDefault();try{
  const id=current?.id||( "aoi-"+crypto.randomUUID());
  const next={id,name,purpose:$("aoi-purpose").value,createdAt:current?.createdAt||new Date().toISOString(),
   geometry,boundarySource,sourceStatus:"USER_DECLARED_UNVERIFIED",workspaceId:"semarang-coastal",regionId:"semarang",
-  lastEvidenceCheck:changed?null:(current?.lastEvidenceCheck||null),lastChange:changed?null:(current?.lastChange||null)};
+  lastEvidenceCheck:changed?null:(current?.lastEvidenceCheck||null),lastChange:changed?null:(current?.lastChange||null),
+  monitorHistory:changed?[]:(current?.monitorHistory||[]),cloudId:current?.cloudId||null};
  if(!current&&records.length>=MAX_AOIS)throw new Error("Maksimal 20 AOI tersimpan di browser ini.");
  const nextRecords=current?records.map(item=>item.id===current.id?next:item):[...records,next];
  applyStored(nextRecords);selectedId=id;geometry=records.find(item=>item.id===id).geometry;
@@ -86,6 +88,12 @@ function deleteSelected(){const item=selected();if(!item)return;
  catch(e){message("Gagal menghapus: "+e.message,true);}}
 function renderList(){const list=$("aoi-list");if(!records.length){list.innerHTML='<p class="empty-short">Belum ada AOI terdaftar di browser ini.</p>';return;}
  list.innerHTML=records.map(r=>'<button type="button" class="area-item" data-aoi-id="'+esc(r.id)+'" aria-pressed="'+(r.id===selectedId)+'"><strong>'+esc(r.name)+'</strong><span>'+r.geometry.areaKm2.toLocaleString("id-ID")+' km² · '+(r.lastEvidenceCheck?'dicek '+esc(dateShort(r.lastEvidenceCheck.checkedAt)):'belum dicek')+'</span></button>').join("");}
+function renderMonitorHistory(history){
+ if(!Array.isArray(history)||!history.length)return '<div class="monitor-empty">Riwayat belum tersedia. Klik Check Evidence untuk mencatat pemeriksaan pertama.</div>';
+ return '<div class="monitor-history"><strong>RIWAYAT PEMERIKSAAN · MAKSIMAL 20</strong>'+history.slice(0,20).map(e=>
+  '<div class="monitor-event"><span>'+esc(dateShort(e.checkedAt))+'</span><span>S1 '+Number(e.s1Count||0)+' · S2 '+Number(e.s2Count||0)+'</span><b>'+(e.isBaseline?"Baseline":e.newSceneCount?("+"+Number(e.newSceneCount)+" scene katalog"):"Tidak ada scene baru")+"</b></div>").join("")+
+  '<small>Riwayat hanya pembaruan metadata katalog. Bukan deteksi gerakan tanah, bahaya, atau kondisi aset.</small></div>';
+}
 function renderEvidence(){const root=$("evidence-content"),item=selected();if(!item){root.innerHTML='<div class="placeholder-mark">↻</div><strong>Daftarkan AOI dahulu</strong><p>Pemeriksaan katalog tersedia setelah AOI disimpan di browser ini.</p>';return;}
  const data=item.lastEvidenceCheck,change=item.lastChange;if(!data){root.innerHTML='<div class="placeholder-mark">⌕</div><strong>AOI siap diperiksa</strong><p>Klik Check Evidence untuk membaca katalog Sentinel-1 GRD dan Sentinel-2 L2A yang disediakan deployment BARUNA.</p>';return;}
  const lastS1=data.s1Grd?.[0]?.date,lastS2=data.s2L2a?.[0]?.date;
@@ -94,7 +102,7 @@ function renderEvidence(){const root=$("evidence-content"),item=selected();if(!i
  root.innerHTML='<div class="scan-meta"><strong>Checked '+esc(dateShort(data.checkedAt))+'</strong><span>Snapshot sumber: '+esc(dateOnly(data.sourceSnapshotAsOf))+'</span></div>'+ 
   '<div class="scene-summary"><div><span>SENTINEL-2 · L2A</span><strong>'+data.s2L2a.length+'</strong><small>Metadata footprint · terbaru '+esc(dateOnly(lastS2))+'</small></div><div><span>SENTINEL-1 · GRD</span><strong>'+data.s1Grd.length+'</strong><small>Metadata footprint · terbaru '+esc(dateOnly(lastS1))+'</small></div></div>'+ 
   '<div class="scan-change'+(change?.isBaseline?' baseline':'')+'">'+esc(changeText)+'</div>'+ 
-  '<p class="source-warning">Scene dihitung dari irisan polygon AOI dengan <b>footprint katalog</b>, bukan cakupan piksel bersih. Tidak ada live STAC query, scheduler, deteksi banjir rob, atau hasil deformasi InSAR. GRD tidak bisa dijadikan pengukuran penurunan tanah.</p>';
+  '<p class="source-warning">Scene dihitung dari irisan polygon AOI dengan <b>footprint katalog</b>, bukan cakupan piksel bersih. Refresh sumber terjadwal dapat tersedia, tetapi pemeriksaan AOI lokal tetap manual. Tidak ada deteksi banjir rob atau hasil deformasi InSAR; GRD tidak bisa dijadikan pengukuran penurunan tanah.</p>'+renderMonitorHistory(item.monitorHistory);
 }
 function renderQueue(){const root=$("queue-content"),item=selected();if(!item){root.innerHTML='<div class="placeholder-mark">✓</div><strong>Belum ada area terpilih</strong><p>Daftarkan AOI untuk melihat kebutuhan verifikasi.</p>';return;}
  const tasks=verificationQueue(item);
@@ -114,15 +122,21 @@ function render(){const item=selected();renderList();
 async function checkEvidence(){const item=selected();if(!item)return;
  const btn=$("check-evidence");btn.disabled=true;btn.textContent="Memeriksa sumber…";
  try{
-  const urls=["./data/semarang-sentinel-scenes.json","./data/semarang-real-readiness.json"];
+  const urls=["./data/semarang-monitoring-catalog.json","./data/semarang-sentinel-scenes.json","./data/semarang-real-readiness.json"];
   const responses=await Promise.all(urls.map(url=>fetch(url,{cache:"no-store"})));
-  if(responses.some(x=>!x.ok))throw new Error("Manifest sumber belum tersedia / server error.");
-  const [catalog,readiness]=await Promise.all(responses.map(x=>x.json()));
-  const next=evaluateEvidenceSnapshot(item.geometry,catalog,readiness,new Date().toISOString());
+  if(!responses[1].ok||!responses[2].ok)throw new Error("Manifest sumber belum tersedia / server error.");
+  const recent=responses[0].ok?await responses[0].json():null;
+  const [legacy,baseline]=await Promise.all([responses[1].json(),responses[2].json()]);
+  const published=choosePublishedCatalog(recent,legacy,baseline);
+  const next=evaluateEvidenceSnapshot(item.geometry,published.catalog,published.readiness,new Date().toISOString());
+  next.catalogGeneratedUtc=published.generatedUtc;
+  next.publication=published.publication;
   const change=diffEvidenceSnapshots(item.lastEvidenceCheck,next);
-  const replacement={...item,lastEvidenceCheck:next,lastChange:change};
+  const event=historyEvent(next,change);
+  const replacement={...item,lastEvidenceCheck:next,lastChange:change,
+    monitorHistory:appendHistory(item.monitorHistory,event)};
   applyStored(records.map(r=>r.id===item.id?replacement:r));
-  render();message("Snapshot lokal selesai diperiksa. "+(change.isBaseline?"Baseline pertama disimpan.":change.newTotal+" scene baru dibanding pemeriksaan terakhir."));
+  render();message("Pemeriksaan sumber publik selesai. "+(change.isBaseline?"Baseline pertama disimpan.":change.newTotal+" scene katalog baru dibanding pemeriksaan terakhir.")+" Ini bukan monitoring gerakan aset.");
  }catch(error){message("Pemeriksaan gagal: "+error.message+". Data lama tidak diganti.",true);}
  finally{btn.textContent="Check Evidence ↗";render();}
 }
@@ -150,6 +164,75 @@ function initMap(){if(!window.L){message("Library Leaflet gagal dimuat. Periksa 
  });
  mapReady=true;drawMap();
 }
+/** Cloud sync is an opt-in single-operator pilot, never an anonymous public registry. */
+function cloudMessage(text,error=false){
+ const node=$("cloud-state");if(!node)return;node.textContent=text;node.dataset.status=error?"error":"ready";
+}
+async function cloudCall(path,method="GET",payload=null){
+ const token=$("cloud-token")?.value.trim()||"";
+ if(token.length<32)throw new Error("Masukkan token operator (minimal 32 karakter). Tidak disimpan di perangkat.");
+ const response=await fetch(path,{method,cache:"no-store",headers:{"Authorization":"Bearer "+token,
+  ...(payload?{"Content-Type":"application/json"}:{})},...(payload?{body:JSON.stringify(payload)}:{})});
+ const body=await response.json().catch(()=>({}));
+ if(!response.ok||!body.ok)throw new Error(body.error||("Backend HTTP "+response.status));
+ return body;
+}
+async function cloudPushSelected(){
+ const local=selected();if(!local){cloudMessage("Simpan atau pilih AOI lokal dahulu.",true);return;}
+ try{
+  cloudMessage("Menyimpan AOI ke backend…");
+  const result=await cloudCall("./api/aoi","POST",{id:local.cloudId||undefined,name:local.name,purpose:local.purpose,
+   geometry:local.geometry,boundarySource:local.boundarySource});
+  const update={...local,cloudId:result.record.id,cloudSyncedAt:new Date().toISOString()};
+  applyStored(records.map(r=>r.id===local.id?update:r));render();
+  cloudMessage("AOI tersimpan di backend privat. ID cloud: "+result.record.id.slice(0,14)+"…");
+ }catch(e){cloudMessage("Cloud Save gagal: "+e.message,true);}
+}
+async function cloudPullRegistry(){
+ try{
+  cloudMessage("Membaca AOI cloud…");
+  const result=await cloudCall("./api/aoi");
+  const updated=[...records];let added=0,updatedCount=0,conflicts=0;
+  for(const remote of result.records){
+   const i=updated.findIndex(r=>r.cloudId===remote.id||r.id===remote.id);
+   if(i>=0){
+    if(JSON.stringify(updated[i].geometry.coordinates)!==JSON.stringify(remote.geometry.coordinates)){
+      conflicts++;continue; // preserve local geometry; no silent overwrite
+    }
+    updated[i]={...updated[i],cloudId:remote.id,lastEvidenceCheck:remote.lastEvidenceCheck||updated[i].lastEvidenceCheck,
+      lastChange:remote.lastChange||updated[i].lastChange};updatedCount++;continue;
+   }
+   if(updated.length>=MAX_AOIS)break;
+   updated.push({...remote,cloudId:remote.id,monitorHistory:[]});added++;
+  }
+  applyStored(updated);render();
+  cloudMessage("Cloud: "+added+" AOI baru, "+updatedCount+" cocok, "+conflicts+" konflik geometri dilewati. Tidak ada data lokal ditimpa secara diam-diam.");
+ }catch(e){cloudMessage("Cloud Load gagal: "+e.message,true);}
+}
+async function cloudCheckSelected(){
+ const local=selected();if(!local?.cloudId){cloudMessage("Simpan AOI terpilih ke cloud dahulu.",true);return;}
+ try{
+  cloudMessage("Memeriksa snapshot sumber melalui backend…");
+  const result=await cloudCall("./api/aoi-check","POST",{id:local.cloudId});
+  const nextHistory=result.monitorEvent?appendHistory(local.monitorHistory,result.monitorEvent):(local.monitorHistory||[]);
+  const updated={...local,lastEvidenceCheck:result.record.lastEvidenceCheck,lastChange:result.record.lastChange,
+    monitorHistory:nextHistory};
+  applyStored(records.map(r=>r.id===local.id?updated:r));render();
+  cloudMessage(result.skipped?"Tidak ada versi katalog baru untuk AOI ini.":"Riwayat pemeriksaan berhasil dicatat di backend; ini bukan deteksi deformasi.");
+ }catch(e){cloudMessage("Cloud Check gagal: "+e.message,true);}
+}
+async function initCloudSync(){
+ try{
+  const r=await fetch("./api/status",{cache:"no-store"});if(!r.ok)throw new Error("API tidak tersedia");
+  const state=await r.json();
+  if(state.backendConfigured!==true){cloudMessage("Cloud belum dikonfigurasi · semua AOI tetap di browser.");return;}
+  $("cloud-controls").hidden=false;
+  cloudMessage("Cloud tersedia untuk operator berizin; masukkan token untuk sinkronisasi.");
+ }catch{cloudMessage("Backend tidak tersedia pada deployment ini · mode lokal tetap berjalan.");}
+ $("cloud-push")?.addEventListener("click",cloudPushSelected);
+ $("cloud-pull")?.addEventListener("click",cloudPullRegistry);
+ $("cloud-check")?.addEventListener("click",cloudCheckSelected);
+}
 function initialize(){
  try{records=readRegistry(window.localStorage);}catch(e){storageError(e);records=[];}
  $("aoi-list").addEventListener("click",e=>{const target=e.target.closest("[data-aoi-id]");if(target)loadAoi(target.dataset.aoiId);});
@@ -164,6 +247,6 @@ function initialize(){
  $("upload-geojson").addEventListener("change",e=>importFile(e.target.files?.[0]));
  $("check-evidence").addEventListener("click",checkEvidence);
  $("export-brief").addEventListener("click",exportBrief);
- initMap();render();
+ initMap();render();void initCloudSync();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});else initialize();

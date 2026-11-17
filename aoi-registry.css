@@ -2,3 +2,25 @@
 @media(max-width:1200px){.header-left{gap:22px}.header nav{gap:13px}.header-tag{display:none}.workbench{grid-template-columns:300px minmax(0,1fr)}}
 @media(max-width:950px){.header{height:auto;min-height:69px;padding:13px 22px;flex-wrap:wrap}.header nav{overflow:auto;max-width:100%}.workbench{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr;align-items:start}.review-grid{grid-template-columns:1fr}.map-panel{min-height:500px}.gate-footer{flex-direction:column;align-items:flex-start}}
 @media(max-width:620px){.header-left{gap:10px;flex-direction:column;align-items:flex-start}.header nav{gap:15px}.header nav a{font-size:10px}.brand img{width:85px}.main{padding:0 16px}.intro{flex-direction:column;align-items:flex-start}.intro-mark{display:none}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats>div:nth-child(2){border-right:0}.stats>div:nth-child(-n+2){border-bottom:1px solid #e8eeea}.stats>div{padding:13px}.stats strong{font-size:21px}.stats strong.not-available{font-size:13px}.side{display:flex}.map-top{padding:17px}.map-tools{padding:0 14px 12px}.map-tools button,.upload-button{padding:9px}.map-legend{font-size:9px}.map-panel{min-height:450px}#aoi-map{min-height:315px}.review-head{flex-direction:column}.review-content{padding:16px}.gate-footer{padding:18px}.gate-footer a{white-space:normal}footer{flex-direction:column}}
+/* Private backend status is honest: by default the registry remains local-first. */
+.cloud-console{background:#f9fcfb;border:1px solid #d5e6df;border-radius:12px;margin:0 0 19px;padding:17px 20px;color:#26483f}
+.cloud-intro{display:flex;align-items:center;gap:18px;justify-content:space-between}
+.cloud-intro strong{font-size:13px;font-weight:800;display:block}
+.cloud-intro p{font-size:11px;line-height:1.65;color:#688279;margin:5px 0 0;max-width:690px}
+.pilot-chip{display:inline-block;color:#637f73;font-size:9px;font-weight:700;letter-spacing:.04em;background:#e9f2ec;border:1px solid #cfe1d3;padding:4px 7px;border-radius:12px;vertical-align:middle;margin-left:6px}
+#cloud-state{display:block;font-size:10px;font-weight:750;color:#49766d;background:#eef5f1;padding:8px 10px;border-radius:8px;max-width:290px}
+#cloud-state[data-status="error"]{color:#a34637;background:#fff1ed}
+.cloud-controls{border-top:1px solid #dbe8e2;margin-top:15px;padding-top:15px}
+.cloud-controls[hidden]{display:none}
+.cloud-controls label{font-size:11px;font-weight:750;display:block;color:#49685f;margin-bottom:6px}
+.cloud-controls input{padding:10px 12px;background:#fff;border:1px solid #c4dacf;border-radius:7px;min-width:260px;max-width:370px;width:100%;font-size:12px;color:#244239}
+.cloud-actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}
+.cloud-actions button{border:1px solid #2c7f6a;background:#e8f4ee;color:#1d6655;border-radius:7px;padding:10px 12px;font-size:11px;font-weight:780;cursor:pointer}
+.cloud-actions button:hover{background:#daf0e5}
+.cloud-controls small{display:block;color:#6c827b;font-size:10px}
+.monitor-history{border-top:1px solid #dce6e3;padding-top:12px;margin-top:13px}
+.monitor-history>strong{display:block;font-size:10px;letter-spacing:.07em;color:#4b7d6c;margin-bottom:7px}
+.monitor-event{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid #e9f0ec;font-size:10px;color:#627b70}
+.monitor-event b{font-size:10px;color:#2e6855;white-space:nowrap}
+.monitor-history>small,.monitor-empty{display:block;color:#84968e;font-size:10px;line-height:1.55;margin-top:8px}
+@media(max-width:710px){.cloud-console{padding:13px 14px}.cloud-intro{align-items:flex-start;flex-direction:column;gap:10px}.monitor-event{flex-wrap:wrap}}
