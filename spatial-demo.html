@@ -10,6 +10,7 @@
  <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
  <link rel="stylesheet" href="./spatial-demo.css">
  <link rel="stylesheet" href="./real-evidence.css">
+ <link rel="stylesheet" href="./true-color-map.css">
  <script defer src="./vendor/leaflet/leaflet.js"></script>
  <script type="module" src="./src/spatial-demo.js"></script>
 </head>
@@ -78,6 +79,15 @@
     </div>
     <a href="#ranking" class="map-ranking-cta" aria-label="Lihat daftar prioritas tiga aset yang lolos pemeriksaan bukti">Lihat 3 prioritas <span aria-hidden="true">↘</span></a>
     <div class="map-controls">
+     <div class="map-base-switch" role="group" aria-label="Pilih tampilan peta">
+      <button type="button" id="basemap-street" aria-pressed="true">Peta jalan</button>
+      <button type="button" id="basemap-satellite" aria-pressed="false" disabled>Satelit</button>
+     </div>
+     <label class="basemap-opacity" id="satellite-opacity-control" for="satellite-opacity" hidden>
+      Transparansi <input type="range" id="satellite-opacity" min="40" max="100" step="5" value="90" aria-label="Opasitas citra satelit">
+      <output id="satellite-opacity-value" for="satellite-opacity">90%</output>
+     </label>
+     <small class="satellite-source-note" id="satellite-source-note" role="status" aria-live="polite">Memuat informasi citra…</small>
      <button type="button" id="reset-view" title="Tampilkan seluruh area" aria-label="Kembalikan tampilan peta ke semua zona"><span aria-hidden="true">⤢</span> Seluruh area</button>
     </div>
     <div class="map-legend" aria-label="Legenda prioritas aset">
@@ -86,7 +96,7 @@
      <span><i class="legend-spot monitor"></i>Monitor</span>
      <span><i class="legend-spot blocked"></i>Perlu data</span>
     </div>
-    <div class="map-attribution-note">Peta dasar © OpenStreetMap · batas aset ilustratif</div>
+    <div class="map-attribution-note">Konteks OSM / Sentinel-2 · poligon aset ilustratif</div>
    </section>
 
    <aside class="decision-pane" aria-label="Hasil analisis aset terpilih">
