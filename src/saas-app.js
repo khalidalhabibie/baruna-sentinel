@@ -213,7 +213,9 @@ const DATA_CATALOG=[
  {name:"Sentinel-1 HyP3 InSAR",source:"ASF HyP3 · 2–14 Oct 2026",status:"Processed QA only",type:"blue",use:"Coherence, phase masks; no validated displacement mm/year"},
  {name:"Copernicus DEM GLO-30",source:"Copernicus elevation grid",status:"Real pixels",type:"active",use:"Surface context; not ground movement or water depth"},
  {name:"Tanjung Emas field levelling",source:"Raharjo & Yosi · reported 2005",status:"Historical research",type:"blue",use:"Cumulative settlement in 6 sectors; no georeferenced sector boundaries"},
- {name:"GNSS CSEM historical",source:"CSEM station historical series",status:"Independent station context",type:"blue",use:"Station measurement; not a measurement at Tanjung Emas assets"},
+ {name:"GNSS CSEM historical positions",source:"Zenodo 7775016 · 2010–2021",status:"Historical GPS-derived positions",type:"blue",use:"3561 source-derived daily epochs; not current position solution for port assets"},
+ {name:"BAKO independent Multi-GNSS QC",source:"IGS BAKO · 1 Jan 2025 · 20 min",status:"Verified RINEX observation QC",type:"active",use:"41 epochs and six constellations; NOT positioning accuracy or Semarang movement"},
+ {name:"CSMG Ina-CORS site log",source:"BIG SRGI Semarang Genuk · station metadata",status:"Paired observation QC not publicly loaded",type:"warn",use:"No numeric CSMG station-day records are published in this prototype"},
  {name:"Current asset vertical subsidence",source:"Not acquired or validated",status:"Missing",type:"warn",use:"Requires multi-temporal InSAR, stable reference, GNSS and surveyed geometries"}
 ];
 function catalog(){
@@ -307,7 +309,8 @@ function area(){
  +'<div class="science-step"><span class="science-step-index">02 / DISPLACEMENT</span><strong>Validate multi-date InSAR</strong><p>Obtain time series, stable reference, uncertainty and atmospheric correction.</p></div>'
  +'<div class="science-step"><span class="science-step-index">03 / INDEPENDENCE</span><strong>Cross-check GNSS / levelling</strong><p>Verify representativeness, datum and time-matched measurements before asset decisions.</p></div></div></div>'
  +'</div><div class="intel-panel" id="intel-ranking" role="tabpanel" hidden>'
- +'<div class="saas-note is-warning"><strong>Operational Ranking · NOT AVAILABLE.</strong> Six published historical sectors are source-backed, but have no verified asset geometries or current vertical deformation. These sectors cannot be ordered by risk, movement or inspection priority.</div>'
+ +'<div class="intel-gnss-priority saas-card saas-card-section"><div class="saas-card-head"><div><h2>Evidence Review Priority · Multi-GNSS</h2><p>Dependency queue derived from verifiable GNSS source gaps; step order is not asset severity or station performance.</p></div><a class="saas-link" href="./gnss-center.html#evidence-priority">Open GNSS Center →</a></div><div id="intel-gnss-review" role="status">Validating CSEM and BAKO evidence…</div></div>'
+ +'<div class="saas-note is-warning section-space"><strong>Operational Ranking · NOT AVAILABLE.</strong> Six published historical sectors are source-backed, but have no verified asset geometries or current vertical deformation. These sectors cannot be ordered by risk, movement or inspection priority.</div>'
  +'<div class="intel-ranking-header"><div><span class="saas-eyebrow">AREA INTELLIGENCE / COMPARABILITY</span><h2>Ranking &amp; Compare</h2><p>Current asset-level ranking is blocked by the Evidence Gate. Historical ranges are displayed for traceability, not as ranking criteria.</p></div><span class="saas-chip saas-chip-warn" id="intel-ranking-status">Verifying sources...</span></div>'
  +'<div class="directory-panel"><div class="saas-table-scroll"><table class="data-table intel-ranking-table"><thead><tr><th>Historical sector</th><th>Reported cumulative settlement (2005)</th><th>Current vertical rate</th><th>Operational ranking</th></tr></thead><tbody id="intel-ranking-rows"><tr><td colspan="4">Validating source evidence...</td></tr></tbody></table></div><div class="directory-notice" id="intel-ranking-provenance">Published levelling is not a 2026 ranking input. Asset coordinates and representative movement measurements are missing.</div></div>'
  +'<div class="saas-gnss-feature section-space"><div><span class="saas-eyebrow">PRIORITY / NOT AN ASSET RISK SCORE</span><h2>Evidence Review Priority</h2><p>Prioritize GNSS data completeness, aligned geodetic processing, and representative verification. These are workflow steps, not a numeric severity rank of the port sectors.</p></div><a class="saas-btn saas-btn-primary" href="./gnss-center.html#evidence-priority">Review GNSS queue →</a></div>'
@@ -325,6 +328,7 @@ function area(){
  bindAreaTabs();
  bindIntelligenceTabs();
  bootAreaSources();
+ void bootAreaGnssPriority();
  bootAreaMap();
 }
 function bindAreaTabs(){
@@ -446,6 +450,30 @@ function gnss(){
  renderShell(html,{title:"Multi-GNSS Center",crumbs:"Multi-GNSS Center"});
  void bootGnss();
 }
+
+async function bootAreaGnssPriority(){
+ const container=$("intel-gnss-review");
+ if(!container)return;
+ try{
+  const [c,b]=await Promise.all([fetch(GNSS_CENTER_SOURCES.csem,{cache:"no-store"}),fetch(GNSS_CENTER_SOURCES.bako,{cache:"no-store"})]);
+  if(!c.ok||!b.ok)throw Error("GNSS sources unavailable");
+  const d=buildMultiGnssReview(await c.text(),await b.json());
+  const table=document.createElement("div");table.className="gnss-priority-list";
+  for(const step of d.reviewPriority){
+   const item=document.createElement("div");item.className="gnss-priority-row";
+   const ordinal=document.createElement("span");ordinal.className="gnss-priority-no";ordinal.textContent=String(step.order).padStart(2,"0");
+   const detail=document.createElement("div");
+   const title=document.createElement("strong");title.textContent=step.title;
+   const caption=document.createElement("p");caption.textContent=step.next;
+   detail.append(title,caption);item.append(ordinal,detail);table.appendChild(item);
+  }
+  container.replaceChildren(table);
+  container.setAttribute("aria-label",d.reviewPriority.length+" GNSS evidence verification steps. No asset risks ranked.");
+ }catch(error){
+  container.textContent="GNSS source verification unavailable. Evidence prioritization is disabled; no risk rankings have been inferred.";
+ }
+}
+
 async function bootGnss(){
  const set=(id,t)=>{const n=$(id);if(n)n.textContent=String(t)};
  try{
