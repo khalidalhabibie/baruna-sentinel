@@ -18,7 +18,7 @@ async function page(){
 try {
  const live=await page();
  assert.equal((await live.goto(BASE+"/real-workspace.html",{waitUntil:"domcontentloaded"})).status(),200);
- await live.locator("#insar-review-status").getByText(/Kandidat riset/).waitFor({timeout:20000});
+ await live.waitForFunction(()=>document.getElementById("insar-review-status")?.textContent?.includes("Kandidat riset"),{timeout:20000});
  assert.match(await live.locator("#insar-review-summary").innerText(),/19 Sentinel-1 IW SLC scene/);
  assert.match(await live.locator("#insar-review-summary").innerText(),/48 kandidat pasangan/);
  assert.equal(await live.locator("#insar-review-pairs li").count(),5);
@@ -34,7 +34,7 @@ try {
   return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify(tampered)});
  });
  assert.equal((await blocked.goto(BASE+"/real-workspace.html",{waitUntil:"domcontentloaded"})).status(),200);
- await blocked.locator("#insar-review-status").getByText(/Belum tersedia/).waitFor({timeout:20000});
+ await blocked.waitForFunction(()=>document.getElementById("insar-review-status")?.textContent?.includes("Belum tersedia"),{timeout:20000});
  assert.equal(await blocked.locator("#insar-review-pairs li").count(),0);
  assert.match(await blocked.locator("#insar-review-summary").innerText(),/Kandidat InSAR belum bisa diverifikasi/);
  await blocked.close();
