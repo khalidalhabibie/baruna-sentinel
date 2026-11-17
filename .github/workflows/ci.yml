@@ -20,7 +20,7 @@ jobs:
       - name: Raster preview extraction regression (synthetic GeoTIFF only)
         run: |
           python3 -m venv /tmp/baruna-p1-venv
-          /tmp/baruna-p1-venv/bin/python -m pip install --quiet --disable-pip-version-check rasterio==1.4.3 numpy
+          /tmp/baruna-p1-venv/bin/python -m pip install --quiet --disable-pip-version-check rasterio==1.5.2 numpy
           /tmp/baruna-p1-venv/bin/python -m unittest scripts.test_prepare_demnas_preview
 
       - name: Syntax and scientific guardrail tests
