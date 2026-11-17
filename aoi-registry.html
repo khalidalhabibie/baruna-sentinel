@@ -14,8 +14,17 @@
  <main id="aoi-main" class="main">
   <div class="breadcrumb"><a href="./workspaces.html">Workspaces</a><span>/</span><a href="./real-workspace.html">Semarang Coastal</a><span>/</span><strong>AOI Registry</strong></div>
   <section class="intro"><div><span class="overline">EVIDENCE OPERATIONS / SEMARANG</span><h1>Tentukan area. <em>Ketahui bukti yang kurang.</em></h1><p>Daftarkan area kajian, periksa metadata Sentinel yang sudah tersedia, lalu siapkan permintaan verifikasi sebelum mengambil keputusan inspeksi.</p></div><div class="intro-mark"><strong>01</strong><span>WILAYAH AKTIF</span><small>Semarang Coastal</small></div></section>
-  <div class="scope-banner" role="note"><div class="scope-dot"></div><div><strong>Mode pilot lokal — bukan pemantauan otomatis</strong><span>Data AOI hanya tersimpan di browser ini. “Check Evidence” membaca snapshot katalog yang dipublikasikan BARUNA, bukan melakukan pencarian satelit langsung. Data belum dapat digunakan untuk ranking risiko atau keselamatan aset.</span></div></div>
-  <section class="stats" aria-label="Ringkasan operasional"><div><span>AOI TERSIMPAN</span><strong id="stat-areas">0</strong><small>Hanya browser ini</small></div><div><span>AREA TERPILIH</span><strong id="stat-area-size">—</strong><small>km² (estimasi polygon)</small></div><div><span>PEMERIKSAAN TERAKHIR</span><strong id="stat-check">Belum</strong><small>Manual, bukan scheduler</small></div><div><span>RANKING ASET NYATA</span><strong class="not-available">Belum tersedia</strong><small>Evidence gate belum terpenuhi</small></div></section>
+  <div class="scope-banner" role="note"><div class="scope-dot"></div><div><strong>Mode pilot lokal — bukan pemantauan otomatis</strong><span>Secara default, AOI tersimpan di browser ini. “Check Evidence” membandingkan katalog publik yang terakhir dipublikasikan BARUNA; pembaruan katalognya dijadwalkan, namun pemeriksaan AOI lokal tetap manual. Cloud Sync memerlukan backend privat. Tidak ada ranking risiko atau keselamatan aset.</span></div></div>
+  <section class="cloud-console" id="cloud-console" aria-label="Backend AOI operator" data-status="checking">
+  <div class="cloud-intro"><div><strong>Operator Cloud Sync <span class="pilot-chip">Opsional · Pilot</span></strong><p>AOI lokal tetap tersimpan di perangkat ini. Sinkronisasi antarbrowser hanya tersedia setelah backend privat dan token operator dikonfigurasi.</p></div><span id="cloud-state" role="status" aria-live="polite">Memeriksa koneksi backend…</span></div>
+  <div id="cloud-controls" class="cloud-controls" hidden>
+    <label for="cloud-token">Token operator (tidak disimpan di browser)</label>
+    <input type="password" id="cloud-token" autocomplete="off" placeholder="Masukkan token akses operator" minlength="32" spellcheck="false">
+    <div class="cloud-actions"><button type="button" id="cloud-push">Simpan AOI terpilih ke cloud</button><button type="button" id="cloud-pull">Muat AOI cloud</button><button type="button" id="cloud-check">Periksa & catat di backend</button></div>
+    <small>Mode operator tunggal. Token hanya dipakai pada sesi halaman ini; jangan bagikan atau masukkan pada perangkat umum.</small>
+  </div>
+</section>
+  <section class="stats" aria-label="Ringkasan operasional"><div><span>AOI TERSIMPAN</span><strong id="stat-areas">0</strong><small>Hanya browser ini</small></div><div><span>AREA TERPILIH</span><strong id="stat-area-size">—</strong><small>km² (estimasi polygon)</small></div><div><span>PEMERIKSAAN TERAKHIR</span><strong id="stat-check">Belum</strong><small>Pemeriksaan AOI manual</small></div><div><span>RANKING ASET NYATA</span><strong class="not-available">Belum tersedia</strong><small>Evidence gate belum terpenuhi</small></div></section>
   <div class="workbench">
    <aside class="side"><section class="panel records" aria-labelledby="records-title"><div class="panel-title"><div><span class="overline">01 / AOI REGISTRY</span><h2 id="records-title">Area kajian</h2></div><button type="button" class="mini-button" id="new-aoi">+ Baru</button></div><div id="aoi-list" class="area-list"><p class="empty-short">Belum ada AOI terdaftar di browser ini.</p></div></section>
     <section class="panel editor" aria-labelledby="editor-title"><div class="panel-title"><div><span class="overline">02 / REGISTRATION</span><h2 id="editor-title">Detail area</h2></div><span class="soft-tag">Belum diverifikasi</span></div>
@@ -43,7 +52,7 @@
    </section>
   </section>
   <section class="gate-footer"><div><span class="overline">QUALITY GATE / TIDAK ADA RANKING PALSU</span><h2>Belum cukup bukti ≠ risiko rendah.</h2><p>Metadata GRD bukan deformasi InSAR. Citra Sentinel-2 bukan sensor gerak aset. Nilai DSM bukan kedalaman rob. Ranking hanya dapat diterapkan pada aset terverifikasi dengan periode dan metode sebanding, setelah persetujuan ahli/operator.</p></div><a href="./spatial-demo.html#ranking">Lihat simulasi ranking yang terpisah <span aria-hidden="true">↗</span></a></section>
-  <footer><span>OURDO INDONESIA · BARUNA SENTINEL</span><span>Pilot AOI Semarang · tidak ada backend / live feed / pemberitahuan otomatis</span></footer>
+  <footer><span>OURDO INDONESIA · BARUNA SENTINEL</span><span>Pilot AOI Semarang · backend opsional berautentikasi / tidak ada alert bahaya atau monitoring real-time</span></footer>
  </main>
 </body>
 </html>
