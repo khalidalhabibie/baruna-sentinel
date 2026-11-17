@@ -43,6 +43,8 @@ const publicAssets=[
   "data/semarang-dsm-preview.json",
   "data/semarang-sentinel-scenes.json",
   "data/semarang-real-readiness.json",
+  "data/semarang-s1-insar-candidate-review.json",
+  "src/insar-candidate-readiness.js",
   "data/semarang-true-color-preview.json",
   "data/semarang-s2-ndwi-preview.json",
   "data/semarang-s2-optical-series.json",
