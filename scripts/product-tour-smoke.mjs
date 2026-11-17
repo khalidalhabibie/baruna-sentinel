@@ -15,6 +15,13 @@ page.on("pageerror",err=>errors.push(err.stack||err.message));
 await page.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
 try{
  assert.equal((await page.goto(BASE,{waitUntil:"networkidle",timeout:30000})).status(),200);
+ // Root index is now a region directory, not a cross-city asset ranking.
+ assert.equal(await page.locator('#regional-workspaces .rw-card').count(),3);
+ assert.equal(await page.locator('#regional-workspaces .rw-card--active').count(),1);
+ assert.equal(await page.locator('#regional-workspaces .rw-card--disabled').count(),2);
+ assert.equal(await page.locator('#regional-workspaces .rw-card--disabled a, #regional-workspaces .rw-card--disabled button').count(),0);
+ assert.equal(await page.locator('[data-region-id="semarang"] .rw-primary').getAttribute('href'),'./real-workspace.html');
+ assert.match(await page.locator('#regional-workspaces .rw-scope').innerText(),/Ranking per area kajian \(AOI\)/);
  await page.locator(".bf-workspace").waitFor({state:"visible",timeout:12000});
  assert.equal(await page.locator(".bf-sector").count(),6);
  assert.match(await page.locator("#bf-sector-detail").innerText(),/West breakwater/);
