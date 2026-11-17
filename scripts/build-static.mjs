@@ -86,6 +86,7 @@ const publicAssets=[
   "product-focus.css",
   "product-atmosphere.css",
   "assets/ourdo-tail-curve-wordmark.svg",
+  "assets/ourdo-official-tail-icon.svg",
   "src/guide-page.js",
   "src/why-sentinel-model.js",
   "src/why-sentinel.js",
