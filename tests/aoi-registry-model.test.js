@@ -81,7 +81,7 @@ test("verification queue cannot turn absent asset data into operational priority
  assert.equal(brief.decision.operationalRanking,"DATA_INSUFFICIENT");
  assert.equal(brief.decision.rankedAssets,0);
  assert.equal(brief.verificationQueue.length,5);
- assert.match(brief.limitations.join(" "),/private operator cloud persistence only when configured/);
+ assert.match(brief.limitations.join(" "),/Browser-only AOI registration with portable JSON backup/);
 });
 test("public UI includes real registry controls and no fake automatic monitoring",()=>{
  const html=readFileSync(new URL("../aoi-registry.html",import.meta.url),"utf8");

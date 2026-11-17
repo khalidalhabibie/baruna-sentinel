@@ -25,6 +25,18 @@ try{
  await page.locator("#save-aoi").click();
  assert.equal(await page.locator("#stat-areas").innerText(),"1");
  assert.equal(await page.locator(".area-item").count(),1);
+ // Browser-local AOI backup includes no cloud credentials and can restore a deleted polygon.
+ const backupPromise=page.waitForEvent("download");
+ await page.locator("#backup-local").click();
+ const backupDownload=await backupPromise;
+ const {readFile}=await import("node:fs/promises");
+ const backupBytes=await readFile(await backupDownload.path());
+ const backupPayload=JSON.parse(backupBytes.toString("utf8"));
+ assert.equal(backupPayload.schema,"baruna-local-aoi-backup-v1");
+ assert.equal(backupPayload.records.length,1);
+ assert.equal(backupPayload.containsOperationalRanking,false);
+ assert.equal(await page.locator("#cloud-console").count(),0);
+ 
  assert.equal(await page.locator("#check-evidence").isDisabled(),false);
  assert.match(await page.locator("#queue-content").innerText(),/DATA INSUFFICIENT/);
  assert.equal(await page.locator(".queue-item").count(),5);
@@ -34,7 +46,7 @@ try{
  assert.match(await page.locator("#evidence-content").innerText(),/GRD/);
  assert.equal(await page.locator("#evidence-content .monitor-event").count(),1);
  assert.match(await page.locator("#evidence-content .monitor-history").innerText(),/METADATA|RIWAYAT PEMERIKSAAN/);
- assert.match(await page.locator("#cloud-state").innerText(),/Cloud belum dikonfigurasi|Backend tidak tersedia/);
+ assert.equal(await page.locator("#cloud-console").count(),0,"No cloud UI in JSON-only pilot");
  await page.screenshot({path:"reports/baruna-aoi-registry-checked.png",fullPage:false});
  const dl=page.waitForEvent("download");
  await page.locator("#export-brief").click();
@@ -45,6 +57,14 @@ try{
  await page.locator(".area-item").click();
  assert.equal(await page.locator("#evidence-content .scene-summary").count(),1);
  assert.match(await page.locator("#queue-content").innerText(),/DATA INSUFFICIENT/);
+ // Delete the local record, then restore from downloaded JSON.
+ page.on("dialog",dialog=>dialog.accept());
+ await page.locator("#delete-aoi").click();
+ assert.equal(await page.locator("#stat-areas").innerText(),"0");
+ await page.locator("#restore-local").setInputFiles({name:"BARUNA_Semarang_AOI_Backup.json",mimeType:"application/json",buffer:backupBytes});
+ await page.locator(".area-item").waitFor({state:"visible"});
+ assert.equal(await page.locator("#stat-areas").innerText(),"1");
+ assert.match(await page.locator("#map-hint").innerText(),/Restore selesai/);
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
  mobile.on("pageerror",e=>errors.push(e.message));
  await mobile.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));

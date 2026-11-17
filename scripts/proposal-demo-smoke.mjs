@@ -1,0 +1,35 @@
+/** Four-stage source-backed RGPD demo regression smoke for Chrome and mobile. */
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const BASE=process.env.BASE_URL||'http://127.0.0.1:4173';
+const browser=await chromium.launch({headless:true,executablePath:process.env.BARUNA_CHROME_PATH||'/usr/bin/google-chrome',args:['--no-sandbox']});
+const errors=[];
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:900},acceptDownloads:true});page.on('pageerror',e=>errors.push(e.message));
+ assert.equal((await page.goto(BASE+'/proposal-demo.html',{waitUntil:'networkidle',timeout:30000})).status(),200);
+ await page.locator('.station-card').first().waitFor({state:'visible',timeout:12000});
+ assert.equal(await page.locator('.station-card').count(),2);
+ assert.match(await page.locator('#demo-stations').innerText(),/94,03/);
+ assert.match(await page.locator('#demo-stations').innerText(),/4,92/);
+ assert.match(await page.locator('#demo-stations').innerText(),/3,23/);
+ assert.equal(await page.locator('.rank-row').count(),4);
+ assert.equal(await page.locator('.gate-item').count(),5);
+ assert.match(await page.locator('.print-brief').innerText(),/DATA INSUFFICIENT/);
+ assert.equal(await page.locator('#demo-sector option').count(),6);
+ await page.locator('#demo-sector').selectOption('container-wharf');
+ assert.match(await page.locator('.print-brief').innerText(),/Container wharf/i);
+ const downloadPromise=page.waitForEvent('download');await page.locator('#demo-download').click();
+ const download=await downloadPromise;
+ const payload=JSON.parse(await readFile(await download.path(),'utf8'));
+ assert.equal(payload.decision.rankedRealAssets,0);assert.equal(payload.stationPublication.stations.length,2);
+ assert.equal(payload.syntheticAnnex.records.length,4);
+ assert.equal(payload.syntheticAnnex.records[3].score,null);
+ const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});mobile.on('pageerror',e=>errors.push(e.message));
+ assert.equal((await mobile.goto(BASE+'/proposal-demo.html',{waitUntil:'networkidle',timeout:30000})).status(),200);
+ await mobile.locator('.station-card').first().waitFor({state:'visible'});
+ const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2);
+ assert.equal(overflow,false,'guided demo should not horizontally overflow mobile screen');
+ assert.deepEqual(errors,[]);
+ console.log('BARUNA four-step demo: source-backed CORS, six historic sectors, synthetic ranking, export, mobile PASS');
+}finally{await browser.close();}

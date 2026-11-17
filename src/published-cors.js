@@ -10,10 +10,11 @@ export const PUBLISHED_CORS_CONTRAST=Object.freeze({
   url:"https://journal.ugm.ac.id/jgise/article/view/95957",
   period:"2021–2023",
   method:"Precise Point Positioning (PPP), station coordinate series",
+  uncertaintyProvenance:"Uncertainty values as cited in the 2026 BARUNA RGPD proposal; confirm with original station study for operational use.",
   sourceScope:"PUBLISHED_STATION_RESULT_NOT_LOCAL_POSITION_SOLUTION",
   stations:Object.freeze([
-    Object.freeze({id:"CSMG",name:"Semarang Genuk",verticalMmYr:-94.03,trend:"DOWNWARD"}),
-    Object.freeze({id:"CSEM",name:"Semarang",verticalMmYr:+3.23,trend:"UPWARD"})
+    Object.freeze({id:"CSMG",name:"Semarang Genuk",verticalMmYr:-94.03,uncertaintyMmYr:4.92,trend:"DOWNWARD"}),
+    Object.freeze({id:"CSEM",name:"Semarang",verticalMmYr:+3.23,uncertaintyMmYr:1.76,trend:"UPWARD"})
   ])
 });
 
