@@ -31,3 +31,31 @@
 .intel-ranking-table td:nth-child(2){min-width:235px}
 .intel-ranking-table td:last-child{text-align:left}
 @media(max-width:600px){.intel-ranking-header{flex-direction:column;align-items:flex-start}.intel-tabs button{padding:11px 10px;font-size:11px}.saas-org-brand{padding:10px 8px}}
+
+/* Multi-GNSS Center: observation readiness first, risk ranking separate. */
+.saas-gnss-feature{display:flex;justify-content:space-between;align-items:center;gap:24px;background:#edf5fc;border:1px solid #d2e3f2;border-left:3px solid #1b62a5;border-radius:9px;padding:22px 24px;margin-bottom:27px}
+.saas-gnss-feature h2{font-size:19px;letter-spacing:-.02em;margin:5px 0}
+.saas-gnss-feature p{font-size:12px;line-height:1.7;color:#59768d;margin:0;max-width:760px}
+.saas-gnss-feature .saas-btn{flex-shrink:0}
+.gnss-station-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.gnss-station-grid .saas-card{display:flex;flex-direction:column;gap:7px}
+.gnss-station-grid .saas-card h2{font-size:15px}
+.gnss-station-grid .saas-link{margin-top:auto}
+.gnss-stat-value{display:block;font-size:27px;letter-spacing:-.025em;color:#153b63;font-weight:750;line-height:1.25}
+.gnss-status-ribbon{margin-top:17px;border:1px solid #d1e2ee;background:#f4f8fc;padding:12px 15px;border-radius:7px;color:#4e7895;font-size:11px;font-weight:700}
+.gnss-observation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.gnss-observation-cell{border:1px solid #e0e9f0;border-radius:8px;background:#f7fafd;padding:15px 16px}
+.gnss-observation-cell span{display:block;font-size:10px;color:#698497}
+.gnss-observation-cell strong{display:block;font-size:24px;margin-top:5px;color:#204e78}
+.gnss-queue-table{min-width:900px}
+.gnss-queue-table th:first-child,.gnss-queue-table td:first-child{width:75px}
+.gnss-queue-table th:nth-child(2){min-width:255px}
+.gnss-queue-table th:nth-child(4){min-width:320px}
+.gnss-priority-list{display:grid}
+.gnss-priority-row{padding:12px 0;border-top:1px solid #e6eef4;display:grid;grid-template-columns:32px minmax(0,1fr);gap:10px}
+.gnss-priority-row:first-child{border-top:0}
+.gnss-priority-no{display:inline-flex;align-items:center;justify-content:center;width:29px;height:29px;border-radius:7px;background:#e9f2fa;color:#1b62a5;font-size:11px;font-weight:800}
+.gnss-priority-row strong{font-size:12px;font-weight:750}
+.gnss-priority-row p{font-size:11px;color:#698397;margin:4px 0 0;line-height:1.7}
+@media(max-width:1080px){.gnss-station-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.saas-gnss-feature{flex-direction:column;align-items:flex-start;padding:18px}.saas-gnss-feature .saas-btn{width:100%}.gnss-station-grid{grid-template-columns:1fr}.gnss-observation-grid{grid-template-columns:1fr}}
