@@ -1,0 +1,41 @@
+{
+  "schema": "baruna-regional-published-subsidence-v1",
+  "region": "Semarang and surrounding regencies, Central Java, Indonesia",
+  "referencePeriod": {
+    "start": "2015",
+    "end": "2022"
+  },
+  "metric": "PUBLISHED_REGIONAL_MAXIMUM_SUBSIDENCE_RATE",
+  "maximumRangeMmPerYear": [
+    100,
+    120
+  ],
+  "referenceSpatialScope": "northern and eastern Semarang and Demak regional hotspot; NOT an exact Tanjung Emas harbour asset measurement",
+  "method": "InSAR C-band Sentinel-1 time-series with new SBAS technique",
+  "publication": {
+    "title": "Present-day land subsidence over Semarang revealed by time series InSAR new small baseline subset technique",
+    "journal": "International Journal of Applied Earth Observation and Geoinformation",
+    "year": 2023,
+    "doi": "10.1016/j.jag.2023.103579",
+    "url": "https://doi.org/10.1016/j.jag.2023.103579"
+  },
+  "historicalFrameReference": {
+    "frameId": "076D_09725_121107",
+    "period": "2015–2020",
+    "verifiedLiterature": "https://doi.org/10.3390/w14020201",
+    "purpose": "A separate published Semarang study used this LiCSAR frame; not proof of a velocity product ingested into BARUNA."
+  },
+  "dataStatus": {
+    "publishedRegionalFinding": true,
+    "originalPixelVelocityMapInBARUNA": false,
+    "independentlyVerified2026Rate": false,
+    "harbourSiteSpecificRate": false,
+    "surveyedHarbourAssetGeometry": false
+  },
+  "limitations": [
+    "This is the published maximum for a wider region and past period, NOT a measurement at the BIG Tanjung Emas point.",
+    "Do not plot these regional findings as a velocity heatmap or as asset-level predictions.",
+    "The historical LiCSAR frame referenced by another study does not establish that a ready-to-use velocity raster has been retrieved here.",
+    "Regional SBAS velocity and 2005 cumulative levelling settlement must not be compared directly or divided by a duration to invent a current rate."
+  ]
+}
