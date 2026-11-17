@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="./product-focus.css">
   <link rel="stylesheet" href="./regional-workspaces.css">
   <link rel="stylesheet" href="./product-atmosphere.css">
+  <link rel="stylesheet" href="./homepage-evidence.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script defer src="./src/navigation.js"></script>
 
@@ -33,9 +34,9 @@
       </a>
       <span class="ourdo-product-name">BARUNA <strong>SENTINEL</strong> <small>PROTOTIPE RGPD 2026</small></span>
       <nav class="workspace-switch pw-primary-nav" aria-label="Navigasi BARUNA">
-        <button type="button" data-pw-page="why" aria-current="page"><span class="baruna-nav-full">Workspace</span><span class="baruna-nav-compact">Area</span></button>
-        <button type="button" data-pw-page="assessment"><span class="baruna-nav-full">Assessment</span><span class="baruna-nav-compact">Review</span></button>
-        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false"><span class="baruna-nav-full">Data GNSS</span><span class="baruna-nav-compact">GNSS</span></button>
+        <button type="button" data-pw-page="why" aria-current="page"><span class="baruna-nav-full">Ringkasan</span><span class="baruna-nav-compact">Utama</span></button>
+        <button type="button" data-pw-page="assessment"><span class="baruna-nav-full">Evidence Brief</span><span class="baruna-nav-compact">Brief</span></button>
+        <button type="button" id="view-analyst" data-pw-page="analyst" aria-pressed="false"><span class="baruna-nav-full">Bukti GNSS</span><span class="baruna-nav-compact">GNSS</span></button>
         <button type="button" data-pw-page="guide">Panduan</button>
         <div class="baruna-nav-more"><button type="button" class="baruna-more-trigger" aria-expanded="false" aria-controls="baruna-more-menu"><span class="baruna-nav-full">Lainnya</span><span class="baruna-nav-compact">Lainnya</span> ▾</button>
           <div class="baruna-more-menu" id="baruna-more-menu" hidden>
@@ -53,14 +54,53 @@
           <option value="bako-observations">BAKO / Cibinong</option>
         </select>
       </label>
-      <div class="top-actions"><a class="workspaces-entry" href="./workspaces.html" aria-label="Buka daftar workspaces dan proyek BARUNA Sentinel">Semua Workspaces</a><a class="spatial-demo-entry" href="./spatial-demo.html" aria-label="Buka Spatial Decision Lab dengan empat aset ilustratif">Decision Lab ↗</a><span class="bf-preview-tag">PROTOTIPE · 2026</span></div>
+      <div class="top-actions"><a class="workspaces-entry" href="./workspaces.html" aria-label="Buka daftar workspaces dan proyek BARUNA Sentinel">Semarang &amp; wilayah</a><a class="spatial-demo-entry" href="./spatial-demo.html" aria-label="Buka Spatial Decision Lab dengan empat aset ilustratif">Simulasi ↗</a><span class="bf-preview-tag">PROTOTIPE · 2026</span></div>
     </header>
 
     <main id="top">
+      <section class="rgpd-landing" id="rgpd-landing" aria-labelledby="rgpd-headline">
+        <div class="rgpd-landing-grid">
+          <div class="rgpd-landing-copy">
+            <span class="rgpd-overline"><span class="rgpd-overline-dot" aria-hidden="true"></span> BARUNA SENTINEL / OURDO INDONESIA · RGPD 2026</span>
+            <h1 id="rgpd-headline">Ketahui apa yang perlu diverifikasi <em>sebelum inspeksi berikutnya.</em></h1>
+            <p class="rgpd-lead">Untuk tim integritas aset, geospasial, dan operasi pesisir. BARUNA menghubungkan catatan pergerakan tanah, bukti GNSS, dan konteks spasial menjadi <strong>Evidence Brief</strong> yang menjelaskan temuan, celah bukti, serta data yang perlu diminta sebelum menentukan prioritas inspeksi.</p>
+            <div class="rgpd-primary-actions">
+              <a class="rgpd-action-primary" href="./evidence-brief-coaster.html">Lihat Evidence Brief <span aria-hidden="true">↗</span></a>
+              <a class="rgpd-action-secondary" href="./real-workspace.html">Jelajahi data Semarang <span aria-hidden="true">↗</span></a>
+            </div>
+            <p class="rgpd-landing-caveat">Studi kasus: Tanjung Emas–Genuk, Semarang. Prototipe penyaringan bukti, bukan pemantauan real-time atau penilaian keselamatan struktur.</p>
+          </div>
+          <article class="rgpd-preview" aria-labelledby="rgpd-preview-title">
+            <div class="rgpd-preview-top"><span>CONTOH HASIL / EVIDENCE BRIEF</span><span>01 / 06 SEKTOR</span></div>
+            <div class="rgpd-preview-title"><div><span>STUDI HISTORIS · TANJUNG EMAS</span><h2 id="rgpd-preview-title">Coaster Street</h2><p>Konteks ruas jalan pesisir, bukan geometri aset tersurvei</p></div><span class="rgpd-evidence-state">PERLU VERIFIKASI</span></div>
+            <div class="rgpd-preview-numbers">
+              <div><strong>21–41 <small>cm</small></strong><span>Penurunan kumulatif pada studi historis 2005</span></div>
+              <div><strong>±725 <small>m</small></strong><span>Studi ruas selatan 2026; kecocokan lokasi belum diverifikasi</span></div>
+            </div>
+            <div class="rgpd-preview-decision"><span>KEPUTUSAN QUALITY GATE</span><strong>DATA INSUFFICIENT</strong><p>Belum boleh menentukan ranking operasional aset: lokasi pengukuran representatif dan data pergerakan aset terkini belum tersedia.</p></div>
+            <div class="rgpd-preview-next"><span>DATA YANG PERLU DIMINTA</span><p>Geometri ruas resmi · pengukuran GNSS/levelling berulang · validasi paparan/datum · kekritisan dari operator.</p></div>
+            <a href="./evidence-brief-coaster.html" class="rgpd-preview-link">Buka brief satu halaman, lengkap dengan sumber <span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+        <div class="rgpd-evidence-strip" aria-label="Jenis bukti dibedakan berdasarkan sumber dan waktu">
+          <div><span class="rgpd-kind rgpd-kind-historical">HISTORIS · 2005</span><p>Studi lapangan enam sektor Tanjung Emas; bukan kondisi hari ini</p></div>
+          <div><span class="rgpd-kind rgpd-kind-published">PUBLIKASI GNSS · 2021–2023</span><p>Laju vertikal stasiun CSMG/CSEM; bukan pengukuran pada aset</p></div>
+          <div><span class="rgpd-kind rgpd-kind-qc">QC GNSS · 2025</span><p>RINEX BAKO di Cibinong; observasi independen, bukan laju Semarang</p></div>
+          <div><span class="rgpd-kind rgpd-kind-synthetic">SIMULASI · TERPISAH</span><p>Empat aset fiktif hanya untuk menguji metode prioritas</p></div>
+        </div>
+        <div class="rgpd-more-tools">
+          <span>Jelajahi lebih lanjut</span>
+          <a href="./proposal-demo.html">Demo terpandu 4 tahap</a>
+          <a href="./?page=analyst">Bukti GNSS &amp; QC</a>
+          <a href="./aoi-registry.html">Registrasi AOI</a>
+          <a href="./spatial-demo.html">Simulasi ranking (fiktif)</a>
+        </div>
+      </section>
+
       <section class="rw-portfolio" id="regional-workspaces" aria-labelledby="rw-title">
   <div class="rw-heading">
-    <div><span class="rw-eyebrow">BARUNA / REGIONAL WORKSPACES</span><h2 id="rw-title">Pilih wilayah kerja.</h2><p>Setiap wilayah memiliki area kajian dan sumber bukti sendiri. Saat ini hanya Semarang yang aktif; wilayah lain adalah placeholder, tanpa data atau analisis buatan.</p></div>
-    <span class="rw-counter">01 aktif <span aria-hidden="true">/</span> 02 contoh</span>
+    <div><span class="rw-eyebrow">BARUNA / REGIONAL WORKSPACES</span><h2 id="rw-title">Satu wilayah aktif, bukti yang bisa ditelusuri.</h2><p>Semarang adalah studi kasus yang sudah didukung data. Wilayah lain belum memiliki dataset terverifikasi dan tidak ditampilkan sebagai hasil analisis.</p></div>
+    <span class="rw-counter">01 wilayah aktif</span>
   </div>
   <div class="rw-grid">
     <article class="rw-card rw-card--active" data-region-id="semarang" data-region-state="active">
