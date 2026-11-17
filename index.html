@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./why-sentinel.css">
   <link rel="stylesheet" href="./product-experience.css">
   <link rel="stylesheet" href="./product-focus.css">
+  <link rel="stylesheet" href="./regional-workspaces.css">
   <link rel="stylesheet" href="./product-atmosphere.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script defer src="./src/navigation.js"></script>
@@ -56,6 +57,40 @@
     </header>
 
     <main id="top">
+      <section class="rw-portfolio" id="regional-workspaces" aria-labelledby="rw-title">
+  <div class="rw-heading">
+    <div><span class="rw-eyebrow">BARUNA / REGIONAL WORKSPACES</span><h2 id="rw-title">Pilih wilayah kerja.</h2><p>Setiap wilayah memiliki area kajian dan sumber bukti sendiri. Saat ini hanya Semarang yang aktif; wilayah lain adalah placeholder, tanpa data atau analisis buatan.</p></div>
+    <span class="rw-counter">01 aktif <span aria-hidden="true">/</span> 02 contoh</span>
+  </div>
+  <div class="rw-grid">
+    <article class="rw-card rw-card--active" data-region-id="semarang" data-region-state="active">
+      <div class="rw-card-head"><span class="rw-number">01 / JAWA TENGAH</span><span class="rw-state rw-state--active">Aktif · sumber nyata</span></div>
+      <h3>Semarang Coastal</h3><p class="rw-location">Pesisir Semarang · Tanjung Emas</p>
+      <p class="rw-description">Konteks DSM, citra Sentinel-2, bukti pengukuran historis dan daftar verifikasi untuk area Semarang.</p>
+      <div class="rw-facts"><span>1 area kajian utama</span><span>6 sektor historis</span><span>RGB satelit tersedia</span></div>
+      <div class="rw-actions"><a class="rw-primary" href="./real-workspace.html">Buka Semarang <span aria-hidden="true">↗</span></a><a class="rw-secondary" href="./?page=assessment">Evidence Review</a></div>
+    </article>
+    <article class="rw-card rw-card--disabled" data-region-id="jakarta" data-region-state="placeholder" aria-disabled="true">
+      <div class="rw-card-head"><span class="rw-number">02 / DKI JAKARTA</span><span class="rw-state rw-state--pending">Contoh · belum aktif</span></div>
+      <h3>Jakarta Coastal</h3><p class="rw-location">Jakarta Utara · area belum ditetapkan</p>
+      <p class="rw-description">Placeholder untuk kemungkinan workspace mendatang. Belum ada AOI, dataset, skor, atau hasil pemeriksaan.</p>
+      <div class="rw-placeholder-label">Belum tersedia · tidak dapat dibuka</div>
+    </article>
+    <article class="rw-card rw-card--disabled" data-region-id="surabaya" data-region-state="placeholder" aria-disabled="true">
+      <div class="rw-card-head"><span class="rw-number">03 / JAWA TIMUR</span><span class="rw-state rw-state--pending">Contoh · belum aktif</span></div>
+      <h3>Surabaya Coastal</h3><p class="rw-location">Surabaya · area belum ditetapkan</p>
+      <p class="rw-description">Placeholder ekspansi tampilan, bukan proyek berjalan. Data satelit dan penilaian aset belum dimuat.</p>
+      <div class="rw-placeholder-label">Belum tersedia · tidak dapat dibuka</div>
+    </article>
+  </div>
+  <div class="rw-scope" aria-label="Aturan cakupan ranking">
+    <div><span class="rw-eyebrow">RANKING SCOPE / EVIDENCE GATE</span><strong>Ranking per area kajian (AOI), bukan per kota.</strong>
+      <p>Dalam workspace Semarang, aset hanya dapat dibandingkan jika berada pada AOI yang sama dan memakai metode, periode, serta standar bukti yang sebanding. Enam sektor Tanjung Emas memiliki bukti historis, tetapi belum layak diberi ranking operasional. Ranking empat aset di Decision Lab adalah simulasi terpisah.</p>
+    </div>
+    <a href="./spatial-demo.html#ranking">Lihat contoh ranking simulasi <span aria-hidden="true">↗</span></a>
+  </div>
+</section>
+
       <section class="pw-shell" id="pw-shell" aria-label="BARUNA project management and evidence review">
         <div id="pw-page-why" class="pw-page" data-pw-screen="why"></div>
         <div id="pw-page-guide" class="pw-page" data-pw-screen="guide" aria-label="Panduan penggunaan BARUNA"></div>
