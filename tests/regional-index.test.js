@@ -31,4 +31,6 @@ test("Semarang modules remain accessible and mock cities contain no fake data",(
  assert.equal((directory.match(/class="workspace-card(?: [^"]+)?"/g)||[]).length,4);
  assert.match(demo,/Ranking \& Compare/);
  assert.match(demo,/AOI simulasi Semarang/);
+ assert.match(index,/href="\.\/aoi-registry\.html"/);
+ assert.match(directory,/href="\.\/aoi-registry\.html"/);
 });
