@@ -38,6 +38,7 @@ jobs:
           node scripts/product-tour-smoke.mjs
           node scripts/spatial-demo-smoke.mjs
           node scripts/real-workspace-smoke.mjs
+          node scripts/saas-smoke.mjs
           node scripts/subsidence-evidence-smoke.mjs
           node scripts/aoi-registry-smoke.mjs
           node scripts/proposal-demo-smoke.mjs
