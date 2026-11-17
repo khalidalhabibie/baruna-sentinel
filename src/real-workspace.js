@@ -7,6 +7,7 @@ import {installScreeningFlow} from "./real-workspace-flow.js";
 import {parseBmkgForecastCsv} from "./real-tide-context.js";
 import {validateNdwiMetadata,decodeNdwiGrid,ndwiDisplayOverlayUrl,sampleNdwiDisplay,opticalExportEvidence} from "./real-sentinel2-evidence.js";
 import {loadInsarCandidateReview,insarSnapshotForExport} from "./insar-candidate-readiness.js";
+import {loadRealInsarQa,insarQaSnapshotForExport} from "./real-hyp3-insar.js";
 import {OPTICAL_VIEWS,validateOpticalSeries,decodeOpticalSeries,opticalGridOverlayUrl,
   sampleOpticalValue,opticalAreaStats,opticalSeriesExport} from "./real-optical-series.js";
 
@@ -55,7 +56,7 @@ export function formatDsmReading(m, lat, lon) {
   return m === null ? "Di luar cakupan DSM atau piksel NoData" :
     "≈ " + m.toFixed(1) + " m · " + lat.toFixed(5) + ", " + lon.toFixed(5);
 }
-function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreening=null, tideForecast=null, optical=null, opticalSeries=null, opticalView="baselineNdwi", opticalArea=null, insarDiscovery=null}) {
+function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreening=null, tideForecast=null, optical=null, opticalSeries=null, opticalView="baselineNdwi", opticalArea=null, insarDiscovery=null, insarProcessedQa=null}) {
   return {
     schema:"baruna-coastal-evidence-brief-v1",
     createdAt:new Date().toISOString(),
@@ -97,8 +98,9 @@ function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreen
     singleDateOptical:opticalExportEvidence(optical),
     exploratoryTwoDateOptical:opticalSeriesExport(opticalSeries,opticalView,opticalArea),
     insarCandidateDiscovery:insarSnapshotForExport(insarDiscovery),
+    insarProcessedQualityEvidence:insarQaSnapshotForExport(insarProcessedQa),
     evidenceGates:readiness.modelGate,
-    unsupported:["No validated land-cover change or confirmed flood/rob extent","No Sentinel-1 InSAR displacement",
+    unsupported:["No validated land-cover change or confirmed flood/rob extent","No independently validated Sentinel-1 LOS or vertical displacement",
       "No operator-surveyed asset polygons","No validated rob-depth model",
       "No asset safety or operational inspection ranking"],
     limitations:"Not a geodetic position solution, on-site survey, flood prediction or risk ranking."
@@ -125,8 +127,8 @@ function renderReadiness(gate) {
       detail:"Piksel dua tanggal tersedia, tetapi selisih indeks bukan luas banjir atau perubahan tutupan lahan terverifikasi"},
     {name:"Temporal optical change / rob validation",enabled:gate.realOpticalAnalysis,
       detail:"Perlu scene pembanding, metode dan validasi independen; NDWI satu tanggal tidak membuktikan rob"},
-    {name:"InSAR displacement",enabled:gate.realInsar,
-      detail:"Sentinel-1 GRD tidak mendukung kesimpulan displacement tanpa pemrosesan yang sesuai"},
+    {name:"Verified InSAR deformation",enabled:gate.realInsar,
+      detail:"Burst InSAR telah diproses melalui ASF HyP3, tetapi referensi GNSS, koreksi atmosfer dan displacement akhir belum divalidasi. Lihat panel QA."},
     {name:"Rob depth and flood forecast",enabled:gate.robDepthModel,
       detail:"Datum vertikal, hidrodinamika dan validasi lapangan belum tersedia"},
     {name:"Operational asset prioritization",enabled:gate.assetLevelInspectionPriority,
@@ -315,6 +317,7 @@ async function bootstrap() {
       singleDateNdwiPreview:Boolean(optical||opticalSeries),
       multiDateOpticalIndexPreview:Boolean(opticalSeries)});
     const insarDiscovery=await loadInsarCandidateReview();
+    const insarProcessedQa=await loadRealInsarQa();
     let footprint=null;
     let footprintVisible=false;
     let selected=null;
@@ -417,7 +420,7 @@ async function bootstrap() {
       downloadJson(reportSnapshot({meta,scenes:catalog.scenes,readiness,
         selection:selected,sampled,areaScreening:area,tideForecast:flow.getTide(),optical,
         opticalSeries,opticalView:opticalSeries?currentView().key:"baselineNdwi",
-        opticalArea:opticalSeries?updateOpticalStats():null,insarDiscovery}),
+        opticalArea:opticalSeries?updateOpticalStats():null,insarDiscovery,insarProcessedQa}),
         "BARUNA_Semarang_Real_Evidence_Brief.json");
     });
     document.body.dataset.evidenceState="ready";

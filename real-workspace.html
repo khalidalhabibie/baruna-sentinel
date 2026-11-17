@@ -9,6 +9,7 @@
   <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="./real-workspace.css">
+  <link rel="stylesheet" href="./real-insar-qa.css">
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script type="module" src="./src/real-workspace.js"></script>
 </head>
@@ -35,10 +36,10 @@
         <div class="breadcrumbs"><a href="./workspaces.html">Workspaces</a><span>/</span><strong>Semarang Coastal</strong></div>
         <div class="eyebrow"><i></i> REAL DATA WORKSPACE · SEMARANG, INDONESIA</div>
         <h1>Semarang Coastal <span>Intelligence</span></h1>
-        <p>Eksplorasi elevasi dan indeks air Sentinel-2 14/21 Oktober berbasis piksel nyata untuk pesisir Semarang. Hasil spektral bukan konfirmasi banjir rob.</p>
+        <p>Eksplorasi elevasi, indeks air Sentinel-2, dan kualitas interferometri Sentinel-1 hasil ASF HyP3 yang benar-benar diproses. Ini screening bukti spasial, bukan pengukuran penurunan tanah atau konfirmasi banjir rob.</p>
       </div>
       <div class="hero-actions">
-        <div class="snapshot"><span>DATA SNAPSHOT</span><strong>16 NOV 2026</strong><small>Bukan monitoring real-time</small></div>
+        <div class="snapshot"><span>DATA SNAPSHOT</span><strong>17 NOV 2026</strong><small>Bukan monitoring real-time</small></div>
         <button type="button" class="button button-primary" id="export-evidence" disabled>Export Evidence Brief <span aria-hidden="true">↗</span></button>
       </div>
     </section>
@@ -180,9 +181,45 @@
       <div class="gate-grid" id="gate-grid" aria-live="polite">
         <p>Memeriksa kelengkapan evidence...</p>
       </div>
+      <section class="real-insar-qa" id="real-insar-qa" aria-labelledby="real-insar-qa-title">
+        <div class="real-insar-head">
+          <div>
+            <span class="overline">REAL SENTINEL-1 · ASF HYP3</span>
+            <h3 id="real-insar-qa-title">InSAR Measurement Quality</h3>
+            <p>Hasil radar interferometri nyata. Menilai kualitas pengukuran—bukan memprediksi penurunan tanah atau risiko aset.</p>
+          </div>
+          <span class="real-insar-status" id="real-insar-status" role="status">Memvalidasi QA...</span>
+        </div>
+        <div class="real-insar-meta">
+          <strong id="real-insar-pair">Memuat pasangan Sentinel-1...</strong>
+          <span id="real-insar-source">ASF HyP3 · evidence snapshot</span>
+        </div>
+        <div class="real-insar-cards">
+          <article class="real-insar-card">
+            <span class="real-insar-kicker">LAND PIXELS · QC SCREENING</span>
+            <strong id="real-insar-coverage">—</strong>
+            <small id="real-insar-denominator">Menunggu pemeriksaan data</small>
+            <span class="real-insar-card-note">Coherence ≥ 0,7 + fase valid + komponen utama; bukan estimasi akurasi</span>
+          </article>
+          <article class="real-insar-card real-insar-card-port">
+            <span class="real-insar-kicker">TANJUNG EMAS · BIG RBI POINT</span>
+            <strong id="real-insar-port-coherence">—</strong>
+            <small id="real-insar-port-status">Memeriksa status fase</small>
+            <span class="real-insar-card-note" id="real-insar-radius">Radius pemeriksaan belum dimuat</span>
+          </article>
+        </div>
+        <div class="real-insar-caution" role="note">
+          <strong>Evidence boundary</strong>
+          <p id="real-insar-limit">Tidak tersedia klaim deformasi dari metadata saja.</p>
+        </div>
+        <div class="real-insar-foot">
+          <span><strong>Scientific status:</strong> Research screening · belum layak untuk penilaian risiko per aset</span>
+          <span><a href="./data/semarang-real-hyp3-insar-qa.json" target="_blank" rel="noopener noreferrer" class="plain-link">Metadata QA &amp; Job ID ↗</a> · <a href="https://hyp3-docs.asf.alaska.edu/guides/burst_insar_product_guide/" target="_blank" rel="noopener noreferrer" class="plain-link">Metode ASF HyP3 ↗</a></span>
+        </div>
+      </section>
       <details class="insar-research" id="insar-research">
-        <summary><span><strong>Sentinel-1 / InSAR research candidates</strong>
-          <small>SLC scene discovery · bukan hasil deformasi</small></span>
+        <summary><span><strong>Arsip pencarian SLC · sebelum pemrosesan</strong>
+          <small>Kandidat lama untuk audit provenance; lihat QA HyP3 di atas</small></span>
           <span class="insar-research-status" id="insar-review-status">Memuat metadata...</span></summary>
         <div class="insar-research-content">
           <p id="insar-review-summary" aria-live="polite">Memeriksa snapshot ASF Sentinel-1 IW SLC.</p>
@@ -195,7 +232,7 @@
     </section>
 
     <section class="next-step">
-      <div><span class="overline">NEXT EVIDENCE</span><h2>Dari konteks regional ke pemeriksaan aset.</h2><p>Indeks Sentinel-2 tanggal 14 dan 21 Okt 2026 sudah tersedia sebagai konteks spektral. Untuk prioritas inspeksi nyata, masih dibutuhkan geometri aset resmi, observasi GNSS yang representatif, riwayat pemeriksaan, dan review ahli. Tidak ada klaim keselamatan dari data regional.</p></div>
+      <div><span class="overline">NEXT EVIDENCE</span><h2>Dari konteks regional ke pemeriksaan aset.</h2><p>Indeks Sentinel-2 (14/21 Okt) dan produk InSAR HyP3 Sentinel-1 (2–14 Okt) sudah tersedia sebagai screening nyata. Untuk menilai penurunan tanah dan prioritas inspeksi aset masih diperlukan referensi GNSS, rangkaian interferogram, koreksi atmosfer, geometri aset resmi dan review ahli. Tidak ada klaim keselamatan dari data regional.</p></div>
       <div class="next-actions"><a class="plain-link" href="./?page=analyst">CSEM historis + QC Multi-GNSS ↗</a><a class="plain-link" href="./?page=assessment">Lihat pemeriksaan bukti aset ↗</a><a class="plain-link" href="./pilot-data-lab.html">Integrasi DEMNAS + stasiun–aset (P1) ↗</a></div>
     </section>
 
