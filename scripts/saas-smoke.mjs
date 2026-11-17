@@ -37,7 +37,6 @@ try{
  assert.match(await page.locator(".saas-recent-row").first().innerText(),/Tanjung Emas/);
  await page.locator(".saas-recent-row").first().click();
  assert.match(page.url(),/area-tanjung-emas.html/);
- await page.locator("#area-map .leaflet-container").count(); // Map is the #area-map element itself.
  await page.locator("#area-map.leaflet-container").waitFor({timeout:15000});
  await page.locator("body[data-saas-evidence=ready]").waitFor({timeout:15000});
  assert.equal(await page.locator('.area-tabs a[aria-current="page"]').getAttribute("href"),"#explorer");
