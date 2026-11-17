@@ -1,0 +1,61 @@
+# Manual fallback for BIG Bhumireka if Vercel Hobby hits the build-rate limit.
+# Deliberately workflow_dispatch-only: avoids GitHub Pages setup errors until
+# the repo owner enables Settings > Pages > Build and deployment: GitHub Actions.
+name: Publish BARUNA backup to GitHub Pages
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: baruna-github-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout tested main
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pinned static-site dependency
+        run: npm install --no-audit --no-fund --ignore-scripts
+
+      - name: Build approved static assets
+        run: npm run build
+
+      - name: Check critical competition pages exist
+        run: |
+          test -s dist/index.html
+          test -s dist/proposal-demo.html
+          test -s dist/evidence-brief-coaster.html
+          test -s dist/real-workspace.html
+          test -s dist/spatial-demo.html
+          test -s dist/homepage-evidence.css
+          test -s dist/data/tanjung-emas-published-evidence-addendum.json
+          echo "BARUNA static artifacts ready for GitHub Pages"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload website artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Publish GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
