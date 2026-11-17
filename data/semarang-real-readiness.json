@@ -1,7 +1,7 @@
 {
   "schema": "baruna-real-evidence-readiness-v1",
   "generatedFrom": "BARUNA_GENERATED.zip / sentinel-helpes pipeline",
-  "asOf": "2026-11-16",
+  "asOf": "2026-11-17",
   "aoiEpsg4326": [
     110.375,
     -7.025,
@@ -110,6 +110,15 @@
       "pairClearFraction": 0.99728,
       "canUseFor": "NDWI / MNDWI previews on two dates and exploratory index contrast",
       "notFor": "rob/flood extent, verified land cover change, InSAR, native-resolution parcel analysis or asset decisions"
+    },
+    {
+      "id": "sentinel1_hyp3_processed_qa",
+      "status": "REAL_PROCESSED_INSAR_QA_RESEARCH_ONLY",
+      "source": "ASF HyP3 Sentinel-1 VV descending 2026-10-02 / 2026-10-14",
+      "jobId": "a96410b0-1418-4e8b-a191-ab6f40e3e615",
+      "asset": "data/semarang-real-hyp3-insar-qa.json",
+      "canUseFor": "coherence/phase QA research screening and source traceability; metadata summary only in deployed static build",
+      "notFor": "annual vertical subsidence mm/year, port-asset displacement, operational risk ranking, flooding depth"
     }
   ],
   "modelGate": {
@@ -120,7 +129,8 @@
     "robDepthModel": false,
     "assetLevelInspectionPriority": false,
     "singleDateNdwiPreview": true,
-    "multiDateOpticalIndexPreview": true
+    "multiDateOpticalIndexPreview": true,
+    "processedInsarQaSummary": true
   },
-  "warning": "This manifest describes source readiness, not structural safety. Historical CSEM/QC and BMKG live in separate modules; imported private files are never published. Source-derived NDWI overview from 14 Oct 2026 true four-band pixels is now available, but temporal optical change and flood/asset inferences remain blocked. Verified 14/21 October source-derived NDWI/MNDWI contrast is available; validated land cover change, flooding, subsidence and risk remain unsupported."
+  "warning": "This manifest describes source readiness, not structural safety. Historical CSEM/QC and BMKG live in separate modules; imported private files are never published. Source-derived NDWI overview from 14 Oct 2026 true four-band pixels is now available, but temporal optical change and flood/asset inferences remain blocked. Verified 14/21 October source-derived NDWI/MNDWI contrast is available; validated land cover change, flooding, subsidence and risk remain unsupported. A real ASF HyP3 12-day interferogram has documented coherence/unwrapped-phase QC, but port displacement and annual subsidence remain unvalidated."
 }
