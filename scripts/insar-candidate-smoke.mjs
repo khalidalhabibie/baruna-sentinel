@@ -19,11 +19,12 @@ try {
  const live=await page();
  assert.equal((await live.goto(BASE+"/real-workspace.html",{waitUntil:"domcontentloaded"})).status(),200);
  await live.waitForFunction(()=>document.getElementById("insar-review-status")?.textContent?.includes("Kandidat riset"),{timeout:20000});
+ assert.ok(!(await live.locator("#insar-research").evaluate(x=>x.open)),"nonintrusive panel collapsed by default");
+ await live.locator("#insar-research summary").click();
  assert.match(await live.locator("#insar-review-summary").innerText(),/19 Sentinel-1 IW SLC scene/);
  assert.match(await live.locator("#insar-review-summary").innerText(),/48 kandidat pasangan/);
  assert.equal(await live.locator("#insar-review-pairs li").count(),5);
  assert.match(await live.locator("#insar-review-limits").innerText(),/Belum ada interferogram/);
- assert.ok(!(await live.locator("#insar-research").evaluate(x=>x.open)),"nonintrusive panel collapsed by default");
  assert.match(await live.locator("#gate-grid").innerText(),/InSAR displacement/);
  await live.close();
 
@@ -35,6 +36,7 @@ try {
  });
  assert.equal((await blocked.goto(BASE+"/real-workspace.html",{waitUntil:"domcontentloaded"})).status(),200);
  await blocked.waitForFunction(()=>document.getElementById("insar-review-status")?.textContent?.includes("Belum tersedia"),{timeout:20000});
+ await blocked.locator("#insar-research summary").click();
  assert.equal(await blocked.locator("#insar-review-pairs li").count(),0);
  assert.match(await blocked.locator("#insar-review-summary").innerText(),/Kandidat InSAR belum bisa diverifikasi/);
  await blocked.close();
