@@ -14,7 +14,7 @@ const page=await browser.newPage({viewport:{width:1440,height:900},deviceScaleFa
 page.on("pageerror",err=>errors.push(err.stack||err.message));
 await page.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
 try{
- assert.equal((await page.goto(BASE,{waitUntil:"networkidle",timeout:30000})).status(),200);
+ assert.equal((await page.goto(BASE+"/evidence-lab.html",{waitUntil:"networkidle",timeout:30000})).status(),200);
  // Reviewer-driven 30-second outcome: source-backed Coaster brief before the region directory.
  assert.equal(await page.locator("#rgpd-landing").isVisible(),true);
  assert.match(await page.locator("#rgpd-headline").innerText(),/Ketahui apa yang perlu diverifikasi/);
