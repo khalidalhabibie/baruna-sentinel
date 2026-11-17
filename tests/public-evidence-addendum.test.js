@@ -12,6 +12,9 @@ test("source citations and six historical survey benchmark rows are present, wit
  assert.deepEqual(s.collisionIds,["TB 1","TB 2"]);
  assert.equal(d.surveyReference.qa.safeToPlotAsVerifiedAssets,false);
  assert.equal(d.surveyReference.qa.rawTableCrossCheckedAgainstRenderedPdf,false);
+ assert.equal(d.surveyReference.qa.publishedTableTextCrossChecked,true);
+ assert.equal(d.surveyReference.qa.coordinateCollisionAudit.publishedUtmDistanceM,0.001);
+ assert.equal(d.surveyReference.qa.pdfPageVisualReviewed,false);
 });
 test("Coaster Road published 2026 exposure stays distinct from on-asset movement and all other sectors",()=>{
  const c=sectorPublicContext(raw,"coaster-street");
