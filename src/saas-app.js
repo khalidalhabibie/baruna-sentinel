@@ -9,6 +9,7 @@ import {validateRealInsarQa} from "./real-hyp3-insar.js";
 import {validateHistoricalFieldEvidence} from "./historical.js";
 import {installTrueColorLayer} from "./true-color-layer.js";
 import {buildRankingReadiness} from "./insight-ranking.js";
+import {buildMultiGnssReview,GNSS_CENTER_SOURCES} from "./multi-gnss-evidence.js";
 
 const ROOT=document.getElementById("baruna-saas-app");
 const SCREEN=document.body.dataset.saasScreen||"portfolio";
@@ -18,7 +19,7 @@ const LINKS=Object.freeze({
  area:"./area-tanjung-emas.html",catalog:"./data-catalog.html",
  advanced:"./real-workspace.html",subsidence:"./subsidence-evidence.html",
  evidence:"./evidence-brief-coaster.html",legacy:"./evidence-lab.html",
- aoi:"./aoi-registry.html",demo:"./workspace-demo.html"
+ aoi:"./aoi-registry.html",demo:"./workspace-demo.html",gnss:"./gnss-center.html"
 });
 const ASSETS=Object.freeze({
  qa:"./data/semarang-real-hyp3-insar-qa.json",
@@ -38,7 +39,7 @@ function chip(text,type="neutral"){return '<span class="saas-chip'+(type==="neut
 function btn(text,url,primary=false){return '<a class="saas-btn'+(primary?" saas-btn-primary":"")+'" href="'+url+'">'+esc(text)+' <span aria-hidden="true">↗</span></a>';}
 function navLink(text,url,glyph,active=false){return '<a href="'+url+'"'+(active?' aria-current="page"':'')+'><span class="nav-glyph" aria-hidden="true">'+glyph+'</span><span>'+esc(text)+'</span></a>';}
 function renderShell(content,{title,crumbs="Overview"}={}){
- const platform=[["Overview",LINKS.home,"⌂","portfolio"],["Workspaces",LINKS.workspaces,"▣","workspaces"],["All Areas",LINKS.areas,"◇","areas"],["Data Catalog",LINKS.catalog,"▤","catalog"]];
+ const platform=[["Overview",LINKS.home,"⌂","portfolio"],["Workspaces",LINKS.workspaces,"▣","workspaces"],["All Areas",LINKS.areas,"◇","areas"],["Multi-GNSS Center",LINKS.gnss,"◎","gnss"],["Data Catalog",LINKS.catalog,"▤","catalog"]];
  const nav=platform.map(([text,url,icon,screen])=>navLink(text,url,icon,
  SCREEN===screen||((SCREEN==="workspace"||SCREEN==="demo")&&screen==="workspaces")||(SCREEN==="area"&&screen==="areas"))).join("");
  ROOT.innerHTML=
@@ -83,6 +84,7 @@ function bindCommon(){
   {name:"Semarang Coastal",detail:"Real workspace · Jawa Tengah",url:LINKS.semarang},
   {name:"Tanjung Emas",detail:"Area Explorer · InSAR QA",url:LINKS.area},
   {name:"All Areas",detail:"Areas across workspaces",url:LINKS.areas},
+  {name:"Multi-GNSS Center",detail:"CSEM · CSMG · BAKO evidence review",url:LINKS.gnss},
   {name:"Data Catalog",detail:"Source provenance and evidence",url:LINKS.catalog},
   {name:"Jakarta Coastal",detail:"Demo · No datasets",url:LINKS.demo+"?city=jakarta"},
   {name:"Surabaya Coastal",detail:"Demo · No datasets",url:LINKS.demo+"?city=surabaya"}
@@ -130,9 +132,10 @@ function portfolio(){
  +'<section class="portfolio-metrics" aria-label="Portfolio summary">'
  +metric("3","Workspaces","1 active · 2 demo placeholders")
  +metric("1","Real study area","Semarang Coastal · Tanjung Emas")
- +metric("6","Historical sectors","Published levelling · 2005")
+ +metric("2","GNSS evidence streams","CSEM historic positions · BAKO QC")
  +metric("1","Processed InSAR pair","ASF HyP3 · QA only")
  +'</section>'
+ +'<section class="saas-gnss-feature"><div><span class="saas-eyebrow">MULTI-GNSS / PRIMARY EVIDENCE</span><h2>Station evidence before asset risk</h2><p>CSEM 2010–2021 position history, independent BAKO 2025 multi-constellation QC, and CSMG site-log context. Review source quality, processing gaps and next checks before any deformation conclusion.</p></div><a class="saas-btn saas-btn-primary" href="./gnss-center.html">Open Multi-GNSS Center →</a></section>'
  +'<section class="saas-section-head"><h2 class="saas-section-title">Workspaces</h2><a class="saas-link" href="'+LINKS.workspaces+'">View all workspaces →</a></section>'
  +'<section class="workspace-tiles">'+["semarang","jakarta","surabaya"].map(tile).join("")+'</section>'
  +'<div class="saas-portfolio-lower"><section class="saas-card"><div class="saas-card-section"><div class="saas-card-head"><div><h2>Recent areas</h2><p>Direct access without reopening a workspace.</p></div><a class="saas-link" href="'+LINKS.areas+'">All areas →</a></div></div>'
@@ -171,6 +174,7 @@ function workspace(){
  +'<section class="saas-card"><div class="saas-card-section"><div class="saas-card-head"><div><h2>Areas in this workspace</h2><p>Open the area to review data, timeline and intelligence.</p></div><a class="saas-link" href="'+LINKS.areas+'">All Areas →</a></div></div>'
  +'<a class="saas-recent-row" href="'+LINKS.area+'"><span><strong>Tanjung Emas</strong><small>Semarang Coastal · study AOI and BIG reference locator, not surveyed asset polygons</small></span>'+chip("Evidence available","active")+' <span aria-hidden="true">→</span></a>'
  +'</section>'
+ +'<div class="saas-cta-strip section-space"><div><strong>Multi-GNSS evidence is the primary technical workflow.</strong><p>Inspect CSEM / CSMG readiness and independent BAKO QC before interpreting regional or asset-level movement.</p></div>'+btn("Multi-GNSS Center",LINKS.gnss,true)+'</div>'
  +'<div class="saas-portfolio-lower section-space"><section class="saas-card saas-card-section"><div class="saas-card-head"><div><h2>Source coverage</h2><p>Actual source types in this project.</p></div></div>'
  +'<div class="workspace-pills">'+chip("Sentinel-2 RGB","active")+chip("Optical NDWI/MNDWI","blue")+chip("Sentinel-1 HyP3 QA","blue")+chip("Copernicus DEM","active")+chip("Historical levelling","blue")+'</div>'
  +'<p class="saas-hint">Source availability does not imply confirmed subsidence, rob, or structural risk.</p><a class="saas-link" href="'+LINKS.catalog+'">Review data catalog →</a></section>'
@@ -266,7 +270,7 @@ function area(){
  +sourceCard("Sentinel-1 ASF HyP3","2–14 Oct 2026 · 80 m VV","Quality screening","blue","Coherence and phase masks; no validated displacement rate","QA manifest","./data/semarang-real-hyp3-insar-qa.json")
  +sourceCard("Historical field levelling","2005 observations · published 2017","Historical","blue","Six sectors and cumulative settlement ranges; no exact sector polygons","Study evidence",LINKS.subsidence)
  +sourceCard("Copernicus DEM","GLO-30 · quantized preview","Real display pixels","active","Surface height context, not land sinking or flood depth","Advanced GIS",LINKS.advanced)
- +sourceCard("GNSS station series","CSEM historical station evidence","Separate station","blue","Nearby station data are not measurements of each port asset","GNSS Lab",LINKS.legacy+"?page=analyst")
+ +sourceCard("GNSS station series","CSEM historic positions + BAKO independent QC","Separate station","blue","Multi-GNSS sources require aligned station observations, a common reference frame and independent validation. No asset rate inferred.","Multi-GNSS Center",LINKS.gnss)
  +sourceCard("Current port velocity","Multi-temporal InSAR + local reference","Not validated","warn","No asset-level vertical rate or validated time series has been imported","Evidence gate",LINKS.area+"#intelligence")
  +'</div></section>'
  +'<section class="saas-panel" id="panel-timeline" role="tabpanel" aria-labelledby="tab-timeline">'
@@ -283,6 +287,7 @@ function area(){
  +'<div class="intel-tabs" role="tablist" aria-label="Intelligence views"><button type="button" data-intel-tab="findings" role="tab" aria-controls="intel-findings" aria-selected="true">Findings</button><button type="button" data-intel-tab="gate" role="tab" aria-controls="intel-gate" aria-selected="false">Evidence Gate</button><button type="button" data-intel-tab="ranking" role="tab" aria-controls="intel-ranking" aria-selected="false">Ranking &amp; Compare</button></div>'
  +'<div class="intel-panel" id="intel-findings" role="tabpanel">'
  +'<div class="area-insight-grid">'
+ +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">MULTI-GNSS / EVIDENCE QUALITY</span><h3>CSEM, CSMG &amp; BAKO sources</h3><strong class="area-evidence-value">Source review</strong><p>Historic station positions and independent multi-constellation RINEX QC are available. A common CSEM/CSMG geodetic solution is not.</p><div class="area-evidence-footer"><a class="saas-link" href="./gnss-center.html">Open station evidence &amp; priorities →</a></div></article>'
  +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">RADAR / SOURCE QUALITY</span><h3>ASF HyP3 coherence screening</h3>'
  +'<strong class="area-evidence-value" id="int-qa-share">Loading...</strong><p id="int-qa-denominator">Checking real QA manifest and data gates.</p>'
  +'<div class="area-evidence-footer">'+chip("Processed product","active")+chip("Quality ≠ movement","blue")+'</div></article>'
@@ -297,13 +302,15 @@ function area(){
  +'<div class="area-chart-placeholder">No scientific time-series chart shown.<br>Validated observations are required before plotting movement.</div></article></div>'
  +'</div><div class="intel-panel" id="intel-gate" role="tabpanel" hidden>'
  +'<div class="saas-card saas-card-section"><div class="saas-card-head"><div><h2>Decision gate &amp; recommended action</h2><p>Operational conclusions are blocked until missing evidence is independently checked.</p></div>'+chip("Data insufficient","warn")+'</div>'
- +'<div class="science-step-grid"><div class="science-step"><span class="science-step-index">01 / GEOMETRY</span><strong>Confirm surveyed assets</strong><p>Request official asset polygons and reference coordinates from the port operator.</p></div>'
+ +'<div class="saas-note">Multi-GNSS first: verify matched CSEM / CSMG observations, reference frame, time alignment and uncertainty. BAKO pseudorange QC does not verify Semarang displacement. <a href="./gnss-center.html" class="saas-link">Review GNSS evidence priority →</a></div>'
+ +'<div class="science-step-grid section-space"><div class="science-step"><span class="science-step-index">01 / GEOMETRY</span><strong>Confirm surveyed assets</strong><p>Request official asset polygons and reference coordinates from the port operator.</p></div>'
  +'<div class="science-step"><span class="science-step-index">02 / DISPLACEMENT</span><strong>Validate multi-date InSAR</strong><p>Obtain time series, stable reference, uncertainty and atmospheric correction.</p></div>'
  +'<div class="science-step"><span class="science-step-index">03 / INDEPENDENCE</span><strong>Cross-check GNSS / levelling</strong><p>Verify representativeness, datum and time-matched measurements before asset decisions.</p></div></div></div>'
  +'</div><div class="intel-panel" id="intel-ranking" role="tabpanel" hidden>'
  +'<div class="saas-note is-warning"><strong>Operational Ranking · NOT AVAILABLE.</strong> Six published historical sectors are source-backed, but have no verified asset geometries or current vertical deformation. These sectors cannot be ordered by risk, movement or inspection priority.</div>'
  +'<div class="intel-ranking-header"><div><span class="saas-eyebrow">AREA INTELLIGENCE / COMPARABILITY</span><h2>Ranking &amp; Compare</h2><p>Current asset-level ranking is blocked by the Evidence Gate. Historical ranges are displayed for traceability, not as ranking criteria.</p></div><span class="saas-chip saas-chip-warn" id="intel-ranking-status">Verifying sources...</span></div>'
  +'<div class="directory-panel"><div class="saas-table-scroll"><table class="data-table intel-ranking-table"><thead><tr><th>Historical sector</th><th>Reported cumulative settlement (2005)</th><th>Current vertical rate</th><th>Operational ranking</th></tr></thead><tbody id="intel-ranking-rows"><tr><td colspan="4">Validating source evidence...</td></tr></tbody></table></div><div class="directory-notice" id="intel-ranking-provenance">Published levelling is not a 2026 ranking input. Asset coordinates and representative movement measurements are missing.</div></div>'
+ +'<div class="saas-gnss-feature section-space"><div><span class="saas-eyebrow">PRIORITY / NOT AN ASSET RISK SCORE</span><h2>Evidence Review Priority</h2><p>Prioritize GNSS data completeness, aligned geodetic processing, and representative verification. These are workflow steps, not a numeric severity rank of the port sectors.</p></div><a class="saas-btn saas-btn-primary" href="./gnss-center.html#evidence-priority">Review GNSS queue →</a></div>'
  +'<div class="saas-cta-strip"><div><strong>Need to demonstrate how ranking would work?</strong><p>Open a strictly separated, four-asset synthetic Scenario Lab. Synthetic mm/year and scores are not observations of Tanjung Emas.</p></div><a class="saas-btn" href="./spatial-demo.html#ranking">Scenario Lab · Simulated ↗</a></div>'
  +'</div></section>'
  +'<section class="saas-panel" id="panel-reports" role="tabpanel" aria-labelledby="tab-reports">'
@@ -411,7 +418,65 @@ function bootAreaMap(){
   const state=$("satellite-source-note");if(state)state.textContent="GIS map unavailable — no raster inference";
  }
 }
-const pages={portfolio,workspaces,workspace,demo,areas,catalog,area};
+
+function gnss(){
+ const html=
+ headline("Multi-GNSS Center","Source-traceable station evidence and observation-quality review. The workflow prioritizes GNSS evidence completeness and processing — not port-asset risk scores.",
+   btn("Open existing GNSS Lab",LINKS.legacy+"?page=analyst",true))
+ +'<div class="saas-note"><strong>Scope:</strong> CSEM historical GPS-derived positions (Semarang), BAKO public Multi-GNSS RINEX QC (Cibinong), and CSMG site metadata. These are separate sources, stations and dates — not a shared movement solution.</div>'
+ +'<div class="portfolio-metrics section-space">'
+ +metric('Loading…','CSEM historic epochs','Verified position series · 2010–2021')
+ +metric('Loading…','BAKO QC epochs','20-minute sample · 1 Jan 2025')
+ +metric('Loading…','Observed constellations','BAKO pseudorange availability only')
+ +metric('Not available','Shared CSEM/CSMG solution','No aligned public position result')
+ +'</div>'
+ +'<div class="gnss-status-ribbon" id="gnss-source-status" role="status">Validating official source references and public QC manifests…</div>'
+ +'<section class="saas-section-head section-space"><h2 class="saas-section-title">Station evidence</h2><span class="saas-hint">Source-specific scope · no cross-station displacement inference</span></section>'
+ +'<div class="gnss-station-grid">'
+ +'<article class="saas-card saas-card-section"><div class="saas-card-head"><h2>CSEM · Semarang</h2>'+chip("Historic positions","blue")+'</div><strong class="gnss-stat-value" id="gnss-csem-epochs">Checking…</strong><p class="saas-hint" id="gnss-csem-period">Published GPS-derived ENU position series; reference-frame metadata retained. Not a port-asset measurement.</p><a class="saas-link" href="https://zenodo.org/records/7775016" target="_blank" rel="noopener noreferrer">Source dataset · Zenodo →</a></article>'
+ +'<article class="saas-card saas-card-section"><div class="saas-card-head"><h2>CSMG · Genuk</h2>'+chip("Site metadata","warn")+'</div><strong class="gnss-stat-value">QC pending</strong><p class="saas-hint">BIG station site log is a reference. Paired date-matched CSEM/CSMG RINEX-derived QC is not in this public SaaS build.</p><a class="saas-link" href="https://srgi.big.go.id/cors/CSMG" target="_blank" rel="noopener noreferrer">BIG Ina-CORS station log →</a></article>'
+ +'<article class="saas-card saas-card-section"><div class="saas-card-head"><h2>BAKO · Cibinong</h2>'+chip("Verified RINEX QC","active")+'</div><strong class="gnss-stat-value" id="gnss-bako-epochs">Checking…</strong><p class="saas-hint" id="gnss-bako-constellations">Independent sample of observed constellations; not a Semarang position solution or accuracy comparison.</p><a class="saas-link" href="https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/43690104506" target="_blank" rel="noopener noreferrer">Verified GeoRinex run →</a></article>'
+ +'</div>'
+ +'<section class="saas-card saas-card-section section-space"><div class="saas-card-head"><div><h2>BAKO observation context</h2><p>Counts of satellites with pseudorange available per epoch — not accuracy or precision.</p></div>'+chip("Not a displacement result","blue")+'</div>'
+ +'<div class="gnss-observation-grid"><div class="gnss-observation-cell"><span>GPS-only average / epoch</span><strong id="gnss-gps-average">—</strong></div><div class="gnss-observation-cell"><span>Multi-GNSS average / epoch</span><strong id="gnss-multi-average">—</strong></div><div class="gnss-observation-cell"><span>Sampling window</span><strong id="gnss-bako-window">—</strong></div></div>'
+ +'<div class="saas-note is-warning section-space">BAKO is located in Cibinong. More available pseudorange satellites do not demonstrate better position accuracy and cannot establish CSEM or CSMG movement in Semarang.</div></section>'
+ +'<section class="section-space" id="evidence-priority"><div class="saas-section-head"><div><h2 class="saas-section-title">Evidence Review Priority</h2><p class="saas-hint">Ordered verification dependencies, not a ranking of hazards, GNSS station performance, or port assets.</p></div>'+btn("Import private station QC",LINKS.legacy+"?page=analyst")+'</div>'
+ +'<div class="directory-panel"><div class="saas-table-scroll"><table class="data-table gnss-queue-table"><thead><tr><th>Step</th><th>Evidence / verification task</th><th>Source readiness</th><th>Next action</th></tr></thead><tbody id="gnss-review-rows"><tr><td colspan="4">Checking evidence sources…</td></tr></tbody></table></div><div class="directory-notice">Steps 1–4 identify process dependencies only; they are not numeric risk ranks and do not imply any data-provider failure.</div></div></section>'
+ +'<div class="saas-cta-strip"><div><strong>Official observational QC is separate from positioning.</strong><p>The GNSS Lab supports local CSEM/CSMG QC JSON import without publishing private RINEX files. Station movement requires an independently validated geodetic solution.</p></div>'+btn("Go to GNSS Analyst",LINKS.legacy+"?page=analyst",true)+'</div>';
+ renderShell(html,{title:"Multi-GNSS Center",crumbs:"Multi-GNSS Center"});
+ void bootGnss();
+}
+async function bootGnss(){
+ const set=(id,t)=>{const n=$(id);if(n)n.textContent=String(t)};
+ try{
+  const [r1,r2]=await Promise.all([fetch(GNSS_CENTER_SOURCES.csem,{cache:"no-store"}),fetch(GNSS_CENTER_SOURCES.bako,{cache:"no-store"})]);
+  if(!r1.ok||!r2.ok)throw Error("Source manifest unavailable");
+  const [txt,obj]=await Promise.all([r1.text(),r2.json()]);
+  const d=buildMultiGnssReview(txt,obj);
+  const fmtN=n=>Number(n).toLocaleString("id-ID",{maximumFractionDigits:3});
+  // All numeric metrics are source-derived, never placeholders after validation.
+  set("gnss-csem-epochs",fmtN(d.csem.epochs)+" epochs");
+  set("gnss-csem-period",d.csem.first+" to "+d.csem.last+" · "+d.csem.referenceFrame+" · GPS-derived historical station positions only");
+  set("gnss-bako-epochs",fmtN(d.bako.epochs)+" epochs");
+  set("gnss-bako-constellations",d.bako.constellations.join(" · ")+" · 1 Jan 2025. Pseudorange availability, not position accuracy.");
+  set("gnss-gps-average",fmtN(d.bako.gpsOnlyAvgPseudorangeSatellites));
+  set("gnss-multi-average",fmtN(d.bako.multiGnssAvgPseudorangeSatellites));
+  set("gnss-bako-window","20 min");
+  set("gnss-source-status","2 public source streams validated · CSMG site log present · aligned Semarang station solution not available");
+  $("gnss-review-rows").innerHTML=d.reviewPriority.map(x=>
+    '<tr><td><strong>Step '+x.order+'</strong><span class="sub">Workflow dependency</span></td>'+
+    '<td><strong>'+esc(x.title)+'</strong><span class="sub">'+esc(x.evidence)+'</span></td>'+
+    '<td>'+chip("Verification needed","warn")+'</td><td>'+esc(x.next)+'</td></tr>').join("");
+  document.body.dataset.gnssReadiness="ready";
+ }catch(error){
+  for(const id of ["gnss-csem-epochs","gnss-bako-epochs","gnss-gps-average","gnss-multi-average","gnss-bako-window"])set(id,"Unavailable");
+  set("gnss-source-status","Source verification failed. No GNSS observations or readiness priorities are claimed.");
+  $("gnss-review-rows").innerHTML='<tr><td colspan="4">Required source files could not be verified. Review queue unavailable.</td></tr>';
+  document.body.dataset.gnssReadiness="unavailable";
+ }
+}
+
+const pages={portfolio,workspaces,workspace,demo,areas,catalog,area,gnss};
 if(ROOT)try{(pages[SCREEN]||portfolio)();}catch(error){
  console.error("BARUNA SaaS view failed:",error);
  ROOT.innerHTML='<div class="app-start-fallback"><strong>BARUNA view unavailable</strong><p>Antarmuka belum dapat dimuat. Data evidence asli tidak diubah.</p><a href="./real-workspace.html">Open existing Real Workspace →</a></div>';
