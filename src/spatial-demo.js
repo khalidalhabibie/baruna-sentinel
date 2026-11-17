@@ -1,4 +1,5 @@
 import {initRealSpatialEvidence} from "./real-spatial-evidence.js";
+import {installTrueColorLayer} from "./true-color-layer.js";
 import {getSpatialCases,makeSyntheticAssetSeries,explainSyntheticDecision,makeSpatialBrief,SPATIAL_DEMO_META,getRankedSpatialCases,getSyntheticScoreBreakdown,GATE_LABELS} from "./spatial-scenario.js";
 
 const cases=getSpatialCases();
@@ -53,6 +54,8 @@ function initMap(){
   crossOrigin:true
  }).addTo(map);
  window.L.control.zoom({position:"bottomright"}).addTo(map);
+ // Verified optical imagery renders below every illustrative asset polygon.
+ void installTrueColorLayer(map);
  for(const item of cases){
   const layer=window.L.polygon(item.geometry,{
    color:statusColor(item),
