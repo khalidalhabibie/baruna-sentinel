@@ -59,7 +59,7 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  +'<div class="saas-crumb"><a href="'+LINKS.home+'">BARUNA</a><span aria-hidden="true">/</span><strong>'+esc(crumbs)+'</strong></div>'
  +'<div class="saas-top-actions"><div class="saas-search"><label class="sr-only" for="saas-search-input">Cari area atau workspace</label>'
  +'<input id="saas-search-input" type="search" placeholder="Search workspaces or areas" autocomplete="off"><div class="saas-search-results" id="saas-search-results" hidden></div></div>'
- +'<span class="saas-avatar" aria-label="Ourdo Indonesia">OU</span></div></header>'
+ +'<span class="saas-ourdo-wordmark"><img src="./assets/ourdo-tail-curve-wordmark.svg" width="78" height="25" alt="Ourdo Indonesia"></span><span class="saas-avatar" aria-label="Ourdo Indonesia">OU</span></div></header>'
  +'<main class="saas-content" id="main-content">'+content
  +'<footer class="saas-footer">© Ourdo Indonesia · BARUNA Spatial Intelligence · Source-backed research prototype · Not operational asset-safety certification</footer>'
  +'</main></div></div>';
