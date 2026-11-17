@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="description" content="Contoh Evidence Brief BARUNA Sentinel untuk Coaster Street, Semarang. Studi historis dan bukti verifikasi, bukan ranking keselamatan aset.">
+ <title>Evidence Brief — Coaster Street | BARUNA Sentinel</title>
+ <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
+ <style>
+ :root{--ink:#1b3d45;--muted:#677d80;--line:#dae5e1;--teal:#1a7061;--sand:#bc935b}
+ *{box-sizing:border-box}html{scroll-behavior:smooth}
+ body{margin:0;background:#f5f8f6;color:var(--ink);font:14px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+ a{color:#146d5d;text-underline-offset:3px}
+ .toolbar{max-width:960px;margin:0 auto;padding:17px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+ .toolbar a{text-decoration:none;font-size:12px;font-weight:730}
+ .toolbar .links{display:flex;gap:15px;align-items:center;flex-wrap:wrap}
+ .toolbar button{border:0;border-radius:8px;padding:11px 16px;background:#176d5c;color:#fff;font:inherit;font-size:12px;font-weight:780;cursor:pointer}
+ .toolbar button:hover{background:#104f41}
+ .page{max-width:926px;margin:0 auto 50px;background:#fff;border:1px solid #d7e4df;box-shadow:0 22px 65px rgba(25,67,58,.07);padding:45px clamp(20px,5.2vw,63px) 39px}
+ .doc-top{display:flex;justify-content:space-between;align-items:center;gap:15px;padding-bottom:25px;border-bottom:1px solid var(--line)}
+ .doc-brand img{width:113px;height:auto;display:block}
+ .doc-brand>span{display:block;color:#41645e;letter-spacing:.12em;font-size:9px;font-weight:830;margin-top:5px}
+ .doc-tag{font-size:10px;letter-spacing:.08em;font-weight:800;color:#608579;text-align:right}
+ .doc-title{padding:33px 0 24px}
+ .kicker{font-size:10px;letter-spacing:.1em;font-weight:830;color:#618779}
+ h1{font:500 clamp(31px,4.5vw,46px)/1.14 Georgia,Cambria,serif;letter-spacing:-.035em;color:#163944;margin:10px 0}
+ .doc-subtitle{font-size:14px;color:#677f7c;max-width:620px;margin:8px 0 0}
+ .status{display:grid;grid-template-columns:minmax(0,1fr) 215px;gap:24px;background:#fbf6ee;border:1px solid #eedfca;border-left:4px solid #bd935f;border-radius:8px;padding:19px 21px}
+ .status .status-label{font-size:10px;color:#8f703e;letter-spacing:.09em;font-weight:820}
+ .status strong{display:block;font-size:23px;line-height:1.25;letter-spacing:-.02em;color:#654b2b;margin:7px 0}
+ .status p{font-size:12px;line-height:1.7;margin:0;color:#866f52}
+ .status aside{border-left:1px solid #e6d5bc;padding-left:19px;font-size:11px;color:#876e4d}
+ .status aside b{display:block;margin-bottom:8px;color:#6d532e}
+ .metrics{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin:26px 0}
+ .metric{padding:18px 19px;border:1px solid #e1eae5;border-radius:9px;background:#fbfdfb}
+ .metric span{display:block;color:#769086;letter-spacing:.065em;font-size:9px;font-weight:790}
+ .metric strong{display:block;color:#1d6557;font-size:31px;letter-spacing:-.04em;line-height:1.3;margin:4px 0}
+ .metric strong small{font-size:14px;letter-spacing:normal}
+ .metric p{font-size:11px;color:#69857b;line-height:1.6;margin:0}
+ h2{font-size:14px;color:#275b4c;letter-spacing:-.01em;margin:0 0 10px;font-weight:800}
+ .section{padding:21px 0;border-top:1px solid var(--line)}
+ .section p{font-size:12px;line-height:1.75;margin:0;color:#5f7774}
+ .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 0}
+ .action{border:1px solid #dfe8e2;border-radius:8px;padding:15px;background:#fff}
+ .action .no{display:inline-block;background:#e8f3ed;color:#29735c;border-radius:5px;padding:5px 8px;font-size:9px;font-weight:850}
+ .action h3{font-size:12px;margin:9px 0 5px;color:#285245}
+ .action p{font-size:11px;line-height:1.6;color:#668076;margin:0 0 9px}
+ .action small{font-size:10px;color:#5c8675;font-weight:710}
+ .source-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+ .source-table th{text-align:left;color:#65877d;background:#f4f8f5;padding:9px 10px;font-size:9px;letter-spacing:.06em}
+ .source-table td{padding:12px 10px;border-bottom:1px solid #edf1ee;color:#5f7774;vertical-align:top;overflow-wrap:anywhere}
+ .source-table a{font-weight:730}
+ .limits{padding:14px 16px;background:#f1f6f3;border-radius:8px;font-size:11px;line-height:1.7;color:#58746b}
+ .doc-footer{font-size:10px;color:#82958d;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px}
+ @media(max-width:660px){.toolbar{padding:13px}.page{margin:0 10px 20px;padding:22px 17px}.status{grid-template-columns:1fr}.status aside{border-left:0;border-top:1px solid #e6d5bc;padding:11px 0 0}.metrics,.action-grid{grid-template-columns:1fr}.doc-footer{flex-direction:column}.source-table{font-size:10px}.source-table td{padding:9px 5px}}
+ @media print{@page{size:A4;margin:12mm}body{background:#fff;font-size:10pt}.toolbar{display:none}.page{width:100%;max-width:none;border:none;box-shadow:none;margin:0;padding:0}.doc-top{padding-bottom:12px}.doc-title{padding:16px 0}.status{padding:12px}.status strong{font-size:17pt}.metrics{margin:12px 0}.metric{padding:10px}.metric strong{font-size:20pt}.section{padding:11px 0;break-inside:avoid}.action-grid{gap:7px;margin:9px 0}.action{padding:9px;break-inside:avoid}.source-table th,.source-table td{padding:5px}.doc-footer{margin-top:9px}.limits{padding:9px}.source-table a{color:#28594b;text-decoration:none}}
+ </style>
+</head>
+<body>
+ <nav class="toolbar" aria-label="Navigasi laporan"><a href="./">← Kembali ke BARUNA Sentinel</a><div class="links"><a href="./proposal-demo.html#step-brief">Demo empat tahap</a><button id="print-evidence-brief" type="button">Cetak / Simpan PDF</button></div></nav>
+ <main class="page" aria-label="Contoh Evidence Brief BARUNA">
+  <div class="doc-top"><div class="doc-brand"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="Ourdo Indonesia"><span>BARUNA SENTINEL</span></div><div class="doc-tag">INSPECTION EVIDENCE BRIEF<br>CONTOH PUBLIK · RGPD 2026</div></div>
+  <div class="doc-title"><div class="kicker">SEMARANG COASTAL / TANJUNG EMAS</div><h1>Coaster Street</h1><p class="doc-subtitle">Contoh hasil penyaringan bukti untuk permintaan verifikasi lapangan. Belum ada pengukuran terkini yang terbukti mewakili aset ini.</p></div>
+  <section class="status" aria-labelledby="brief-verdict"><div><span class="status-label">KEPUTUSAN EVIDENCE GATE</span><strong id="brief-verdict">DATA INSUFFICIENT</strong><p>Prioritas inspeksi operasional belum dapat diberikan berdasarkan bukti yang tersedia. Data belum cukup tidak berarti risiko rendah atau tinggi.</p></div><aside><b>0 aset nyata dinilai layak ranking</b>Sumber memiliki cakupan waktu dan lokasi berbeda. Ini bukan instruksi kerja resmi atau sertifikasi keselamatan.</aside></section>
+  <div class="metrics">
+   <div class="metric"><span>PENGUKURAN HISTORIS · SURVEI 2005</span><strong>21–41 <small>cm</small></strong><p>Penurunan kumulatif Coaster Street dalam studi Raharjo &amp; Yosi; bukan laju mm/tahun atau kondisi aset 2026.</p></div>
+   <div class="metric"><span>KAJIAN TERPISAH · 2026</span><strong>±725 <small>m</small></strong><p>Ruas selatan Jalan Coaster dari kajian Fuan Maharani. Identitas geometri dan kesesuaian ruas studi 2005 belum diverifikasi.</p></div>
+  </div>
+  <section class="section" aria-labelledby="known"><h2 id="known">01 / Bukti tersedia</h2><p>Penelitian historis Tanjung Emas melaporkan rentang penurunan kumulatif pada sektor bernama Coaster Street. Penelitian jalan tahun 2026 melaporkan konteks elevasi/paparan pada ruas selatan. Publikasi PPP CSMG dan CSEM (2021–2023) memperlihatkan perbedaan pergerakan <em>stasiun</em>: CSMG −94,03 ± 4,92 mm/tahun dan CSEM +3,23 ± 1,76 mm/tahun. RINEX BAKO (Cibinong, 2025) adalah QC observasi independen, bukan solusi posisi Semarang.</p></section>
+  <section class="section" aria-labelledby="unknown"><h2 id="unknown">02 / Batas kesimpulan</h2><p>Belum tersedia geometri aset resmi, kecocokan pasti ruas antara dua penelitian, pengukuran GNSS/levelling terbaru pada atau representatif terhadap jalan, datum elevasi terharmonisasi, dan kekritisan yang disahkan operator. Benchmark TB1/TB2 pada tabel publikasi historis memiliki koordinat UTM yang hampir sama; titik tersebut belum boleh dipetakan sebagai lokasi tersurvei terkini. Tidak ada ranking risiko, probabilitas kerusakan, estimasi banjir, atau alarm real-time.</p></section>
+  <section class="section" aria-labelledby="actions"><h2 id="actions">03 / Tindakan verifikasi yang diminta</h2><div class="action-grid">
+   <div class="action"><span class="no">01 · GEOMETRI</span><h3>Konfirmasi ruas dan titik survei</h3><p>Identifikasi polygon resmi Jalan Coaster, cocokkan lokasi dua studi, dan dokumentasikan datum serta ID aset.</p><small>Operator aset + tim GIS</small></div>
+   <div class="action"><span class="no">02 · GERAK TANAH</span><h3>Ukur pergerakan representatif</h3><p>Seri GNSS/levelling berulang pada benchmark yang terkait aset; lampirkan epoch, reference frame, QC, dan ketidakpastian.</p><small>Surveyor geodesi</small></div>
+   <div class="action"><span class="no">03 · PAPARAN</span><h3>Harmonisasi elevasi dan muka air</h3><p>Verifikasi mLWS pada kajian jalan terhadap data terkini. Jangan mengubah selisih elevasi menjadi kedalaman rob tanpa metode sah.</p><small>GIS / pesisir / teknik sipil</small></div>
+   <div class="action"><span class="no">04 · KEBIJAKAN</span><h3>Validasi kekritisan dan ambang</h3><p>Penanggung jawab aset menyepakati tingkat kritis dan kriteria inspeksi bersama ahli sebelum ranking diterbitkan.</p><small>Operator + reviewer teknis</small></div>
+  </div></section>
+  <section class="section" aria-labelledby="sources"><h2 id="sources">04 / Jejak sumber dan cakupan</h2><table class="source-table"><thead><tr><th style="width:33%">Sumber</th><th style="width:25%">Periode</th><th>Cakupan yang sah</th></tr></thead><tbody>
+   <tr><td><a href="https://journal.esdm.go.id/bomg/article/view/12755" target="_blank" rel="noopener noreferrer">Raharjo &amp; Yosi, Bulletin of the Marine Geology</a></td><td>Survei historis 2005; terbit 2017</td><td>Penurunan kumulatif dan tabel benchmark; geometri belum tervalidasi.</td></tr>
+   <tr><td><a href="https://repository.trisakti.ac.id/usaktiana/index.php/home/detail/detail_koleksi/7/SKR/abstraksi/00000000000000075543/komposit" target="_blank" rel="noopener noreferrer">Fuan Maharani, Universitas Trisakti</a></td><td>Publikasi 2026</td><td>Konteks paparan dan ruas jalan dalam studi berbeda; kecocokan segmen belum diketahui.</td></tr>
+   <tr><td><a href="https://journal.ugm.ac.id/jgise/article/view/95957" target="_blank" rel="noopener noreferrer">Sitaningrum &amp; Widjajanti, JGISE</a></td><td>PPP 2021–2023</td><td>Laju vertikal stasiun CSMG/CSEM, bukan pada aset.</td></tr>
+   <tr><td>BAKO IGS / pengujian RINEX BARUNA</td><td>1 Januari 2025</td><td>41 epoch QC observasi dari Cibinong; bukan pergerakan Semarang.</td></tr>
+  </tbody></table></section>
+  <div class="limits"><strong>Interpretasi:</strong> bukti historis, PPP stasiun, QC RINEX, dan studi ruas 2026 sengaja dipisahkan. Semua dipakai untuk merancang <em>permintaan verifikasi</em>, bukan untuk menghitung skor aset nyata. Tidak ada afiliasi, persetujuan, atau penerapan resmi operator pelabuhan yang diklaim.</div>
+  <div class="doc-footer"><span>BARUNA SENTINEL · OURDO INDONESIA · BHUMIREKA 2026</span><span>Contoh publik berbasis publikasi · 17 November 2026</span></div>
+ </main>
+ <script>document.getElementById("print-evidence-brief").addEventListener("click",()=>window.print());</script>
+</body>
+</html>
