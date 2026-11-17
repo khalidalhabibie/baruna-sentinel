@@ -17,6 +17,7 @@ const publicAssets=[
   "src/aoi-registry.js",
   "src/aoi-local-backup.js",
   "src/proposal-demo-model.js",
+  "src/csem-historical-audit.js",
   "src/proposal-demo.js",
   "src/public-evidence-addendum.js",
   "src/rgpd-demo-improvements.js",

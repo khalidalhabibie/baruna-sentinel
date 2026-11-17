@@ -4,10 +4,12 @@ import {validateHistoricalFieldEvidence} from './historical.js';
 import {validateDemoData,buildDemoDecision} from './proposal-demo-model.js';
 import {verifyPublicAddendum,sectorPublicContext,historicalBenchmarkSummary} from './public-evidence-addendum.js';
 import {validateIndependentBakoQc,verificationActionsForSector} from './rgpd-demo-improvements.js';
+import {summarizeHistoricalCsemGps} from './csem-historical-audit.js';
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtNum=v=>Number(v).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
 const origin=location.origin;
+let csemHistorical=null,csemHistoricalIssue=null;
 let source=null,study=null,decision=null,sectorId='coaster-street',areas=[],chosenAoiId='',addendum=null,addendumIssue=null,bakoQc=null,bakoQcIssue=null;
 function localAreas(){
  try{return readRegistry(window.localStorage);}catch(e){$('demo-aoi-status').textContent='AOI lokal belum dapat dibaca: '+e.message;return [];}
@@ -83,6 +85,24 @@ function renderRanking(){
  $('demo-ranking').innerHTML=scenario.records.map((r,i)=>
   '<div class="rank-row"><div class="rank-id">'+String(i+1).padStart(2,'0')+'</div><div class="rank-details"><strong>'+esc(r.name)+'</strong><span>'+(r.fictionalRateMmYr===undefined?'—':esc(r.fictionalRateMmYr)+' mm/tahun')+' · fictional observation</span></div><div class="rank-score '+cls[r.tier]+'"><b>'+esc(tierTitle[r.tier]||r.tier)+'</b><small>'+(r.score===null?'GATE FAILED':r.score+'/6 POIN')+'</small></div></div>').join('');
 }
+function renderHistoricalCsem(){
+ const el=$('demo-csem-historical');if(!el)return;
+ if(!csemHistorical){el.textContent='Analisis historis belum tersedia: '+(csemHistoricalIssue||'Sumber belum dibaca')+'. Tidak diganti dengan data simulasi.';return;}
+ const s=csemHistorical;
+ el.innerHTML='<div class="historical-ols-grid">'+
+ '<div><small>SERI GPS HISTORIS CSEM</small><strong>'+s.epochCount.toLocaleString('id-ID')+'</strong><span>epoch · '+esc(s.period)+'</span></div>'+
+ '<div><small>OLS UP / DESKRIPTIF</small><strong>'+fmtNum(s.verticalSlopeMmYr)+' <em>mm/tahun</em></strong><span>Bukan laju aset atau PPP 2021–2023</span></div>'+
+ '<div><small>RESIDUAL RMS</small><strong>'+fmtNum(s.residualRmsMm)+' <em>mm</em></strong><span>Bukan ketidakpastian slope</span></div>'+
+ '<div><small>RENTANG ANALISIS</small><strong>'+fmtNum(s.spanYears)+' <em>tahun</em></strong><span>Jeda maksimum '+s.maxGapDays+' hari</span></div>'+
+ '</div><div class="historical-ols-verdict"><strong>BATAS KESIMPULAN</strong><p>OLS pada koordinat Up historis yang sudah diproses; belum memodelkan musiman, diskontinuitas atau autokorelasi. Bukan solusi posisi multi-GNSS terkini, kondisi dermaga, atau pengujian keselamatan.</p></div>';
+}
+async function loadHistoricalCsem(){
+ try{
+  const r=await fetch('./data/CSEM_clean_Noff1site.source-derived.rneu',{cache:'no-store'});if(!r.ok)throw new Error('HTTP '+r.status);
+  csemHistorical=summarizeHistoricalCsemGps(await r.text());csemHistoricalIssue=null;
+ }catch(e){csemHistorical=null;csemHistoricalIssue=e.message;}
+ renderHistoricalCsem();if(decision)refreshDecision();
+}
 function contentReport(){
  const d=decision;
  const s=d.historicalSector;
@@ -101,6 +121,7 @@ function contentReport(){
   verificationActionsForSector(sectorId,{withPublishedCoasterContext:!!addendum}).actions.map(a=>
   '<li><strong>'+esc(a.title)+'</strong> ('+esc(a.owner)+'): '+esc(a.evidence)+'<br>Hasil yang diminta: '+esc(a.deliverable)+'</li>').join('')+'</ol>'+
   (bakoQc?'<p><b>QC multi-GNSS independen:</b> BAKO Cibinong, 1 Jan 2025, '+esc(bakoQc.epochCount)+' epoch, enam konstelasi. Sampel RINEX untuk ketersediaan observasi; bukan hasil GNSS Semarang atau peningkatan akurasi posisi.</p>':'')+
+  (csemHistorical?'<p><b>Analisis OLS CSEM oleh BARUNA:</b> '+esc(csemHistorical.epochCount)+' epoch GPS (2010–2021), slope Up deskriptif '+esc(fmtNum(csemHistorical.verticalSlopeMmYr))+' mm/tahun. Bukan multi-GNSS terkini, uncertainty slope belum tervalidasi, tidak langsung sebanding dengan PPP 2021–2023, dan bukan GNSS aset. DOI '+esc(csemHistorical.doi)+'.</p>':'')+
   '<h4>04 / Provenance dan asumsi</h4><p><b>Pengamatan CORS:</b> '+esc(d.stationPublication.source)+' · '+esc(d.stationPublication.period)+' · DOI '+esc(d.stationPublication.doi)+'.</p>'+
   '<p><b>Catatan sektor:</b> '+esc(s.source.source)+' · DOI '+esc(s.source.doi)+'.</p>'+
   (addendum?'<h4>05 / Bukti publikasi tambahan (bukan GNSS aset)</h4><p>Raharjo &amp; Yosi (2017) memuat 6 referensi benchmark historis (2004–2005) dengan QA koordinat belum selesai: pasangan TB 1/TB 2 memerlukan pemeriksaan tabel sumber.</p>':'')+
@@ -134,6 +155,7 @@ function downloadJson(){if(!decision)return;
    linkedCoasterRoadContext:sectorPublicContext(addendum,sectorId),
    currentAssetMeasurement:false,canIssueOperationalRank:false}:null,
   independentRinexQc:bakoQc?{...bakoQc}:null,
+  historicalCsemGpsOls:csemHistorical?{...csemHistorical}:null,
   verificationBacklog:verificationActionsForSector(sectorId,{withPublishedCoasterContext:!!addendum})};
  const blob=new Blob([JSON.stringify(record,null,2)+'\n'],{type:'application/json'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='BARUNA_RGPD_Semarang_Evidence_Brief.json';
@@ -156,6 +178,7 @@ async function boot(){
    bakoQc=validateIndependentBakoQc(await qcRes.json());
   }catch(error){bakoQc=null;bakoQcIssue=error.message;}
   renderAoi();renderGnss();renderBakoQc();renderRealGate();refreshDecision();
+  void loadHistoricalCsem();
   $('demo-aoi-select').addEventListener('change',e=>{chosenAoiId=e.target.value;refreshDecision();});
   $('demo-sector').addEventListener('change',e=>{sectorId=e.target.value;refreshDecision();});
   $('demo-download').addEventListener('click',downloadJson);
