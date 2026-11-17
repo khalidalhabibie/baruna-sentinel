@@ -44,7 +44,7 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  '<div class="saas-shell" id="saas-shell">'
  +'<div class="saas-drawer-backdrop" id="saas-nav-backdrop" hidden></div>'
  +'<aside class="saas-sidebar" id="saas-sidebar" aria-label="Navigasi utama">'
- +'<a class="saas-brand" href="'+LINKS.home+'"><span class="saas-symbol" aria-hidden="true">≋</span><span class="saas-brand-text"><strong>BARUNA</strong><small>SPATIAL INTELLIGENCE</small></span></a>'
+ +'<a class="saas-brand" href="'+LINKS.home+'"><span class="saas-symbol" aria-hidden="true">≋</span><span class="saas-brand-text"><strong>BARUNA</strong><small>SENTINEL · SPATIAL INTELLIGENCE</small></span></a>'
  +'<div class="saas-section-label">PLATFORM</div><nav class="saas-nav">'+nav+'</nav>'
  +'<div class="saas-divider"></div><div class="saas-section-label">RECENT</div><nav class="saas-recent" aria-label="Area dan workspace terbaru">'
  +'<a href="'+LINKS.semarang+'"><span aria-hidden="true">▣</span>Semarang Coastal</a>'
@@ -59,11 +59,11 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  +'<div class="saas-crumb"><a href="'+LINKS.home+'">BARUNA</a><span aria-hidden="true">/</span><strong>'+esc(crumbs)+'</strong></div>'
  +'<div class="saas-top-actions"><div class="saas-search"><label class="sr-only" for="saas-search-input">Cari area atau workspace</label>'
  +'<input id="saas-search-input" type="search" placeholder="Search workspaces or areas" autocomplete="off"><div class="saas-search-results" id="saas-search-results" hidden></div></div>'
- +'<span class="saas-ourdo-wordmark"><img src="./assets/ourdo-tail-curve-wordmark.svg" width="78" height="25" alt="Ourdo Indonesia"></span><span class="saas-avatar" aria-label="Ourdo Indonesia">OU</span></div></header>'
+ +'<span class="saas-preview-label" aria-label="Status aplikasi: research prototype">RESEARCH PREVIEW</span></div></header>'
  +'<main class="saas-content" id="main-content">'+content
- +'<footer class="saas-footer">© Ourdo Indonesia · BARUNA Spatial Intelligence · Source-backed research prototype · Not operational asset-safety certification</footer>'
+ +'<footer class="saas-footer">BARUNA Sentinel · Source-backed research prototype · Not operational asset-safety certification</footer>'
  +'</main></div></div>';
- document.title=title+" | BARUNA Spatial Intelligence";
+ document.title=title+" | BARUNA Sentinel";
  bindCommon();
 }
 function bindCommon(){
@@ -122,7 +122,7 @@ function tile(kind){
 }
 function portfolio(){
  const html=
- '<section class="portfolio-intro"><div><span class="saas-eyebrow">OURDO INDONESIA / PORTFOLIO</span>'
+ '<section class="portfolio-intro"><div><span class="saas-eyebrow">BARUNA SENTINEL / PORTFOLIO</span>'
  +'<h1>Your spatial portfolio</h1>'
  +'<p>Manage spatial workspaces, explore areas and trace evidence before running analysis. Semarang is the only real source-backed workspace in this prototype.</p>'
  +'</div>'+btn("Open Semarang Coastal",LINKS.semarang,true)+'</section>'
