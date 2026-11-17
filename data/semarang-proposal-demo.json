@@ -1,0 +1,49 @@
+{
+  "schema": "baruna-rgpd-proposal-demo-v1",
+  "version": "2026-11-17",
+  "workspaceId": "semarang-coastal",
+  "title": "BARUNA Sentinel — Prioritas Inspeksi Infrastruktur Pesisir Berbasis Bukti Multi-GNSS",
+  "scope": "Tanjung Emas–Genuk, Semarang. Skenario geografis ilustratif; tidak ada afiliasi atau penerapan resmi operator pelabuhan.",
+  "proposalSource": "Proposal BARUNA Sentinel, BIG Bhumireka RGPD 2026, OURDO INDONESIA",
+  "cors": {
+    "period": "2021–2023",
+    "method": "PPP, station coordinate series (nilai dilaporkan proposal dari Sitaningrum & Widjajanti 2024)",
+    "source": "Sitaningrum & Widjajanti (2024), JGISE 7(1)",
+    "doi": "10.22146/jgise.95957",
+    "url": "https://journal.ugm.ac.id/jgise/article/view/95957",
+    "stations": [
+      {"id":"CSMG","name":"Semarang Genuk","verticalMmYr":-94.03,"uncertaintyMmYr":4.92},
+      {"id":"CSEM","name":"Semarang","verticalMmYr":3.23,"uncertaintyMmYr":1.76}
+    ],
+    "limitation":"Hasil publikasi pada stasiun CORS, bukan laju pergerakan pada dermaga, jalan, atau aset lain. Tidak sebanding langsung dengan seri CSEM 2010–2021 maupun QC BAKO 2025."
+  },
+  "observationEvidence": [
+    {"id":"cors-ppp","label":"CSMG dan CSEM · studi PPP","state":"PUBLISHED_STATION_RESULT","period":"2021–2023","meaning":"Kontras laju vertikal antarstasiun berdasarkan publikasi, bukan hasil perhitungan live BARUNA."},
+    {"id":"csem-historical","label":"CSEM · seri posisi historis","state":"HISTORICAL_NUMERIC_SERIES","period":"2010–2021","meaning":"Seri GPS yang dapat dianalisis deskriptif sebagai konteks stasiun, bukan pengukuran aset."},
+    {"id":"rinex-qc","label":"BAKO · RINEX QC multi-GNSS","state":"INDEPENDENT_STATION_QC","period":"Arsip 2025","meaning":"Contoh kontrol ketersediaan/kelengkapan observasi di stasiun berbeda; bukan posisi CSEM atau CSMG."},
+    {"id":"cors-latest","label":"RINEX / deret koordinat terkini Semarang","state":"INCOMPLETE","period":"Data 2026 belum menjadi deret posisi tervalidasi","meaning":"Butuh observasi beserta hasil pemrosesan, reference frame, kontinuitas, dan ketidakpastian."}
+  ],
+  "evidenceGates": [
+    {"id":"provenance","name":"Asal dan periode","state":"PARTIAL","reason":"Publikasi dapat ditelusuri; periode GNSS dan sektor historis berbeda."},
+    {"id":"quality","name":"Kendali mutu observasi","state":"PARTIAL","reason":"QC multi-GNSS parsial tersedia; tidak menggantikan solusi posisi terkini dan uncertainty."},
+    {"id":"asset-link","name":"Hubungan GNSS ke aset","state":"MISSING","reason":"Stasiun regional tidak otomatis mewakili pergerakan tiap aset."},
+    {"id":"geometry","name":"Geometri aset resmi","state":"MISSING","reason":"Enam sektor historis belum memiliki lokasi survei/geometri aset tervalidasi."},
+    {"id":"criticality","name":"Kekritisan dan kebijakan","state":"MISSING","reason":"Perlu input operator dan persetujuan metodologi prioritas inspeksi."}
+  ],
+  "proposalMethodology": [
+    "Data multi-GNSS dan kendali mutu",
+    "Estimasi pergerakan NEU/tren vertikal beserta ketidakpastian",
+    "Keandalan dan cakupan bukti",
+    "Konteks spasial, paparan, dan kekritisan aset",
+    "Prioritas inspeksi dan laporan yang dapat dijelaskan"
+  ],
+  "historicalStudy": {
+    "surveyYear": 2005,
+    "publicationYear": 2017,
+    "source":"Raharjo & Yosi, The Identification of Land Subsidance by Levelling Measurement and GPR Data at Tanjung Emas Harbour",
+    "doi":"10.32693/bomg.32.1.2017.351",
+    "url":"https://journal.esdm.go.id/bomg/article/view/12755",
+    "limitation":"Enam sektor adalah catatan penelitian historis kumulatif (cm), bukan laju mm/tahun 2026 atau geometri terukur."
+  },
+  "rankingMeaning":"Urutan empat aset simulasi menunjukkan metode penapisan transparan, bukan daftar prioritas lapangan atau sertifikasi keselamatan."
+}
