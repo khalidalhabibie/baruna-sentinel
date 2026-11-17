@@ -1,0 +1,36 @@
+name: Refresh public Semarang STAC catalogue
+on:
+  schedule:
+    # 09:17 WIB daily (02:17 UTC). Scheduled GitHub runs can start late.
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: baruna-stac-catalog-main
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: github.repository == 'khalidalhabibie/baruna-sentinel' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run ingestion safety tests
+        run: python3 -m unittest discover -s scripts -p 'test_refresh_stac_catalog.py'
+      - name: Query official CDSE STAC, fail closed on partial results
+        run: python3 scripts/refresh_stac_catalog.py --output data/semarang-monitoring-catalog.json --days 90
+      - name: Publish vetted public metadata only (no private AOI geometry)
+        run: |
+          set -euo pipefail
+          git add data/semarang-monitoring-catalog.json
+          if git diff --cached --quiet; then
+            echo 'No catalogue change'
+            exit 0
+          fi
+          git -c user.name='BARUNA public catalog bot' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'data(baruna): refresh Semarang public STAC catalogue [skip ci]'
+          git push origin HEAD:main
