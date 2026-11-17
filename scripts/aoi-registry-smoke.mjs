@@ -46,7 +46,7 @@ try{
  assert.match(await page.locator("#evidence-content").innerText(),/GRD/);
  assert.equal(await page.locator("#evidence-content .monitor-event").count(),1);
  assert.match(await page.locator("#evidence-content .monitor-history").innerText(),/METADATA|RIWAYAT PEMERIKSAAN/);
- assert.match(await page.locator("#cloud-state").innerText(),/Cloud belum dikonfigurasi|Backend tidak tersedia/);
+ assert.equal(await page.locator("#cloud-console").count(),0,"No cloud UI in JSON-only pilot");
  await page.screenshot({path:"reports/baruna-aoi-registry-checked.png",fullPage:false});
  const dl=page.waitForEvent("download");
  await page.locator("#export-brief").click();
