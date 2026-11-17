@@ -48,6 +48,7 @@ try{
  assert.match(sourceDerivedCsem,/Bukan laju aset/);
  assert.match(sourceDerivedCsem,/Bukan ketidakpastian slope/);
  assert.equal(await page.locator('#proposal-alignment .proposal-methodology-table tbody tr').count(),5);
+ await page.locator('#proposal-alignment .proposal-methodology-details summary').click();
  assert.match(await page.locator('#proposal-alignment').innerText(),/DEMNAS proposal yang belum diintegrasikan/);
 
  assert.match(await page.locator('#demo-bako-qc').innerText(),/CIBINONG/);
