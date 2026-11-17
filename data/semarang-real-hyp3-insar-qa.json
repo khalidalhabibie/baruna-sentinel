@@ -1,0 +1,79 @@
+{
+  "schema": "baruna-real-hyp3-insar-qa-v1",
+  "asOf": "2026-11-17",
+  "evidenceStatus": "REAL_HYP3_PROCESSED_RESEARCH_SCREENING_ONLY",
+  "source": {
+    "jobId": "a96410b0-1418-4e8b-a191-ab6f40e3e615",
+    "zip": "S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip",
+    "sha256": "705b15ce1ba6586d859abe110a62423fd20241dfcb00947dfc5af223eb4b2a2b",
+    "officialService": "ASF DAAC HyP3",
+    "plugin": "hyp3_isce2 v3.0.2",
+    "processingEngine": "ISCE2 2.6.5",
+    "referenceDate": "2026-10-02",
+    "secondaryDate": "2026-10-14",
+    "fullBurstID": "076_162214_IW2",
+    "polarization": "VV",
+    "flightDirection": "DESCENDING",
+    "spatialResolutionMeters": 80,
+    "crs": "EPSG:32749",
+    "referenceDem": "Copernicus GLO-30",
+    "usesBIGDEMNAS": false,
+    "sourceDocs": "https://hyp3-docs.asf.alaska.edu/guides/burst_insar_product_guide/"
+  },
+  "studyArea": {
+    "bboxEPSG4326": [
+      110.375,
+      -7.025,
+      110.485,
+      -6.875
+    ],
+    "totalPixels": 31464,
+    "landWithValidUnwrappedPhaseAndCoherence": 16542,
+    "candidatePixelsCoherenceAtLeast07": 15105,
+    "candidateShareOfValidLandPct": 91.31,
+    "thresholdIsResearchScreeningNotAccuracyGuarantee": true
+  },
+  "portLocator": {
+    "name": "Tanjung Emas",
+    "source": "BIG RBI Pelabuhan Titik layer 861",
+    "wgs84": [
+      110.42332243,
+      -6.93749333
+    ],
+    "isSurveyedAsset": false,
+    "coherence": 0.3424570858478546,
+    "waterMask": 0,
+    "unwrappedPhaseRadians": null,
+    "qualified500m": 0,
+    "gridPixels500m": 122,
+    "qualified1000m": 3,
+    "gridPixels1000m": 489,
+    "qcStatus": "INSUFFICIENT_INSAR_EVIDENCE_AT_PORT"
+  },
+  "availableEvidence": [
+    "coherence",
+    "wrapped_phase",
+    "unwrapped_phase",
+    "connected_components",
+    "water_mask",
+    "look_vectors"
+  ],
+  "scientificGates": {
+    "genuineHyP3Product": true,
+    "coherenceScreeningAvailable": true,
+    "verifiedPortDisplacement": false,
+    "verifiedVerticalSubsidence": false,
+    "annualRateAvailable": false,
+    "assetRiskRankingAllowed": false,
+    "stableReferenceVerified": false,
+    "GNSSCrossValidation": false,
+    "atmosphericCorrectionsVerified": false
+  },
+  "limitations": [
+    "One 12-day interferogram measures relative wrapped/unwrapped phase; not a validated annual vertical subsidence rate.",
+    "Coherence >=0.7 is an analyst-selected screening threshold, not a geodetic accuracy certificate.",
+    "The BIG 1M port Point is a cartographic locator, not a surveyed pier or operational asset.",
+    "The BIG port locator is water-masked and has no valid unwrapped phase.",
+    "No GNSS reference, atmosphere correction review or operator asset geometry; do not calculate port risk."
+  ]
+}
