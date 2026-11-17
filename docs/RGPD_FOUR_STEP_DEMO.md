@@ -54,3 +54,15 @@ The original proposal explicitly says local data replay is acceptable for a prot
 - CSMG/CSEM published comparison: https://journal.ugm.ac.id/jgise/article/view/95957
 - Historical Tanjung Emas levelling/GPR: https://journal.esdm.go.id/bomg/article/view/12755
 - These sources represent station and study results at distinct periods, **not** surveyed modern asset velocities.
+
+## Business and pilot-readiness disclosure (Bhumireka, 17 November 2026)
+
+The four-step demo additionally exposes a **non-scoring** `#pilot-readiness` section after the Evidence Brief. Its purpose is to prevent jurors from confusing a working source-backed screening prototype with an operational port monitoring/ranking system.
+
+- **Actual public evidence:** the historical 2005 study of six sectors, independently published 2021–2023 PPP estimates for CSMG/CSEM stations, 2025 RINEX QC at BAKO (Cibinong, **not Semarang**), and separate Semarang GIS sources.
+- **Working prototype workflow:** browser-local AOI, scientific source separation, quality gates, real-sector `DATA_INSUFFICIENT`, four verifiable follow-up requests, export, and an explicitly synthetic four-asset ranking demonstration.
+- **Still missing for operational use:** owner-authorized asset IDs/geometries, sufficiently long and representative repeated asset measurements with uncertainty/frame, harmonized elevation/exposure and owner-approved criticality/inspection policy.
+- **Proposed 10-working-day pilot (not contracted):** one AOI, three to five operator-chosen assets, with data access and permissions assumed. Deliver source inventory, QC and blockers, per-asset Evidence Brief and verification backlog. Validate usability with baseline turnaround and owner review; do **not** promise any asset will receive an operational rank.
+- **At Bhumireka:** ask actual practitioners how they schedule surveys, what data gaps block decisions, and whether anyone owns the briefing workflow/budget. No pilot, paying user, or procurement opportunity is claimed as confirmed.
+
+This section is readable static HTML, not dependent on remote API responses, and is excluded from the printable evidence dossier to avoid contaminating the scientific source report with business assumptions. The homepage links to it as a secondary "Apa yang belum nyata?" route.
