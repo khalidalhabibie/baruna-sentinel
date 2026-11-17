@@ -5,8 +5,11 @@ from pathlib import Path
 import tempfile
 import unittest
 import zipfile
+import sys
+import types
+from unittest.mock import patch
 
-from scripts.local_cors_qc import read_header, safe_members
+from scripts.local_cors_qc import read_header, safe_members, convert_pair
 
 
 def line(text, label):
@@ -87,6 +90,35 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
                 z.writestr("site.26d",b"Hatanaka compressed payload")
             with self.assertRaisesRegex(ValueError,"Hatanaka"):
                 list(safe_members(archive2))
+
+
+    def test_qc_catches_failing_rinex_file_with_station_and_day(self):
+        # Synthetic header and deterministic mocked GeoRinex failure; not
+        # a measurement or a valid observation file.
+        with tempfile.TemporaryDirectory() as root:
+            csem=Path(root)/"source_411.zip"
+            csmg=Path(root)/"source_137.zip"
+            with zipfile.ZipFile(csem,"w") as archive:
+                archive.writestr("rinex/csem3130.26o",rinex("CSEM"))
+            with zipfile.ZipFile(csmg,"w") as archive:
+                archive.writestr("rinex/csmg3130.26o",rinex("CSMG"))
+            fake=types.SimpleNamespace(load=lambda path: (_ for _ in ()).throw(ValueError("synthetic malformed epoch")))
+            with patch.dict(sys.modules,{"georinex":fake}):
+                with self.assertRaisesRegex(ValueError,
+                    r"Failed station CSEM observation file csem3130\.26o: ValueError: synthetic malformed epoch"):
+                    convert_pair(csem,csmg)
+
+    def test_no_observation_in_archive_fails_without_creating_qc(self):
+        with tempfile.TemporaryDirectory() as root:
+            csem=Path(root)/"csem.zip"
+            csmg=Path(root)/"csmg.zip"
+            with zipfile.ZipFile(csem,"w") as archive:
+                archive.writestr("nav/csem3130.26n",b"nav only")
+            with zipfile.ZipFile(csmg,"w") as archive:
+                archive.writestr("rinex/csmg3130.26o",rinex("CSMG"))
+            with patch.dict(sys.modules,{"georinex":types.SimpleNamespace(load=None)}):
+                with self.assertRaisesRegex(ValueError,"No ordinary RINEX observation entries"):
+                    convert_pair(csem,csmg)
 
 
 if __name__=="__main__":

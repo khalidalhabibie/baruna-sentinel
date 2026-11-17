@@ -191,27 +191,43 @@ def convert_pair(csem_path: Path,csmg_path: Path):
     for expected,archive in [("csem",csem_path),("csmg",csmg_path)]:
         if not archive.is_file():
             raise FileNotFoundError(str(archive))
-        candidates=list(safe_members(archive))
-        if not candidates:
-            raise ValueError("No ordinary RINEX observation entries found in "+archive.name)
+        # Stream each member sequentially. Materializing all days' RINEX bytes
+        # simultaneously can exhaust memory on large BIG archives.
+        archive_hash=hashlib.sha256()
+        with archive.open("rb") as inp:
+            for block in iter(lambda:inp.read(1024*1024),b""):
+                archive_hash.update(block)
+        archive_sha256=archive_hash.hexdigest()
         found=[]
-        for name,data in candidates:
-            marker,version,uncompressed=read_header(data,name)
-            if not marker.upper().startswith(expected.upper()):
-                raise ValueError("RINEX MARKER NAME "+marker+" does not match expected "+expected.upper()+
-                                 ". Do not assign station identity using ZIP number or filename.")
-            suffix = ".rnx" if float(version)<3 else ".rnx"
-            with tempfile.TemporaryDirectory(prefix="baruna_private_qc_") as work:
-                target=Path(work)/("observation"+suffix)
-                target.write_bytes(uncompressed)
-                observations=gr.load(str(target))
-                rec,fields=summarize_observations(observations,expected,name)
-                found.extend(rec)
-                source_info.append({
-                    "station":expected,"marker_name":marker,"rinex_version":version,
-                    "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
-                    "original_file":name,"code_fields":fields
-                })
+        candidate_count=0
+        for name,data in safe_members(archive):
+            candidate_count+=1
+            # Keep the exact failing station/day visible. GeoRinex often writes
+            # long NumPy warnings; without context the real error is obscured.
+            try:
+                marker,version,uncompressed=read_header(data,name)
+                if not marker.upper().startswith(expected.upper()):
+                    raise ValueError("RINEX MARKER NAME "+marker+" does not match expected "+expected.upper()+
+                                     ". Do not assign station identity using ZIP number or filename.")
+                suffix = ".rnx"
+                with tempfile.TemporaryDirectory(prefix="baruna_private_qc_") as work:
+                    target=Path(work)/("observation"+suffix)
+                    target.write_bytes(uncompressed)
+                    observations=gr.load(str(target))
+                    rec,fields=summarize_observations(observations,expected,name)
+                    found.extend(rec)
+                    source_info.append({
+                        "station":expected,"marker_name":marker,"rinex_version":version,
+                        "archive_sha256":archive_sha256,
+                        "original_file":name,"code_fields":fields
+                    })
+                print("LOCAL_QC_FILE_OK: "+expected.upper()+" / "+name+
+                      " / "+str(len(rec))+" station-day record(s)",flush=True)
+            except Exception as exc:
+                raise ValueError("Failed station "+expected.upper()+" observation file "+name+
+                                 ": "+type(exc).__name__+": "+str(exc)) from exc
+        if candidate_count==0:
+            raise ValueError("No ordinary RINEX observation entries found in "+archive.name)
         result.extend(found)
     record_keys=[(r["station"],r["date"]) for r in result]
     if len(record_keys)!=len(set(record_keys)):
