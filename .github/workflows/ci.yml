@@ -17,6 +17,12 @@ jobs:
         run: |
           python3 -m py_compile scripts/verify_igs_rinex.py scripts/refresh_stac_catalog.py scripts/prepare_demnas_preview.py
           python3 -m unittest discover -s scripts -p "test_refresh_stac_catalog.py"
+      - name: Raster preview extraction regression (synthetic GeoTIFF only)
+        run: |
+          python3 -m venv /tmp/baruna-p1-venv
+          /tmp/baruna-p1-venv/bin/python -m pip install --quiet --disable-pip-version-check rasterio==1.4.3 numpy
+          /tmp/baruna-p1-venv/bin/python -m unittest scripts.test_prepare_demnas_preview
+
       - name: Syntax and scientific guardrail tests
         run: npm run check
 
@@ -34,6 +40,7 @@ jobs:
           node scripts/real-workspace-smoke.mjs
           node scripts/aoi-registry-smoke.mjs
           node scripts/proposal-demo-smoke.mjs
+          node scripts/p1-pilot-smoke.mjs
       - name: Upload visual review screenshots
         if: always()
         uses: actions/upload-artifact@v4
