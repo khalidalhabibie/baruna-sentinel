@@ -5,6 +5,7 @@ import {
  verificationQueue,makeEvidenceBrief
 } from "./aoi-registry-model.js";
 import {historyEvent,appendHistory,choosePublishedCatalog} from "./aoi-monitor-client.js";
+import {makeLocalBackup,parseLocalBackup,mergeLocalBackup,BACKUP_MAX_BYTES} from "./aoi-local-backup.js";
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -164,74 +165,29 @@ function initMap(){if(!window.L){message("Library Leaflet gagal dimuat. Periksa 
  });
  mapReady=true;drawMap();
 }
-/** Cloud sync is an opt-in single-operator pilot, never an anonymous public registry. */
-function cloudMessage(text,error=false){
- const node=$("cloud-state");if(!node)return;node.textContent=text;node.dataset.status=error?"error":"ready";
-}
-async function cloudCall(path,method="GET",payload=null){
- const token=$("cloud-token")?.value.trim()||"";
- if(token.length<32)throw new Error("Masukkan token operator (minimal 32 karakter). Tidak disimpan di perangkat.");
- const response=await fetch(path,{method,cache:"no-store",headers:{"Authorization":"Bearer "+token,
-  ...(payload?{"Content-Type":"application/json"}:{})},...(payload?{body:JSON.stringify(payload)}:{})});
- const body=await response.json().catch(()=>({}));
- if(!response.ok||!body.ok)throw new Error(body.error||("Backend HTTP "+response.status));
- return body;
-}
-async function cloudPushSelected(){
- const local=selected();if(!local){cloudMessage("Simpan atau pilih AOI lokal dahulu.",true);return;}
+/** Backup AOI as portable JSON; no network or cloud dependency. */
+function exportLocalBackup(){
  try{
-  cloudMessage("Menyimpan AOI ke backend…");
-  const result=await cloudCall("./api/aoi","POST",{id:local.cloudId||undefined,name:local.name,purpose:local.purpose,
-   geometry:local.geometry,boundarySource:local.boundarySource});
-  const update={...local,cloudId:result.record.id,cloudSyncedAt:new Date().toISOString()};
-  applyStored(records.map(r=>r.id===local.id?update:r));render();
-  cloudMessage("AOI tersimpan di backend privat. ID cloud: "+result.record.id.slice(0,14)+"…");
- }catch(e){cloudMessage("Cloud Save gagal: "+e.message,true);}
+  const payload=makeLocalBackup(records);
+  const url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)+"\n"],{type:"application/json;charset=utf-8"}));
+  const a=document.createElement("a");a.href=url;a.download="BARUNA_Semarang_AOI_Backup.json";
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  message("Backup "+records.length+" AOI tersimpan sebagai JSON. Simpan file untuk pemulihan.");
+ }catch(error){message("Backup gagal: "+error.message,true);}
 }
-async function cloudPullRegistry(){
+async function restoreLocalBackup(file){
+ if(!file)return;
  try{
-  cloudMessage("Membaca AOI cloud…");
-  const result=await cloudCall("./api/aoi");
-  const updated=[...records];let added=0,updatedCount=0,conflicts=0;
-  for(const remote of result.records){
-   const i=updated.findIndex(r=>r.cloudId===remote.id||r.id===remote.id);
-   if(i>=0){
-    if(JSON.stringify(updated[i].geometry.coordinates)!==JSON.stringify(remote.geometry.coordinates)){
-      conflicts++;continue; // preserve local geometry; no silent overwrite
-    }
-    updated[i]={...updated[i],cloudId:remote.id,lastEvidenceCheck:remote.lastEvidenceCheck||updated[i].lastEvidenceCheck,
-      lastChange:remote.lastChange||updated[i].lastChange};updatedCount++;continue;
-   }
-   if(updated.length>=MAX_AOIS)break;
-   updated.push({...remote,cloudId:remote.id,monitorHistory:[]});added++;
-  }
-  applyStored(updated);render();
-  cloudMessage("Cloud: "+added+" AOI baru, "+updatedCount+" cocok, "+conflicts+" konflik geometri dilewati. Tidak ada data lokal ditimpa secara diam-diam.");
- }catch(e){cloudMessage("Cloud Load gagal: "+e.message,true);}
-}
-async function cloudCheckSelected(){
- const local=selected();if(!local?.cloudId){cloudMessage("Simpan AOI terpilih ke cloud dahulu.",true);return;}
- try{
-  cloudMessage("Memeriksa snapshot sumber melalui backend…");
-  const result=await cloudCall("./api/aoi-check","POST",{id:local.cloudId});
-  const nextHistory=result.monitorEvent?appendHistory(local.monitorHistory,result.monitorEvent):(local.monitorHistory||[]);
-  const updated={...local,lastEvidenceCheck:result.record.lastEvidenceCheck,lastChange:result.record.lastChange,
-    monitorHistory:nextHistory};
-  applyStored(records.map(r=>r.id===local.id?updated:r));render();
-  cloudMessage(result.skipped?"Tidak ada versi katalog baru untuk AOI ini.":"Riwayat pemeriksaan berhasil dicatat di backend; ini bukan deteksi deformasi.");
- }catch(e){cloudMessage("Cloud Check gagal: "+e.message,true);}
-}
-async function initCloudSync(){
- try{
-  const r=await fetch("./api/status",{cache:"no-store"});if(!r.ok)throw new Error("API tidak tersedia");
-  const state=await r.json();
-  if(state.backendConfigured!==true){cloudMessage("Cloud belum dikonfigurasi · semua AOI tetap di browser.");return;}
-  $("cloud-controls").hidden=false;
-  cloudMessage("Cloud tersedia untuk operator berizin; masukkan token untuk sinkronisasi.");
- }catch{cloudMessage("Backend tidak tersedia pada deployment ini · mode lokal tetap berjalan.");}
- $("cloud-push")?.addEventListener("click",cloudPushSelected);
- $("cloud-pull")?.addEventListener("click",cloudPullRegistry);
- $("cloud-check")?.addEventListener("click",cloudCheckSelected);
+  if(file.size>BACKUP_MAX_BYTES)throw new RangeError("Backup JSON maksimal 1 MB.");
+  if(!/\.json$/i.test(file.name))throw new TypeError("Gunakan file .json hasil backup BARUNA.");
+  const imported=parseLocalBackup(await file.text());
+  const result=mergeLocalBackup(records,imported);
+  applyStored(result.records);
+  if(!selectedId&&result.added>0)loadAoi(result.records.at(-1).id);
+  render();
+  message("Restore selesai: "+result.added+" AOI baru, "+result.skipped+" sudah ada, "+result.conflicts+" konflik polygon dilewati, "+result.capacitySkipped+" melewati batas 20 AOI. Tidak ada data lokal ditimpa.");
+ }catch(error){message("Restore gagal: "+error.message,true);}
+ finally{$("restore-local").value="";}
 }
 function initialize(){
  try{records=readRegistry(window.localStorage);}catch(e){storageError(e);records=[];}
@@ -247,6 +203,8 @@ function initialize(){
  $("upload-geojson").addEventListener("change",e=>importFile(e.target.files?.[0]));
  $("check-evidence").addEventListener("click",checkEvidence);
  $("export-brief").addEventListener("click",exportBrief);
- initMap();render();void initCloudSync();
+ $("backup-local").addEventListener("click",exportLocalBackup);
+ $("restore-local").addEventListener("change",event=>restoreLocalBackup(event.target.files?.[0]));
+ initMap();render();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});else initialize();
