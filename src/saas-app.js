@@ -8,6 +8,7 @@
 import {validateRealInsarQa} from "./real-hyp3-insar.js";
 import {validateHistoricalFieldEvidence} from "./historical.js";
 import {installTrueColorLayer} from "./true-color-layer.js";
+import {buildRankingReadiness} from "./insight-ranking.js";
 
 const ROOT=document.getElementById("baruna-saas-app");
 const SCREEN=document.body.dataset.saasScreen||"portfolio";
@@ -44,7 +45,7 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  '<div class="saas-shell" id="saas-shell">'
  +'<div class="saas-drawer-backdrop" id="saas-nav-backdrop" hidden></div>'
  +'<aside class="saas-sidebar" id="saas-sidebar" aria-label="Navigasi utama">'
- +'<a class="saas-brand" href="'+LINKS.home+'"><span class="saas-symbol" aria-hidden="true">≋</span><span class="saas-brand-text"><strong>BARUNA</strong><small>SENTINEL · SPATIAL INTELLIGENCE</small></span></a>'
+ +'<a class="saas-brand" href="'+LINKS.home+'"><span class="saas-brand-text"><strong>BARUNA</strong><small>SENTINEL · SPATIAL INTELLIGENCE</small></span></a>'
  +'<div class="saas-section-label">PLATFORM</div><nav class="saas-nav">'+nav+'</nav>'
  +'<div class="saas-divider"></div><div class="saas-section-label">RECENT</div><nav class="saas-recent" aria-label="Area dan workspace terbaru">'
  +'<a href="'+LINKS.semarang+'"><span aria-hidden="true">▣</span>Semarang Coastal</a>'
@@ -53,7 +54,7 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  +'<a href="'+LINKS.advanced+'">Advanced GIS</a>'
  +'<a href="'+LINKS.subsidence+'">Subsidence Evidence</a>'
  +'<a href="'+LINKS.legacy+'?page=analyst">GNSS / Evidence Lab</a></nav>'
- +'<div class="saas-org"><span class="saas-org-icon">◈</span><span><strong>Ourdo Indonesia</strong><small>Spatial intelligence workspace</small></span></div>'
+ +'<div class="saas-org"><a class="saas-org-brand" href="https://ourdo.id/" target="_blank" rel="noopener noreferrer" aria-label="Ourdo Indonesia official website"><span class="saas-org-credit">A PRODUCT BY</span><span class="saas-org-identity"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="Ourdo Indonesia" width="116" height="33"><small>INDONESIA</small></span></a></div>'
  +'</aside><div class="saas-main">'
  +'<header class="saas-topbar"><button class="saas-mobile-nav-toggle" id="saas-menu-toggle" type="button" aria-expanded="false" aria-controls="saas-sidebar" aria-label="Buka menu navigasi">☰</button>'
  +'<div class="saas-crumb"><a href="'+LINKS.home+'">BARUNA</a><span aria-hidden="true">/</span><strong>'+esc(crumbs)+'</strong></div>'
@@ -279,6 +280,8 @@ function area(){
  +'</div></section></section>'
  +'<section class="saas-panel" id="panel-intelligence" role="tabpanel" aria-labelledby="tab-intelligence">'
  +headline("Evidence Intelligence","Review what the data supports, where it fails, and which verification to request next.",btn("Source evidence",LINKS.subsidence))
+ +'<div class="intel-tabs" role="tablist" aria-label="Intelligence views"><button type="button" data-intel-tab="findings" role="tab" aria-controls="intel-findings" aria-selected="true">Findings</button><button type="button" data-intel-tab="gate" role="tab" aria-controls="intel-gate" aria-selected="false">Evidence Gate</button><button type="button" data-intel-tab="ranking" role="tab" aria-controls="intel-ranking" aria-selected="false">Ranking &amp; Compare</button></div>'
+ +'<div class="intel-panel" id="intel-findings" role="tabpanel">'
  +'<div class="area-insight-grid">'
  +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">RADAR / SOURCE QUALITY</span><h3>ASF HyP3 coherence screening</h3>'
  +'<strong class="area-evidence-value" id="int-qa-share">Loading...</strong><p id="int-qa-denominator">Checking real QA manifest and data gates.</p>'
@@ -292,11 +295,17 @@ function area(){
  +'<article class="saas-card area-evidence-card"><span class="saas-eyebrow">VERTICAL LAND SUBSIDENCE</span><h3>Port asset movement in 2026</h3>'
  +'<strong class="area-evidence-value is-no-data">Not validated</strong><p>No multi-temporal annual vertical rate or reference-stable port asset displacement has been verified.</p>'
  +'<div class="area-chart-placeholder">No scientific time-series chart shown.<br>Validated observations are required before plotting movement.</div></article></div>'
- +'<div class="saas-card saas-card-section section-space"><div class="saas-card-head"><div><h2>Decision gate &amp; recommended action</h2><p>Operational conclusions are blocked until missing evidence is independently checked.</p></div>'+chip("Data insufficient","warn")+'</div>'
+ +'</div><div class="intel-panel" id="intel-gate" role="tabpanel" hidden>'
+ +'<div class="saas-card saas-card-section"><div class="saas-card-head"><div><h2>Decision gate &amp; recommended action</h2><p>Operational conclusions are blocked until missing evidence is independently checked.</p></div>'+chip("Data insufficient","warn")+'</div>'
  +'<div class="science-step-grid"><div class="science-step"><span class="science-step-index">01 / GEOMETRY</span><strong>Confirm surveyed assets</strong><p>Request official asset polygons and reference coordinates from the port operator.</p></div>'
  +'<div class="science-step"><span class="science-step-index">02 / DISPLACEMENT</span><strong>Validate multi-date InSAR</strong><p>Obtain time series, stable reference, uncertainty and atmospheric correction.</p></div>'
  +'<div class="science-step"><span class="science-step-index">03 / INDEPENDENCE</span><strong>Cross-check GNSS / levelling</strong><p>Verify representativeness, datum and time-matched measurements before asset decisions.</p></div></div></div>'
- +'</section>'
+ +'</div><div class="intel-panel" id="intel-ranking" role="tabpanel" hidden>'
+ +'<div class="saas-note is-warning"><strong>Operational Ranking · NOT AVAILABLE.</strong> Six published historical sectors are source-backed, but have no verified asset geometries or current vertical deformation. These sectors cannot be ordered by risk, movement or inspection priority.</div>'
+ +'<div class="intel-ranking-header"><div><span class="saas-eyebrow">AREA INTELLIGENCE / COMPARABILITY</span><h2>Ranking &amp; Compare</h2><p>Current asset-level ranking is blocked by the Evidence Gate. Historical ranges are displayed for traceability, not as ranking criteria.</p></div><span class="saas-chip saas-chip-warn" id="intel-ranking-status">Verifying sources...</span></div>'
+ +'<div class="directory-panel"><div class="saas-table-scroll"><table class="data-table intel-ranking-table"><thead><tr><th>Historical sector</th><th>Reported cumulative settlement (2005)</th><th>Current vertical rate</th><th>Operational ranking</th></tr></thead><tbody id="intel-ranking-rows"><tr><td colspan="4">Validating source evidence...</td></tr></tbody></table></div><div class="directory-notice" id="intel-ranking-provenance">Published levelling is not a 2026 ranking input. Asset coordinates and representative movement measurements are missing.</div></div>'
+ +'<div class="saas-cta-strip"><div><strong>Need to demonstrate how ranking would work?</strong><p>Open a strictly separated, four-asset synthetic Scenario Lab. Synthetic mm/year and scores are not observations of Tanjung Emas.</p></div><a class="saas-btn" href="./spatial-demo.html#ranking">Scenario Lab · Simulated ↗</a></div>'
+ +'</div></section>'
  +'<section class="saas-panel" id="panel-reports" role="tabpanel" aria-labelledby="tab-reports">'
  +headline("Reports & Evidence","Existing scientific evidence briefs remain available without being replaced by fictitious risk scores.")
  +'<section class="saas-card">'
@@ -307,6 +316,7 @@ function area(){
  +'</section></section></div>';
  renderShell(html,{title:"Tanjung Emas Area",crumbs:"Semarang Coastal / Tanjung Emas"});
  bindAreaTabs();
+ bindIntelligenceTabs();
  bootAreaSources();
  bootAreaMap();
 }
@@ -325,6 +335,26 @@ function bindAreaTabs(){
  };
  window.addEventListener("hashchange",activate);activate();
 }
+function bindIntelligenceTabs(){
+ const allowed=new Set(["findings","gate","ranking"]);
+ const params=new URLSearchParams(location.search);
+ const initial=allowed.has(params.get("intel"))?params.get("intel"):"findings";
+ function activate(name,updateUrl){
+  for(const button of document.querySelectorAll("[data-intel-tab]")){
+   const active=button.dataset.intelTab===name;
+   button.setAttribute("aria-selected",String(active));
+   button.classList.toggle("active",active);
+   const panel=$("intel-"+button.dataset.intelTab);
+   if(panel)panel.hidden=!active;
+  }
+  if(updateUrl){
+   const next=new URL(location.href);next.searchParams.set("intel",name);
+   history.replaceState(null,"",next.pathname+next.search+"#intelligence");
+  }
+ }
+ for(const button of document.querySelectorAll("[data-intel-tab]"))button.addEventListener("click",()=>activate(button.dataset.intelTab,true));
+ activate(initial,false);
+}
 async function bootAreaSources(){
  const label=(id,text)=>{const node=$(id);if(node)node.textContent=text;};
  try{
@@ -338,9 +368,18 @@ async function bootAreaSources(){
   label("int-port-coherence",fmt(qa.portLocator.coherence)+" coherence");
   label("int-port-explanation",qa.portLocator.qualified500m+" / "+qa.portLocator.gridPixels500m+" pixels qualified within 500 m. Phase is NoData/water-masked at the BIG map reference; no verified annual displacement.");
   label("int-historical-sectors",history.sectors.length+" sectors");
+  const ranking=buildRankingReadiness(history,qa,readiness);
+  label("intel-ranking-status",ranking.rankedAssetCount+" eligible · ranking unavailable");
+  $("intel-ranking-rows").innerHTML=ranking.sectors.map(s=>
+   '<tr><td><strong>'+esc(s.name)+'</strong><span class="sub">'+esc(s.type)+'</span></td>'+
+   '<td>'+fmt(s.historicalCumulativeCmRange[0])+'–'+fmt(s.historicalCumulativeCmRange[1])+' cm <span class="sub">Historical cumulative · 2005</span></td>'+
+   '<td>— <span class="sub">No validated 2026 rate</span></td><td>'+chip("Not ranked","warn")+'</td></tr>').join("");
+  label("intel-ranking-provenance",ranking.candidateCount+" historical research sectors · no operator-surveyed geometry, time-matched validated velocity, or approved risk policy. 0 eligible for operational ranking.");
   document.body.dataset.saasEvidence="ready";
  }catch(error){
   for(const id of ["int-qa-share","int-port-coherence","int-historical-sectors"])label(id,"Unavailable");
+  label("intel-ranking-status","Source unavailable · ranking blocked");
+  $("intel-ranking-rows").innerHTML='<tr><td colspan="4">Source integrity check failed. Ranking disabled.</td></tr>';
   label("int-qa-denominator","The source manifest failed validation. No quality metrics are reported.");
   label("int-port-explanation","The source manifest failed validation. No port condition is inferred.");
   document.body.dataset.saasEvidence="unavailable";
