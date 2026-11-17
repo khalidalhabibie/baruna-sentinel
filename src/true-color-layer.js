@@ -96,6 +96,8 @@ export async function installTrueColorLayer(map) {
       const show = mode === 'satellite';
       if (show && !map.hasLayer(layer)) layer.addTo(map);
       if (!show && map.hasLayer(layer)) map.removeLayer(layer);
+      if (satellite.type === 'radio') satellite.checked = show;
+      if (street.type === 'radio') street.checked = !show;
       satellite.setAttribute('aria-pressed', String(show));
       street.setAttribute('aria-pressed', String(!show));
       opacityPanel.hidden = !show;
