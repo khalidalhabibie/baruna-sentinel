@@ -10,6 +10,8 @@ const publicAssets=[
   "aoi-registry.css",
   "src/aoi-registry.js",
   "src/aoi-registry-model.js",
+  "src/aoi-monitor-client.js",
+  "data/semarang-monitoring-catalog.json",
   "real-workspace.css",
   "src/real-workspace.js",
   "src/real-sentinel2-evidence.js",
