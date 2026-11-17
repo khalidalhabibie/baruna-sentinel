@@ -33,6 +33,27 @@ bash run.command --p1-data --offline --process-local --app-repo ../baruna-sentin
 ```
 Parser failures now identify the original station-day file. The helper stores a local-only diagnostic log. Genuine decoded coverage must be obtained before treating QC as completed; the station velocity, subsidence, asset ranking and geodetic precision remain **not computed**.
 
+## One-ZIP private handoff workflow (17 November 2026)
+
+When `sentinel-helpes` has produced an audited P1 handoff, use the original local file
+`BARUNA_P1_QC_HANDOFF_YYYYMMDD_HHMMSS.zip` directly. Open `pilot-data-lab.html`, select
+**ZIP handoff or QC JSON**, and review station-by-day coverage plus the archived-date gaps.
+No server upload, persistent storage or source commit takes place. A ZIP import cross-checks
+record count, 30-second epoch coverage, G/R/E pseudorange counts, full-day status, long gaps,
+and missing dates against `audit/QC_SUMMARY.json`. JSON-only fallback is permitted but has
+no independent handoff-summary check.
+
+Open `evidence-brief-coaster.html`, choose the same local ZIP under **Lampiran opsional /
+Observasi GNSS lokal 2026**, then print or save the brief if an evidence annex is needed.
+The previously published 2021–2023 PPP velocity and the 2026 local observation QC are different
+sources, never silently combined. `DATA INSUFFICIENT` and zero real-asset rankings are unchanged.
+CSEM/CSMG station-day observations cannot establish coastal asset subsidence rates or receiver uptime.
+
+**Security boundary:** The repository is public. Never commit the ZIP, raw RINEX, private QC JSON,
+receiver coordinates, source archive hashes, or derived station-day details. Data are only opened
+locally by the owner's browser. For deployment, `scripts/build-static.mjs` includes the reader
+module but intentionally excludes the observations and ZIP.
+
 ## Processing the existing CSEM / CSMG RINEX archives
 
 On the owner's MacBook after placing the authorized ZIPs locally:
