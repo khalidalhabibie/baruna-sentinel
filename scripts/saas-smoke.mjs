@@ -25,6 +25,16 @@ try{
  assert.equal(await page.locator('a[href="./workspace-semarang.html"]').count()>0,true);
  await page.screenshot({path:"reports/baruna-saas-portfolio-desktop.png",fullPage:false});
 
+ await page.goto(BASE+"/gnss-center.html",{waitUntil:"networkidle"});
+ await page.locator("body[data-gnss-readiness=ready]").waitFor({timeout:15000});
+ assert.match(await page.locator("#gnss-csem-epochs").innerText(),/3\.561 epochs/);
+ assert.match(await page.locator("#gnss-bako-epochs").innerText(),/41 epochs/);
+ assert.match(await page.locator("#gnss-bako-constellations").innerText(),/GLONASS/);
+ assert.match(await page.locator("#gnss-bako-constellations").innerText(),/QZSS/);
+ assert.equal(await page.locator("#gnss-review-rows tr").count(),4);
+ assert.match(await page.locator("#evidence-priority").innerText(),/not a ranking of hazards/i);
+ await page.screenshot({path:"reports/baruna-gnss-center-desktop.png",fullPage:false});
+
  await page.locator(".saas-nav a").filter({hasText:"Workspaces"}).click();
  assert.match(page.url(),/workspaces\.html/);
  assert.equal(await page.locator("tbody tr").count(),3);
@@ -57,6 +67,9 @@ try{
  assert.equal(await page.locator("#intel-ranking").isVisible(),true);
  assert.equal(await page.locator("#intel-findings").isVisible(),false);
  assert.equal(await page.locator("#intel-ranking-rows tr").count(),6);
+ await page.locator(".gnss-priority-row").first().waitFor({timeout:15000});
+ assert.equal(await page.locator(".gnss-priority-row").count(),4);
+ assert.match(await page.locator("#intel-gnss-review").innerText(),/CSEM \/ CSMG/);
  assert.match(await page.locator("#intel-ranking").innerText(),/NOT AVAILABLE/);
  assert.equal(await page.locator("#intel-ranking-rows .saas-chip-warn").count(),6);
  assert.equal(await page.locator('#intel-ranking a[href="./spatial-demo.html#ranking"]').count(),1);
@@ -78,7 +91,7 @@ try{
  await page.goto(BASE+"/areas.html",{waitUntil:"domcontentloaded"});
  assert.equal(await page.locator("tbody tr").count(),1);
  await page.goto(BASE+"/data-catalog.html",{waitUntil:"domcontentloaded"});
- assert.equal(await page.locator("tbody tr").count(),7);
+ assert.equal(await page.locator("tbody tr").count(),9);
  for(const path of ["/real-workspace.html","/subsidence-evidence.html","/spatial-demo.html"]){
   await page.goto(BASE+path,{waitUntil:"domcontentloaded"});
   assert.equal(await page.locator(".baruna-routebar").count(),1,"legacy navigation bridge at "+path);
