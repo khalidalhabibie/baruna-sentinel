@@ -103,7 +103,7 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
                 archive.writestr("rinex/csem3130.26o",rinex("CSEM"))
             with zipfile.ZipFile(csmg,"w") as archive:
                 archive.writestr("rinex/csmg3130.26o",rinex("CSMG"))
-            fake=types.SimpleNamespace(load=lambda path: (_ for _ in ()).throw(ValueError("synthetic malformed epoch")))
+            fake=types.SimpleNamespace(load=lambda path,**kwargs: (_ for _ in ()).throw(ValueError("synthetic malformed epoch")))
             with patch.dict(sys.modules,{"georinex":fake}):
                 with self.assertRaisesRegex(ValueError,
                     r"Failed station CSEM observation file csem3130\.26o: ValueError: synthetic malformed epoch"):
