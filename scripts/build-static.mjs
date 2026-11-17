@@ -14,6 +14,7 @@ const publicAssets=[
   "pilot-data-lab.css",
   "src/p1-pilot-integration.js",
   "src/p1-pilot-ui.js",
+  "src/p1-handoff-reader.js",
   "proposal-demo.css",
   "data/semarang-proposal-demo.json",
   "data/tanjung-emas-published-evidence-addendum.json",
