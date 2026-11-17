@@ -3,3 +3,20 @@
 @media(max-width:800px){.site-header{flex-wrap:wrap}.site-header nav{order:3;width:100%;overflow-x:auto;padding-bottom:6px;gap:17px}.header-pill{font-size:8px}.hero{grid-template-columns:1fr;padding-top:50px;padding-bottom:45px;gap:15px}.hero-visual{display:none}.step-head{grid-template-columns:1fr;gap:7px}.step-no{padding:0}.split,.decision-split{grid-template-columns:1fr}.journey a{font-size:10px;flex-direction:column;gap:4px}.station-grid{grid-template-columns:1fr}.station-card{min-height:188px}.evidence-bar{flex-direction:column;gap:10px}.report-toolbar{flex-direction:column;align-items:flex-start}.brief-facts{grid-template-columns:1fr 1fr}}
 @media(max-width:540px){.site-header{padding:10px 16px}.brand img{width:95px}.header-pill{padding:7px}.hero{padding:48px 18px 40px;min-height:0}.hero h1{font-size:37px}.hero-copy>p{font-size:13px}.step{padding:49px 17px 51px}.step-head h2{font-size:29px}.panel{padding:19px}.journey a{padding:12px 5px;font-size:9px}.journey a b{font-size:9px}.station-card{padding:21px}.station-amount{font-size:36px}.station-amount small{font-size:12px}.source-grid{grid-template-columns:1fr}.source-item{min-height:unset}.evidence-bar{padding:17px}.decision-foot{flex-direction:column;gap:7px;padding:16px}.print-brief{padding:22px 17px}.brief-h{flex-direction:column}.brief-facts{grid-template-columns:1fr}.brief-gates{grid-template-columns:1fr}.site-footer{flex-direction:column;align-items:flex-start;padding:26px 18px}}
 @media print{@page{margin:13mm;size:A4}body{background:#fff!important;color:#111!important}body *{visibility:hidden!important}.print-brief,.print-brief *{visibility:visible!important}.print-brief{position:absolute!important;left:0!important;top:0!important;width:100%!important;max-width:none!important;box-shadow:none!important;border:0!important;padding:0!important;margin:0!important;break-inside:auto}.brief-facts{grid-template-columns:repeat(3,1fr)!important}.brief-gates{grid-template-columns:repeat(2,1fr)!important}.print-brief h4{break-after:avoid}.print-brief ol{break-inside:avoid}.print-brief{font-size:10pt}}
+/* Published evidence addendum: clearly separate source references from actual asset risk. */
+.public-reference{margin:18px 0 0;background:#f6faf8;border:1px solid #dceae3;border-radius:12px;padding:15px 20px}
+.public-reference summary{cursor:pointer;font-size:12px;font-weight:780;color:#285b50;line-height:1.6}
+.public-reference-body{margin-top:14px;font-size:12px;color:#566e67;line-height:1.7}
+.public-reference-body p{margin:0 0 10px}
+.reference-warning{background:#fff7eb;color:#785f35;border:1px solid #f1e4c7;padding:10px 13px;border-radius:8px}
+.reference-table-wrap{overflow-x:auto;margin:12px 0}
+.reference-table-wrap table{width:100%;border-collapse:collapse;min-width:460px;font-size:11px}
+.reference-table-wrap th{text-align:left;color:#567769;border-bottom:1px solid #cadfd3;padding:8px;font-weight:760}
+.reference-table-wrap td{border-bottom:1px solid #e1ece7;padding:8px;color:#48675b;font-variant-numeric:tabular-nums}
+.public-reference-body small{display:block;color:#789286;font-size:10px}
+.public-reference-body a,.coaster-evidence a{color:#21745f;text-decoration:underline;text-underline-offset:3px}
+.coaster-evidence:not(:empty){margin-top:16px;border-left:3px solid #d8b06d;padding:12px 16px;background:#fffbf3;border-radius:0 9px 9px 0}
+.coaster-context-label{font-size:9px;font-weight:860;letter-spacing:.09em;color:#8b6b32}
+.coaster-evidence p{font-size:11px;line-height:1.75;color:#775e3b;margin:7px 0}
+.coaster-evidence a{font-size:10px;font-weight:740}
+@media print{.public-reference summary{display:none}.public-reference{display:none}.coaster-evidence{display:none}}
