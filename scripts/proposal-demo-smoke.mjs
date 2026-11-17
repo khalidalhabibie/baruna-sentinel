@@ -17,9 +17,19 @@ try{
  assert.equal(await page.locator('.gate-item').count(),5);
  assert.match(await page.locator('.print-brief').innerText(),/DATA INSUFFICIENT/);
  assert.equal(await page.locator('#demo-sector option').count(),6);
+ assert.equal(await page.locator('#demo-sector').inputValue(),'coaster-street','Coaster Road is the guided default');
+ assert.equal(await page.locator('#demo-bako-qc .qc-metrics>div').count(),3);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/CIBINONG/);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/41/);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/44,63/);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/8,95/);
+ assert.equal(await page.locator('#demo-verification-actions .verification-action').count(),4);
+ assert.match(await page.locator('#demo-verification-actions').innerText(),/725/);
+ 
  // Additional published survey table is visible but fails the geodetic source QA.
  await page.locator('.public-reference summary').click();
- assert.match(await page.locator('#demo-public-reference').innerText(),/TB 1 dan TB 2/);
+ assert.match(await page.locator('#demo-public-reference').innerText(),/TB 1–TB 2/);
+ assert.match(await page.locator('#demo-public-reference').innerText(),/0,001 m/);
  assert.equal(await page.locator('#demo-public-reference tbody tr').count(),6);
  await page.locator('#demo-sector').selectOption('coaster-street');
  assert.match(await page.locator('#demo-coaster-evidence').innerText(),/725/);
@@ -34,6 +44,11 @@ try{
  assert.equal(payload.decision.rankedRealAssets,0);assert.equal(payload.stationPublication.stations.length,2);
  assert.equal(payload.syntheticAnnex.records.length,4);
  assert.equal(payload.syntheticAnnex.records[3].score,null);
+ assert.equal(payload.independentRinexQc.station,'BAKO00IDN');
+ assert.equal(payload.independentRinexQc.supportsSemarangMotion,false);
+ assert.equal(payload.verificationBacklog.rankingAllowed,false);
+ assert.equal(payload.verificationBacklog.actions.length,4);
+ 
  assert.equal(payload.publishedSecondaryContext.historicalBenchmarkReference.rankAllowed,false);
  assert.equal(payload.publishedSecondaryContext.linkedCoasterRoadContext,null);
  
