@@ -6,6 +6,7 @@ import {decodeDisplayGrid, sampleDisplayGrid, rasterOverlayUrl} from "./real-spa
 import {installScreeningFlow} from "./real-workspace-flow.js";
 import {parseBmkgForecastCsv} from "./real-tide-context.js";
 import {validateNdwiMetadata,decodeNdwiGrid,ndwiDisplayOverlayUrl,sampleNdwiDisplay,opticalExportEvidence} from "./real-sentinel2-evidence.js";
+import {loadInsarCandidateReview,insarSnapshotForExport} from "./insar-candidate-readiness.js";
 import {OPTICAL_VIEWS,validateOpticalSeries,decodeOpticalSeries,opticalGridOverlayUrl,
   sampleOpticalValue,opticalAreaStats,opticalSeriesExport} from "./real-optical-series.js";
 
@@ -54,7 +55,7 @@ export function formatDsmReading(m, lat, lon) {
   return m === null ? "Di luar cakupan DSM atau piksel NoData" :
     "≈ " + m.toFixed(1) + " m · " + lat.toFixed(5) + ", " + lon.toFixed(5);
 }
-function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreening=null, tideForecast=null, optical=null, opticalSeries=null, opticalView="baselineNdwi", opticalArea=null}) {
+function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreening=null, tideForecast=null, optical=null, opticalSeries=null, opticalView="baselineNdwi", opticalArea=null, insarDiscovery=null}) {
   return {
     schema:"baruna-coastal-evidence-brief-v1",
     createdAt:new Date().toISOString(),
@@ -95,6 +96,7 @@ function reportSnapshot({meta, scenes, readiness, selection, sampled, areaScreen
     },
     singleDateOptical:opticalExportEvidence(optical),
     exploratoryTwoDateOptical:opticalSeriesExport(opticalSeries,opticalView,opticalArea),
+    insarCandidateDiscovery:insarSnapshotForExport(insarDiscovery),
     evidenceGates:readiness.modelGate,
     unsupported:["No validated land-cover change or confirmed flood/rob extent","No Sentinel-1 InSAR displacement",
       "No operator-surveyed asset polygons","No validated rob-depth model",
@@ -312,6 +314,7 @@ async function bootstrap() {
     renderReadiness({...readiness.modelGate,
       singleDateNdwiPreview:Boolean(optical||opticalSeries),
       multiDateOpticalIndexPreview:Boolean(opticalSeries)});
+    const insarDiscovery=await loadInsarCandidateReview();
     let footprint=null;
     let footprintVisible=false;
     let selected=null;
@@ -414,7 +417,7 @@ async function bootstrap() {
       downloadJson(reportSnapshot({meta,scenes:catalog.scenes,readiness,
         selection:selected,sampled,areaScreening:area,tideForecast:flow.getTide(),optical,
         opticalSeries,opticalView:opticalSeries?currentView().key:"baselineNdwi",
-        opticalArea:opticalSeries?updateOpticalStats():null}),
+        opticalArea:opticalSeries?updateOpticalStats():null,insarDiscovery}),
         "BARUNA_Semarang_Real_Evidence_Brief.json");
     });
     document.body.dataset.evidenceState="ready";
