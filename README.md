@@ -1,5 +1,19 @@
 # BARUNA Sentinel — BIG Bhumireka 2026
 
+## Multi-GNSS-first Intelligence / evidence priorities (18 Nov 2026)
+
+**Product scope:** BARUNA Sentinel's primary technical workflow is now Multi-GNSS evidence readiness for the Pusat Multi-GNSS-oriented demonstration, not an invented 2026 port asset-risk ranking. The new [Multi-GNSS Center](gnss-center.html) can be opened from the main SaaS sidebar, Portfolio Overview, or Semarang workspace. The Area Intelligence ranking pane links to the same *Evidence Review Priority* queue before showing a gated, unavailable asset risk ranking.
+
+Only two processed public evidence streams are measured by this UI:
+- **CSEM, Semarang**: source-derived GPS ENU positions, 3,561 daily epochs spanning 2010-01-13 to 2021-12-31, IGb14 / ITRF2014 historical context. Original source DOI: https://doi.org/10.5281/zenodo.7775016. No new 2026 displacement is calculated.
+- **BAKO00IDN, Cibinong**: independently verified RINEX-derived Multi-GNSS QC sample, 41 epochs over a 20-minute window on 2025-01-01. Six constellations had observed pseudorange; this is **not** a positioning accuracy comparison and cannot validate Semarang movement. See `data/BAKO_IGS_2025-001_20min_qc_summary.json` and its originating GitHub Actions run.
+- **CSMG, Semarang Genuk**: public BIG Ina-CORS station site-log metadata. Matched local CSEM/CSMG station-day QC may be loaded **privately** in the existing GNSS Lab at `evidence-lab.html?page=analyst`; raw/private RINEX and QC are **not** published to this SaaS build.
+
+The queue's ordered steps are (1) paired CSEM/CSMG observation QC, (2) validated geodetic position processing and reference frame, (3) time-matched station comparison, and (4) surveyed asset linkage where appropriate. **Step order is a workflow dependency, never an asset hazard priority, station performance ranking, or GNSS accuracy claim.** Operational asset ranking remains disabled (0 eligible) until suitable validated evidence exists.
+
+Scientific and UI implementation: `src/multi-gnss-evidence.js` (fail-closed provenance checks), `src/multi-gnss-evidence.test.js`, `src/saas-app.js`, `saas.css`, `gnss-center.html`. Browser regression in `scripts/saas-smoke.mjs`. Deployment status must be checked separately.
+
+
 > **SaaS frontend (17 Nov 2026):** The `/` route is now a blue enterprise **Portfolio Overview**. Navigate via Workspaces → Semarang Coastal → Tanjung Emas Area Explorer → Data / Timeline / Intelligence / Reports, or take the shortcut through All Areas. `/workspaces.html` lists Semarang as the only source-backed workspace, with Jakarta and Surabaya as intentionally empty demo workspaces. `/data-catalog.html` lists source status without invented measurements. The original homepage and GNSS/evidence features are preserved at `/evidence-lab.html` (for GNSS, `/evidence-lab.html?page=analyst`). Existing advanced GIS remains `/real-workspace.html`. The source-backed Sentinel-2 true-color overlay uses validated real display pixels, and HyP3 QA / historical sources are separate. No annual 2026 asset subsidence is claimed. The SaaS shell is in `saas.css`, `src/saas-app.js`; browser test is `scripts/saas-smoke.mjs`. Deployment is managed separately.
 
 
