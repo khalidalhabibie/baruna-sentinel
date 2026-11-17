@@ -21,7 +21,7 @@ try{
   assert.match(await page.locator("#stat-dsm").innerText(),/Available/);
   assert.match(await page.locator("#stat-s2").innerText(),/16 scenes/);
   assert.match(await page.locator("#stat-s1").innerText(),/11 scenes/);
-  assert.match(await page.locator(".next-step").innerText(),/14 dan 21 Okt 2026 sudah tersedia/);
+  assert.match(await page.locator(".next-step").innerText(),/Sentinel-2 \(14\/21 Okt\) dan produk InSAR HyP3/);
   assert.match(await page.locator(".next-step").innerText(),/GNSS yang representatif/);
   assert.equal(await page.locator('.next-step a[href="./?page=analyst"]').count(),1);
   assert.equal(await page.locator("#gate-grid .gate-card").count(),8);
