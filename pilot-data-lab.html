@@ -26,9 +26,9 @@
   <div class="grid two">
    <article class="card">
     <div class="card-top"><span>OBSERVASI / BERKAS LOKAL</span><span class="state state-pending">BUTUH QC LOKAL</span></div>
-    <h3>QC RINEX CSEM + CSMG</h3><p>Buka ringkasan JSON yang dihasilkan oleh script <code>scripts/local_cors_qc.py</code> dari arsip BIG yang diizinkan. Tidak perlu menyalin RINEX ke server.</p>
-    <label class="file-label" for="p1-qc-file">Pilih file QC JSON</label><input id="p1-qc-file" type="file" accept=".json,application/json">
-    <div id="p1-qc-result" class="output" role="status" aria-live="polite">Belum ada file QC dipilih. Stasiun dan kualitas arsip tidak diasumsikan tersedia.</div>
+    <h3>QC RINEX CSEM + CSMG</h3><p>Impor ZIP <code>BARUNA_P1_QC_HANDOFF_*.zip</code> langsung, atau JSON QC lokal. ZIP divalidasi bersama auditnya; data dibaca hanya di browser tanpa unggah RINEX ke server.</p>
+    <label class="file-label" for="p1-qc-file">Pilih ZIP handoff atau QC JSON</label><input id="p1-qc-file" type="file" accept=".zip,.json,application/zip,application/json">
+    <div id="p1-qc-result" class="output" role="status" aria-live="polite">Belum ada file QC dipilih. Stasiun dan kualitas arsip tidak diasumsikan tersedia.</div><div id="p1-qc-days" class="p1-qc-day-scroll" aria-label="Cakupan QC harian"></div>
     <p class="card-foot"><a href="https://srgi.big.go.id/page/unduh-data-rinex" target="_blank" rel="noopener noreferrer">Portal resmi BIG / Ina-CORS <span aria-hidden="true">↗</span></a></p>
    </article>
    <article class="card">
