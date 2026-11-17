@@ -17,9 +17,19 @@ try{
  assert.equal(await page.locator('.gate-item').count(),5);
  assert.match(await page.locator('.print-brief').innerText(),/DATA INSUFFICIENT/);
  assert.equal(await page.locator('#demo-sector option').count(),6);
+ assert.equal(await page.locator('#demo-sector').inputValue(),'coaster-street','Coaster Road is the guided default');
+ assert.equal(await page.locator('#demo-bako-qc .qc-metrics>div').count(),3);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/CIBINONG/);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/41/);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/44,63/);
+ assert.match(await page.locator('#demo-bako-qc').innerText(),/8,95/);
+ assert.equal(await page.locator('#demo-verification-actions .verification-action').count(),4);
+ assert.match(await page.locator('#demo-verification-actions').innerText(),/725/);
+ 
  // Additional published survey table is visible but fails the geodetic source QA.
  await page.locator('.public-reference summary').click();
- assert.match(await page.locator('#demo-public-reference').innerText(),/TB 1 dan TB 2/);
+ assert.match(await page.locator('#demo-public-reference').innerText(),/TB 1–TB 2/);
+ assert.match(await page.locator('#demo-public-reference').innerText(),/0,001 m/);
  assert.equal(await page.locator('#demo-public-reference tbody tr').count(),6);
  await page.locator('#demo-sector').selectOption('coaster-street');
  assert.match(await page.locator('#demo-coaster-evidence').innerText(),/725/);
@@ -34,6 +44,11 @@ try{
  assert.equal(payload.decision.rankedRealAssets,0);assert.equal(payload.stationPublication.stations.length,2);
  assert.equal(payload.syntheticAnnex.records.length,4);
  assert.equal(payload.syntheticAnnex.records[3].score,null);
+ assert.equal(payload.independentRinexQc.station,'BAKO00IDN');
+ assert.equal(payload.independentRinexQc.supportsSemarangMotion,false);
+ assert.equal(payload.verificationBacklog.rankingAllowed,false);
+ assert.equal(payload.verificationBacklog.actions.length,4);
+ 
  assert.equal(payload.publishedSecondaryContext.historicalBenchmarkReference.rankAllowed,false);
  assert.equal(payload.publishedSecondaryContext.linkedCoasterRoadContext,null);
  
@@ -41,6 +56,11 @@ try{
  assert.equal((await mobile.goto(BASE+'/proposal-demo.html',{waitUntil:'networkidle',timeout:30000})).status(),200);
  await mobile.locator('.station-card').first().waitFor({state:'visible'});
  const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth>innerWidth+2);
+ if(overflow){
+  const offenders=await mobile.evaluate(()=>[...document.querySelectorAll('body *')].map(e=>({tag:e.tagName.toLowerCase(),cls:String(e.className||'').slice(0,80),id:e.id,x:e.getBoundingClientRect().x,right:e.getBoundingClientRect().right,w:e.getBoundingClientRect().width})).filter(x=>x.right>innerWidth+2||x.x<-2).slice(0,18));
+  console.log('MOBILE_OVERFLOW_DEBUG',JSON.stringify({scrollWidth:await mobile.evaluate(()=>document.documentElement.scrollWidth),offenders}));
+ }
+
  assert.equal(overflow,false,'guided demo should not horizontally overflow mobile screen');
  assert.deepEqual(errors,[]);
  console.log('BARUNA four-step demo: source-backed CORS, six historic sectors, synthetic ranking, export, mobile PASS');

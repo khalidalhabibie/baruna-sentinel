@@ -17,6 +17,7 @@ const publicAssets=[
   "src/proposal-demo-model.js",
   "src/proposal-demo.js",
   "src/public-evidence-addendum.js",
+  "src/rgpd-demo-improvements.js",
   "src/aoi-registry-model.js",
   "src/aoi-monitor-client.js",
   "data/semarang-monitoring-catalog.json",

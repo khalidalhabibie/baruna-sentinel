@@ -3,11 +3,12 @@ import {readRegistry} from './aoi-registry-model.js';
 import {validateHistoricalFieldEvidence} from './historical.js';
 import {validateDemoData,buildDemoDecision} from './proposal-demo-model.js';
 import {verifyPublicAddendum,sectorPublicContext,historicalBenchmarkSummary} from './public-evidence-addendum.js';
+import {validateIndependentBakoQc,verificationActionsForSector} from './rgpd-demo-improvements.js';
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmtNum=v=>Number(v).toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
 const origin=location.origin;
-let source=null,study=null,decision=null,sectorId='west-breakwater',areas=[],chosenAoiId='',addendum=null,addendumIssue=null;
+let source=null,study=null,decision=null,sectorId='coaster-street',areas=[],chosenAoiId='',addendum=null,addendumIssue=null,bakoQc=null,bakoQcIssue=null;
 function localAreas(){
  try{return readRegistry(window.localStorage);}catch(e){$('demo-aoi-status').textContent='AOI lokal belum dapat dibaca: '+e.message;return [];}
 }
@@ -34,6 +35,21 @@ function renderGnss(){
   '<div class="source-item"><span class="source-status '+(row.state==='INCOMPLETE'?'needs-data':'')+'">'+esc(row.state.replace(/_/g,' '))+'</span><h4>'+esc(row.label)+'</h4><small>'+esc(row.period)+'</small><p>'+esc(row.meaning)+'</p></div>').join('')+
   '<a class="source-citation" href="'+esc(source.cors.url)+'" rel="noopener noreferrer" target="_blank">Sumber publikasi Sitaningrum &amp; Widjajanti (2024) <span aria-hidden="true">↗</span></a>';
 }
+function renderBakoQc(){
+ const el=$('demo-bako-qc');
+ if(!bakoQc){el.innerHTML='<p class="qc-error">Sampel QC independen belum lolos validasi: '+esc(bakoQcIssue||'data tidak tersedia')+'. Tidak ada data pengganti.</p>';return;}
+ el.innerHTML='<div class="qc-metrics">'+
+  '<div><small>BAKO / CIBINONG · 1 JAN 2025</small><strong>'+esc(bakoQc.epochCount)+' <span>epoch</span></strong></div>'+
+  '<div><small>RATA-RATA GPS SAJA / EPOCH</small><strong>'+fmtNum(bakoQc.gpsOnlyAverage)+'</strong></div>'+
+  '<div><small>RATA-RATA MULTI-GNSS / EPOCH</small><strong>'+fmtNum(bakoQc.multiGnssAverage)+'</strong></div>'+
+  '</div><p class="qc-bridge-note">6 konstelasi dengan observasi pseudorange: '+esc(bakoQc.constellations.join(', '))+'. Sampel 20 menit dari RINEX asli; '+esc(bakoQc.nonGpsEpochs)+' dari '+esc(bakoQc.epochCount)+' epoch memiliki observasi non-GPS. <b>Lebih banyak pengamatan ≠ akurasi posisi terukur.</b> BAKO berada di Cibinong, bukan CSEM/CSMG Semarang. Tidak menunjukkan laju subsidence atau pergerakan aset. <a href="'+esc(bakoQc.runUrl)+'" target="_blank" rel="noopener noreferrer">Lihat QC GitHub Actions ↗</a></p>';
+}
+function renderVerificationActions(){
+ const result=verificationActionsForSector(sectorId,{withPublishedCoasterContext:!!addendum});
+ $('demo-verification-actions').innerHTML=result.actions.map((a,i)=>
+  '<div class="verification-action"><span class="verification-index">'+(i+1)+'</span><div><h4>'+esc(a.title)+'</h4><p>'+esc(a.evidence)+'</p><small>'+esc(a.owner)+' · Output: '+esc(a.deliverable)+'</small></div></div>').join('')+
+  '<p class="qc-bridge-note"><strong>Evidence backlog, bukan ranking risiko.</strong> Baru bisa dipertimbangkan setelah data resmi, keterwakilan ukuran, dan kebijakan prioritas telah dinilai ahli/operator.</p>';
+}
 function renderRealGate(){
  const list=study.sectors;
  $('demo-sector').innerHTML=list.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.name)+'</option>').join('');
@@ -48,7 +64,7 @@ function renderPublicAddendum(){
  }
  const s=historicalBenchmarkSummary(addendum),reference=addendum.surveyReference;
  target.innerHTML='<p><strong>6 benchmark historis</strong> dari Tabel 1 Raharjo &amp; Yosi (2017), datum vertikal LWS penelitian 2004. Koordinat yang tercetak belum diaudit sebagai koordinat aset operasional.</p>'+
-  '<p class="reference-warning"><b>QA PENDING:</b> TB 1 dan TB 2 memiliki koordinat UTM hampir identik meskipun koordinat lokal berbeda. Nilai tidak dipasang sebagai pin aset maupun dipakai menghitung displacement.</p>'+
+  '<p class="reference-warning"><b>QA: anomali sumber dikonfirmasi melalui tabel teks PDF publik.</b> TB 1–TB 2 berbeda ~103.57 satuan koordinat lokal, tetapi hanya ~0,001 m pada koordinat UTM yang dicetak. Pemeriksaan visual halaman PDF, datum, dan transformasi survei masih tertunda. Jangan memplot sebagai titik aset, mengoreksi koordinat secara asumsi, atau menghitung deformasi dari tabel ini.</p>'+
   '<div class="reference-table-wrap"><table><thead><tr><th>Benchmark</th><th>UTM X (m)</th><th>UTM Y (m)</th><th>Elevasi (m, LWS)</th></tr></thead><tbody>'+
   reference.benchmarkPoints.map(p=>'<tr><td>'+esc(p.id)+'</td><td>'+esc(p.utmXY[0])+'</td><td>'+esc(p.utmXY[1])+'</td><td>'+esc(p.elevationMReferencedToHistoricalLws)+'</td></tr>').join('')+
   '</tbody></table></div><small>Published table transcription · historical only · <a href="'+esc(s.sourceUrl)+'" target="_blank" rel="noopener noreferrer">lihat publikasi asli ↗</a></small>';
@@ -81,6 +97,10 @@ function contentReport(){
   '<h4>01 / Bukti yang tersedia</h4><p>Studi lapangan historis melaporkan penurunan kumulatif pada sektor ini. Publikasi GNSS PPP 2021–2023 memberikan kecepatan vertikal pada stasiun CSMG dan CSEM, bukan pada sektor infrastruktur ini. QC RINEX 2025 di BAKO adalah referensi terpisah.</p>'+
   '<h4>02 / Kualitas dan pembatasan</h4><div class="brief-gates">'+qs.map(g=>'<span>'+esc(g.name)+' <b>'+esc(g.state)+'</b></span>').join('')+'</div>'+
   '<h4>03 / Apa yang harus diverifikasi</h4><ol>'+s.requiredActions.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol>'+
+  '<h4>03b / Urutan verifikasi data · BUKAN ranking risiko</h4><ol>'+
+  verificationActionsForSector(sectorId,{withPublishedCoasterContext:!!addendum}).actions.map(a=>
+  '<li><strong>'+esc(a.title)+'</strong> ('+esc(a.owner)+'): '+esc(a.evidence)+'<br>Hasil yang diminta: '+esc(a.deliverable)+'</li>').join('')+'</ol>'+
+  (bakoQc?'<p><b>QC multi-GNSS independen:</b> BAKO Cibinong, 1 Jan 2025, '+esc(bakoQc.epochCount)+' epoch, enam konstelasi. Sampel RINEX untuk ketersediaan observasi; bukan hasil GNSS Semarang atau peningkatan akurasi posisi.</p>':'')+
   '<h4>04 / Provenance dan asumsi</h4><p><b>Pengamatan CORS:</b> '+esc(d.stationPublication.source)+' · '+esc(d.stationPublication.period)+' · DOI '+esc(d.stationPublication.doi)+'.</p>'+
   '<p><b>Catatan sektor:</b> '+esc(s.source.source)+' · DOI '+esc(s.source.doi)+'.</p>'+
   (addendum?'<h4>05 / Bukti publikasi tambahan (bukan GNSS aset)</h4><p>Raharjo &amp; Yosi (2017) memuat 6 referensi benchmark historis (2004–2005) dengan QA koordinat belum selesai: pasangan TB 1/TB 2 memerlukan pemeriksaan tabel sumber.</p>':'')+
@@ -96,6 +116,7 @@ function refreshDecision(){
    '<p>'+esc(r.name)+' · Tidak tersedia lokasi titik survei yang tervalidasi dan pengukuran representatif terkini.</p><div class="not-ready"><b>DATA INSUFFICIENT</b><span>Prioritas inspeksi operasional belum boleh diterbitkan.</span></div>';
   renderRanking();
   renderPublicAddendum();
+  renderVerificationActions();
   $('demo-print-brief').innerHTML=contentReport();
   $('demo-download').disabled=false;
   $('demo-print').disabled=false;
@@ -111,7 +132,9 @@ function downloadJson(){if(!decision)return;
   publishedSecondaryContext:addendum?{
    historicalBenchmarkReference:historicalBenchmarkSummary(addendum),
    linkedCoasterRoadContext:sectorPublicContext(addendum,sectorId),
-   currentAssetMeasurement:false,canIssueOperationalRank:false}:null};
+   currentAssetMeasurement:false,canIssueOperationalRank:false}:null,
+  independentRinexQc:bakoQc?{...bakoQc}:null,
+  verificationBacklog:verificationActionsForSector(sectorId,{withPublishedCoasterContext:!!addendum})};
  const blob=new Blob([JSON.stringify(record,null,2)+'\n'],{type:'application/json'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='BARUNA_RGPD_Semarang_Evidence_Brief.json';
  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
@@ -127,7 +150,12 @@ async function boot(){
    if(!response.ok)throw new Error('HTTP '+response.status);
    addendum=verifyPublicAddendum(await response.json());
   }catch(error){addendum=null;addendumIssue=error.message;}
-  renderAoi();renderGnss();renderRealGate();refreshDecision();
+  try{
+   const qcRes=await fetch('./data/BAKO_IGS_2025-001_20min_qc_summary.json',{cache:'no-store'});
+   if(!qcRes.ok)throw new Error('HTTP '+qcRes.status);
+   bakoQc=validateIndependentBakoQc(await qcRes.json());
+  }catch(error){bakoQc=null;bakoQcIssue=error.message;}
+  renderAoi();renderGnss();renderBakoQc();renderRealGate();refreshDecision();
   $('demo-aoi-select').addEventListener('change',e=>{chosenAoiId=e.target.value;refreshDecision();});
   $('demo-sector').addEventListener('change',e=>{sectorId=e.target.value;refreshDecision();});
   $('demo-download').addEventListener('click',downloadJson);
