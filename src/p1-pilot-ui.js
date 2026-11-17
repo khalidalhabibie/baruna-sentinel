@@ -2,6 +2,7 @@
 import {parseAssetFeature,parseStationFeature,assessStationAssetProximity,
  demnasIdentifyRequest,validateDemnasIdentify,validateDemnasLocalPreview,
  inspectLocalCorsSummary,inspectProcessedPositionSeries} from "./p1-pilot-integration.js";
+import {readP1InputFile,reviewText,reviewDayGrid} from "./p1-handoff-reader.js";
 
 const $=id=>document.getElementById(id);
 const state={cors:null,demnas:null,demnasLocal:null,position:null,station:null,asset:null,proximity:null};
@@ -49,13 +50,23 @@ function renderLocalRaster(grid){
  const scratch=document.createElement("canvas");scratch.width=20;scratch.height=20;scratch.getContext("2d").putImageData(image,0,0);
  ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,el.width,el.height);ctx.drawImage(scratch,0,0,el.width,el.height);el.hidden=false;
 }
-attach("p1-qc-file",raw=>{
- const x=inspectLocalCorsSummary(raw);state.cors=x;
- status("p1-status-cors",x.totalEpochs.toLocaleString("id-ID")+" epoch QC");
- update("p1-qc-result",x.totalEpochs.toLocaleString("id-ID")+" epoch observasi "+x.firstDate+" s.d. "+x.lastDate+
-  "; "+x.stationDays.map(s=>s.station+" "+s.files+" file ("+s.epochs+" epoch)").join("; ")+". "+
-  x.sharedFullDays+" hari penuh bersama. BUKAN solusi posisi atau laju penurunan tanah.","ok");
-},err=>{state.cors=null;status("p1-status-cors","QC ditolak");update("p1-qc-result",err.message,"error");});
+$("p1-qc-file").addEventListener("change",async event=>{
+ const target=$("p1-qc-days");target.replaceChildren();
+ const file=event.target.files?.[0];if(!file)return;
+ try {
+  const data=await readP1InputFile(file);
+  const inspected=inspectLocalCorsSummary(data.qc);
+  state.cors={...inspected,auditedHandoff:data.verifiedLocalStructure,
+   observedLongGaps:data.parsed.totals.map(x=>({station:x.station.toUpperCase(),count:x.gaps})),
+   pairedFullDates:[...data.parsed.jointFullDays]};
+  status("p1-status-cors",fmt(inspected.totalEpochs)+" epoch QC lokal");
+  update("p1-qc-result",reviewText(data),"ok");
+  target.appendChild(reviewDayGrid(data));
+ }catch(err){
+  state.cors=null;status("p1-status-cors","QC ditolak");
+  update("p1-qc-result",err.message,"error");target.replaceChildren();
+ }
+});
 attach("p1-position-file",raw=>{
  const x=inspectProcessedPositionSeries(raw);state.position=x;
  update("p1-position-result","Stasiun "+x.station+": "+x.epochCount+" epoch "+x.start+" s.d. "+x.end+

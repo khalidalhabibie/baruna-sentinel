@@ -14,3 +14,9 @@ baruna_private_cors_qc_*
 *.crx
 *.rnx.gz
 *.crx.gz
+
+# Prevent accidental publication of station-day derived evidence/handoff
+.local/
+BARUNA_P1_QC_HANDOFF_*.zip
+CSEM_CSMG_QC.json
+QC_SUMMARY.json
