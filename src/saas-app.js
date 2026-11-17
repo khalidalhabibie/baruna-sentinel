@@ -109,8 +109,8 @@ function headline(title,subtitle,actions=""){
  return '<div class="saas-page-head"><div><span class="saas-eyebrow">BARUNA / SPATIAL INTELLIGENCE</span><h1>'+esc(title)+'</h1><p>'+esc(subtitle)+'</p></div>'
  +(actions?'<div class="saas-page-actions">'+actions+'</div>':"")+'</div>';
 }
-function metric(value,label,description){
- return '<article class="saas-metric"><div class="saas-metric-label">'+esc(label)+'</div><strong>'+esc(value)+'</strong><small>'+esc(description)+'</small></article>';
+function metric(value,label,description,id=""){
+ return '<article class="saas-metric"><div class="saas-metric-label">'+esc(label)+'</div><strong'+(id?' id="'+esc(id)+'"':"")+'>'+esc(value)+'</strong><small>'+esc(description)+'</small></article>';
 }
 function tile(kind){
  const real=kind==="semarang";
@@ -425,9 +425,9 @@ function gnss(){
    btn("Open existing GNSS Lab",LINKS.legacy+"?page=analyst",true))
  +'<div class="saas-note"><strong>Scope:</strong> CSEM historical GPS-derived positions (Semarang), BAKO public Multi-GNSS RINEX QC (Cibinong), and CSMG site metadata. These are separate sources, stations and dates — not a shared movement solution.</div>'
  +'<div class="portfolio-metrics section-space">'
- +metric('Loading…','CSEM historic epochs','Verified position series · 2010–2021')
- +metric('Loading…','BAKO QC epochs','20-minute sample · 1 Jan 2025')
- +metric('Loading…','Observed constellations','BAKO pseudorange availability only')
+ +metric('Checking…','CSEM historic epochs','GPS-derived position series · 2010–2021','gnss-metric-csem')
+ +metric('Checking…','BAKO QC epochs','20-minute sample · 1 Jan 2025','gnss-metric-bako')
+ +metric('Checking…','Observed constellations','BAKO pseudorange availability only','gnss-metric-constellations')
  +metric('Not available','Shared CSEM/CSMG solution','No aligned public position result')
  +'</div>'
  +'<div class="gnss-status-ribbon" id="gnss-source-status" role="status">Validating official source references and public QC manifests…</div>'
@@ -456,6 +456,9 @@ async function bootGnss(){
   const fmtN=n=>Number(n).toLocaleString("id-ID",{maximumFractionDigits:3});
   // All numeric metrics are source-derived, never placeholders after validation.
   set("gnss-csem-epochs",fmtN(d.csem.epochs)+" epochs");
+  set("gnss-metric-csem",fmtN(d.csem.epochs));
+  set("gnss-metric-bako",fmtN(d.bako.epochs));
+  set("gnss-metric-constellations",String(d.bako.constellations.length));
   set("gnss-csem-period",d.csem.first+" to "+d.csem.last+" · "+d.csem.referenceFrame+" · GPS-derived historical station positions only");
   set("gnss-bako-epochs",fmtN(d.bako.epochs)+" epochs");
   set("gnss-bako-constellations",d.bako.constellations.join(" · ")+" · 1 Jan 2025. Pseudorange availability, not position accuracy.");
@@ -469,7 +472,7 @@ async function bootGnss(){
     '<td>'+chip("Verification needed","warn")+'</td><td>'+esc(x.next)+'</td></tr>').join("");
   document.body.dataset.gnssReadiness="ready";
  }catch(error){
-  for(const id of ["gnss-csem-epochs","gnss-bako-epochs","gnss-gps-average","gnss-multi-average","gnss-bako-window"])set(id,"Unavailable");
+  for(const id of ["gnss-csem-epochs","gnss-bako-epochs","gnss-gps-average","gnss-multi-average","gnss-bako-window","gnss-metric-csem","gnss-metric-bako","gnss-metric-constellations"])set(id,"Unavailable");
   set("gnss-source-status","Source verification failed. No GNSS observations or readiness priorities are claimed.");
   $("gnss-review-rows").innerHTML='<tr><td colspan="4">Required source files could not be verified. Review queue unavailable.</td></tr>';
   document.body.dataset.gnssReadiness="unavailable";
