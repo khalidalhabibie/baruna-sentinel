@@ -13,8 +13,20 @@
  <link rel="stylesheet" href="./true-color-map.css">
  <script defer src="./vendor/leaflet/leaflet.js"></script>
  <script type="module" src="./src/spatial-demo.js"></script>
+  <link rel="stylesheet" href="./legacy-saas-bridge.css">
 </head>
 <body>
+  <nav class="baruna-routebar" aria-label="Navigasi platform BARUNA Sentinel">
+    <a href="./index.html" class="route-product" aria-label="BARUNA Sentinel Portfolio">BARUNA <span>SENTINEL</span></a>
+    <div class="route-links">
+      <a href="./index.html">Portfolio</a>
+      <a href="./workspace-semarang.html">Semarang Workspace</a>
+      <a href="./area-tanjung-emas.html">Area Explorer</a>
+      <a href="./area-tanjung-emas.html#intelligence">Intelligence</a>
+      <a href="./spatial-demo.html#ranking" class="route-demo" aria-current="page">Scenario Lab · Simulated</a>
+    </div>
+  </nav>
+
  <a href="#demo-main" class="skip-link">Langsung ke workspace</a>
  <header class="app-header">
   <a href="./workspaces.html" class="brand-link" aria-label="BARUNA Sentinel — halaman Workspaces">
@@ -24,8 +36,8 @@
   <nav class="header-actions" aria-label="Navigasi BARUNA">
    <a href="./workspaces.html" class="header-link">Workspaces</a>
    <a href="./spatial-demo.html" class="header-mode" aria-current="page">Simulasi · fiktif</a>
-   <a href="./?page=assessment" class="header-link secondary" aria-label="Buka Evidence Review dari enam sektor penelitian historis">Bukti Riset · 6 sektor</a>
-   <a href="./?page=analyst" class="header-link">Bukti GNSS</a>
+   <a href="./evidence-lab.html?page=assessment" class="header-link secondary" aria-label="Buka Evidence Review dari enam sektor penelitian historis">Bukti Riset · 6 sektor</a>
+   <a href="./evidence-lab.html?page=analyst" class="header-link">Bukti GNSS</a>
   </nav>
  </header>
  <main id="demo-main">
@@ -178,7 +190,7 @@
   </section>
   <footer class="workbench-footer">
    <div><span class="footer-mark">◉</span><span><strong>DEMO SCENARIO</strong> · Data dan batas aset ilustratif, bukan hasil survei.</span></div>
-   <a href="./?page=assessment">Buka Evidence Review · 6 sektor penelitian 2005 ↗</a>
+   <a href="./evidence-lab.html?page=assessment">Buka Evidence Review · 6 sektor penelitian 2005 ↗</a>
   </footer>
  </main>
 
