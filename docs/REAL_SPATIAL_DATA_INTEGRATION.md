@@ -99,3 +99,40 @@ Public asset `data/semarang-s2-optical-series.json` contains real-data-derived, 
 The source TIFFs (approximately 14 MB total) are NOT pushed to application GitHub; only previews and provenance. In `real-workspace.html`, toggle Optical water index and choose date/index or contrast. For selected AOIs, quantized **display-grid** median, P10, P90 and valid cell counts are calculated from the preview, not from original native 10 m data. Evidence JSON export includes exact scene IDs, SHA-256 hashes, index formula/mask, display statistics and scientific no-go flags.
 
 **Do not infer flood/rob extent, temporal land-cover change, inundation depth, displacement or asset risk.** A spectral-index contrast is not an event report. BMKG tide forecast and Copernicus DSM remain separate datasets with incompatible/unreconciled vertical datum; neither provides calibration for image-derived flooding. Existing CDSE STAC IDs are not treated as exact equivalents of Earth Search product IDs. `modelGate.multiDateOpticalIndexPreview=true` only certifies **exploratory index display**, while `modelGate.realOpticalAnalysis=false` continues to block validated change/flood claims.
+
+
+## Full Evidence Collection handoff — 17 November 2026 (candidate-only Sentinel-1)
+
+The owner supplied `BARUNA_ALL_DATA_REVIEW_20261117_121120.zip` and a matching
+`BARUNA_ALL_DATA_STATUS_LOCAL.json`. The ZIP passed integrity inspection and
+its status manifest matched the standalone JSON. It included public Sentinel-2
+True Color and optical index previews that **already exist** in this repository.
+We intentionally did not duplicate or replace those source-derived assets.
+
+**New public addition:** `data/semarang-s1-insar-candidate-review.json` preserves
+a safe *summary snapshot* from the helper's cached ASF IW SLC discovery:
+19 scene metadata records, 48 candidate pairs between 20 July and 17 November
+2026, and five example 12-day scene pairs. The full catalogue was not in the
+uploaded handoff and has not been independently rerun in BARUNA. This does not
+imply five processed interferograms or 48 verified compatible bursts.
+`src/insar-candidate-readiness.js` strictly enforces the unverified
+burst/baseline/coherence/unwrapping/ground-validation gates and shows a collapsed,
+optional technical panel in `real-workspace.html`. The printable and downloadable
+Evidence Brief continues to refuse any displacement or real asset ranking
+conclusion. Public JSON contains no BIG CORS RINEX, private QC, station
+coordinates, PPP series, source asset credentials or owner survey polygons.
+
+The same handoff reports existing private local CSEM/CSMG QC derivatives but
+**does not include their contents**; the latest batch's
+`cors_qc: NOT_PROCESSED` means no new reprocessing, not failure of the
+previously audited P1 handoff. Public DEMNAS probing still returned invalid /
+NoData pixels, while official DEMNAS TIFF, owner asset geometry, authoritative
+station Point, and PPP solution remain missing. Metadata portal HTTP 200
+means webpage reachability only, **not** that official datasets were acquired.
+
+**Future research gate:** validate actual SLC burst overlap and perpendicular
+baseline; submit an authorized small-burst InSAR processing job when feasible;
+check coherence/unwrapping/georeferencing/LOS sign; independently validate
+with relevant GNSS/ground observations before any motion or subsidence claim.
+This research snapshot does not revise the real-data optical gates or
+`DATA INSUFFICIENT` asset decisions.
