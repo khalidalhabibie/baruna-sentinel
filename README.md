@@ -195,3 +195,9 @@ For locally held, authorized CSEM and CSMG RINEX observations, use the read-only
 
 This is **not** automatic subsidence monitoring, multi-GNSS position estimation, a BIG-issued result, an operational asset-risk score or proof that an individual port structure moved. Raw/private BIG archives must not be committed to GitHub or sent to the public app. The previously referenced ZIPs have not been read in this change; test fixtures are explicitly fictional.
 
+
+## Real ASF HyP3 quality evidence in Semarang workspace (17 Nov 2026)
+
+The Semarang `real-workspace.html#real-insar-qa` research panel reads original source-reviewed metadata from `data/semarang-real-hyp3-insar-qa.json`, tied to the real HyP3 job `a96410b0-1418-4e8b-a191-ab6f40e3e615` and source archive SHA-256. The 2–14 October 2026 product includes radar coherence and unwrapped phase at 80 m in EPSG:32749; the website publishes an auditable QA **summary**, not raw raster/map tiles. `src/real-hyp3-insar.test.js` guards provenance, QC denominator and unavailable deformation/risk values. The quality gate remains `modelGate.realInsar=false` pending reference and ground validation.
+
+At the generalized BIG Tanjung Emas reference point, coherence is about 0.342 and unwrapped phase is NoData. This cannot support a 2026 asset subsidence rate or an operational risk score. `data/tanjung-emas-historical-field-evidence.json` independently contains genuine historical 1995–2005 harbour levelling ranges, not current-year rates. For modern rates, prioritize a multi-date InSAR series (e.g. COMET LiCSAR/LiCSBAS frame `076D_09725_121107`) plus reference-stable GNSS/levelling, a reviewed datum and surveyed port-asset geometry before making an asset claim.
