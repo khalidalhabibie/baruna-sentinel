@@ -30,7 +30,7 @@ try{
  assert.equal(await page.locator(".queue-item").count(),5);
  await page.locator("#check-evidence").click();
  await page.locator("#evidence-content .scene-summary").waitFor({state:"visible",timeout:16000});
- assert.match(await page.locator("#evidence-content").innerText(),/Katalog deployment lokal/);
+ assert.match(await page.locator("#evidence-content").innerText(),/Scene dihitung dari irisan polygon AOI dengan footprint katalog/);
  assert.match(await page.locator("#evidence-content").innerText(),/GRD/);
  await page.screenshot({path:"reports/baruna-aoi-registry-checked.png",fullPage:false});
  const dl=page.waitForEvent("download");
