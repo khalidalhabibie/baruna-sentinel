@@ -7,10 +7,10 @@ import unittest
 import zipfile
 import sys
 import types
-import numpy as np
 from unittest.mock import patch
 
 from scripts.local_cors_qc import read_header, safe_members, convert_pair
+from scripts import local_cors_qc as qc
 
 
 def line(text, label):
@@ -137,16 +137,18 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
                 calls.append(kwargs)
                 if kwargs.get("use")!={"G","R","E"}:
                     raise IndexError("index 36 is out of bounds for axis 2 with size 36")
-                return types.SimpleNamespace(
-                    coords={"time":True,"sv":True},
-                    time=types.SimpleNamespace(values=np.array(
-                        ["2026-11-09T00:00:00","2026-11-09T00:00:30"],dtype="datetime64[ns]")),
-                    sv=types.SimpleNamespace(values=np.array(["G01","R02","E03"])),
-                    data_vars={"C1":types.SimpleNamespace(
-                        dims=("time","sv"),values=np.full((2,3),23400000.0))}
-                )
+                return object() # real observation parsing is tested separately
+            def fake_summary(dataset,station,filename):
+                self.assertIsNotNone(dataset)
+                return [{
+                    "station":station,"date":"2026-11-09","epochs":2,
+                    "epochs_with_C1_by_constellation":{
+                        "G":2,"R":2,"E":2,"G+R+E":2
+                    }
+                }],["C1"]
             with patch.dict(sys.modules,{"georinex":types.SimpleNamespace(load=fake_load)}):
-                result=convert_pair(csem,csmg)
+                with patch.object(qc,"summarize_observations",side_effect=fake_summary):
+                    result=convert_pair(csem,csmg)
             self.assertEqual(len(calls),2)
             self.assertEqual(result["summary"]["station_day_records"],2)
             self.assertEqual(result["summary"]["paired_calendar_days"],1)
