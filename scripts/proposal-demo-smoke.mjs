@@ -41,6 +41,15 @@ try{
  assert.equal(await page.locator('#demo-sector option').count(),6);
  assert.equal(await page.locator('#demo-sector').inputValue(),'coaster-street','Coaster Road is the guided default');
  assert.equal(await page.locator('#demo-bako-qc .qc-metrics>div').count(),3);
+ await page.locator('#demo-csem-historical .historical-ols-grid').waitFor({state:'visible',timeout:12000});
+ const sourceDerivedCsem=await page.locator('#demo-csem-historical').innerText();
+ assert.match(sourceDerivedCsem,/3\.561/);
+ assert.match(sourceDerivedCsem,/-0,75|−0,75/);
+ assert.match(sourceDerivedCsem,/Bukan laju aset/);
+ assert.match(sourceDerivedCsem,/Bukan ketidakpastian slope/);
+ assert.equal(await page.locator('#proposal-alignment .proposal-methodology-table tbody tr').count(),5);
+ assert.match(await page.locator('#proposal-alignment').innerText(),/DEMNAS proposal yang belum diintegrasikan/);
+
  assert.match(await page.locator('#demo-bako-qc').innerText(),/CIBINONG/);
  assert.match(await page.locator('#demo-bako-qc').innerText(),/41/);
  assert.match(await page.locator('#demo-bako-qc').innerText(),/44,63/);
@@ -68,6 +77,12 @@ try{
  assert.equal(payload.syntheticAnnex.records[3].score,null);
  assert.equal(payload.independentRinexQc.station,'BAKO00IDN');
  assert.equal(payload.independentRinexQc.supportsSemarangMotion,false);
+ assert.equal(payload.historicalCsemGpsOls.epochCount,3561);
+ assert.equal(payload.historicalCsemGpsOls.isOnAssetMeasurement,false);
+ assert.equal(payload.historicalCsemGpsOls.isMultiGnssPositionSolution,false);
+ assert.equal(payload.historicalCsemGpsOls.canInferRealAssetPriority,false);
+ assert.equal(payload.historicalCsemGpsOls.comparableToPublishedPpp2021To2023,false);
+
  assert.equal(payload.verificationBacklog.rankingAllowed,false);
  assert.equal(payload.verificationBacklog.actions.length,4);
  
@@ -84,6 +99,11 @@ try{
  }
 
  assert.equal(overflow,false,'guided demo should not horizontally overflow mobile screen');
+
+ await mobile.locator('#proposal-alignment').scrollIntoViewIfNeeded();
+ await mobile.locator('.proposal-methodology-details summary').click();
+ assert.equal(await mobile.locator('.proposal-methodology-table tbody tr').count(),5);
+ assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,"proposal matrix must scroll internally on mobile");
  await mobile.locator("#pilot-readiness").scrollIntoViewIfNeeded();
  assert.equal(await mobile.locator("#pilot-readiness").isVisible(),true);
  assert.equal(await mobile.locator("#pilot-readiness .pilot-status-card").count(),3);
