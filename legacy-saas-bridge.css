@@ -1,0 +1,48 @@
+/* BARUNA Sentinel · legacy research module bridge (2026-11-18).
+ * Reuses the SaaS shell's navy/blue neutrals without touching science
+ * legends, InSAR QA colors, SAR masks or scenario risk-tier semantics.
+ */
+:root{
+ --navy:#102b4a;--navy-2:#183c62;--ink:#21364d;--teal:#1b62a5;
+ --mint:#ebf3fb;--cream:#f6f8fb;--paper:#f6f8fb;
+ --line:#dce5ed;--muted:#6b7f92;
+}
+body{background:#f6f8fb;color:#21364d}
+.baruna-routebar{position:relative;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:18px;padding:9px clamp(16px,3.4vw,54px);background:#102b4a;color:#e7eef5;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:41px}
+.baruna-routebar a{color:#d8e7f5;text-decoration:none;font-size:11px;white-space:nowrap;font-weight:650}
+.baruna-routebar a:hover,.baruna-routebar a:focus-visible{color:#fff;text-decoration:underline}
+.baruna-routebar .route-product{font-size:11px;letter-spacing:.065em;font-weight:800;color:#fff}
+.baruna-routebar .route-product span{color:#a6c4de;font-weight:650;margin-left:5px}
+.baruna-routebar .route-links{display:flex;align-items:center;gap:22px;overflow-x:auto;scrollbar-width:thin}
+.baruna-routebar .route-links a[aria-current=page]{color:#fff;text-decoration:underline;text-decoration-color:#69a6dc;text-underline-offset:7px}
+.baruna-routebar .route-demo{color:#d8c6a5}
+.global-header,.app-header,.site-header{background:#fff;border-bottom-color:#dce5ed}
+.global-nav a,.header-actions a,.site-header nav a{color:#5e7890}
+.global-nav a:hover,.header-actions a:hover,.site-header nav a:hover{color:#1b62a5}
+.global-nav a.active,.site-header nav a.active{color:#1b62a5;border-color:#1b62a5}
+.hero .eyebrow,.overline,.eyebrow,.mini-label{color:#3878ad}
+body .breadcrumbs strong{color:#1b62a5}
+body .hero h1 span{color:#2d6da2}
+.button-primary,.saas-btn-primary{background:#1b62a5;border-color:#1b62a5;color:#fff}
+.button-primary:hover:not(:disabled){background:#144b87}
+.button-secondary,.button-tertiary{background:#eff5fc;color:#195c95;border-color:#cbdde9}
+body .app-shell{background:#f6f8fb}
+body .intro .eyebrow{color:#397eae}
+body .header-link:hover{color:#1b62a5}
+body .header-meta{color:#6b7f92}
+/* Maintain a distinct but harmonious navy atlas hero; no false data heatmaps. */
+body .hero-panel{background:linear-gradient(130deg,#173653,#1b496b);border-color:#366181}
+body .hero-copy h1 em{color:#c2def3}
+body .hero .primary-link{background:#dbeaf8;color:#173f68}
+body .site-header nav a.active{color:#1b62a5}
+body .small-tag{background:#ebf3fb;color:#416e95}
+body .radar-port{background:#173b58;border-color:#173b58}
+body .detail-card{background:#173b58}
+body .radar-label{color:#287b9d}
+@media(max-width:750px){
+ .baruna-routebar{padding:8px 15px;gap:12px;align-items:center}
+ .baruna-routebar .route-product{font-size:10px;flex-shrink:0}
+ .baruna-routebar .route-product span{display:none}
+ .baruna-routebar .route-links{gap:13px}
+ .baruna-routebar .route-links a{font-size:10px}
+}
