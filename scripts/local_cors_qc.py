@@ -196,22 +196,30 @@ def convert_pair(csem_path: Path,csmg_path: Path):
             raise ValueError("No ordinary RINEX observation entries found in "+archive.name)
         found=[]
         for name,data in candidates:
-            marker,version,uncompressed=read_header(data,name)
-            if not marker.upper().startswith(expected.upper()):
-                raise ValueError("RINEX MARKER NAME "+marker+" does not match expected "+expected.upper()+
-                                 ". Do not assign station identity using ZIP number or filename.")
-            suffix = ".rnx" if float(version)<3 else ".rnx"
-            with tempfile.TemporaryDirectory(prefix="baruna_private_qc_") as work:
-                target=Path(work)/("observation"+suffix)
-                target.write_bytes(uncompressed)
-                observations=gr.load(str(target))
-                rec,fields=summarize_observations(observations,expected,name)
-                found.extend(rec)
-                source_info.append({
-                    "station":expected,"marker_name":marker,"rinex_version":version,
-                    "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
-                    "original_file":name,"code_fields":fields
-                })
+            # Keep the exact failing station/day visible. GeoRinex often writes
+            # long NumPy warnings; without context the real error is obscured.
+            try:
+                marker,version,uncompressed=read_header(data,name)
+                if not marker.upper().startswith(expected.upper()):
+                    raise ValueError("RINEX MARKER NAME "+marker+" does not match expected "+expected.upper()+
+                                     ". Do not assign station identity using ZIP number or filename.")
+                suffix = ".rnx"
+                with tempfile.TemporaryDirectory(prefix="baruna_private_qc_") as work:
+                    target=Path(work)/("observation"+suffix)
+                    target.write_bytes(uncompressed)
+                    observations=gr.load(str(target))
+                    rec,fields=summarize_observations(observations,expected,name)
+                    found.extend(rec)
+                    source_info.append({
+                        "station":expected,"marker_name":marker,"rinex_version":version,
+                        "archive_sha256":hashlib.sha256(archive.read_bytes()).hexdigest(),
+                        "original_file":name,"code_fields":fields
+                    })
+                print("LOCAL_QC_FILE_OK: "+expected.upper()+" / "+name+
+                      " / "+str(len(rec))+" station-day record(s)",flush=True)
+            except Exception as exc:
+                raise ValueError("Failed station "+expected.upper()+" observation file "+name+
+                                 ": "+type(exc).__name__+": "+str(exc)) from exc
         result.extend(found)
     record_keys=[(r["station"],r["date"]) for r in result]
     if len(record_keys)!=len(set(record_keys)):
