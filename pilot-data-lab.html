@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#f4f8f6">
+ <meta name="description" content="BARUNA Sentinel: integrasi data pilot GNSS CSEM/CSMG, DEMNAS resmi BIG, dan hubungan geometri aset. Semua sumber di-gate sebelum hasil operasional.">
+ <title>Data Integrasi Pilot | BARUNA Sentinel</title>
+ <link rel="icon" href="./assets/ourdo-tail-curve-wordmark.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="./pilot-data-lab.css">
+ <script type="module" src="./src/p1-pilot-ui.js"></script>
+</head>
+<body>
+ <a href="#pilot-main" class="skip">Lewati navigasi</a>
+ <header class="topbar"><a class="brand" href="./"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="Ourdo Indonesia" width="112"><span class="brand-text">BARUNA <b>SENTINEL</b></span></a><nav aria-label="Navigasi BARUNA"><a href="./">Ringkasan</a><a href="./proposal-demo.html">Demo RGPD</a><a href="./real-workspace.html">GIS Semarang</a></nav><span class="topbar-badge">P1 / DATA INTEGRATION</span></header>
+ <main id="pilot-main">
+  <section class="hero"><span class="eyebrow"><i></i> INTEGRASI PILOT · STATUS DATA SEBENARNYA</span><h1>Dari data regional.<br><em>Ke bukti yang layak diuji pada aset.</em></h1><p>Rangkaian pemeriksaan P1 untuk menghubungkan sumber resmi dan hasil pemrosesan geodetik yang diizinkan. Tidak ada aset nyata yang otomatis diberi ranking. Semua file dibaca <strong>lokal di browser</strong>, tanpa upload server.</p>
+   <div class="hero-flags"><span><i class="dot good"></i> Sumber BIG dapat ditelusuri</span><span><i class="dot warn"></i> Data operator belum ada</span><span><i class="dot blocked"></i> Ranking aset belum diizinkan</span></div>
+  </section>
+  <section class="status-band" aria-label="Status integrasi">
+   <div><span>RINEX CSEM/CSMG</span><strong id="p1-status-cors">Menunggu QC lokal</strong><small>Observasi ≠ solusi posisi</small></div>
+   <div><span>DEMNAS BIG</span><strong id="p1-status-demnas">Belum tervalidasi</strong><small>ImageServer dapat menghasilkan NoData</small></div>
+   <div><span>Link stasiun–aset</span><strong id="p1-status-link">Menunggu geometri</strong><small>Jarak ≠ gerakan aset</small></div>
+   <div><span>Evidence Gate</span><strong class="blocked-status">DATA INSUFFICIENT</strong><small>0 ranking aset operasional</small></div>
+  </section>
+  <div class="section-head"><span class="eyebrow">01 / OBSERVASI DAN POSISI</span><h2>GNSS: observasi dan solusi posisi adalah dua hal berbeda.</h2><p>RINEX dapat menunjukkan mutu pengamatan. Tren vertikal baru boleh dikaji dari seri solusi koordinat bertanggal yang telah diproses dan diverifikasi secara geodetik.</p></div>
+  <div class="grid two">
+   <article class="card">
+    <div class="card-top"><span>OBSERVASI / BERKAS LOKAL</span><span class="state state-pending">BUTUH QC LOKAL</span></div>
+    <h3>QC RINEX CSEM + CSMG</h3><p>Buka ringkasan JSON yang dihasilkan oleh script <code>scripts/local_cors_qc.py</code> dari arsip BIG yang diizinkan. Tidak perlu menyalin RINEX ke server.</p>
+    <label class="file-label" for="p1-qc-file">Pilih file QC JSON</label><input id="p1-qc-file" type="file" accept=".json,application/json">
+    <div id="p1-qc-result" class="output" role="status" aria-live="polite">Belum ada file QC dipilih. Stasiun dan kualitas arsip tidak diasumsikan tersedia.</div>
+    <p class="card-foot"><a href="https://srgi.big.go.id/page/unduh-data-rinex" target="_blank" rel="noopener noreferrer">Portal resmi BIG / Ina-CORS <span aria-hidden="true">↗</span></a></p>
+   </article>
+   <article class="card">
+    <div class="card-top"><span>POSISI / OUTPUT PEMROSES EKSTERNAL</span><span class="state state-pending">BELUM ADA SOLUSI</span></div>
+    <h3>Seri koordinat multi-GNSS</h3><p>Terima JSON hasil PPP atau network adjustment yang sudah diproses pihak berkompeten. BARUNA memeriksa format, frame, jumlah epoch dan durasi; <strong>tidak menghitung PPP dari RINEX</strong>.</p>
+    <label class="file-label" for="p1-position-file">Pilih JSON solusi posisi</label><input id="p1-position-file" type="file" accept=".json,application/json">
+    <div id="p1-position-result" class="output" role="status" aria-live="polite">Belum ada seri posisi yang diproses dan disahkan. Data beberapa hari tidak dipakai untuk klaim mm/tahun.</div>
+    <p class="card-foot"><a href="./proposal-demo.html#step-gnss">Lihat perbedaan PPP publikasi dan QC BAKO <span aria-hidden="true">↗</span></a></p>
+   </article>
+  </div>
+
+  <div class="section-head" id="p1-demnas"><span class="eyebrow">02 / KONTEKS SPASIAL RESMI</span><h2>DEMNAS BIG: gunakan piksel valid, bukan asumsi elevasi.</h2><p>Layanan resmi tersedia, tetapi pengujian awal di titik-titik Semarang mengembalikan nilai sekitar <code>1.13427e+38</code> (NoData). Nilai itu harus ditolak, bukan dipakai menghitung elevasi, risiko rob, atau diganti dengan nilai dari raster lain.</p></div>
+  <div class="grid two">
+   <article class="card">
+    <div class="card-top"><span>SUMBER RESMI BIG / IMAGESERVER</span><span class="state state-pending">PENGECEKAN PER TITIK</span></div>
+    <h3>Audit satu titik DEMNAS</h3><p>Masukkan titik WGS84 dalam AOI Semarang. Browser akan mencoba meminta piksel melalui endpoint resmi <code>identify</code>. Jika layanan mengembalikan NoData/CORS error, status tetap belum valid.</p>
+    <div class="coords"><label for="p1-lon">Longitude<input id="p1-lon" type="number" step="0.00001" value="110.42" min="110.375" max="110.485"></label><label for="p1-lat">Latitude<input id="p1-lat" type="number" step="0.00001" value="-6.955" min="-7.025" max="-6.875"></label></div>
+    <button id="p1-demnas-check" class="action" type="button">Cek piksel BIG <span aria-hidden="true">↗</span></button>
+    <div id="p1-demnas-result" class="output" role="status" aria-live="polite">Belum ada hasil valid untuk titik ini. Nilai NoData tidak akan ditampilkan sebagai elevasi.</div>
+    <p class="card-foot"><a href="https://geoservices.big.go.id/raster/rest/services/DEMNAS/DEM_Indonesia/ImageServer" target="_blank" rel="noopener noreferrer">Lihat ImageServer DEMNAS resmi <span aria-hidden="true">↗</span></a></p>
+   </article>
+   <article class="card">
+    <div class="card-top"><span>RASTER RESMI / EKSTRAKSI LOKAL</span><span class="state state-pending">BUTUH GEOTIFF</span></div>
+    <h3>Impor preview GeoTIFF DEMNAS</h3><p>Unduh tile melalui Ina-Geoportal menggunakan akun yang berwenang. Jalankan ekstraksi lokal untuk membuat ringkasan 20×20 piksel dan SHA-256. File hasil tidak dapat dianggap terotentikasi hanya karena nama atau sumber yang dideklarasikan.</p>
+    <label class="file-label" for="p1-demnas-file">Pilih preview JSON DEMNAS</label><input id="p1-demnas-file" type="file" accept=".json,application/json">
+    <div id="p1-demnas-import-result" class="output" role="status" aria-live="polite">Belum ada raster DEMNAS asli yang diimpor. Copernicus GLO-30 pada GIS Semarang tetap dataset terpisah.</div>
+    <canvas id="p1-demnas-preview" class="demnas-preview" width="160" height="160" hidden aria-label="Pratinjau 20×20 piksel DEMNAS yang diimpor"></canvas>
+    <p class="card-foot"><a href="https://tanahair.indonesia.go.id/" target="_blank" rel="noopener noreferrer">Unduh DEMNAS melalui Ina-Geoportal <span aria-hidden="true">↗</span></a></p>
+   </article>
+  </div>
+
+  <div class="section-head" id="p1-asset-link"><span class="eyebrow">03 / KETERKAITAN SPASIAL</span><h2>Berapa jauh stasiun dari aset? Dan apa artinya?</h2><p>Ukuran jarak dihitung dari koordinat stasiun Point dan polygon aset dalam GeoJSON. <strong>Kedekatan saja tidak membuktikan representativitas deformasi</strong>—masih diperlukan hubungan benchmark, datum, periode, dan validasi ahli.</p></div>
+  <div class="card asset-card">
+   <div class="grid two">
+    <div><label class="file-label" for="p1-station-file">File stasiun Point · CSEM / CSMG</label><input id="p1-station-file" type="file" accept=".geojson,.json,application/geo+json,application/json"><p class="field-note">WGS84; properties: <code>stationCode</code>, <code>sourceReference</code>.</p></div>
+    <div><label class="file-label" for="p1-asset-file">File aset Polygon · GeoJSON</label><input id="p1-asset-file" type="file" accept=".geojson,.json,application/geo+json,application/json"><p class="field-note">WGS84; properties: <code>assetId</code>, <code>sourceReference</code>. Polygon harus berasal dari pihak yang berwenang untuk penggunaan operasional.</p></div>
+   </div>
+   <div id="p1-link-result" class="output" role="status" aria-live="polite">Belum ada geometri aset dan titik stasiun yang dapat dibandingkan. Tidak ada pin atau jarak yang direka.</div>
+  </div>
+
+  <section class="pilot-result" aria-labelledby="p1-result-heading"><div><span class="eyebrow">EVIDENCE GATE / PILOT</span><h2 id="p1-result-heading">Belum cukup bukti bukan berarti risiko rendah.</h2><p>P1 menguji jalur masuk data; hasil geospasial dan QC tidak secara otomatis memenuhi syarat untuk mengeluarkan ranking inspeksi aset nyata. Ekspor ringkasan audit menyimpan hanya status dan sumber tingkat tinggi, bukan geometri atau seri koordinat pribadi.</p></div><button type="button" id="p1-export" class="action action-light">Unduh laporan kesiapan JSON <span aria-hidden="true">↗</span></button></section>
+  <footer>OURDO INDONESIA · BARUNA SENTINEL · P1 PILOT EVIDENCE <a href="./proposal-demo.html#pilot-readiness">Kembali ke kesiapan pilot</a></footer>
+ </main>
+</body>
+</html>
