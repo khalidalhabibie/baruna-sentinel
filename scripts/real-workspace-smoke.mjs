@@ -120,11 +120,11 @@ try{
     "CATALOGUE_METADATA_NOT_IMAGE_PIXELS");
   // Real workspace is the primary destination and the simulation is separate.
   await page.goto(BASE+"/workspaces.html",{waitUntil:"domcontentloaded"});
-  assert.equal(await page.locator(".workspace-card.real-primary").count(),1);
-  assert.match(await page.locator(".workspace-card.real-primary").innerText(),/Source-backed MVP/);
-  assert.equal(await page.locator('.workspace-card.real-primary a.card-action').getAttribute("href"),
-    "./real-workspace.html");
-  assert.match(await page.locator(".workspace-card .state.demo").innerText(),/simulated/);
+  assert.equal(await page.locator(".workspace-tile").count(),3);
+  assert.equal(await page.locator('.workspace-tile[href="./workspace-semarang.html"]').count(),1);
+  assert.equal(await page.locator('.workspace-tile[href^="./workspace-demo.html"]').count(),2);
+  assert.match(await page.locator(".workspace-tile").first().innerText(),/SOURCE-BACKED/);
+  assert.match(await page.locator(".workspace-tile").nth(1).innerText(),/NO DATA/);
   await page.setViewportSize({width:390,height:844});
   await page.goto(BASE+"/real-workspace.html",{waitUntil:"networkidle"});
   await page.locator('body[data-evidence-state="ready"]').waitFor({timeout:10000});
