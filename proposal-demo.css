@@ -43,3 +43,6 @@
 .verification-action small{font-size:9px;color:#587f70;line-height:1.5}
 @media(max-width:620px){.qc-bridge{padding:16px}.qc-metrics{grid-template-columns:1fr}.qc-metrics>div{padding:11px 13px}.qc-metrics strong{font-size:22px}}
 @media print{.qc-bridge,.verification-panel{display:none!important}}
+
+/* Long source URLs in the Coaster reference and printable brief must wrap on mobile. */
+.print-brief p,.print-brief li,.coaster-evidence p,.coaster-evidence a,.qc-bridge-note,.verification-action p,.verification-action small{overflow-wrap:anywhere;word-break:normal;min-width:0}
