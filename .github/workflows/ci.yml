@@ -15,7 +15,7 @@ jobs:
         run: npm install --no-audit --no-fund
       - name: Python CLI syntax preflight
         run: |
-          python3 -m py_compile scripts/verify_igs_rinex.py scripts/refresh_stac_catalog.py
+          python3 -m py_compile scripts/verify_igs_rinex.py scripts/refresh_stac_catalog.py scripts/prepare_demnas_preview.py
           python3 -m unittest discover -s scripts -p "test_refresh_stac_catalog.py"
       - name: Syntax and scientific guardrail tests
         run: npm run check
