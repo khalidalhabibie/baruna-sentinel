@@ -20,3 +20,26 @@
 .coaster-evidence p{font-size:11px;line-height:1.75;color:#775e3b;margin:7px 0}
 .coaster-evidence a{font-size:10px;font-weight:740}
 @media print{.public-reference summary{display:none}.public-reference{display:none}.coaster-evidence{display:none}}
+
+/* A real, independently observed multi-GNSS QC sample, explicitly not Semarang displacement. */
+.qc-bridge{margin:20px 0 0;border:1px solid #d6e4db;border-radius:13px;background:linear-gradient(116deg,#f5fbf7,#fff);padding:22px}
+.qc-bridge-head h3{font-size:19px;color:#21493f;letter-spacing:-.02em;margin:7px 0}
+.qc-bridge-head p{font-size:11px;line-height:1.7;color:#668078;margin:0;max-width:870px}
+.qc-bridge-body{margin-top:15px}
+.qc-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.qc-metrics>div{background:#fff;border:1px solid #e0eae4;border-radius:9px;padding:14px 15px}
+.qc-metrics small{display:block;font-size:9px;font-weight:750;letter-spacing:.045em;color:#698678;margin-bottom:5px}
+.qc-metrics strong{display:block;font-size:26px;letter-spacing:-.03em;color:#215b4b;line-height:1.1}
+.qc-metrics strong span{font-size:11px;letter-spacing:normal;font-weight:630}
+.qc-bridge-note,.qc-error{font-size:11px;line-height:1.7;color:#708578;margin:12px 0 0}
+.qc-bridge-note a{color:#23735f;font-weight:750}
+.verification-panel{border-top:1px solid #e0e8e3;padding-top:16px;margin-top:18px}
+.verification-title>span{font-size:9px;color:#5d8579;letter-spacing:.09em;font-weight:780}
+.verification-title>strong{display:block;font-size:12px;color:#254f45;margin:4px 0 9px}
+.verification-action{display:grid;grid-template-columns:26px minmax(0,1fr);gap:10px;border:1px solid #e3ebe5;border-radius:9px;padding:10px 11px;background:#fafcf9;margin:7px 0}
+.verification-index{height:24px;width:24px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:#e5f1e8;color:#367059;font-size:10px;font-weight:800}
+.verification-action h4{font-size:11px;color:#29473f;margin:0 0 4px;line-height:1.4}
+.verification-action p{font-size:10px;line-height:1.6;color:#668174;margin:0 0 4px}
+.verification-action small{font-size:9px;color:#587f70;line-height:1.5}
+@media(max-width:620px){.qc-bridge{padding:16px}.qc-metrics{grid-template-columns:1fr}.qc-metrics>div{padding:11px 13px}.qc-metrics strong{font-size:22px}}
+@media print{.qc-bridge,.verification-panel{display:none!important}}
