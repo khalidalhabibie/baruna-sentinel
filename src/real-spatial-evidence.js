@@ -79,20 +79,20 @@ function createSection() {
       <div>
         <span class="eyebrow">SOURCE-BACKED / SEMARANG COASTAL</span>
         <h2>Real Geospatial Evidence</h2>
-        <p>Layer elevasi aktual, katalog Sentinel, dan batas interpretasinya. Terpisah dari empat aset simulasi di atas.</p>
+        <p>Layer elevasi aktual, citra Sentinel-2 RGB, katalog scene, dan batas interpretasinya. Terpisah dari empat aset simulasi di atas.</p>
       </div>
       <span class="real-badge" id="real-source-state">Memuat sumber...</span>
     </div>
     <div class="real-data-stats">
       <div><span>Copernicus DEM GLO-30</span><strong id="real-dsm-state">Memeriksa...</strong><small>DSM nyata · bukan deformasi</small></div>
-      <div><span>Sentinel-2 L2A</span><strong id="real-s2-count">—</strong><small>Katalog scene, bukan piksel optik</small></div>
+      <div><span>Sentinel-2 L2A</span><strong id="real-s2-count">—</strong><small>Katalog metadata; satu scene RGB asli tersedia</small></div>
       <div><span>Sentinel-1 GRD</span><strong id="real-s1-count">—</strong><small>Katalog scene, bukan InSAR</small></div>
     </div>
     <div class="real-data-workbench">
       <div class="real-controls">
         <div class="real-control-title"><strong>Layer & sumber</strong><span>AOI Semarang</span></div>
         <label class="real-layer-toggle">
-          <input type="checkbox" id="real-dsm-toggle" checked>
+          <input type="checkbox" id="real-dsm-toggle">
           <span><strong>Elevasi permukaan</strong><small>Copernicus DSM · overlay warna</small></span>
         </label>
         <label class="real-input-label" for="real-sensor">Satelit</label>
@@ -114,10 +114,10 @@ function createSection() {
         <h3>Apa yang benar-benar dapat dianalisis?</h3>
         <div class="real-gate good"><span>✓</span><div><strong>Konteks elevasi</strong><small>Piksel DSM tersedia, ditampilkan sebagai overview.</small></div></div>
         <div class="real-gate good"><span>✓</span><div><strong>Penelusuran scene satelit</strong><small>Lokasi footprint, tanggal dan metadata bisa diperiksa.</small></div></div>
-        <div class="real-gate bad"><span>—</span><div><strong>Perubahan tutupan lahan / genangan optik</strong><small>Butuh piksel Sentinel-2 dan masking awan per-AOI.</small></div></div>
+        <div class="real-gate bad"><span>—</span><div><strong>Perubahan tutupan lahan / genangan optik</strong><small>True Color tersedia. Deteksi perubahan dan rob memerlukan analisis multi-tanggal tervalidasi.</small></div></div>
         <div class="real-gate bad"><span>—</span><div><strong>Penurunan tanah / InSAR</strong><small>Butuh sumber dan pemrosesan interferometri yang sesuai; GRD metadata bukan displacement.</small></div></div>
         <div class="real-gate bad"><span>—</span><div><strong>Risiko atau ranking aset nyata</strong><small>Butuh batas aset terukur, datum, model paparan dan review operator.</small></div></div>
-        <p class="real-smallprint">Dataset: 16 Nov 2026 · Copernicus DEM GLO-30 + katalog STAC. Datum vertikal DSM belum direkonsiliasi dengan prakiraan pasang surut BMKG. Skor ranking di atas hanya simulasi.</p>
+        <p class="real-smallprint">Dataset: 16–17 Nov 2026 · Copernicus DSM + katalog STAC + RGB Sentinel-2 14 Okt. Datum vertikal DSM belum direkonsiliasi dengan prakiraan pasang surut BMKG. Skor ranking di atas hanya simulasi.</p>
         <a class="real-readiness-link" href="./data/semarang-real-readiness.json" target="_blank" rel="noopener noreferrer">Lihat data readiness JSON ↗</a>
       </div>
     </div>
@@ -155,7 +155,7 @@ export async function initRealSpatialEvidence(map) {
       [[south, west], [north, east]], {opacity: .36, interactive: false, zIndex: 350});
     const toggle = $("real-dsm-toggle");
     toggle.addEventListener("change", () => toggle.checked ? layer.addTo(map) : map.removeLayer(layer));
-    layer.addTo(map);
+    // DSM stays opt-in; avoid tinting the default True Color imagery.
     $("real-dsm-state").textContent = "Tersedia";
     const scenes = catalog.scenes;
     $("real-s2-count").textContent = String(scenes.filter(x => x[0] === 2).length) + " scene";
@@ -203,7 +203,7 @@ export async function initRealSpatialEvidence(map) {
         (selected[3] === null ? "" :
           '<small>Cloud cover: ' + Number(selected[3]).toFixed(2) +
           '% keseluruhan tile, bukan persentase awan khusus AOI.</small>') +
-        '<small>Belum ada raster/piksel Sentinel dari scene ini.</small>';
+        (selected[0]===2 ? '<small>Katalog ini metadata. RGB 14 Okt 2026 di peta berasal dari scene Earth Search yang telah diverifikasi secara terpisah.</small>' : '<small>Katalog GRD bukan data InSAR atau displacement.</small>');
     }
     sensor.addEventListener("change", updateScene);
     scene.addEventListener("change", renderScene);
