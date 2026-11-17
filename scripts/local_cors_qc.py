@@ -33,6 +33,13 @@ MAX_UNCOMPRESSED_MEMBER = 110_000_000
 MAX_FILES = 128
 MAX_DAYS = 366
 STATIONS = {"csem", "csmg"}
+# GeoRinex 1.16.2 RINEX2 parser preallocates 36 satellite slots per
+# constellation (obs2.py: Nsvsys=36). BeiDou C37+ and some SBAS PRNs
+# trigger IndexError on axis 2 when its default all-system decode is used.
+# For reproducible observation QC, explicitly parse GPS/GLONASS/Galileo only.
+# Unsupported constellations are NOT treated as absent or QC-passed.
+QC_SUPPORTED_SYSTEMS = frozenset({"G", "R", "E"})
+QC_EXCLUDED_FROM_ASSESSMENT = ("C", "J", "S", "I")
 # Preserve original archive position and the true four-letter RINEX MARKER NAME.
 OBS_EXT = re.compile(r"(?:\.rnx|\.obs|\.\d{2}o|\.rnx\.gz|\.obs\.gz|\.\d{2}o\.gz)$",re.I)
 UNSUPPORTED = re.compile(r"(?:\.crx|\.crx\.gz|\.\d{2}d|\.\d{2}d\.gz|\.z)$",re.I)
@@ -213,13 +220,23 @@ def convert_pair(csem_path: Path,csmg_path: Path):
                 with tempfile.TemporaryDirectory(prefix="baruna_private_qc_") as work:
                     target=Path(work)/("observation"+suffix)
                     target.write_bytes(uncompressed)
-                    observations=gr.load(str(target))
+                    # Do not use default all-constellation RINEX2 decoding:
+                    # GeoRinex 1.16.2 hardcodes 36 satellite slots per system.
+                    # A C37+ satellite can crash although its observation is valid.
+                    try:
+                        observations=gr.load(str(target),use=set(QC_SUPPORTED_SYSTEMS))
+                    except IndexError as error:
+                        raise ValueError("GeoRinex satellite index overflow even in G/R/E scope. "
+                                         "This is a parser compatibility failure, not proof of bad BIG data; "
+                                         "inspect constellation PRNs and use a validated decoder: "+str(error)) from error
                     rec,fields=summarize_observations(observations,expected,name)
                     found.extend(rec)
                     source_info.append({
                         "station":expected,"marker_name":marker,"rinex_version":version,
                         "archive_sha256":archive_sha256,
-                        "original_file":name,"code_fields":fields
+                        "original_file":name,"code_fields":fields,
+                        "systems_assessed":sorted(QC_SUPPORTED_SYSTEMS),
+                        "systems_not_assessed":list(QC_EXCLUDED_FROM_ASSESSMENT)
                     })
                 print("LOCAL_QC_FILE_OK: "+expected.upper()+" / "+name+
                       " / "+str(len(rec))+" station-day record(s)",flush=True)
@@ -239,18 +256,21 @@ def convert_pair(csem_path: Path,csmg_path: Path):
     csmg_days={r["date"] for r in result if r["station"]=="csmg"}
     return {
         "schema":"baruna-private-cors-qc-v1",
-        "method":"GeoRinex read-only RINEX observation parsing; observed 30-second pseudorange epoch coverage",
+        "method":"GeoRinex RINEX observation QC on GPS/GLONASS/Galileo (G/R/E) only; observed 30-second pseudorange epoch coverage",
         "disposition":"PRIVATE LOCAL QC: source is user-provided, not BIG-certified; not a position solution",
         "provenance":{
             "origin":"USER_SUPPLIED_UNVERIFIED",
             "verification":"RINEX MARKER NAME matched; ownership/frame/authenticity not independently verified",
             "processing":"local-only",
+            "systems_assessed":sorted(QC_SUPPORTED_SYSTEMS),
+            "systems_not_assessed":list(QC_EXCLUDED_FROM_ASSESSMENT),
+            "scope_note":"Parser-safe GPS/GLONASS/Galileo subset only; C/J/S/I constellations not QC-assessed, not evidence of their absence. Does not position the station.",
             "source_files":source_info
         },
         "summary":{
             "paired_calendar_days":len(csem_days & csmg_days),
             "station_day_records":len(result),
-            "note":"QC of actual pseudorange presence; no position solution, displacement or asset-risk inference"
+            "note":"GPS/GLONASS/Galileo-only pseudorange presence QC; C/J/S/I not assessed. No positioning, displacement or asset-risk inference"
         },
         "records":sorted(result,key=lambda r:(r["date"],r["station"]))
     }
