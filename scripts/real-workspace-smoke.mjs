@@ -27,6 +27,11 @@ try{
   assert.equal(await page.locator("#gate-grid .gate-card").count(),8);
   assert.equal(await page.locator("#gate-grid .gate-card.available").count(),4);
   assert.equal(await page.locator("#gate-grid .gate-card.blocked").count(),4);
+  assert.match(await page.locator("#real-insar-status").innerText(),/REAL PRODUCT/);
+  assert.match(await page.locator("#real-insar-coverage").innerText(),/91,3%/);
+  assert.match(await page.locator("#real-insar-denominator").innerText(),/15.105 \/ 16.542/);
+  assert.match(await page.locator("#real-insar-port-status").innerText(),/Insufficient InSAR Evidence/);
+  assert.match(await page.locator("#real-insar-limit").innerText(),/bukan laju penurunan tanah tahunan/);
   assert.equal(await page.locator("#optical-view").isEnabled(),true,"5 real-data-derived optical grids loaded");
   assert.equal(await page.locator("#optical-view option").count(),5);
   assert.match(await page.locator("#optical-aoi-stats").innerText(),/Median/);
