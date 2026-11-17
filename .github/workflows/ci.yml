@@ -33,6 +33,7 @@ jobs:
           node scripts/spatial-demo-smoke.mjs
           node scripts/real-workspace-smoke.mjs
           node scripts/aoi-registry-smoke.mjs
+          node scripts/proposal-demo-smoke.mjs
       - name: Upload visual review screenshots
         if: always()
         uses: actions/upload-artifact@v4
