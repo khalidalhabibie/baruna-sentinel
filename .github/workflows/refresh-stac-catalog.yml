@@ -1,8 +1,6 @@
 name: Refresh public Semarang STAC catalogue
 on:
-  schedule:
-    # 09:17 WIB daily (02:17 UTC). Scheduled GitHub runs can start late.
-    - cron: '17 2 * * *'
+  # RGPD demo: manual metadata refresh only, no auto deployment.
   workflow_dispatch:
 permissions:
   contents: write
