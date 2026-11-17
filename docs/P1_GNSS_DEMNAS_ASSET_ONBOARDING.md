@@ -21,6 +21,18 @@ Everything is read within the browser and the report exports **summary only**; r
 
 BIG Ina-Geoportal typically requires login for DEMNAS downloads. A URL pointing to the ImageServer does **not** by itself establish that the pixel is valid. If using private or restricted government survey data, obtain permission from the data owner; do not upload raw internal GNSS, receiver metadata or GeoTIFFs to GitHub.
 
+### GeoRinex 1.16.2 RINEX2 PRN 36 compatibility
+
+Authentic BIG 2026 CSEM/CSMG RINEX2 observation archives can fail with `IndexError: index 36 is out of bounds for axis 2 with size 36`. GeoRinex `obs2.py` hardcodes `Nsvsys=36` per satellite constellation and may encounter PRNs `37+` (for example BeiDou) in mixed RINEX2 input. **This alone does not prove bad or corrupted BIG observations**. To keep this prototype QC reproducible without patching site-packages, the local observation parser explicitly requests only **GPS (G), GLONASS (R), Galileo (E)** from GeoRinex. BeiDou (C), QZSS (J), SBAS (S), NavIC (I) are **NOT ASSESSED** and must not be described as absent or invalid. A comprehensive all-system constellation audit needs a compatible receiver/decoder and independent geodetic review.
+
+If QC is blocked, update both sibling repositories and rerun:
+```bash
+cd /Users/macpro/Code/bhimerka/baruna-sentinel && git pull origin main
+cd ../sentinel-helpes && git pull origin main
+bash run.command --p1-data --offline --process-local --app-repo ../baruna-sentinel
+```
+Parser failures now identify the original station-day file. The helper stores a local-only diagnostic log. Genuine decoded coverage must be obtained before treating QC as completed; the station velocity, subsidence, asset ranking and geodetic precision remain **not computed**.
+
 ## Processing the existing CSEM / CSMG RINEX archives
 
 On the owner's MacBook after placing the authorized ZIPs locally:

@@ -10,6 +10,7 @@ import types
 from unittest.mock import patch
 
 from scripts.local_cors_qc import read_header, safe_members, convert_pair
+from scripts import local_cors_qc as qc
 
 
 def line(text, label):
@@ -102,7 +103,7 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
                 archive.writestr("rinex/csem3130.26o",rinex("CSEM"))
             with zipfile.ZipFile(csmg,"w") as archive:
                 archive.writestr("rinex/csmg3130.26o",rinex("CSMG"))
-            fake=types.SimpleNamespace(load=lambda path: (_ for _ in ()).throw(ValueError("synthetic malformed epoch")))
+            fake=types.SimpleNamespace(load=lambda path,**kwargs: (_ for _ in ()).throw(ValueError("synthetic malformed epoch")))
             with patch.dict(sys.modules,{"georinex":fake}):
                 with self.assertRaisesRegex(ValueError,
                     r"Failed station CSEM observation file csem3130\.26o: ValueError: synthetic malformed epoch"):
@@ -119,6 +120,67 @@ class LocalCorsQcSafetyTest(unittest.TestCase):
             with patch.dict(sys.modules,{"georinex":types.SimpleNamespace(load=None)}):
                 with self.assertRaisesRegex(ValueError,"No ordinary RINEX observation entries"):
                     convert_pair(csem,csmg)
+
+
+    def test_multignss_rinex2_qc_uses_explicit_gre_subset_not_unbounded_beidou_prns(self):
+        # All RINEX bytes are SYNTHETIC; GeoRinex is mocked to enforce the
+        # actual parser API and guard against default use={all systems}.
+        with tempfile.TemporaryDirectory() as root:
+            csem=Path(root)/"source_411.zip"
+            csmg=Path(root)/"source_137.zip"
+            with zipfile.ZipFile(csem,"w") as archive:
+                archive.writestr("rinex/csem3130.26o",rinex("CSEM"))
+            with zipfile.ZipFile(csmg,"w") as archive:
+                archive.writestr("rinex/csmg3130.26o",rinex("CSMG"))
+            calls=[]
+            def fake_load(path,**kwargs):
+                calls.append(kwargs)
+                if kwargs.get("use")!={"G","R","E"}:
+                    raise IndexError("index 36 is out of bounds for axis 2 with size 36")
+                return object() # real observation parsing is tested separately
+            def fake_summary(dataset,station,filename):
+                self.assertIsNotNone(dataset)
+                return [{
+                    "station":station,"date":"2026-11-09","epochs":2,
+                    "epochs_with_C1_by_constellation":{
+                        "G":2,"R":2,"E":2,"G+R+E":2
+                    }
+                }],["C1"]
+            with patch.dict(sys.modules,{"georinex":types.SimpleNamespace(load=fake_load)}):
+                with patch.object(qc,"summarize_observations",side_effect=fake_summary):
+                    result=convert_pair(csem,csmg)
+            self.assertEqual(len(calls),2)
+            self.assertEqual(result["summary"]["station_day_records"],2)
+            self.assertEqual(result["summary"]["paired_calendar_days"],1)
+            self.assertEqual(result["provenance"]["systems_assessed"],["E","G","R"])
+            self.assertEqual(result["provenance"]["systems_not_assessed"],["C","J","S","I"])
+            self.assertIn("not QC-assessed",result["provenance"]["scope_note"])
+            for source in result["provenance"]["source_files"]:
+                self.assertEqual(source["systems_assessed"],["E","G","R"])
+            for record in result["records"]:
+                self.assertEqual(record["epochs"],2)
+                self.assertEqual(record["epochs_with_C1_by_constellation"]["G"],2)
+                self.assertEqual(record["epochs_with_C1_by_constellation"]["R"],2)
+                self.assertEqual(record["epochs_with_C1_by_constellation"]["E"],2)
+                self.assertEqual(record["epochs_with_C1_by_constellation"]["G+R+E"],2)
+                # Not assessed: zero must not be interpreted as absence.
+                self.assertIn("C",result["provenance"]["systems_not_assessed"])
+
+    def test_index_error_in_supported_constellations_still_blocks_qc(self):
+        with tempfile.TemporaryDirectory() as root:
+            csem=Path(root)/"source_411.zip"
+            csmg=Path(root)/"source_137.zip"
+            with zipfile.ZipFile(csem,"w") as archive:
+                archive.writestr("rinex/csem3130.26o",rinex("CSEM"))
+            with zipfile.ZipFile(csmg,"w") as archive:
+                archive.writestr("rinex/csmg3130.26o",rinex("CSMG"))
+            fake=types.SimpleNamespace(load=lambda *args,**kwargs:
+                (_ for _ in ()).throw(IndexError("index 36 is out of bounds for axis 2 with size 36")))
+            with patch.dict(sys.modules,{"georinex":fake}):
+                with self.assertRaisesRegex(ValueError,
+                    "Failed station CSEM observation file csem3130.*GeoRinex satellite index overflow"):
+                    convert_pair(csem,csmg)
+
 
 
 if __name__=="__main__":
