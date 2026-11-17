@@ -10,6 +10,28 @@ try{
  assert.equal((await page.goto(BASE+'/proposal-demo.html',{waitUntil:'networkidle',timeout:30000})).status(),200);
  await page.locator('.station-card').first().waitFor({state:'visible',timeout:12000});
  assert.equal(await page.locator('.station-card').count(),2);
+ // Onsite judge clarity: a static, source-truthful status map and bounded pilot.
+ assert.equal(await page.locator("#pilot-readiness").isVisible(),true);
+ assert.equal(await page.locator("#pilot-readiness .pilot-status-card").count(),3);
+ const readiness=await page.locator("#pilot-readiness").innerText();
+ assert.match(readiness,/SUDAH TERSEDIA/);
+ assert.match(readiness,/FITUR PROTOTIPE BERJALAN/);
+ assert.match(readiness,/BELUM TERSEDIA/);
+ assert.match(readiness,/BAKO 2025 di Cibinong, bukan Semarang/);
+ assert.match(readiness,/DATA INSUFFICIENT/);
+ assert.match(readiness,/0 aset nyata/);
+ assert.match(readiness,/10 hari kerja/);
+ assert.match(readiness,/Hipotesis durasi/);
+ assert.match(readiness,/Belum ada kerja sama/);
+ assert.equal(await page.locator("#pilot-readiness .pilot-plan-grid>div").count(),3);
+ assert.equal(await page.locator("#pilot-readiness .pilot-conversation li").count(),3);
+ assert.equal(await page.locator(".pilot-hero-link").getAttribute("href"),"#pilot-readiness");
+ const home=await browser.newPage({viewport:{width:1280,height:760}});
+ try{
+   assert.equal((await home.goto(BASE+"/",{waitUntil:"networkidle",timeout:30000})).status(),200);
+   assert.equal(await home.locator('.rgpd-more-tools a[href="./proposal-demo.html#pilot-readiness"]').count(),1);
+ }finally{await home.close()}
+
  assert.match(await page.locator('#demo-stations').innerText(),/94,03/);
  assert.match(await page.locator('#demo-stations').innerText(),/4,92/);
  assert.match(await page.locator('#demo-stations').innerText(),/3,23/);
@@ -62,6 +84,11 @@ try{
  }
 
  assert.equal(overflow,false,'guided demo should not horizontally overflow mobile screen');
+ await mobile.locator("#pilot-readiness").scrollIntoViewIfNeeded();
+ assert.equal(await mobile.locator("#pilot-readiness").isVisible(),true);
+ assert.equal(await mobile.locator("#pilot-readiness .pilot-status-card").count(),3);
+ assert.equal(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),true,"pilot-readiness must not cause horizontal overflow");
+
  assert.deepEqual(errors,[]);
  console.log('BARUNA four-step demo: source-backed CORS, six historic sectors, synthetic ranking, export, mobile PASS');
 }finally{await browser.close();}
