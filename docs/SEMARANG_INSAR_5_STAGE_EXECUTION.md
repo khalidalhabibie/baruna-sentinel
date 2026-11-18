@@ -11,14 +11,14 @@
 | Stage | Tracking | Status as of 18 Nov 2026 | Reality / blocker |
 | --- | --- | --- | --- |
 | 1. User AOIs + local registry | [#40](https://github.com/khalidalhabibie/baruna-sentinel/issues/40) | **DONE** | 3 illustrative AOIs, CRUD, import/backup and localStorage, source coverage ranks, sub-workspaces; PR #39 merged to `main` |
-| 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **ORIGINAL ZIP SHA + CRC VERIFIED / README NAMING FIX MERGED / RASTER QA NEXT** | Operator Mac: 15 local tests passed, original SHA-256 and ZIP CRC verified; all **15 files safely extracted locally**. Sole missing expected suffix was ASF-documented `.README.md.txt` vs authentic archived `_README.md.txt`. Narrow mapping fix [helper PR #19](https://github.com/khalidalhabibie/sentinel-helpes/pull/19) merged; **new CLI and raster QA still must run on actual Mac**. No scientific displacement validated. |
+| 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **DONE — VERIFIED ARCHIVE INTEGRITY AND RASTER METADATA** | 18 Nov operator Mac reran updated helper: **18/18 local tests PASS**, exact source SHA-256 and ZIP CRC PASS; 15 original members inventoried and safely extracted privately; README underscore variant accepted. Final **`PASS_ARCHIVE_INTEGRITY_AND_RASTER_METADATA`** verifies mandatory raster CRS/grid metadata only. Scientific pixel/coherence QA and multitemporal deformation remain outstanding under #42/#43. |
 | 3. Compatible burst/SBAS network | [#42](https://github.com/khalidalhabibie/baruna-sentinel/issues/42) | **PUBLIC PRESELECTION + ONE BASELINE CONFIRMED / NETWORK & QA PENDING** | Live ASF provided 9 descending VV source acquisitions and 8 temporal candidate edges. The specific **2–14 October 2026** pair has ASF `asf_search` reference-based **temporal baseline 12 days and perpendicular baseline −16 m** (source check [run 44237864318](https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44237864318), [PR #46 merged](https://github.com/khalidalhabibie/baruna-sentinel/pull/46)). Other pair baselines, full AOI coherent coverage, products, reference, and processing network **remain unvalidated**. |
 | 4. MintPy LOS time series | [#43](https://github.com/khalidalhabibie/baruna-sentinel/issues/43) | **BLOCKED by stage 3 and processed stack** | One 12-day interferogram ≠ time series or annual motion |
 | 5. AOI screening + GNSS validation | [#44](https://github.com/khalidalhabibie/baruna-sentinel/issues/44) | **BLOCKED by stage 4 QA** | Current AOI ranking = catalog coverage only, GNSS station ranking = historical station-only, infrastructure risk ranking = unavailable |
 
 **Parallel work policy:** read-only metadata discovery and source audit may run alongside stage 2, but **no credit-consuming HyP3 job** and no claims of deformation on assets until all relevant gates pass. Do not create extra production features just to make a dashboard look finished.
 
-**Remote-only execution note (18 Nov):** The user does not currently have their Mac. BARUNA can still perform public ASF catalog verification, write and review GitHub source snapshots, prepare minimal processing networks, and audit research provenance via connected tools; it **cannot** attest to locally stored original ZIP bytes, inspect raw raster pixels, run long MintPy jobs on unavailable scientific compute or access HyP3 account-only download URLs without valid account access. Do not ask the user to run laptop commands now; stage #41 stays blocked on source access while public metadata #42 can progress safely.
+**Historical remote-only note (earlier 18 Nov, superseded):** Work originally proceeded while the user was away from their Mac. Later the same day, the operator executed the original ZIP archive and raster-metadata QA successfully on their Mac. Stage #41 is now complete for byte integrity and raster georeferencing only; original bytes remain private on the operator device. Public metadata planning for #42 may continue, but geodetic pixel/LOS QA is not yet complete.
 
 ## User/product decision (do not reopen casually)
 
@@ -57,7 +57,7 @@
 ### Already-documented exact HyP3 pair
 
 - Job: `a96410b0-1418-4e8b-a191-ab6f40e3e615`; product ZIP `S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip`.
-- Previously recorded SHA256: `705b15ce1ba6586d859abe110a62423fd20241dfcb00947dfc5af223eb4b2a2b`. **The value is a prior manifest, not evidence of a fresh file check.**
+- Expected SHA256: `705b15ce1ba6586d859abe110a62423fd20241dfcb00947dfc5af223eb4b2a2b`; **fresh operator Mac audit 18 Nov 2026 confirmed matching SHA and ZIP CRC**, followed by passing raster metadata QA. The private report is `.local/insar/hyp3/source-audit.json` (not available in the remote assistant runtime).
 - Acquisition: 2026-10-02 → 2026-10-14; Sentinel-1 VV descending; full burst `076_162214_IW2`; 80m raster in EPSG:32749; Copernicus GLO-30 source DEM, **not BIG DEMNAS**.
 - QA: 15,105 / 16,542 land raster centers with valid phase and coherence passed the earlier ≥0.7 research screening criterion (91.31% of that *subset*, not of total AOI). At BIG RBI Tanjung Emas point: coherence ≈0.342; phase NoData; 500m radius: 0/122 qualified; 1km radius: 3/489. The port point is cartographic, **not surveyed asset**.
 - Those thresholds and QA metrics are *research diagnostics*, not a geodetic accuracy certificate; port/coastal masked conditions make this use case hard.
@@ -74,6 +74,14 @@
 - Operationally, when the source ZIP becomes accessible, first use `sentinel-helpes` `bash run.command --insar-archive-audit --raster-qa` and attach the sanitized report to issue #41. Do **not** treat the eight catalog links as processed interferograms. Review perpendicular baseline and choose a small authorized stack in issue #42 before issuing additional HyP3 orders.
 
 **Time expectations:** original ZIP checksum/inventory is a lightweight local audit, but waiting for new HyP3 products, stacking multiple interferograms, MintPy geodetic/atmosphere/mask QA and independent GNSS processing may be substantial or require revisiting bad coastal coherence. Never promise the entire time series can be validated in one evening.
+
+## Stage #41 completed — verified archive integrity and raster georeferencing (18 Nov 2026)
+
+Operator reran the merged source-variant validator on the original Mac source: **18/18 offline safety tests PASS**; initial source-only audit `PASS_ARCHIVE_INTEGRITY_ONLY` and final `PASS_ARCHIVE_INTEGRITY_AND_RASTER_METADATA`. The original product SHA-256 and all member CRCs match, **15/15 archive members** are inventoried and safely extracted in ignored private storage, all mandatory scientific members are present, the README uses the authentic source `_README.md.txt` spelling, and mandatory GeoTIFF **EPSG:32749 / ~80 m raster grid CRS/alignment** passed the helper's metadata checks. No new SAR data or HyP3 credits used.
+
+**Scope:** this proves archived source bytes and geospatial headers, **NOT** scientifically validated LOS displacement, resolved stable reference or port-area coherence. Previous Tanjung Emas port locator still had coherence ~0.342, phase NoData and 0 qualifying pixels within 500 m. The operator's source-audit report remains on their Mac; the success is evidenced here by the pasted local CLI output, not a remote reading of their ZIP.
+
+**Next:** issue #42 selects and validates a small compatible connected burst network and actual coherent-land coverage; #43 MintPy and geodetic QA follows processed multiple pairs. Do not submit new HyP3 jobs without cost/credit consent.
 
 ## User ZIP SHA/CRC confirmed, 15 raw files extracted; README variant fix (18 Nov 2026)
 
