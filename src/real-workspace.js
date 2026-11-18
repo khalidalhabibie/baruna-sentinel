@@ -8,6 +8,7 @@ import {parseBmkgForecastCsv} from "./real-tide-context.js";
 import {validateNdwiMetadata,decodeNdwiGrid,ndwiDisplayOverlayUrl,sampleNdwiDisplay,opticalExportEvidence} from "./real-sentinel2-evidence.js";
 import {loadInsarCandidateReview,insarSnapshotForExport} from "./insar-candidate-readiness.js";
 import {loadRealInsarQa,insarQaSnapshotForExport} from "./real-hyp3-insar.js";
+import {loadRealKaligawePilot} from "./insar-network-readiness.js";
 import {OPTICAL_VIEWS,validateOpticalSeries,decodeOpticalSeries,opticalGridOverlayUrl,
   sampleOpticalValue,opticalAreaStats,opticalSeriesExport} from "./real-optical-series.js";
 
@@ -318,6 +319,7 @@ async function bootstrap() {
       multiDateOpticalIndexPreview:Boolean(opticalSeries)});
     const insarDiscovery=await loadInsarCandidateReview();
     const insarProcessedQa=await loadRealInsarQa();
+    void loadRealKaligawePilot(); // Optional, fails closed on stale deployment or absent source JSON.
     let footprint=null;
     let footprintVisible=false;
     let selected=null;
