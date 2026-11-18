@@ -42,7 +42,7 @@ def inspect(doc,asf):
     names=[s["sceneName"] for s in scenes]
     products=list(asf.granule_search(names))
     found={p.properties.get("sceneName"):p for p in products if p.properties.get("sceneName") in names}
-    edges=[]
+    edges=[];redundant=[]
     for i in range(8):
         a,b=scenes[i:i+2]
         row={"referenceDate":a["date"],"secondaryDate":b["date"],
@@ -51,13 +51,15 @@ def inspect(doc,asf):
              "asfTemporalBaselineDays":None,"asfPerpendicularBaselineMeters":None,
              "status":"BLOCKED_SOURCE_MISSING","sameFullBurstIdConfirmed":False}
         ref,sec=found.get(a["sceneName"]),found.get(b["sceneName"])
+        stack_rows=[]
         if ref is not None and sec is not None:
             try:
                 rb=(ref.properties.get("burst") or {}).get("fullBurstID")
                 sb=(sec.properties.get("burst") or {}).get("fullBurstID")
                 row["sameFullBurstIdConfirmed"]=rb==sb==FULL_ID
                 opts=asf.ASFSearchOptions(start="2026-07-20",end="2026-11-17",maxResults=100)
-                matches=[p for p in ref.stack(opts=opts)
+                stack_rows=list(ref.stack(opts=opts))
+                matches=[p for p in stack_rows
                          if p.properties.get("sceneName")==b["sceneName"]]
                 if len(matches)==1:
                     row["asfTemporalBaselineDays"]=finite(matches[0].properties.get("temporalBaseline"))
@@ -72,13 +74,43 @@ def inspect(doc,asf):
                 row["status"]="BLOCKED_ASF_STACK_ERROR"
                 row["errorType"]=type(exc).__name__ # No secret-bearing error message
         edges.append(row)
+        # Same public stack request also exposes a potential two-hop link.
+        # Adding such a processed link would allow a phase-loop/closure test
+        # across a 3-date triangle, unlike a nonredundant temporal chain.
+        # This is only source metadata; no interferogram has been ordered.
+        if i+2<len(scenes):
+            third=scenes[i+2]
+            interval=(datetime.fromisoformat(third["date"])-datetime.fromisoformat(a["date"])).days
+            extra={"referenceDate":a["date"],"secondaryDate":third["date"],
+                   "referenceBurst":a["sceneName"],"secondaryBurst":third["sceneName"],
+                   "catalogTemporalDays":interval,
+                   "asfTemporalBaselineDays":None,"asfPerpendicularBaselineMeters":None,
+                   "status":"BLOCKED_SOURCE_MISSING",
+                   "purpose":"POTENTIAL_TRIANGLE_CLOSURE_NOT_PROCESSED"}
+            if ref is not None and found.get(third["sceneName"]) is not None:
+                v=[p for p in stack_rows if p.properties.get("sceneName")==third["sceneName"]]
+                if len(v)==1:
+                    extra["asfTemporalBaselineDays"]=finite(v[0].properties.get("temporalBaseline"))
+                    extra["asfPerpendicularBaselineMeters"]=finite(v[0].properties.get("perpendicularBaseline"))
+                    if (row["sameFullBurstIdConfirmed"]
+                        and extra["asfTemporalBaselineDays"] is not None
+                        and extra["asfPerpendicularBaselineMeters"] is not None
+                        and abs(abs(extra["asfTemporalBaselineDays"])-interval)<=1.5):
+                        extra["status"]="NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED"
+                    else:extra["status"]="BLOCKED_SOURCE_VALUES_MISMATCH"
+                else:extra["status"]="BLOCKED_SECONDARY_NOT_IN_SOURCE_STACK"
+            redundant.append(extra)
     valid=sum(e["status"]=="NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED" for e in edges)
+    redundant_valid=sum(e["status"]=="NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED" for e in redundant)
     return {"schema":"baruna-asf-eight-pair-baselines-v1",
             "asOfUtc":datetime.now(timezone.utc).isoformat(),
             "source":"NASA ASF asf_search public ASFProduct.stack()",
             "fullBurstID":FULL_ID,"catalogAcquisitions":9,
             "candidateEdges":8,"numericBaselineEdges":valid,
             "allEightNumericBaselinesPresent":valid==8,"edges":edges,
+            "twoHopRedundantCandidateEdges":7,"twoHopNumericBaselines":redundant_valid,
+            "twoHopMetadataAvailableForAll":redundant_valid==7,
+            "twoHopCandidates":redundant,
             "scientificGates":{"numericBaselineMetadataForAllEdges":valid==8,
                 "networkScientificallyValidated":False,
                 "coherenceValidatedAcrossMultiplePairs":False,
@@ -105,6 +137,9 @@ def main():
     for e in report["edges"]:
         print(e["referenceDate"],e["secondaryDate"],
               e["asfTemporalBaselineDays"],e["asfPerpendicularBaselineMeters"],e["status"])
+    print("ASF_TWO_HOP_NUMERIC_BASELINES:",report["twoHopNumericBaselines"],"/7")
+    for e in report["twoHopCandidates"]:
+        print("CLOSURE_CANDIDATE:",e["referenceDate"],e["secondaryDate"],e["asfTemporalBaselineDays"],e["asfPerpendicularBaselineMeters"],e["status"])
     print("SCIENCE_NETWORK_VALIDATED: False")
     print("NO HY P3 JOB, SAR DOWNLOAD OR CREDITS") # informational only
     print("REPORT:",a.output)

@@ -6,6 +6,7 @@ on:
       - 'scripts/insar_eight_pair_baselines.py'
       - 'tests/test_insar_eight_pair_baselines.py'
       - 'data/semarang-asf-burst-network-20261118.json'
+      - 'data/semarang-asf-15-baseline-candidates-20261118.json'
       - '.github/workflows/asf-eight-pair-baselines.yml'
   workflow_dispatch:
 
@@ -25,6 +26,20 @@ jobs:
         run: |
           python3 -m py_compile scripts/insar_eight_pair_baselines.py
           python3 -m unittest discover -s tests -p 'test_insar_eight_pair_baselines.py' -v
+      - name: Verify traceable fifteen-edge source snapshot and no-cost pilot policy
+        run: |
+          python3 - <<'PY'
+          import json,pathlib
+          d=json.loads(pathlib.Path('data/semarang-asf-15-baseline-candidates-20261118.json').read_text())
+          assert d['fullBurstId']=='076_162214_IW2'
+          assert len(d['adjacentEdges'])==8 and len(d['twoStepRedundantEdges'])==7
+          assert sum(x['processedAsHyP3'] for x in d['adjacentEdges']+d['twoStepRedundantEdges'])==1
+          assert d['minimumPilot']['minimumAdditionalJobsIfApproved']==2
+          assert d['minimumPilot']['costEstimateCredits'] is None
+          assert all(not d['scientificGates'][key] for key in
+            ('phaseClosureMeasured','MintPyLOSTimeSeriesAvailable','annualVerticalRateAvailable','operationalRiskRankAllowed'))
+          print('Source snapshot and no-deformation/no-cost assertions: PASS')
+          PY
       - name: Install NASA ASF public metadata client
         run: python3 -m pip install 'asf_search>=8,<12'
       - name: Retrieve actual numeric baseline metadata for 8 source edges
@@ -38,6 +53,9 @@ jobs:
           import json,pathlib
           r=json.loads(pathlib.Path('reports/semarang-asf-eight-pair-baselines.json').read_text())
           assert len(r['edges'])==8
+          assert len(r['twoHopCandidates'])==7
+          assert all(x['purpose']=='POTENTIAL_TRIANGLE_CLOSURE_NOT_PROCESSED' for x in r['twoHopCandidates'])
+          assert not r['scientificGates']['actualProcessingNetworkCompleted']
           assert r['scientificGates']['networkScientificallyValidated'] is False
           assert r['scientificGates']['multiTemporalLOSTimeSeries'] is False
           assert r['scientificGates']['infrastructureRiskRankingAllowed'] is False
