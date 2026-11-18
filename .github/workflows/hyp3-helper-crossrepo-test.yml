@@ -1,0 +1,41 @@
+name: Temporary HyP3 helper offline safe-extract test
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/hyp3-helper-crossrepo-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test-source-extraction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout pinned public helper PR code
+        uses: actions/checkout@v4
+        with:
+          repository: khalidalhabibie/sentinel-helpes
+          ref: 2e31416774bc4721f9384f89d35638b2ca94bfa0
+          persist-credentials: false
+      - name: Run verified archive extraction tests offline
+        run: |
+          python3 -m py_compile scripts/insar_archive_audit.py
+          python3 -m unittest discover -s tests -p 'test_insar_archive_audit.py' -v
+      - name: Confirm public command requires known source integrity
+        run: |
+          set +e
+          python3 scripts/insar_archive_audit.py --extract-safe --archive /tmp/nonexistent/S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip --output /tmp/hyp3-audit.json
+          result=$?
+          set -e
+          test "$result" -eq 2
+          python3 - <<'PY'
+          import json
+          doc=json.load(open('/tmp/hyp3-audit.json'))
+          assert doc['sourceAvailable'] is False
+          assert doc['extractionStatus']=='BLOCKED'
+          assert doc['sha256Verified'] is False
+          assert doc['zipCrcVerified'] is False
+          assert doc['assetRiskRankAllowed'] is False
+          PY
