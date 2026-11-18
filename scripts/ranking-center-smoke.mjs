@@ -24,9 +24,9 @@ try{
  assert.match(await page.locator("#rk-insar-aoi-quality").innerText(),/173\/178/);
  assert.match(await page.locator("#rk-insar-science").innerText(),/ZIP asli lolos/);
  assert.match(await page.locator("#rk-insar-status").innerText(),/SOURCE VERIFIED/);
- assert.match(await page.locator("#rk-insar-port").innerText(),/0\/122/);
+ assert.match(await page.locator("#rk-insar-port").innerText(),/LUAR polygon/);
  assert.match(await page.locator("#rk-insar-science").innerText(),/belum ada time-series/);
- assert.match(await page.locator("#rk-insar-coverage").innerText(),/Bukan bukti seluruh AOI/);
+ assert.match(await page.locator("#rk-insar-coverage").innerText(),/8 pasangan berurutan \+ 7 alternatif/);
  assert.match(await page.locator("#rk-list-title").innerText(),/Antar-workspace/);
  assert.equal(await page.locator(".rk-rank-item").count(),3);
  assert.equal(await page.locator(".rk-station-table tbody tr").count(),20);
