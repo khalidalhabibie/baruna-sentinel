@@ -1,0 +1,35 @@
+name: BARUNA real HyP3 AOI pixel evidence contract
+
+on:
+  pull_request:
+    paths:
+      - 'data/semarang-hyp3-aoi-pixel-screening-20261118.json'
+      - 'tests/hyp3-real-aoi-screening.test.js'
+      - 'docs/SEMARANG_HYP3_REAL_AOI_PIXEL_QA_20261118.md'
+      - '.github/workflows/hyp3-real-aoi-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source-only scientific assertions and pixel denominator validation
+        run: node --test tests/hyp3-real-aoi-screening.test.js
+      - name: Ensure no raw source rasters were committed
+        run: |
+          test ! -e data/semarang-real-sar-pixels.tif
+          python3 - <<'PY'
+          import json, pathlib
+          doc=json.loads(pathlib.Path('data/semarang-hyp3-aoi-pixel-screening-20261118.json').read_text())
+          assert doc['scientificGates']['annualVerticalSubsidenceAvailable'] is False
+          assert doc['scientificGates']['infrastructureRiskRankingAllowed'] is False
+          print('Real QA source summary contract: PASS (raw pixels not included in summary)')
+          PY
