@@ -1,0 +1,66 @@
+{
+  "schema": "baruna-gnss-historical-research-comparison-v1",
+  "publishedAt": "2026-11-19",
+  "evidenceType": "HISTORICAL_RESEARCH_DERIVED",
+  "historicalPeriod": "2010–2021",
+  "dataYearsNot2026": true,
+  "source": {
+    "study": "Susilo et al. (2023), GNSS land subsidence observations along the northern coastline of Java",
+    "paperDoi": "10.1038/s41597-023-02274-0",
+    "paperUrl": "https://doi.org/10.1038/s41597-023-02274-0",
+    "dataDoi": "10.5281/zenodo.7775016",
+    "dataUrl": "https://doi.org/10.5281/zenodo.7775016",
+    "methodAuditUrl": "https://github.com/khalidalhabibie/sentinel-helpes/blob/main/docs/GNSS_HISTORICAL_SCIENCE_GATE_20261119.md",
+    "computation": "BARUNA Helpes Python OLS fit from authors' pre-cleaned RNEU series; linear trend + annual and semiannual terms",
+    "verification": "21/21 locally cached historical sources matched pinned MD5; results transcribed from operator's successful offline run on 2026-11-19",
+    "upstreamProcess": "Original authors' research series; not reprocessed raw BIG RINEX",
+    "uncertaintiesComparable": false
+  },
+  "stations": [
+    {
+      "id": "CSEM",
+      "stationName": "Semarang",
+      "sourceFile": "CSEM_clean_Noff1site.rneu",
+      "sourceMd5": "481e60f0a03126689721b57eecb4d281",
+      "dateStart": "2010-01-13",
+      "dateEnd": "2021-12-31",
+      "observedEpochs": 3561,
+      "spanYears": 11.96,
+      "publishedVerticalMmYr": -0.8,
+      "publishedUncertaintyMmYr": 0.038,
+      "reproducedSeasonalOlsVerticalMmYr": -0.728,
+      "reproducedLinearOlsVerticalMmYr": -0.747,
+      "benchmarkGapMmYr": 0.072,
+      "modelHac30ObsApproxSeMmYr": 0.101,
+      "residualRmseMm": 9.099,
+      "comparisonStatus": "CLOSE_BUT_NOT_EXACT"
+    },
+    {
+      "id": "CPKL",
+      "stationName": "Pekalongan",
+      "sourceFile": "CPKL_clean_Noff1site.rneu",
+      "sourceMd5": "e0010aff455366a322da2103a43bfaa5",
+      "dateStart": "2010-11-11",
+      "dateEnd": "2021-12-31",
+      "observedEpochs": 3989,
+      "spanYears": 11.14,
+      "publishedVerticalMmYr": -107,
+      "publishedUncertaintyMmYr": 0.202,
+      "reproducedSeasonalOlsVerticalMmYr": -115.938,
+      "reproducedLinearOlsVerticalMmYr": -115.893,
+      "benchmarkGapMmYr": -8.938,
+      "modelHac30ObsApproxSeMmYr": 0.702,
+      "residualRmseMm": 25.276,
+      "comparisonStatus": "METHOD_DISCREPANCY_UNRESOLVED"
+    }
+  ],
+  "scientificValidated": false,
+  "independentlyValidated2026Velocity": false,
+  "stationVelocityIsAssetRate": false,
+  "operationalAssetRiskRankingAvailable": false,
+  "disclaimers": [
+    "Research-derived historical station rates only (2010–2021). Not a 2026 GNSS measurement or current ground movement.",
+    "Published paper velocities and BARUNA secondary OLS estimates use different methods and uncertainties; CPKL difference remains unresolved.",
+    "Station velocities cannot be transferred to nearby infrastructure or used to rank 2026 asset risk."
+  ]
+}
