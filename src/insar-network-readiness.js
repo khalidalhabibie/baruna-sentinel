@@ -268,6 +268,40 @@ function renderActualPixelQa(baselines,qa,root){
  return verified;
 }
 
+export function renderRealKaligawePilot(baselines,qa,root=document){
+ const {pilot,focus,sourceBaselinesCount}=validatedKaligawePilot(baselines,qa);
+ put(root,"real-insar-pilot-status","1 processed · 2 pending");
+ put(root,"real-insar-pilot-focus",focus.qualityPixels+"/"+focus.landPixels+
+  " piksel darat Kaligawe lolos QA coherence ≥0,7 (satu interferogram)");
+ put(root,"real-insar-pilot-baselines",sourceBaselinesCount+
+  " baseline ASF terverifikasi; baseline bukan pengukuran gerak tanah");
+ const names=["real-insar-pilot-first","real-insar-pilot-existing","real-insar-pilot-last"];
+ for(let i=0;i<3;i++){
+  const edge=pilot.threeTemporalEdges[i];
+  put(root,names[i],edge.referenceDate+" → "+edge.secondaryDate+
+   " · B⊥ "+edge.asfPerpendicularBaselineMeters+" m · "+
+   (edge.processedProductAvailable?"HyP3 tersedia":"belum diproses, butuh izin kredit"));
+ }
+ return pilot;
+}
+
+export async function loadRealKaligawePilot(root=document,loader=fetch){
+ try{
+  const results=await Promise.all([INSAR_NUMERIC_BASELINE_SOURCE,INSAR_AOI_PIXEL_QA_SOURCE]
+   .map(path=>loader(path,{cache:"no-store"})));
+  if(results.some(x=>!x.ok))throw Error("Missing current ASF/HyP3 source JSON");
+  const [baselines,pixels]=await Promise.all(results.map(x=>x.json()));
+  return renderRealKaligawePilot(baselines,pixels,root);
+ }catch(_error){
+  put(root,"real-insar-pilot-status","SOURCE UNAVAILABLE");
+  put(root,"real-insar-pilot-focus","QA Kaligawe belum dapat diverifikasi di deployment ini");
+  put(root,"real-insar-pilot-baselines","Perlu sinkronisasi manifest ASF dan HyP3");
+  for(const id of ["real-insar-pilot-first","real-insar-pilot-existing","real-insar-pilot-last"])
+   put(root,id,"Perlu data sumber yang valid");
+  return null;
+ }
+}
+
 const put=(root,id,value)=>{const node=root.getElementById(id);if(node)node.textContent=value;};
 const shortDate=day=>new Date(day+"T12:00:00Z").toLocaleDateString("id-ID",{
  timeZone:"UTC",day:"numeric",month:"short",year:"numeric"
