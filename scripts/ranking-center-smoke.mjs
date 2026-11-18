@@ -23,6 +23,13 @@ try{
  assert.equal(await page.locator("#rk-insar-aoi-quality li").count(),3);
  assert.match(await page.locator("#rk-insar-aoi-quality").innerText(),/173\/178/);
  assert.match(await page.locator("#rk-insar-science").innerText(),/ZIP asli lolos/);
+ assert.match(await page.locator("#rk-insar-pilot-status").innerText(),/1 HyP3 PAIR · 2 PROCESSING PENDING/);
+ assert.match(await page.locator("#rk-insar-existing").innerText(),/HyP3 tersedia/);
+ assert.match(await page.locator("#rk-insar-next-one").innerText(),/B⊥ -37 m/);
+ assert.match(await page.locator("#rk-insar-next-two").innerText(),/B⊥ -54 m/);
+ assert.match(await page.locator("#rk-insar-baseline-total").innerText(),/15 baseline orbit ASF/);
+ assert.match(await page.locator("#rk-insar-baseline-total").innerText(),/173\/178/);
+ assert.equal(await page.locator('link[href="./spatial-ui-alignment.css"]').count(),1);
  assert.match(await page.locator("#rk-insar-status").innerText(),/SOURCE VERIFIED/);
  assert.match(await page.locator("#rk-insar-port").innerText(),/LUAR polygon/);
  assert.match(await page.locator("#rk-insar-science").innerText(),/belum ada time-series/);
@@ -56,6 +63,8 @@ try{
  await mobile.waitForFunction(()=>document.getElementById("rk-insar-count")?.textContent==="9",{timeout:15000});
  assert.equal(await mobile.locator("#rk-insar-timeline li").count(),8);
  assert.equal(await mobile.locator("#rk-insar-aoi-quality li").count(),3);
+ assert.match(await mobile.locator("#rk-insar-pilot-status").innerText(),/1 HyP3 PAIR/);
+ assert.equal(await mobile.locator(".rk-insar-pilot-step").count(),3);
  assert.equal(await mobile.locator("#rk-map").isVisible(),true);
  const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2);
  assert.equal(overflow,false,"ranking center must not overflow on 390px mobile");
