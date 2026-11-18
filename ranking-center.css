@@ -131,3 +131,13 @@ body{background:var(--rk-bg);color:var(--rk-text)}
 .rk-insar-actions a{color:#286389;font-size:10px;font-weight:760;border-bottom:1px solid #bbd2e2;padding-bottom:3px}
 @media(max-width:1000px){.rk-insar-body{grid-template-columns:1fr}.rk-insar-verification{border-left:0;border-top:1px solid var(--rk-border)}}
 @media(max-width:650px){.rk-insar-heading{padding:18px;flex-direction:column;align-items:start}.rk-insar-pill{white-space:normal}.rk-insar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.rk-insar-metrics>div{border-bottom:1px solid var(--rk-border)}.rk-insar-metrics>div:nth-child(even){border-right:0}.rk-insar-metrics>div:nth-last-child(-n+2){border-bottom:0}.rk-insar-network,.rk-insar-verification{padding:18px}.rk-insar-network ol{grid-template-columns:1fr}}
+
+/* Research-only real HyP3 pixel coverage; never an infrastructure risk rank. */
+.rk-insar-aoi-qc{margin:15px 0 18px;background:#fff;border:1px solid #d9e6ef;border-radius:9px;padding:16px}
+.rk-insar-aoi-qc>strong{display:block;color:var(--rk-navy);font-size:12px;margin-bottom:10px}
+.rk-insar-aoi-qc ul{list-style:none;margin:0;padding:0}
+.rk-insar-aoi-qc li{border-top:1px solid #e9eff4;padding:11px 0;display:grid;gap:4px}
+.rk-insar-aoi-qc li strong{font-size:11px;color:#274e69}
+.rk-insar-aoi-qc li span{font-size:14px;font-weight:800;color:#196f82}
+.rk-insar-aoi-qc li small{font-size:10px;line-height:1.5;color:#708698}
+.rk-insar-verification .rk-insar-aoi-qc p{border:0;margin-top:10px;padding:10px;border-radius:6px;background:#f1f6fa;color:#557185;font-size:10px}
