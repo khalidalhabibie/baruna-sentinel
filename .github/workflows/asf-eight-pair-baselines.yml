@@ -38,6 +38,9 @@ jobs:
           import json,pathlib
           r=json.loads(pathlib.Path('reports/semarang-asf-eight-pair-baselines.json').read_text())
           assert len(r['edges'])==8
+          assert len(r['twoHopCandidates'])==7
+          assert all(x['purpose']=='POTENTIAL_TRIANGLE_CLOSURE_NOT_PROCESSED' for x in r['twoHopCandidates'])
+          assert not r['scientificGates']['actualProcessingNetworkCompleted']
           assert r['scientificGates']['networkScientificallyValidated'] is False
           assert r['scientificGates']['multiTemporalLOSTimeSeries'] is False
           assert r['scientificGates']['infrastructureRiskRankingAllowed'] is False
