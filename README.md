@@ -1,5 +1,9 @@
 # BARUNA Sentinel — BIG Bhumireka 2026
 
+## Active execution handoff — Semarang AOI / InSAR (18 Nov 2026)
+
+**Continue from [five-stage plan and source-of-truth](docs/SEMARANG_INSAR_5_STAGE_EXECUTION.md).** Tracker: [#40 done](https://github.com/khalidalhabibie/baruna-sentinel/issues/40), [#41 original HyP3 archive audit](https://github.com/khalidalhabibie/baruna-sentinel/issues/41), [#42 burst/network preflight](https://github.com/khalidalhabibie/baruna-sentinel/issues/42), [#43 MintPy time-series](https://github.com/khalidalhabibie/baruna-sentinel/issues/43), [#44 AOI/GNSS scientific screening](https://github.com/khalidalhabibie/baruna-sentinel/issues/44). Work one evidence gate at a time. Current first unblocked task is **#41: verify/recover original HyP3 ZIP**, never assume it is presently stored in GitHub; retain all operational risk no-go gates.
+
 ## Research Ranking Center — multi-scope workspaces & historical GNSS (18 Nov 2026)
 
 **Open [Ranking Center](ranking-center.html)** and [AOI Registry](aoi-registry.html). This is a source-attributed demonstration with **three Semarang infrastructure sub-workspaces**, not a multi-city subsidence risk league. The rest of BARUNA's regional portfolio (Jakarta / Surabaya) remains explicitly without sufficient registered evidence.
