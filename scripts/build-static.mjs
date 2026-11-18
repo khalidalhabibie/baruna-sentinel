@@ -36,6 +36,7 @@ const publicAssets=[
   "data/tanjung-emas-published-evidence-addendum.json",
   "aoi-registry.css",
   "src/aoi-registry.js",
+  "src/aoi-infrastructure-cases.js",
   "src/aoi-local-backup.js",
   "src/proposal-demo-model.js",
   "src/csem-historical-audit.js",
