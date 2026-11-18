@@ -5,6 +5,9 @@ on:
     paths:
       - 'src/workspace-ranking-model.js'
       - 'src/ranking-center.js'
+      - 'src/insar-network-readiness.js'
+      - 'src/insar-network-readiness.test.js'
+      - 'data/semarang-asf-burst-network-20261118.json'
       - 'src/aoi-*.js'
       - 'data/gnss-published-2023-stations.geojson'
       - 'ranking-center.html'
@@ -33,8 +36,9 @@ jobs:
         run: |
           node --check src/workspace-ranking-model.js
           node --check src/ranking-center.js
+          node --check src/insar-network-readiness.js
           node --check src/aoi-registry.js
-          node --test src/workspace-ranking-model.test.js src/aoi-infrastructure-cases.test.js tests/aoi-local-backup.test.js tests/aoi-registry-model.test.js
+          node --test src/insar-network-readiness.test.js src/real-hyp3-insar.test.js src/workspace-ranking-model.test.js src/aoi-infrastructure-cases.test.js tests/aoi-local-backup.test.js tests/aoi-registry-model.test.js
       - name: Build deployment with source-validated published GNSS
         run: npm run build
       - name: Prepare Playwright system Chrome
