@@ -14,8 +14,9 @@
  <script defer src="./vendor/leaflet/leaflet.js"></script>
  <script type="module" src="./src/spatial-demo.js"></script>
   <link rel="stylesheet" href="./legacy-saas-bridge.css">
+ <link rel="stylesheet" href="./spatial-ui-alignment.css">
 </head>
-<body>
+<body class="baruna-spatial-unified">
   <nav class="baruna-routebar" aria-label="Navigasi platform BARUNA Sentinel">
     <a href="./index.html" class="route-product" aria-label="BARUNA Sentinel Portfolio">BARUNA <span>SENTINEL</span></a>
     <div class="route-links">
@@ -45,21 +46,31 @@
    <div class="intro-text">
     <div class="intro-breadcrumb"><a href="./workspaces.html">Workspaces</a><span>/</span><strong>Spatial Decision Lab</strong></div>
     <span class="eyebrow">SEMARANG COASTAL · SPATIAL SCREENING</span>
-    <h1>Prioritas inspeksi, didukung bukti.</h1>
+    <h1>Simulasi prioritas inspeksi aset.</h1>
     <p>Tinjau data spasial riil Semarang dan eksplorasi skenario inspeksi ilustratif secara terpisah. <a class="intro-rank-link" href="#real-evidence">Lihat sumber geospasial nyata ↗</a></p>
     <div class="simulation-ribbon" role="note"><span class="ribbon-dot" aria-hidden="true"></span><strong>DEMO SCENARIO</strong> · 4 aset ilustratif, berbeda dari 6 sektor penelitian historis 2005 · Bukan pengukuran aset resmi</div>
    </div>
    <div class="project-summary" aria-label="Ringkasan aset ilustratif">
     <div><strong>04</strong><span>Aset dalam skenario</span></div>
-    <div><strong>03</strong><span>Layak diranking</span></div>
-    <div><strong>01</strong><span>Perlu verifikasi</span></div>
+    <div><strong>03</strong><span>Lolos aturan simulasi</span></div>
+    <div><strong>01</strong><span>Diblokir (simulasi)</span></div>
    </div>
   </section>
 
+  <section class="baruna-demo-boundary" aria-label="Pemisahan data simulasi dari evidence nyata">
+   <div><span class="eyebrow">TWO DISTINCT MODES</span>
+    <strong>Scenario Lab menggunakan angka dan batas aset sintetis.</strong>
+    <p>Contoh laju mm/tahun dan skor dipakai untuk memperlihatkan alur keputusan—<b>bukan output InSAR, Multi-GNSS, atau pengukuran Semarang 2026</b>. Untuk analisis asli gunakan workspace sumber.</p></div>
+   <div class="baruna-demo-boundary-links">
+    <a href="./real-workspace.html#real-insar-qa">Lihat QA InSAR asli ↗</a>
+    <a href="./gnss-center.html">Bukti GNSS stasiun ↗</a>
+    <a href="./ranking-center.html#rk-insar-title">Jaringan InSAR Semarang ↗</a>
+   </div>
+  </section>
   <section id="asset-map" class="workbench" aria-label="Workspace keputusan inspeksi pesisir">
    <aside class="asset-pane" aria-label="Daftar aset">
     <div class="pane-heading">
-     <span class="eyebrow">ASSET EXPLORER</span>
+     <span class="eyebrow">SIMULATED ASSET EXPLORER</span>
      <div class="heading-row"><h2>Daftar aset</h2><span id="asset-count" class="count">4</span></div>
      <p>Klik nama atau poligon pada peta.</p>
     </div>
@@ -86,10 +97,10 @@
     <div id="spatial-map" class="spatial-map" role="region" aria-label="Peta interaktif empat zona demonstrasi"></div>
     <div class="map-top">
      <span class="map-eyebrow">PETA KONTEKS · SEMARANG</span>
-     <strong>Empat zona aset</strong>
+     <strong>Empat zona contoh</strong>
      <small>Pilih poligon untuk memeriksa aset</small>
     </div>
-    <a href="#ranking" class="map-ranking-cta" aria-label="Lihat daftar prioritas tiga aset yang lolos pemeriksaan bukti">Lihat 3 prioritas <span aria-hidden="true">↘</span></a>
+    <a href="#ranking" class="map-ranking-cta" aria-label="Lihat daftar prioritas tiga aset yang lolos pemeriksaan bukti">Lihat ranking simulasi <span aria-hidden="true">↘</span></a>
     <div class="map-controls">
      <div class="map-base-switch" role="group" aria-label="Pilih tampilan peta">
       <button type="button" id="basemap-street" aria-pressed="true">Peta jalan</button>
@@ -120,15 +131,15 @@
       <p id="detail-type">Jalur akses</p>
      </div>
      <div class="decision-result" id="decision-result">
-      <span class="small-label">HASIL SCREENING</span>
+      <span class="small-label">HASIL SIMULASI / BUKAN PENGUKURAN</span>
       <div class="tier-row"><strong id="tier-title">Prioritas tinggi</strong><span id="tier-dot" class="tier-dot"></span></div>
       <p id="tier-description">Penilaian berdasarkan kelengkapan bukti dan faktor prioritas.</p>
      </div>
      <div class="mini-metrics" aria-label="Indikator aset">
-      <div><span>Laju vertikal per tahun</span><strong id="rate-value">−92 <small>mm/tahun</small></strong></div>
+      <div><span>Laju contoh sintetis / tahun</span><strong id="rate-value">−92 <small>mm/tahun</small></strong></div>
       <div><span>Kontinuitas data</span><strong id="continuity-value">92%</strong></div>
      </div>
-     <div class="chart-head"><div><strong>Perpindahan vertikal relatif</strong><span>Dari awal periode · data demonstrasi</span></div><span>mm</span></div>
+     <div class="chart-head"><div><strong>Grafik contoh pergerakan</strong><span>Sintetis · bukan time-series GNSS/InSAR</span></div><span>mm</span></div>
      <div id="movement-chart" class="movement-chart" role="img" aria-label="Grafik pergerakan vertikal aset"></div>
      <div class="reasons">
       <div class="detail-section-title"><strong>Mengapa hasilnya demikian?</strong><span id="reason-score"></span></div>
@@ -150,7 +161,7 @@
    <div class="ranking-heading">
     <div>
      <span class="eyebrow">02 / INSPECTION PRIORITY</span>
-     <h2 id="ranking-title">Ranking & Compare</h2>
+     <h2 id="ranking-title">Ranking & Compare · Simulasi</h2>
      <p>Ranking hanya berlaku untuk 4 aset ilustratif dalam AOI simulasi Semarang. Aset dengan data kurang tidak diberi ranking; ini bukan ranking operasional Tanjung Emas atau seluruh Kota Semarang.</p>
     </div>
     <div class="ranking-heading-actions"><a class="ranking-back-link" href="#asset-map">← Kembali ke peta</a><div class="ranking-count" id="ranking-summary" role="status" aria-live="polite"></div></div>
@@ -160,7 +171,7 @@
      <thead><tr>
       <th scope="col" class="rank-num">Rank</th>
       <th scope="col">Aset</th>
-      <th scope="col">Laju (mm/tahun)</th>
+      <th scope="col">Laju contoh (mm/tahun)</th>
       <th scope="col">Kualitas bukti</th>
       <th scope="col" class="numeric">Skor</th>
       <th scope="col">Prioritas</th>
@@ -169,7 +180,7 @@
      <tbody id="ranking-rows"></tbody>
     </table>
    </div>
-   <p class="ranking-note"><strong>Cara membaca:</strong> hanya aset dengan bukti yang memenuhi syarat yang memperoleh peringkat. Skor bukan probabilitas kegagalan maupun penilaian keselamatan.</p>
+   <p class="ranking-note"><strong>Cara membaca:</strong> seluruh laju mm/tahun dan skor pada tabel ini adalah <strong>input sintetis</strong> untuk mendemonstrasikan aturan keputusan, bukan hasil Sentinel-1 2026 atau pengukuran aset. Skor bukan probabilitas kegagalan maupun penilaian keselamatan.</p>
    <div class="compare-header">
     <div>
      <span class="eyebrow">03 / SIDE-BY-SIDE</span>

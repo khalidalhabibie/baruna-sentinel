@@ -27,6 +27,7 @@ const publicAssets=[
   "aoi-registry.html",
   "ranking-center.html",
   "ranking-center.css",
+  "spatial-ui-alignment.css",
   "src/ranking-center.js",
   "src/insar-network-readiness.js",
   "data/semarang-asf-burst-network-20261118.json",

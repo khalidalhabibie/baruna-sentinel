@@ -181,8 +181,59 @@ export function validateSourcedAoiReadiness(baselines,aoiEvidence){
  return {baselines,aois:aoiEvidence.aoiResults,observed};
 }
 
+/** Three source-documented interferograms are an experiment, NOT a velocity time series. */
+export function validatedKaligawePilot(baselines,qa){
+ const checked=validateSourcedAoiReadiness(baselines,qa);
+ const pilot=checked.baselines.minimumPilot;
+ const expected=[
+  ["2026-09-20","2026-10-02",12,false],
+  ["2026-10-02","2026-10-14",12,true],
+  ["2026-09-20","2026-10-14",24,false]
+ ];
+ if(pilot?.focusAoiId!=="aoi-seed-kaligawe-road"||
+    pilot.minimumAdditionalJobsIfApproved!==2||
+    pilot.costEstimateCredits!==null||
+    JSON.stringify(pilot.dates)!==JSON.stringify(["2026-09-20","2026-10-02","2026-10-14"])||
+    !Array.isArray(pilot.threeTemporalEdges)||pilot.threeTemporalEdges.length!==3)
+  fail("Kaligawe three-date source pilot");
+ for(let i=0;i<expected.length;i++){
+  const [start,end,days,processed]=expected[i];
+  const edge=pilot.threeTemporalEdges[i];
+  const source=checked.observed.get(start+"/"+end);
+  if(!source||edge.referenceDate!==start||edge.secondaryDate!==end||
+     edge.days!==days||edge.processedProductAvailable!==processed||
+     edge.asfPerpendicularBaselineMeters!==source.asfPerpendicularBaselineMeters||
+     source.processedAsHyP3!==processed||
+     edge.action!==(processed?"REUSE_VERIFIED_EXISTING_HYP3_INTERFEROGRAM":
+      "CANDIDATE_NEW_HYP3_JOB_REQUIRES_EXPLICIT_APPROVAL"))
+   fail("Kaligawe pilot pair/status does not match ASF and product QA");
+ }
+ const focus=checked.aois.find(x=>x.aoiId==="aoi-seed-kaligawe-road");
+ if(!focus||focus.qualityPixels!==173||focus.landPixels!==178||
+    focus.qualityClusters8Connected!==1||
+    focus.qualityStatus!=="PREFERRED_PIXEL_QUALITY_CANDIDATE_ONLY")
+  fail("Kaligawe source-screening focus is missing or altered");
+ return {pilot,focus,sourceBaselinesCount:checked.baselines.summary.totalNumericCandidatePairs};
+}
+
+function renderKaligawePilot(baselines,qa,root){
+ const {pilot,focus,sourceBaselinesCount}=validatedKaligawePilot(baselines,qa);
+ const [first,existing,second]=pilot.threeTemporalEdges;
+ const delta=edge=>(edge.asfPerpendicularBaselineMeters>0?"+":"")+
+    edge.asfPerpendicularBaselineMeters+" m";
+ put(root,"rk-insar-pilot-status","1 HyP3 PAIR · 2 PROCESSING PENDING");
+ put(root,"rk-insar-existing","Produk HyP3 tersedia · ASF B⊥ "+delta(existing)+" · QA satu pasangan");
+ put(root,"rk-insar-next-one","ASF B⊥ "+delta(first)+" · metadata tersedia, job belum diproses");
+ put(root,"rk-insar-next-two","ASF B⊥ "+delta(second)+" · metadata tersedia, job belum diproses");
+ put(root,"rk-insar-baseline-total",sourceBaselinesCount+" baseline orbit ASF terverifikasi · Kaligawe "+
+    focus.qualityPixels+"/"+focus.landPixels+
+    " piksel darat lolos screening QA · belum ada time-series atau laju tahunan");
+ return pilot;
+}
+
 function renderActualPixelQa(baselines,qa,root){
  const verified=validateSourcedAoiReadiness(baselines,qa);
+ renderKaligawePilot(baselines,qa,root);
  put(root,"rk-insar-status","SOURCE VERIFIED · SINGLE PAIR QA");
  put(root,"rk-insar-coverage","9 akuisisi nyata; baseline ASF untuk 8 pasangan berurutan + 7 alternatif sudah tersedia. Ketiganya hanya kandidat metadata, belum stack terproses.");
  put(root,"rk-insar-port","Titik kartografis BIG Tanjung Emas berada di LUAR polygon contoh pelabuhan; coherence 0,342, water-mask dan fase NoData. Jangan samakan pengukuran titik dengan screening area.");
@@ -215,6 +266,40 @@ function renderActualPixelQa(baselines,qa,root){
  }
  put(root,"rk-insar-aoi-note","Kualitas data daratan, BUKAN penurunan tanah, status bahaya, atau peringkat risiko aset. AOI bersifat ilustratif.");
  return verified;
+}
+
+export function renderRealKaligawePilot(baselines,qa,root=document){
+ const {pilot,focus,sourceBaselinesCount}=validatedKaligawePilot(baselines,qa);
+ put(root,"real-insar-pilot-status","1 processed · 2 pending");
+ put(root,"real-insar-pilot-focus",focus.qualityPixels+"/"+focus.landPixels+
+  " piksel darat Kaligawe lolos QA coherence ≥0,7 (satu interferogram)");
+ put(root,"real-insar-pilot-baselines",sourceBaselinesCount+
+  " baseline ASF terverifikasi; baseline bukan pengukuran gerak tanah");
+ const names=["real-insar-pilot-first","real-insar-pilot-existing","real-insar-pilot-last"];
+ for(let i=0;i<3;i++){
+  const edge=pilot.threeTemporalEdges[i];
+  put(root,names[i],edge.referenceDate+" → "+edge.secondaryDate+
+   " · B⊥ "+edge.asfPerpendicularBaselineMeters+" m · "+
+   (edge.processedProductAvailable?"HyP3 tersedia":"belum diproses, butuh izin kredit"));
+ }
+ return pilot;
+}
+
+export async function loadRealKaligawePilot(root=document,loader=fetch){
+ try{
+  const results=await Promise.all([INSAR_NUMERIC_BASELINE_SOURCE,INSAR_AOI_PIXEL_QA_SOURCE]
+   .map(path=>loader(path,{cache:"no-store"})));
+  if(results.some(x=>!x.ok))throw Error("Missing current ASF/HyP3 source JSON");
+  const [baselines,pixels]=await Promise.all(results.map(x=>x.json()));
+  return renderRealKaligawePilot(baselines,pixels,root);
+ }catch(_error){
+  put(root,"real-insar-pilot-status","SOURCE UNAVAILABLE");
+  put(root,"real-insar-pilot-focus","QA Kaligawe belum dapat diverifikasi di deployment ini");
+  put(root,"real-insar-pilot-baselines","Perlu sinkronisasi manifest ASF dan HyP3");
+  for(const id of ["real-insar-pilot-first","real-insar-pilot-existing","real-insar-pilot-last"])
+   put(root,id,"Perlu data sumber yang valid");
+  return null;
+ }
 }
 
 const put=(root,id,value)=>{const node=root.getElementById(id);if(node)node.textContent=value;};
@@ -255,6 +340,11 @@ export async function loadInsarNetwork(root=document,loader=fetch){
   return renderInsarNetwork(source,qa,root,baselines,pixels);
  }catch(error){
   put(root,"rk-insar-status","SOURCE UNAVAILABLE");
+  put(root,"rk-insar-pilot-status","SOURCE UNAVAILABLE");
+  for(const id of ["rk-insar-existing","rk-insar-next-one","rk-insar-next-two"])
+   put(root,id,"Sumber InSAR belum tersedia di deployment ini");
+  put(root,"rk-insar-baseline-total","Status pemrosesan tidak dapat diverifikasi sampai data sumber tersedia.");
+
   put(root,"rk-insar-count","—");put(root,"rk-insar-edge-count","—");
   put(root,"rk-insar-qa-count","—");
   put(root,"rk-insar-coverage","Sumber belum dapat diverifikasi. Tidak ada klaim cakupan atau pemrosesan.");

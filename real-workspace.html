@@ -13,8 +13,9 @@
   <script defer src="./vendor/leaflet/leaflet.js"></script>
   <script type="module" src="./src/real-workspace.js"></script>
   <link rel="stylesheet" href="./legacy-saas-bridge.css">
+ <link rel="stylesheet" href="./spatial-ui-alignment.css">
 </head>
-<body>
+<body class="baruna-spatial-unified">
   <nav class="baruna-routebar" aria-label="Navigasi platform BARUNA Sentinel">
     <a href="./index.html" class="route-product" aria-label="BARUNA Sentinel Portfolio">BARUNA <span>SENTINEL</span></a>
     <div class="route-links">
@@ -209,6 +210,25 @@
           <strong id="real-insar-pair">Memuat pasangan Sentinel-1...</strong>
           <span id="real-insar-source">ASF HyP3 · evidence snapshot</span>
         </div>
+        <section class="real-insar-pilot" aria-labelledby="real-insar-pilot-title">
+         <div class="real-insar-pilot-heading">
+          <div><span class="overline">KALIGAWE / THREE-DATE RESEARCH EXPERIMENT</span>
+           <h4 id="real-insar-pilot-title">Kesiapan data multitemporal</h4>
+           <p>Jangan gabungkan baseline orbit, kualitas fase, dan penurunan tanah menjadi satu skor.</p></div>
+          <strong id="real-insar-pilot-status" role="status">Memeriksa data…</strong>
+         </div>
+         <div class="real-insar-pilot-numbers">
+          <p id="real-insar-pilot-focus">Menunggu QA piksel Kaligawe…</p>
+          <p id="real-insar-pilot-baselines">Memeriksa sumber baseline ASF…</p>
+         </div>
+         <ol class="real-insar-pilot-list">
+          <li id="real-insar-pilot-first">20 Sep → 2 Okt · memeriksa metadata…</li>
+          <li id="real-insar-pilot-existing">2 Okt → 14 Okt · memeriksa produk…</li>
+          <li id="real-insar-pilot-last">20 Sep → 14 Okt · memeriksa metadata…</li>
+         </ol>
+         <p class="real-insar-pilot-boundary">Dua produk tambahan belum tersedia. Phase-closure, LOS time-series, koreksi atmosfer, dan validasi GNSS masih diperlukan; ini bukan laju mm/tahun.</p>
+         <a href="./ranking-center.html#rk-insar-title">Lihat jaringan dan perbandingan AOI ↗</a>
+        </section>
         <div class="real-insar-cards">
           <article class="real-insar-card">
             <span class="real-insar-kicker">LAND PIXELS · QC SCREENING</span>

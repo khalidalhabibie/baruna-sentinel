@@ -9,10 +9,11 @@
  <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
  <link rel="stylesheet" href="./aoi-registry.css">
  <link rel="stylesheet" href="./ranking-center.css">
+ <link rel="stylesheet" href="./spatial-ui-alignment.css">
  <script defer src="./vendor/leaflet/leaflet.js"></script>
  <script type="module" src="./src/ranking-center.js"></script>
 </head>
-<body>
+<body class="baruna-spatial-unified">
 <a class="skip" href="#main">Lewati navigasi</a>
 <header class="header">
  <div class="header-left">
@@ -103,6 +104,21 @@
    <div><strong id="rk-insar-edge-count">—</strong><span>Pasangan waktu kandidat</span></div>
    <div><strong id="rk-insar-qa-count">—</strong><span>Arsip QA HyP3 terdahulu</span></div>
    <div><strong>0</strong><span>Time-series LOS tervalidasi</span></div>
+  </div>
+  <div class="rk-insar-pilot" aria-labelledby="rk-insar-pilot-title">
+   <div class="rk-insar-pilot-intro">
+    <div><span class="overline">KALIGAWE · RESEARCH WORKFLOW</span>
+     <h3 id="rk-insar-pilot-title">Satu interferogram tersedia. Dua pasangan masih diperlukan.</h3>
+     <p>Ini urutan verifikasi data, bukan simulasi deformasi. Tidak ada job tambahan yang dikirim otomatis.</p></div>
+    <span class="rk-insar-pill" id="rk-insar-pilot-status" role="status">MEMERIKSA SUMBER…</span>
+   </div>
+   <div class="rk-insar-pilot-progress" aria-label="Tahap pemrosesan interferogram">
+    <div class="rk-insar-pilot-step"><span class="rk-insar-pilot-marker">01 / EXISTING</span><strong>2 Okt → 14 Okt</strong><small id="rk-insar-existing">Memeriksa arsip HyP3…</small></div>
+    <div class="rk-insar-pilot-step"><span class="rk-insar-pilot-marker">02 / PENDING</span><strong>20 Sep → 2 Okt</strong><small id="rk-insar-next-one">Memeriksa metadata ASF…</small></div>
+    <div class="rk-insar-pilot-step"><span class="rk-insar-pilot-marker">03 / PENDING</span><strong>20 Sep → 14 Okt</strong><small id="rk-insar-next-two">Memeriksa metadata ASF…</small></div>
+   </div>
+   <div class="rk-insar-pilot-foot"><span id="rk-insar-baseline-total">Menunggu validasi baseline dan QA tiga AOI…</span>
+    <a href="./real-workspace.html#real-insar-qa">Lihat QA raster asli ↗</a></div>
   </div>
   <div class="rk-insar-body">
    <div class="rk-insar-network">
