@@ -56,7 +56,7 @@ test("fail closed on false orbit identity and unsupported risk/deformation claim
 test("metadata network and previous HyP3 QA must use the exact same dates and job",()=>{
  const bad=structuredClone(priorQA);
  bad.source.jobId="not-the-real-job";
- assert.throws(()=>insarReadinessSummary(snapshot,bad),/HyP3 evidence rejected|ASF burst readiness rejected/);
+ assert.throws(()=>insarReadinessSummary(snapshot,bad),/Real HyP3 QA evidence rejected|ASF burst readiness rejected/);
  const wrong=change(d=>d.existingProcessedPair.referenceDate="2026-09-20");
  assert.throws(()=>insarReadinessSummary(wrong,priorQA),/ASF burst readiness rejected/);
 });
