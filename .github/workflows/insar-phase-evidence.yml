@@ -1,0 +1,31 @@
+name: BARUNA InSAR single-pair phase QA evidence
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/insar_phase_continuity_qa.py'
+      - 'data/semarang-hyp3-phase-continuity-qa-20261118.json'
+      - 'data/semarang-hyp3-aoi-pixel-screening-20261118.json'
+      - 'tests/insar-phase-continuity-evidence.test.js'
+      - '.github/workflows/insar-phase-evidence.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Python script syntax; never download raw source rasters
+        run: python3 -m py_compile scripts/insar_phase_continuity_qa.py
+      - name: Cross-check real AOI source QA and explicit scientific no-go gates
+        run: node --test tests/insar-phase-continuity-evidence.test.js
