@@ -36,6 +36,20 @@ This three-date triangle requires **two additional interferograms** to attempt p
 
 **UI now synchronized:** [PR #51](https://github.com/khalidalhabibie/baruna-sentinel/pull/51) merged to `main`. The Ranking Center displays evidence-labelled 15 baseline metadata candidates and real 3-AOI quality screening, replacing stale "ZIP unverified" language. Focused scientific tests, static build, desktop/mobile browser QA **PASS** [run 44248522487](https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44248522487). This does **not** establish production site deployment; do not assert that without live verification.
 
+## Pre-extra-data result: single-pair phase-continuity QC completed (18 Nov 2026)
+
+**Source-backed follow-up research completed** with existing operator-uploaded private GeoTIFFs, without new interferogram procurement: [PR #52](https://github.com/khalidalhabibie/baruna-sentinel/pull/52) merged to `main` (`69699d250988ff388d76e7f97a12d29076327c2e`), focused [CI 44252254204](https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44252254204) **SUCCESS**. The read-only reproducible [Python QA script](../scripts/insar_phase_continuity_qa.py), [source-hash-traced JSON report](../data/semarang-hyp3-phase-continuity-qa-20261118.json) and [methodology](./SEMARANG_HYP3_SINGLE_PAIR_PHASE_CONTINUITY_QA.md) are now permanent project context; raw private TIFFs have **not** been committed.
+
+For three original illustrative AOIs, single 2–14 Oct 2026 HyP3 80m interferogram:
+
+- **Tanjung Emas**: 74/149 research-eligible land pixel centers; 93 same-SNAPHU-label 4-neighbor phase edges; p95 abs local phase difference 0.4549 rad; 0 >π heuristic flags.
+- **Terboyo**: 99/190; 138 edges; p95 0.6816 rad; 0 >π flags.
+- **Kaligawe**: 173/178; 313 edges; p95 0.4145 rad; 0 >π flags.
+
+These are **spatial phase smoothness diagnostics** in one interferogram only. Zero heuristic flags and shared SNAPHU component ID **do not independently validate unwrapping, stable geodetic reference, atmosphere, LOS displacement, annual subsidence or any infrastructure risk**. Existing 8-neighbor eligible pixel clusters still differ (4, 2, 1). No new 2026 scientific time series was produced.
+
+**Future blocker saved to Trello:** [P1 BLOCKED: two additional HyP3 interferograms → pixel QA → three-date Kaligawe trial](https://trello.com/c/7bd5dPUP) in **BARUNA — Product Delivery / Backlog**. Planned unprocessed pair dates are 20 Sep→2 Oct and 20 Sep→14 Oct; their ASF numerical baselines are known. Cost/quota and processing parameters must be reviewed read-only, then obtain specific user authorization before any HyP3 credit-consuming submission. This is deferred by explicit user choice while finishing work with existing data.
+
 ## User/product decision (do not reopen casually)
 
 1. **AOI is custom study polygon** for screening *kawasan*: Tanjung Emas, Terboyo and Kaligawe seeded as *illustrative envelopes*. The operator may draw/add more areas (20 max per browser), import GeoJSON EPSG:4326, and export backup. Specific piers, roads, foundations, or official owner-surveyed boundaries are **not** required to start area-level *research screening*.
