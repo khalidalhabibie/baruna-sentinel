@@ -54,6 +54,8 @@ try{
  await page.locator(".rk-station-table tbody tr").first().click();
  assert.match(await page.locator("#rk-selected-station").innerText(),/CPKL/);
  assert.match(await page.locator("#rk-selected-station").innerText(),/2010–2021/);
+ assert.equal(await page.locator('#rk-selected-station a[href="./gnss-center.html#historical-trends"]').count(),1);
+ assert.equal(await page.locator('.rk-station-review-link[href="./gnss-center.html#historical-trends"]').count(),1);
  await page.screenshot({path:"reports/baruna-ranking-center-desktop.png",fullPage:true});
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
  mobile.on("pageerror",error=>errors.push(error.stack||error.message));
