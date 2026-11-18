@@ -165,7 +165,9 @@ function renderStationDetail(){
   '<p>Kecepatan vertikal hasil publikasi untuk stasiun GNSS, periode 2010–2021. Ketidakpastian yang dilaporkan: ±'+num(selected.publishedUncertaintyMmYear,3)+' mm/tahun.</p>'+
   distanceLine+
   '<p><b>Mode:</b> historical published station rate, bukan Multi-GNSS real-time atau pemantauan infrastruktur.</p>'+
-  '<a class="rk-source-link" href="https://doi.org/10.1038/s41597-023-02274-0" target="_blank" rel="noopener noreferrer">Scientific Data 2023 · Table 2 ↗</a>';
+  '<a class="rk-source-link" href="https://doi.org/10.1038/s41597-023-02274-0" target="_blank" rel="noopener noreferrer">Scientific Data 2023 · Table 2 ↗</a>'+
+  (["CSEM","CPKL"].includes(selected.id)?
+    '<div class="rk-station-ols"><strong>Perbandingan metode tersedia</strong><p>Regresi historis BARUNA terpisah dari nilai publikasi; tidak mengubah urutan 20 stasiun atau mewakili tahun 2026.</p><a href="./gnss-center.html#historical-trends">Buka perbandingan OLS '+esc(selected.id)+' ↗</a></div>':"");
 }
 function renderPppContrast(){
  const c=publishedCorsComparison(),root=$("rk-ppp-contrast");
