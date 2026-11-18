@@ -12,11 +12,13 @@
 | --- | --- | --- | --- |
 | 1. User AOIs + local registry | [#40](https://github.com/khalidalhabibie/baruna-sentinel/issues/40) | **DONE** | 3 illustrative AOIs, CRUD, import/backup and localStorage, source coverage ranks, sub-workspaces; PR #39 merged to `main` |
 | 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **AUDIT TOOL DONE / ORIGINAL ZIP BLOCKED** | New read-only local audit CLI merged in helper [PR #16](https://github.com/khalidalhabibie/sentinel-helpes/pull/16). 9/9 offline synthetic tests passed locally; original ZIP is not available in this ChatGPT execution environment, so fresh original checksum/raster QA remain pending. Helper Actions runner starts zero steps (including pre-existing main workflows); remote CI is NOT green. |
-| 3. Compatible burst/SBAS network | [#42](https://github.com/khalidalhabibie/baruna-sentinel/issues/42) | **NOT DONE** | 19 scenes/48 candidate pairs are metadata-only snapshot; full burst/baseline compatibility and continuous network not proven |
+| 3. Compatible burst/SBAS network | [#42](https://github.com/khalidalhabibie/baruna-sentinel/issues/42) | **PUBLIC ASF BURST PREFLIGHT DONE / BASELINE PENDING** | Direct ASF metadata query (18 Nov 2026) returned 9 descending VV acquisitions with shared Full Burst ID, 8 chronological candidate pairs, 25 pairs within 48 days, and 9/9 centerpoint footprint coverage for 3 illustrative AOIs. Perpendicular baselines, full polygon / quality masks, processing and time series NOT validated. [Source snapshot](https://github.com/khalidalhabibie/sentinel-helpes/blob/main/research/insar/semarang_asf_public_burst_candidates_20261118.json). |
 | 4. MintPy LOS time series | [#43](https://github.com/khalidalhabibie/baruna-sentinel/issues/43) | **BLOCKED by stage 3 and processed stack** | One 12-day interferogram ≠ time series or annual motion |
 | 5. AOI screening + GNSS validation | [#44](https://github.com/khalidalhabibie/baruna-sentinel/issues/44) | **BLOCKED by stage 4 QA** | Current AOI ranking = catalog coverage only, GNSS station ranking = historical station-only, infrastructure risk ranking = unavailable |
 
 **Parallel work policy:** read-only metadata discovery and source audit may run alongside stage 2, but **no credit-consuming HyP3 job** and no claims of deformation on assets until all relevant gates pass. Do not create extra production features just to make a dashboard look finished.
+
+**Remote-only execution note (18 Nov):** The user does not currently have their Mac. BARUNA can still perform public ASF catalog verification, write and review GitHub source snapshots, prepare minimal processing networks, and audit research provenance via connected tools; it **cannot** attest to locally stored original ZIP bytes, inspect raw raster pixels, run long MintPy jobs on unavailable scientific compute or access HyP3 account-only download URLs without valid account access. Do not ask the user to run laptop commands now; stage #41 stays blocked on source access while public metadata #42 can progress safely.
 
 ## User/product decision (do not reopen casually)
 
@@ -59,6 +61,18 @@
 - Acquisition: 2026-10-02 → 2026-10-14; Sentinel-1 VV descending; full burst `076_162214_IW2`; 80m raster in EPSG:32749; Copernicus GLO-30 source DEM, **not BIG DEMNAS**.
 - QA: 15,105 / 16,542 land raster centers with valid phase and coherence passed the earlier ≥0.7 research screening criterion (91.31% of that *subset*, not of total AOI). At BIG RBI Tanjung Emas point: coherence ≈0.342; phase NoData; 500m radius: 0/122 qualified; 1km radius: 3/489. The port point is cartographic, **not surveyed asset**.
 - Those thresholds and QA metrics are *research diagnostics*, not a geodetic accuracy certificate; port/coastal masked conditions make this use case hard.
+
+## Public ASF preflight completed without user's laptop (18 Nov 2026)
+
+Read-only catalog request (HTTP 200) using dataset `SLC-BURST`, point [110.420, -6.945] and window **20 Jul–17 Nov 2026** returned **40 public feature records**. Source filtering by actual `burst.fullBurstID=076_162214_IW2`, `VV`, `DESCENDING` and `SENTINEL-1D` yielded **9 acquisitions**: 22 Jul, 3/15/27 Aug, 8/20 Sep, 2/14 Oct and 7 Nov. All are candidate-compatible by **shared Full Burst ID**, not validated perpendicular baseline.
+
+- **Eight adjacent temporal links:** 7 × 12-day plus 1 × 24-day, creating a chronologically connected **candidate** network.
+- **Twenty-five** total temporal candidate pairs at separation <=48 days among these 9 acquisitions; do not process them all blindly.
+- **3/3 illustrative AOI centers are inside all nine returned ASF burst footprint polygons** using point-in-polygon. This is not proof of full AOI coverage or usable coherent land pixels; prior HyP3 data reported Tanjung Emas point coherence 0.342 and phase NoData.
+- Previously processed 2–14 Oct pair falls within this network, but its original ZIP cannot currently be reverified from accessible files.
+- Public source snapshot: [Semarang verified catalog preflight](https://github.com/khalidalhabibie/sentinel-helpes/blob/main/research/insar/semarang_asf_public_burst_candidates_20261118.json); ticket [#42](https://github.com/khalidalhabibie/baruna-sentinel/issues/42) includes all burst names and explicit scientific no-go gates.
+
+**What can now advance without a laptop:** select minimal candidate edges and read-only orbital/perpendicular baseline review, source availability and parameter documentation. **What remains blocked:** verifying the operator's HyP3 ZIP, additional paid HyP3 burst processing, geodetic time-series and risk claims. Do not invent a 2026 deformation/annual mm-year estimate.
 
 ## Execute next — stage 2 (#41) ONLY
 
