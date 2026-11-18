@@ -59,3 +59,88 @@
 .gnss-priority-row p{font-size:11px;color:#698397;margin:4px 0 0;line-height:1.7}
 @media(max-width:1080px){.gnss-station-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.saas-gnss-feature{flex-direction:column;align-items:flex-start;padding:18px}.saas-gnss-feature .saas-btn{width:100%}.gnss-station-grid{grid-template-columns:1fr}.gnss-observation-grid{grid-template-columns:1fr}}
+
+
+/* Tanjung Emas Ranking / Compare: source evidence first, compact scientific no-go.
+   The GNSS verification queue belongs in on-demand details, not above the table. */
+#intelligence{scroll-margin-top:90px}
+.intel-ranking-scoreboard{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:12px;
+ margin:16px 0;
+}
+.intel-ranking-score{
+ display:flex;
+ flex-direction:column;
+ gap:7px;
+ min-width:0;
+ padding:19px 20px;
+ background:#fff;
+ border:1px solid #dce7ef;
+ border-radius:10px;
+}
+.intel-ranking-score span{
+ font-size:10px;
+ letter-spacing:.055em;
+ font-weight:800;
+ color:#637e95;
+}
+.intel-ranking-score strong{
+ font-size:30px;
+ font-weight:800;
+ letter-spacing:-.04em;
+ line-height:1;
+ color:#173b5a;
+}
+.intel-ranking-score small{font-size:11px;line-height:1.55;color:#657f94}
+.intel-ranking-score-pending{background:#f2f7fd;border-color:#caddeb}
+.intel-ranking-score-pending strong{color:#1c5a80}
+.intel-ranking-nogo{
+ display:flex;
+ align-items:center;
+ gap:14px;
+ padding:15px 17px;
+ border:1px solid #dbe6ef;
+ border-left:3px solid #285f8c;
+ border-radius:8px;
+ background:#f6f9fd;
+ margin:0 0 16px;
+}
+.intel-ranking-nogo strong{font-size:11px;line-height:1.6;white-space:nowrap;color:#1a4667}
+.intel-ranking-nogo span{font-size:11px;line-height:1.6;color:#617b90}
+.intel-gnss-disclosure{
+ margin-top:17px;
+ border:1px solid #dce7ef;
+ border-radius:10px;
+ background:#fff;
+ overflow:hidden;
+}
+.intel-gnss-disclosure summary{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:15px;
+ list-style:none;
+ cursor:pointer;
+ padding:17px 19px;
+ color:#1d4b70;
+ background:#f7fafd;
+}
+.intel-gnss-disclosure summary::-webkit-details-marker{display:none}
+.intel-gnss-disclosure summary strong{font-size:13px;display:block}
+.intel-gnss-disclosure summary small{font-size:10px;display:block;color:#68839a;margin-top:4px}
+.intel-gnss-disclosure summary:focus-visible{outline:3px solid #358bb3;outline-offset:-3px}
+.intel-gnss-disclosure[open] .intel-gnss-disclosure-toggle{transform:rotate(45deg)}
+.intel-gnss-disclosure-toggle{font-size:23px;font-weight:400;transition:transform .18s}
+.intel-gnss-disclosure .intel-gnss-priority{
+ margin:0;
+ border:0;
+ border-top:1px solid #dce7ef;
+ border-radius:0;
+}
+@media(max-width:780px){
+ .intel-ranking-scoreboard{grid-template-columns:1fr}
+ .intel-ranking-nogo{flex-direction:column;align-items:flex-start;gap:5px}
+ .intel-ranking-nogo strong{white-space:normal}
+}
