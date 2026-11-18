@@ -5,7 +5,7 @@ on:
     paths:
       - 'src/saas-app.js'
       - 'saas.css'
-      - 'scripts/saas-smoke.mjs'
+      - 'scripts/area-intelligence-smoke.mjs'
       - '.github/workflows/area-intelligence-qa.yml'
   workflow_dispatch:
 
@@ -29,18 +29,18 @@ jobs:
       - name: JS syntax, source scientific scope and static build
         run: |
           node --check src/saas-app.js
-          node --check scripts/saas-smoke.mjs
+          node --check scripts/area-intelligence-smoke.mjs
           node --test src/insight-ranking.test.js src/multi-gnss-evidence.test.js src/real-hyp3-insar.test.js
           npm run build
       - name: Browser review - direct deep links, source ranking, mobile
         run: |
           python3 -m http.server 4173 -d dist --bind 127.0.0.1 >/tmp/baruna-area-server.log 2>&1 &
           sleep 2
-          node scripts/saas-smoke.mjs
+          node scripts/area-intelligence-smoke.mjs
       - name: Upload source-backed SaaS screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: baruna-area-intelligence-review
-          path: reports/baruna-saas-*.png
+          path: reports/baruna-area-ranking-*.png
           if-no-files-found: ignore
