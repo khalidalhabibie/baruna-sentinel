@@ -2,6 +2,7 @@
  * BARUNA AOI pilot — client-side evidence registry, never an operational risk engine.
  * Scoped to the actual Semarang source snapshot (EPSG:4326); no server scheduler.
  */
+import {DEFAULT_INFRA_WORKSPACE,validateGroup} from "./workspace-ranking-model.js";
 export const AOI_BOUNDS=Object.freeze([110.375,-7.025,110.485,-6.875]);
 export const STORE_KEY="baruna:semarang:aoi-registry:v1";
 export const MAX_AOIS=20;
@@ -85,7 +86,8 @@ export function validateRecord(record){
  if(!["USER_DRAWN_UNVERIFIED","USER_IMPORTED_UNVERIFIED","ILLUSTRATIVE_BOUNDARY_UNVERIFIED"].includes(record.boundarySource))throw new TypeError("Sumber batas AOI tidak sah.");
  if(typeof record.createdAt!=="string"||!Number.isFinite(Date.parse(record.createdAt)))throw new TypeError("Tanggal registrasi AOI tidak valid.");
  const geometry=validateAoiPolygon(record.geometry?.coordinates?.[0]);
- return {...record,name:record.name.trim(),geometry,boundarySource:record.boundarySource,sourceStatus:"USER_DECLARED_UNVERIFIED",rankingEligibility:"DATA_INSUFFICIENT",workspaceId:"semarang-coastal",regionId:"semarang"};
+ const infraWorkspaceId=validateGroup(record.infraWorkspaceId??DEFAULT_INFRA_WORKSPACE);
+ return {...record,name:record.name.trim(),geometry,infraWorkspaceId,boundarySource:record.boundarySource,sourceStatus:"USER_DECLARED_UNVERIFIED",rankingEligibility:"DATA_INSUFFICIENT",workspaceId:"semarang-coastal",regionId:"semarang"};
 }
 export function readRegistry(storage){
  const raw=storage.getItem(STORE_KEY);
@@ -156,7 +158,7 @@ export function verificationQueue(aoi){
 export function makeEvidenceBrief(aoi){
  const record=validateRecord(aoi);
  return {schema:"baruna-aoi-verification-brief-v1",createdAt:new Date().toISOString(),
-  aoi:{id:record.id,name:record.name,purpose:record.purpose,regionId:"semarang",workspaceId:"semarang-coastal",geometry:record.geometry,boundarySource:record.boundarySource,sourceStatus:record.sourceStatus},
+  aoi:{id:record.id,name:record.name,purpose:record.purpose,regionId:"semarang",workspaceId:"semarang-coastal",infraWorkspaceId:record.infraWorkspaceId,geometry:record.geometry,boundarySource:record.boundarySource,sourceStatus:record.sourceStatus},
   evidenceCheck:record.lastEvidenceCheck||null,monitorHistory:(record.monitorHistory||[]).slice(0,20),verificationQueue:verificationQueue(record),
   decision:{operationalRanking:"DATA_INSUFFICIENT",rankedAssets:0,reason:"No verified on-asset representative measurements, owner-approved criticality or operational ranking policy."},
   limitations:["Browser-only AOI registration with portable JSON backup; no cloud sync, automated asset monitoring or operator ranking","Scene footprint intersection does not confirm imagery pixel coverage or detected change","No Sentinel-1 interferogram, GNSS asset deformation or structural safety conclusion","DSM and optical layers do not establish flood/rob depth"]};
