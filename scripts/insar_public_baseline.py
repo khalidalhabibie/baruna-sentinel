@@ -111,19 +111,27 @@ def main(argv=None):
     ap.add_argument("--source",type=Path,default=SOURCE)
     ap.add_argument("--output",type=Path,default=ROOT/"reports/asf_public_baseline_review.json")
     args=ap.parse_args(argv)
+    stage="start"
     try:
+        stage="import_asf"
         import asf_search as asf
+        stage="source_validation"
         names=source_records(args.source)
+        stage="asf_granule_search"
         products=list(asf.granule_search(names))
+        stage="select_reference"
         ref=next((p for p in products if p.properties.get("sceneName")==REFERENCE),None)
         if ref is None:
             raise ValueError("Reference scene absent from ASF granule_search")
+        stage="asf_stack"
         opts=asf.ASFSearchOptions(start="2026-07-20",end="2026-11-17",maxResults=100)
         stack=list(ref.stack(opts=opts))
+        stage="evaluate"
         result=evaluate(names,products,stack)
     except Exception as e:
         result=report_template()
         result["blockerType"]=type(e).__name__
+        result["blockerStage"]=stage
         # No auth headers, URLs, exception repr, or sensitive bodies in public logs.
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
@@ -134,6 +142,7 @@ def main(argv=None):
     print("PERPENDICULAR_BASELINE_METERS:",result["perpendicularBaselineMeters"])
     print("TEMPORAL_BASELINE_DAYS:",result["temporalBaselineDays"])
     if result.get("blockerType"):print("BLOCKER_TYPE:",result["blockerType"])
+    if result.get("blockerStage"):print("BLOCKER_STAGE:",result["blockerStage"])
     print("No InSAR or geodetic displacement computed. No HyP3 job or credits consumed.")
     return 0 if result["status"]=="BASELINE_METRICS_AVAILABLE_REVIEW_REQUIRED" else 2
 
