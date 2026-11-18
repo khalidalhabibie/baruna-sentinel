@@ -7,6 +7,8 @@ import {validateRealInsarQa} from "./real-hyp3-insar.js";
 
 export const INSAR_NETWORK_SOURCE="./data/semarang-asf-burst-network-20261118.json";
 export const INSAR_QA_SOURCE="./data/semarang-real-hyp3-insar-qa.json";
+export const INSAR_NUMERIC_BASELINE_SOURCE="./data/semarang-asf-15-baseline-candidates-20261118.json";
+export const INSAR_AOI_PIXEL_QA_SOURCE="./data/semarang-hyp3-aoi-pixel-screening-20261118.json";
 const BURST="076_162214_IW2";
 const REF="a96410b0-1418-4e8b-a191-ab6f40e3e615";
 const SCENE=/^S1_162214_IW2_(\d{8})T\d{6}_VV_[0-9A-F]{4}-BURST$/;
@@ -115,11 +117,111 @@ export function insarReadinessSummary(source,priorQA){
  });
 }
 
+
+/** Review source-derived 15 numeric orbit baselines and ONE actual processed pair. */
+export function validateSourcedAoiReadiness(baselines,aoiEvidence){
+ if(baselines?.schema!=="baruna-real-asf-15-candidate-baselines-v1"||
+    baselines.fullBurstId!==BURST||baselines.catalogScenes!==9||
+    baselines?.summary?.chronologicalSourceBaselinesConfirmed!==8||
+    baselines?.summary?.additionalPotentialLoopSourceBaselinesConfirmed!==7||
+    !Array.isArray(baselines.adjacentEdges)||baselines.adjacentEdges.length!==8||
+    !Array.isArray(baselines.twoStepRedundantEdges)||baselines.twoStepRedundantEdges.length!==7||
+    baselines.summary.existingProcessedInterferograms!==1||
+    baselines.minimumPilot?.minimumAdditionalJobsIfApproved!==2||
+    baselines.minimumPilot.costEstimateCredits!==null||
+    baselines.scientificGates?.phaseClosureMeasured!==false||
+    baselines.scientificGates?.MintPyLOSTimeSeriesAvailable!==false||
+    baselines.scientificGates?.annualVerticalRateAvailable!==false||
+    baselines.scientificGates?.operationalRiskRankAllowed!==false)
+  fail("source baseline, processing and science gates");
+ const expected=new Set(["aoi-seed-tanjung-emas","aoi-seed-terboyo-industry","aoi-seed-kaligawe-road"]);
+ const observed=new Map();
+ for(const pair of [...baselines.adjacentEdges,...baselines.twoStepRedundantEdges]){
+  if(typeof pair.referenceDate!=="string"||typeof pair.secondaryDate!=="string"||
+     pair.sourceStatus!=="NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED"||
+     !Number.isFinite(pair.asfPerpendicularBaselineMeters)||
+     ![12,24,36].includes(pair.temporalDays)||
+     days(pair.referenceDate,pair.secondaryDate)!==pair.temporalDays)
+    fail("unverified baseline edge");
+  if(pair.processedAsHyP3){
+    if(pair.referenceDate!=="2026-10-02"||pair.secondaryDate!=="2026-10-14")
+      fail("unapproved processing provenance");
+  }
+  const key=pair.referenceDate+"/"+pair.secondaryDate;
+  if(observed.has(key))fail("duplicate baseline pair");
+  observed.set(key,pair);
+ }
+ if([...observed.values()].filter(x=>x.processedAsHyP3).length!==1)
+  fail("source product count");
+ if(aoiEvidence?.schema!=="baruna-hyp3-real-aoi-pixel-screening-v1"||
+    aoiEvidence.source?.product!=="S1_162214_IW2_20261002_20261014_VV_INT80_5087"||
+    aoiEvidence.source?.localAuditStatusOperatorReported!=="PASS_ARCHIVE_INTEGRITY_AND_RASTER_METADATA"||
+    aoiEvidence.source?.geocodedEpsg!==32749||
+    aoiEvidence.source?.geocodedPixelSpacingMeters!==80||
+    !Array.isArray(aoiEvidence.aoiResults)||aoiEvidence.aoiResults.length!==3||
+    aoiEvidence.portLocator?.insideIllustrativeTanjungEmasPolygon!==false||
+    aoiEvidence.portLocator?.unwrappedPhaseValid!==false||
+    aoiEvidence.scientificGates?.multitemporalLOSTimeSeries!==false||
+    aoiEvidence.scientificGates?.annualVerticalSubsidenceAvailable!==false||
+    aoiEvidence.scientificGates?.infrastructureRiskRankingAllowed!==false)
+  fail("raster QA source identity or science gates");
+ for(const aoi of aoiEvidence.aoiResults){
+  if(!expected.delete(aoi.aoiId)||
+     !Number.isInteger(aoi.landPixels)||aoi.landPixels<=0||
+     !Number.isInteger(aoi.qualityPixels)||aoi.qualityPixels<0||
+     aoi.qualityPixels>aoi.landPixels||
+     Math.abs(100*aoi.qualityPixels/aoi.landPixels-aoi.qualityShareOfLandPct)>.011||
+     !Number.isInteger(aoi.qualityClusters8Connected)||
+     aoi.qualityClusters8Connected<1||
+     aoi.qualityClusters8Connected>aoi.qualityPixels||
+     aoi.qualityStatus?.includes("RISK"))
+    fail("invalid AOI research screening statistic");
+ }
+ if(expected.size)fail("missing illustrative AOI pixel QA");
+ return {baselines,aois:aoiEvidence.aoiResults,observed};
+}
+
+function renderActualPixelQa(baselines,qa,root){
+ const verified=validateSourcedAoiReadiness(baselines,qa);
+ put(root,"rk-insar-status","SOURCE VERIFIED · SINGLE PAIR QA");
+ put(root,"rk-insar-coverage","9 akuisisi nyata; baseline ASF untuk 8 pasangan berurutan + 7 alternatif sudah tersedia. Ketiganya hanya kandidat metadata, belum stack terproses.");
+ put(root,"rk-insar-port","Titik kartografis BIG Tanjung Emas berada di LUAR polygon contoh pelabuhan; coherence 0,342, water-mask dan fase NoData. Jangan samakan pengukuran titik dengan screening area.");
+ put(root,"rk-insar-science","ZIP asli lolos SHA/CRC dan metadata raster pada Mac. QA piksel satu pasangan tersedia; belum ada time-series LOS, laju tahunan, validasi GNSS terkini atau ranking risiko.");
+ const timeline=root.getElementById("rk-insar-timeline");
+ if(timeline){
+  timeline.replaceChildren();
+  for(const edge of verified.baselines.adjacentEdges){
+   const li=root.createElement("li"),date=root.createElement("span"),meta=root.createElement("small");
+   date.textContent=shortDate(edge.referenceDate)+" → "+shortDate(edge.secondaryDate);
+   const bp=edge.asfPerpendicularBaselineMeters;
+   meta.textContent=edge.temporalDays+" hari · ASF B⊥ "+(bp>0?"+":"")+bp+
+      " m · "+(edge.processedAsHyP3?"1 produk HyP3 tersedia":"belum diproses");
+   li.append(date,meta);timeline.append(li);
+  }
+ }
+ const list=root.getElementById("rk-insar-aoi-quality");
+ if(list){
+  list.replaceChildren();
+  for(const aoi of verified.aois){
+   const li=root.createElement("li");
+   const name=root.createElement("strong"),amount=root.createElement("span"),note=root.createElement("small");
+   name.textContent=aoi.name.replace(" (contoh)","");
+   amount.textContent=aoi.qualityPixels+"/"+aoi.landPixels+" piksel ("+
+      aoi.qualityShareOfLandPct.toLocaleString("id-ID",{maximumFractionDigits:2})+"%)";
+   note.textContent="Coherence ≥0,7 + fase valid · "+aoi.qualityClusters8Connected+
+      " klaster, data satu pasangan saja";
+   li.append(name,amount,note);list.append(li);
+  }
+ }
+ put(root,"rk-insar-aoi-note","Kualitas data daratan, BUKAN penurunan tanah, status bahaya, atau peringkat risiko aset. AOI bersifat ilustratif.");
+ return verified;
+}
+
 const put=(root,id,value)=>{const node=root.getElementById(id);if(node)node.textContent=value;};
 const shortDate=day=>new Date(day+"T12:00:00Z").toLocaleDateString("id-ID",{
  timeZone:"UTC",day:"numeric",month:"short",year:"numeric"
 });
-export function renderInsarNetwork(source,priorQA,root=document){
+export function renderInsarNetwork(source,priorQA,root=document,baselines=null,aoiEvidence=null){
  const report=insarReadinessSummary(source,priorQA);
  put(root,"rk-insar-status","METADATA READY · PROCESSING PENDING");
  put(root,"rk-insar-count",String(report.acquisitions));
@@ -142,14 +244,15 @@ export function renderInsarNetwork(source,priorQA,root=document){
    li.append(date,status);container.append(li);
   }
  }
+ if(baselines!==null&&aoiEvidence!==null)renderActualPixelQa(baselines,aoiEvidence,root);
  return report;
 }
 export async function loadInsarNetwork(root=document,loader=fetch){
  try{
-  const results=await Promise.all([INSAR_NETWORK_SOURCE,INSAR_QA_SOURCE].map(path=>loader(path,{cache:"no-store"})));
+  const results=await Promise.all([INSAR_NETWORK_SOURCE,INSAR_QA_SOURCE,INSAR_NUMERIC_BASELINE_SOURCE,INSAR_AOI_PIXEL_QA_SOURCE].map(path=>loader(path,{cache:"no-store"})));
   if(results.some(response=>!response.ok))throw new Error("Dokumen sumber ASF/HyP3 tidak tersedia");
-  const [source,qa]=await Promise.all(results.map(x=>x.json()));
-  return renderInsarNetwork(source,qa,root);
+  const [source,qa,baselines,pixels]=await Promise.all(results.map(x=>x.json()));
+  return renderInsarNetwork(source,qa,root,baselines,pixels);
  }catch(error){
   put(root,"rk-insar-status","SOURCE UNAVAILABLE");
   put(root,"rk-insar-count","—");put(root,"rk-insar-edge-count","—");
@@ -159,6 +262,9 @@ export async function loadInsarNetwork(root=document,loader=fetch){
   put(root,"rk-insar-science","Data InSAR tidak dapat diverifikasi. Ranking deformasi dan risiko tetap tidak tersedia.");
   const container=root.getElementById("rk-insar-timeline");
   if(container)container.replaceChildren();
+  const list=root.getElementById("rk-insar-aoi-quality");
+  if(list)list.replaceChildren();
+  put(root,"rk-insar-aoi-note","Sumber screening tidak tersedia atau tidak lolos validasi.");
   return null;
  }
 }
