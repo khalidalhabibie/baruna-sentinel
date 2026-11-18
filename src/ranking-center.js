@@ -10,6 +10,7 @@ import {
  rankInfrastructureAois,parsePublishedStations,aoiResearchDetail
 } from "./workspace-ranking-model.js";
 import {publishedCorsComparison} from "./published-cors.js";
+import {loadInsarNetwork} from "./insar-network-readiness.js";
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
 const num=(value,dp=1)=>Number(value).toLocaleString("id-ID",{minimumFractionDigits:dp,maximumFractionDigits:dp});
@@ -204,6 +205,7 @@ function listen(){
 }
 async function initialize(){
  loadLocal();initMap();renderPppContrast();listen();render();
+ void loadInsarNetwork(document);
  try{
   const response=await fetch("./data/gnss-published-2023-stations.geojson",{cache:"force-cache"});
   if(!response.ok)throw new Error("Sumber GNSS tidak tersedia (HTTP "+response.status+")");
