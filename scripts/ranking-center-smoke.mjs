@@ -15,6 +15,15 @@ try{
  assert.equal(await page.locator("#rk-workspace-count").innerText(),"3");
  assert.equal(await page.locator("#rk-aoi-count").innerText(),"3");
  assert.equal(await page.locator("#rk-station-count").innerText(),"20");
+ await page.waitForFunction(()=>document.getElementById("rk-insar-count")?.textContent==="9",{timeout:15000});
+ assert.equal(await page.locator("#rk-insar-count").innerText(),"9");
+ assert.equal(await page.locator("#rk-insar-edge-count").innerText(),"8");
+ assert.equal(await page.locator("#rk-insar-qa-count").innerText(),"1");
+ assert.equal(await page.locator("#rk-insar-timeline li").count(),8);
+ assert.match(await page.locator("#rk-insar-status").innerText(),/METADATA READY/);
+ assert.match(await page.locator("#rk-insar-port").innerText(),/0\/122/);
+ assert.match(await page.locator("#rk-insar-science").innerText(),/Belum ada time-series/);
+ assert.match(await page.locator("#rk-insar-coverage").innerText(),/Bukan bukti seluruh AOI/);
  assert.match(await page.locator("#rk-list-title").innerText(),/Antar-workspace/);
  assert.equal(await page.locator(".rk-rank-item").count(),3);
  assert.equal(await page.locator(".rk-station-table tbody tr").count(),20);
@@ -41,6 +50,8 @@ try{
  await mobile.route("https://tile.openstreetmap.org/**",route=>route.fulfill({status:200,contentType:"image/png",body:tile}));
  assert.equal((await mobile.goto(BASE+"/ranking-center.html",{waitUntil:"networkidle",timeout:35000}))?.status(),200);
  await mobile.waitForFunction(()=>document.getElementById("rk-station-count")?.textContent==="20",{timeout:15000});
+ await mobile.waitForFunction(()=>document.getElementById("rk-insar-count")?.textContent==="9",{timeout:15000});
+ assert.equal(await mobile.locator("#rk-insar-timeline li").count(),8);
  assert.equal(await mobile.locator("#rk-map").isVisible(),true);
  const overflow=await mobile.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth+2);
  assert.equal(overflow,false,"ranking center must not overflow on 390px mobile");
