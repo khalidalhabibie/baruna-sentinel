@@ -1,0 +1,203 @@
+{
+  "schema": "baruna-real-asf-15-candidate-baselines-v1",
+  "asOf": "2026-11-18",
+  "source": "NASA ASF SAR Search via asf_search public ASFProduct.stack",
+  "sourceEvidence": [
+    "https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44246881755",
+    "https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44247545559"
+  ],
+  "fullBurstId": "076_162214_IW2",
+  "polarization": "VV",
+  "direction": "DESCENDING",
+  "catalogScenes": 9,
+  "adjacentEdges": [
+    {
+      "referenceDate": "2026-07-22",
+      "secondaryDate": "2026-08-03",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": -68,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-08-03",
+      "secondaryDate": "2026-08-15",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": -23,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-08-15",
+      "secondaryDate": "2026-08-27",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": 32,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-08-27",
+      "secondaryDate": "2026-09-08",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": -85,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-09-08",
+      "secondaryDate": "2026-09-20",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": 120,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-09-20",
+      "secondaryDate": "2026-10-02",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": -37,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-10-02",
+      "secondaryDate": "2026-10-14",
+      "temporalDays": 12,
+      "asfPerpendicularBaselineMeters": -16,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": true
+    },
+    {
+      "referenceDate": "2026-10-14",
+      "secondaryDate": "2026-11-07",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": -14,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    }
+  ],
+  "twoStepRedundantEdges": [
+    {
+      "referenceDate": "2026-07-22",
+      "secondaryDate": "2026-08-15",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": -89,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-08-03",
+      "secondaryDate": "2026-08-27",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": 9,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-08-15",
+      "secondaryDate": "2026-09-08",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": -53,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-08-27",
+      "secondaryDate": "2026-09-20",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": 34,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-09-08",
+      "secondaryDate": "2026-10-02",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": 83,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-09-20",
+      "secondaryDate": "2026-10-14",
+      "temporalDays": 24,
+      "asfPerpendicularBaselineMeters": -54,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    },
+    {
+      "referenceDate": "2026-10-02",
+      "secondaryDate": "2026-11-07",
+      "temporalDays": 36,
+      "asfPerpendicularBaselineMeters": -31,
+      "sourceStatus": "NUMERIC_BASELINE_AVAILABLE_REVIEW_REQUIRED",
+      "processedAsHyP3": false
+    }
+  ],
+  "summary": {
+    "chronologicalSourceBaselinesConfirmed": 8,
+    "additionalPotentialLoopSourceBaselinesConfirmed": 7,
+    "totalNumericCandidatePairs": 15,
+    "existingProcessedInterferograms": 1,
+    "scientificallyValidatedTimeSeries": false
+  },
+  "minimumPilot": {
+    "focusAoiId": "aoi-seed-kaligawe-road",
+    "focusReason": "Highest single-pair land pixel quality of 3 illustrative AOIs (173/178 at research coherence>=0.7); NOT fastest subsidence.",
+    "dates": [
+      "2026-09-20",
+      "2026-10-02",
+      "2026-10-14"
+    ],
+    "threeTemporalEdges": [
+      {
+        "referenceDate": "2026-09-20",
+        "secondaryDate": "2026-10-02",
+        "days": 12,
+        "asfPerpendicularBaselineMeters": -37,
+        "processedProductAvailable": false,
+        "action": "CANDIDATE_NEW_HYP3_JOB_REQUIRES_EXPLICIT_APPROVAL"
+      },
+      {
+        "referenceDate": "2026-10-02",
+        "secondaryDate": "2026-10-14",
+        "days": 12,
+        "asfPerpendicularBaselineMeters": -16,
+        "processedProductAvailable": true,
+        "action": "REUSE_VERIFIED_EXISTING_HYP3_INTERFEROGRAM"
+      },
+      {
+        "referenceDate": "2026-09-20",
+        "secondaryDate": "2026-10-14",
+        "days": 24,
+        "asfPerpendicularBaselineMeters": -54,
+        "processedProductAvailable": false,
+        "action": "CANDIDATE_NEW_HYP3_JOB_REQUIRES_EXPLICIT_APPROVAL"
+      }
+    ],
+    "rationale": "One three-date triangle enables checking closure consistency if both additional pairs can be processed with compatible geometry and sufficient land coherence. It is not a validated LOS time series or annual rate.",
+    "minimumAdditionalJobsIfApproved": 2,
+    "costEstimateCredits": null,
+    "costReason": "Current HyP3 credits, rate and quota have not been checked. Run authenticated read-only cost/check then request explicit operator approval."
+  },
+  "scientificGates": {
+    "orbitalBaselineMetadataChecked": true,
+    "fullTemporalNetworkScientificallyAccepted": false,
+    "coherenceAcrossProposedPairsKnown": false,
+    "originalSinglePairArchiveAndGeoTIFFMetadataVerifiedByOperator": true,
+    "realSinglePairKaligawePixelQAAvailable": true,
+    "phaseClosureMeasured": false,
+    "stableReferenceVerified": false,
+    "atmosphericCorrectionsApplied": false,
+    "GNSSCurrentValidation": false,
+    "MintPyLOSTimeSeriesAvailable": false,
+    "annualVerticalRateAvailable": false,
+    "operationalRiskRankAllowed": false
+  },
+  "limits": [
+    "Baseline values use ASF stack convention relative to the reference and do not establish geodetic reference consistency.",
+    "Two-hop 24–36 day pairs may decorrelate more than 12-day links, especially near water/land change.",
+    "A single three-date triangle is preliminary interferometric closure QA, not robust long-period displacement trend.",
+    "No additional processed source was ordered or downloaded during this metadata review."
+  ]
+}
