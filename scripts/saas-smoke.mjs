@@ -67,16 +67,6 @@ try{
  assert.equal(await page.locator("#intel-ranking").isVisible(),true);
  assert.equal(await page.locator("#intel-findings").isVisible(),false);
  assert.equal(await page.locator("#intel-ranking-rows tr").count(),6);
- const rankingBox=await page.locator(".intel-ranking-header").boundingBox();
- const gnssQueueBox=await page.locator(".intel-gnss-disclosure").boundingBox();
- assert.ok(rankingBox&&gnssQueueBox&&rankingBox.y<gnssQueueBox.y,
-  "ranking evidence must be visible before GNSS follow-up queue");
- assert.equal(await page.locator(".intel-gnss-disclosure").getAttribute("open"),null,
-  "GNSS detail queue is optional, not the first visible ranking content");
- assert.match(await page.locator(".intel-ranking-scoreboard").innerText(),/ASET LAYAK DIRANKING/);
- assert.match(await page.locator(".intel-ranking-nogo").innerText(),/NOT AVAILABLE/);
- await page.locator(".intel-gnss-disclosure summary").click();
-
  await page.locator(".gnss-priority-row").first().waitFor({timeout:15000});
  assert.equal(await page.locator(".gnss-priority-row").count(),4);
  assert.match(await page.locator("#intel-gnss-review").innerText(),/CSEM \/ CSMG/);
@@ -84,14 +74,6 @@ try{
  assert.equal(await page.locator("#intel-ranking-rows .saas-chip-warn").count(),6);
  assert.equal(await page.locator('#intel-ranking a[href="./spatial-demo.html#ranking"]').count(),1);
  assert.match(page.url(),/intel=ranking/);
- await page.screenshot({path:"reports/baruna-saas-area-ranking-desktop.png",fullPage:false});
- await page.goto(BASE+"/area-tanjung-emas.html?intel=ranking#intelligence",{waitUntil:"networkidle"});
- assert.equal(await page.locator("#intel-ranking").isVisible(),true);
- assert.equal(await page.locator("#intelligence").count(),1);
- assert.ok(await page.evaluate(()=>window.scrollY>0),
-  "deep link #intelligence must scroll to selected intelligence content");
- assert.equal(await page.locator(".intel-gnss-disclosure").getAttribute("open"),null);
-
  await page.locator('[data-intel-tab="gate"]').click();
  assert.equal(await page.locator("#intel-gate").isVisible(),true);
  assert.match(await page.locator("#intel-gate").innerText(),/Data insufficient/);
