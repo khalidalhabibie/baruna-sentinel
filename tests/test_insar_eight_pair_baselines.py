@@ -14,7 +14,7 @@ class ASF:
         for i,a in enumerate(scenes):
             future=[{"sceneName":scenes[j]["sceneName"],
                      "perpendicularBaseline":-float((j-i)*10),
-                     "temporalBaseline":float(12*(j-i) if j<8 else 24)}
+                     "temporalBaseline":float((__import__("datetime").date.fromisoformat(scenes[j]["date"])-__import__("datetime").date.fromisoformat(a["date"])).days)}
                      for j in range(i+1,len(scenes))]
             if a["sceneName"]!=remove:
                 self.products[a["sceneName"]]=Product(
@@ -48,11 +48,17 @@ class TestPublicBaselines(unittest.TestCase):
         self.assertFalse(result["scientificGates"]["multiTemporalLOSTimeSeries"])
         self.assertFalse(result["scientificGates"]["infrastructureRiskRankingAllowed"])
         self.assertEqual(len(result["edges"]),8)
+        self.assertEqual(result["twoHopNumericBaselines"],7)
+        self.assertTrue(result["twoHopMetadataAvailableForAll"])
+        self.assertEqual(len(result["twoHopCandidates"]),7)
+        self.assertEqual(result["twoHopCandidates"][-1]["catalogTemporalDays"],36)
+        self.assertEqual(result["twoHopCandidates"][-1]["asfTemporalBaselineDays"],36.0)
     def test_missing_source_scene_blocks_adjacent_edge(self):
         doc=fixture();provider=ASF(doc,remove=doc["scenes"][0]["sceneName"])
         result=inspect(doc,provider)
         self.assertEqual(result["numericBaselineEdges"],7)
         self.assertFalse(result["allEightNumericBaselinesPresent"])
+        self.assertLess(result["twoHopNumericBaselines"],7)
     def test_mixed_direction_and_disconnected_edge_rejected(self):
         doc=fixture();doc["scenes"][0]["direction"]="ASCENDING"
         with self.assertRaises(ValueError):validate_catalog(doc)
