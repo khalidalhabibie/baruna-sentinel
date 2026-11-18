@@ -1,0 +1,51 @@
+name: BARUNA ASF eight-pair public baseline review
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/insar_eight_pair_baselines.py'
+      - 'tests/test_insar_eight_pair_baselines.py'
+      - 'data/semarang-asf-burst-network-20261118.json'
+      - '.github/workflows/asf-eight-pair-baselines.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review-eight-pairs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Offline metadata validity regression (no external data needed)
+        run: |
+          python3 -m py_compile scripts/insar_eight_pair_baselines.py
+          python3 -m unittest discover -s tests -p 'test_insar_eight_pair_baselines.py' -v
+      - name: Install NASA ASF public metadata client
+        run: python3 -m pip install 'asf_search>=8,<12'
+      - name: Retrieve actual numeric baseline metadata for 8 source edges
+        run: |
+          set +e
+          python3 scripts/insar_eight_pair_baselines.py
+          rc=$?
+          set -e
+          echo "Baseline completeness exit: $rc"
+          python3 - <<'PY'
+          import json,pathlib
+          r=json.loads(pathlib.Path('reports/semarang-asf-eight-pair-baselines.json').read_text())
+          assert len(r['edges'])==8
+          assert r['scientificGates']['networkScientificallyValidated'] is False
+          assert r['scientificGates']['multiTemporalLOSTimeSeries'] is False
+          assert r['scientificGates']['infrastructureRiskRankingAllowed'] is False
+          print('Numeric baselines:',r['numericBaselineEdges'],'of',r['candidateEdges'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: baruna-asf-8-source-baseline-metadata
+          path: reports/semarang-asf-eight-pair-baselines.json
+          if-no-files-found: ignore
