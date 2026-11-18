@@ -11,7 +11,7 @@
 | Stage | Tracking | Status as of 18 Nov 2026 | Reality / blocker |
 | --- | --- | --- | --- |
 | 1. User AOIs + local registry | [#40](https://github.com/khalidalhabibie/baruna-sentinel/issues/40) | **DONE** | 3 illustrative AOIs, CRUD, import/backup and localStorage, source coverage ranks, sub-workspaces; PR #39 merged to `main` |
-| 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **ORIGINAL ZIP FOUND / INVENTORY MISMATCH INVESTIGATING** | On 18 Nov user ran the local helper against the original ZIP; source exists and check reached `REQUIRED_HYP3_FILES_MISSING` **after SHA-256 comparison and ZIP CRC**, so source bytes match previously recorded QA. Audit CLI v1 incorrectly printed overall completeness as `SHA MATCH: False`; [helper PR #17](https://github.com/khalidalhabibie/sentinel-helpes/pull/17) fixed reporting and now lists missing suffixes. Need actual archive filenames and GeoTIFF metadata QA; do not call it a validated complete package. Helper Actions runner has prior startup failures; no green remote CI claim. |
+| 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **ORIGINAL ZIP SHA + CRC VERIFIED / README NAMING FIX MERGED / RASTER QA NEXT** | Operator Mac: 15 local tests passed, original SHA-256 and ZIP CRC verified; all **15 files safely extracted locally**. Sole missing expected suffix was ASF-documented `.README.md.txt` vs authentic archived `_README.md.txt`. Narrow mapping fix [helper PR #19](https://github.com/khalidalhabibie/sentinel-helpes/pull/19) merged; **new CLI and raster QA still must run on actual Mac**. No scientific displacement validated. |
 | 3. Compatible burst/SBAS network | [#42](https://github.com/khalidalhabibie/baruna-sentinel/issues/42) | **PUBLIC PRESELECTION + ONE BASELINE CONFIRMED / NETWORK & QA PENDING** | Live ASF provided 9 descending VV source acquisitions and 8 temporal candidate edges. The specific **2–14 October 2026** pair has ASF `asf_search` reference-based **temporal baseline 12 days and perpendicular baseline −16 m** (source check [run 44237864318](https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44237864318), [PR #46 merged](https://github.com/khalidalhabibie/baruna-sentinel/pull/46)). Other pair baselines, full AOI coherent coverage, products, reference, and processing network **remain unvalidated**. |
 | 4. MintPy LOS time series | [#43](https://github.com/khalidalhabibie/baruna-sentinel/issues/43) | **BLOCKED by stage 3 and processed stack** | One 12-day interferogram ≠ time series or annual motion |
 | 5. AOI screening + GNSS validation | [#44](https://github.com/khalidalhabibie/baruna-sentinel/issues/44) | **BLOCKED by stage 4 QA** | Current AOI ranking = catalog coverage only, GNSS station ranking = historical station-only, infrastructure risk ranking = unavailable |
@@ -74,6 +74,24 @@
 - Operationally, when the source ZIP becomes accessible, first use `sentinel-helpes` `bash run.command --insar-archive-audit --raster-qa` and attach the sanitized report to issue #41. Do **not** treat the eight catalog links as processed interferograms. Review perpendicular baseline and choose a small authorized stack in issue #42 before issuing additional HyP3 orders.
 
 **Time expectations:** original ZIP checksum/inventory is a lightweight local audit, but waiting for new HyP3 products, stacking multiple interferograms, MintPy geodetic/atmosphere/mask QA and independent GNSS processing may be substantial or require revisiting bad coastal coherence. Never promise the entire time series can be validated in one evening.
+
+## User ZIP SHA/CRC confirmed, 15 raw files extracted; README variant fix (18 Nov 2026)
+
+The operator sent the full archive inventory: **15 member files**, `SHA MATCH: True`, `ZIP CRC VERIFIED: True`, and `EXTRACTED_SOURCE_FILES_WITH_UNRESOLVED_REQUIRED_SUFFIXES`. The sole missing *expected naming convention* was `.README.md.txt`; the real source file is `_README.md.txt`. ASF's Burst InSAR product guide specifies the dotted convention, but this pinned, source-hash-verified archive uses underscore. All required scientific raster files and the standard `PRODUCT.txt` pair metadata were listed.
+
+[Helper PR #19](https://github.com/khalidalhabibie/sentinel-helpes/pull/19) landed a narrow acceptance of the exact observed `_README.md.txt` variant as well as documented `.README.md.txt`, with ambiguity rejection, tests reflecting the original **15-file nested archive** and no changes to source SHA/CRC, raster requirements, or science gates.
+
+**Important: user already extracted ZIP. Do NOT rerun `--extract-safe`** (it correctly rejects overwriting destination). Next local commands:
+
+```bash
+cd /Users/macpro/Code/bhimerka/sentinel-helpes
+git pull --ff-only origin main
+python3 -m unittest discover -s tests -p 'test_insar_archive_audit.py' -v
+bash run.command --insar-archive-audit
+bash run.command --insar-archive-audit --raster-qa
+```
+
+If rasterio is missing, install to helper venv with `.venv/bin/python3 -m pip install 'rasterio>=1.3.9,<2'` and retry only `--raster-qa`. The full archive QC cannot be marked passed until actual source has been re-audited with the updated code. CRS/alignment checks and coastal QA remain separate from archive integrity; do not assert new ground deformation.
 
 ## One-paste Mac audit and local extraction (18 Nov 2026)
 
