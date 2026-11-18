@@ -82,7 +82,7 @@ export function validateRecord(record){
  if(typeof record.id!=="string"||!/^aoi-[a-zA-Z0-9-]{6,60}$/.test(record.id))throw new TypeError("AOI ID tidak valid.");
  if(typeof record.name!=="string"||record.name.trim().length<3||record.name.length>70)throw new TypeError("Nama AOI harus 3–70 karakter.");
  if(!["evidence_review","coastal_context","deformation_screening"].includes(record.purpose))throw new TypeError("Tujuan AOI tidak dikenal.");
- if(!["USER_DRAWN_UNVERIFIED","USER_IMPORTED_UNVERIFIED"].includes(record.boundarySource))throw new TypeError("Sumber batas AOI tidak sah.");
+ if(!["USER_DRAWN_UNVERIFIED","USER_IMPORTED_UNVERIFIED","ILLUSTRATIVE_BOUNDARY_UNVERIFIED"].includes(record.boundarySource))throw new TypeError("Sumber batas AOI tidak sah.");
  if(typeof record.createdAt!=="string"||!Number.isFinite(Date.parse(record.createdAt)))throw new TypeError("Tanggal registrasi AOI tidak valid.");
  const geometry=validateAoiPolygon(record.geometry?.coordinates?.[0]);
  return {...record,name:record.name.trim(),geometry,boundarySource:record.boundarySource,sourceStatus:"USER_DECLARED_UNVERIFIED",rankingEligibility:"DATA_INSUFFICIENT",workspaceId:"semarang-coastal",regionId:"semarang"};
