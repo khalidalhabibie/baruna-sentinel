@@ -27,6 +27,17 @@ try{
 
  await page.goto(BASE+"/gnss-center.html",{waitUntil:"networkidle"});
  await page.locator("body[data-gnss-readiness=ready]").waitFor({timeout:15000});
+ await page.locator("body[data-gnss-historical=ready]").waitFor({timeout:15000});
+ assert.equal(await page.locator("#gnss-history-review-content .gnss-history-card").count(),2);
+ const research=await page.locator("#historical-trends").innerText();
+ assert.match(research,/CSEM/);
+ assert.match(research,/CPKL/);
+ assert.match(research,/−0,728/);
+ assert.match(research,/−115,938/);
+ assert.match(research,/Selisih belum terselesaikan/);
+ assert.match(research,/bukan deformasi tahun 2026/i);
+ await page.locator("#historical-trends summary").click();
+ assert.equal(await page.locator("#historical-trends a[href^='https://doi.org/']").count(),2);
  assert.match(await page.locator("#gnss-csem-epochs").innerText(),/3\.561 epochs/);
  assert.match(await page.locator("#gnss-bako-epochs").innerText(),/41 epochs/);
  assert.match(await page.locator("#gnss-bako-constellations").innerText(),/GLONASS/);
