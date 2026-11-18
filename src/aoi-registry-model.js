@@ -86,7 +86,8 @@ export function validateRecord(record){
  if(!["USER_DRAWN_UNVERIFIED","USER_IMPORTED_UNVERIFIED","ILLUSTRATIVE_BOUNDARY_UNVERIFIED"].includes(record.boundarySource))throw new TypeError("Sumber batas AOI tidak sah.");
  if(typeof record.createdAt!=="string"||!Number.isFinite(Date.parse(record.createdAt)))throw new TypeError("Tanggal registrasi AOI tidak valid.");
  const geometry=validateAoiPolygon(record.geometry?.coordinates?.[0]);
- const infraWorkspaceId=validateGroup(record.infraWorkspaceId??DEFAULT_INFRA_WORKSPACE);
+ const seedGroup={"aoi-seed-tanjung-emas":"port-logistics","aoi-seed-terboyo-industry":"industrial-coastal","aoi-seed-kaligawe-road":"transport-corridors"}[record.id];
+ const infraWorkspaceId=validateGroup(record.infraWorkspaceId??seedGroup??DEFAULT_INFRA_WORKSPACE);
  return {...record,name:record.name.trim(),geometry,infraWorkspaceId,boundarySource:record.boundarySource,sourceStatus:"USER_DECLARED_UNVERIFIED",rankingEligibility:"DATA_INSUFFICIENT",workspaceId:"semarang-coastal",regionId:"semarang"};
 }
 export function readRegistry(storage){
