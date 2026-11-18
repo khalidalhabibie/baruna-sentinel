@@ -6,6 +6,11 @@ on:
       - 'src/workspace-ranking-model.js'
       - 'src/ranking-center.js'
       - 'src/insar-network-readiness.js'
+      - 'src/insar-kaligawe-pilot.test.js'
+      - 'src/real-workspace.js'
+      - 'real-workspace.html'
+      - 'spatial-demo.html'
+      - 'spatial-ui-alignment.css'
       - 'src/insar-sourced-evidence.test.js'
       - 'data/semarang-asf-15-baseline-candidates-20261118.json'
       - 'data/semarang-hyp3-aoi-pixel-screening-20261118.json'
@@ -40,8 +45,10 @@ jobs:
           node --check src/workspace-ranking-model.js
           node --check src/ranking-center.js
           node --check src/insar-network-readiness.js
+          node --check src/real-workspace.js
+          node --check src/spatial-demo.js
           node --check src/aoi-registry.js
-          node --test src/insar-network-readiness.test.js src/insar-sourced-evidence.test.js src/real-hyp3-insar.test.js src/workspace-ranking-model.test.js src/aoi-infrastructure-cases.test.js tests/aoi-local-backup.test.js tests/aoi-registry-model.test.js
+          node --test src/insar-kaligawe-pilot.test.js src/insar-network-readiness.test.js src/insar-sourced-evidence.test.js src/real-hyp3-insar.test.js src/workspace-ranking-model.test.js src/aoi-infrastructure-cases.test.js tests/aoi-local-backup.test.js tests/aoi-registry-model.test.js
       - name: Build deployment with source-validated published GNSS
         run: npm run build
       - name: Prepare Playwright system Chrome
