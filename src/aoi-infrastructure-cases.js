@@ -5,19 +5,19 @@
 import {validateAoiPolygon, validateRecord, MAX_AOIS} from "./aoi-registry-model.js";
 export const SEED_MARKER="baruna:semarang:infra-seeds-added:v1";
 const examples=[
- ["aoi-seed-tanjung-emas","Pelabuhan Tanjung Emas (contoh)","Port / logistics",
+ ["aoi-seed-tanjung-emas","Pelabuhan Tanjung Emas (contoh)","Port / logistics","port-logistics",
   [[110.418,-6.952],[110.431,-6.952],[110.431,-6.940],[110.418,-6.940]],
   "https://journal.esdm.go.id/bomg/article/view/12755"],
- ["aoi-seed-terboyo-industry","Kawasan Industri Terboyo (contoh)","Industrial / warehouse",
+ ["aoi-seed-terboyo-industry","Kawasan Industri Terboyo (contoh)","Industrial / warehouse","industrial-coastal",
   [[110.461,-6.949],[110.473,-6.949],[110.473,-6.938],[110.461,-6.938]],
   "https://doi.org/10.3390/w14020201"],
- ["aoi-seed-kaligawe-road","Koridor Jalan Kaligawe (contoh)","Road / logistics access",
+ ["aoi-seed-kaligawe-road","Koridor Jalan Kaligawe (contoh)","Road / logistics access","transport-corridors",
   [[110.454,-6.959],[110.467,-6.959],[110.467,-6.952],[110.454,-6.952]],
   "https://doi.org/10.3390/w14020201"]
 ];
-export const INFRASTRUCTURE_CASES=Object.freeze(examples.map(([id,name,infrastructureType,ring,researchUrl])=>
+export const INFRASTRUCTURE_CASES=Object.freeze(examples.map(([id,name,infrastructureType,infraWorkspaceId,ring,researchUrl])=>
  Object.freeze(validateRecord({
-  id,name,infrastructureType,researchUrl,seedCase:true,
+  id,name,infrastructureType,infraWorkspaceId,researchUrl,seedCase:true,
   purpose:"deformation_screening",
   geometry:validateAoiPolygon(ring),
   boundarySource:"ILLUSTRATIVE_BOUNDARY_UNVERIFIED",
