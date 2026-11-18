@@ -1,0 +1,114 @@
+{
+  "schema": "baruna-hyp3-real-aoi-pixel-screening-v1",
+  "asOf": "2026-11-18",
+  "source": {
+    "product": "S1_162214_IW2_20261002_20261014_VV_INT80_5087",
+    "acquisitionDates": [
+      "2026-10-02",
+      "2026-10-14"
+    ],
+    "processingService": "ASF DAAC HyP3 hyp3_isce2 3.0.2 / ISCE2 2.6.5",
+    "dataOrigin": "operator-uploaded individual genuine product TIFFs and README/parameter text, analyzed directly",
+    "originalArchiveSha256OperatorVerified": "705b15ce1ba6586d859abe110a62423fd20241dfcb00947dfc5af223eb4b2a2b",
+    "localAuditStatusOperatorReported": "PASS_ARCHIVE_INTEGRITY_AND_RASTER_METADATA",
+    "geocodedEpsg": 32749,
+    "geocodedPixelSpacingMeters": 80,
+    "geocodedRasterSize": {
+      "rows": 541,
+      "columns": 1312
+    },
+    "dem": "Copernicus GLO-30",
+    "atmosphericCorrectionApplied": false,
+    "processingPairBaselineMetadataMeters": 16.7183976478018,
+    "publicASFStackPerpendicularBaselineMeters": -16,
+    "baselineNote": "Distinct source/method/sign conventions; no geodetic equivalence claim."
+  },
+  "method": {
+    "aoiBoundaryClass": "ILLUSTRATIVE_BOUNDARY_UNVERIFIED",
+    "aoiGeometrySource": "src/aoi-infrastructure-cases.js at 18 Nov 2026",
+    "polygonInclusion": "EPSG:4326 illustrative AOI transformed into EPSG:32749; 80m raster pixel center must be inside polygon (all_touched=false)",
+    "landDefinition": "water_mask==1 and valid water mask",
+    "jointValidDefinition": "land && coherence raster valid && unwrapped phase raster valid && connected component id>0 and valid",
+    "qualityThreshold": "coherence>=0.7 (research screening only)",
+    "denominator": "all land-classified 80m pixel centers inside AOI, NOT polygon surveyed area or measured deformation",
+    "continuity": "8-neighbor connectivity of pixels passing the quality threshold",
+    "productsAnalyzed": [
+      "corr.tif",
+      "unw_phase.tif",
+      "water_mask.tif",
+      "conncomp.tif"
+    ],
+    "rdrWarning": "*_rdr.tif files are native radar coordinate products, not map-ready EPSG:4326 layers; excluded"
+  },
+  "aoiResults": [
+    {
+      "aoiId": "aoi-seed-tanjung-emas",
+      "name": "Pelabuhan Tanjung Emas (contoh)",
+      "pixelsInsideAoi": 306,
+      "waterPixels": 157,
+      "landPixels": 149,
+      "jointValidPixels": 143,
+      "qualityPixels": 74,
+      "qualityShareOfLandPct": 49.66,
+      "coherenceMedianJointValid": 0.725,
+      "qualityClusters8Connected": 4,
+      "largestQualityClusterPixels": 54,
+      "qualityPixelsCoherenceGe09": 16,
+      "qualityStatus": "SPATIALLY_FRAGMENTED_SCREENING_ONLY"
+    },
+    {
+      "aoiId": "aoi-seed-terboyo-industry",
+      "name": "Kawasan Industri Terboyo (contoh)",
+      "pixelsInsideAoi": 240,
+      "waterPixels": 50,
+      "landPixels": 190,
+      "jointValidPixels": 187,
+      "qualityPixels": 99,
+      "qualityShareOfLandPct": 52.11,
+      "coherenceMedianJointValid": 0.72,
+      "qualityClusters8Connected": 2,
+      "largestQualityClusterPixels": 89,
+      "qualityPixelsCoherenceGe09": 36,
+      "qualityStatus": "PARTIAL_COVERAGE_SCREENING_ONLY"
+    },
+    {
+      "aoiId": "aoi-seed-kaligawe-road",
+      "name": "Koridor Jalan Kaligawe (contoh)",
+      "pixelsInsideAoi": 180,
+      "waterPixels": 2,
+      "landPixels": 178,
+      "jointValidPixels": 178,
+      "qualityPixels": 173,
+      "qualityShareOfLandPct": 97.19,
+      "coherenceMedianJointValid": 0.952,
+      "qualityClusters8Connected": 1,
+      "largestQualityClusterPixels": 173,
+      "qualityPixelsCoherenceGe09": 145,
+      "qualityStatus": "PREFERRED_PIXEL_QUALITY_CANDIDATE_ONLY"
+    }
+  ],
+  "portLocator": {
+    "source": "BIG RBI 1M cartographic point (not surveyed pier)",
+    "wgs84": [
+      110.42332243,
+      -6.93749333
+    ],
+    "insideIllustrativeTanjungEmasPolygon": false,
+    "coherence": 0.3424570858478546,
+    "waterMask": 0,
+    "unwrappedPhaseValid": false,
+    "interpretation": "No valid port-point phase; not interchangeable with the 49.66%-valid illustrative AOI."
+  },
+  "scientificGates": {
+    "verifiedArchiveByteAndRasterMetadataFromOperator": true,
+    "oneInterferogramOnly": true,
+    "stableGeodeticReferenceVerified": false,
+    "atmosphereCorrected": false,
+    "phaseUnwrappingIndependentlyReviewed": false,
+    "gnssCrossValidation": false,
+    "multitemporalLOSTimeSeries": false,
+    "annualVerticalSubsidenceAvailable": false,
+    "infrastructureRiskRankingAllowed": false
+  },
+  "recommendation": "Investigate Kaligawe as a candidate science QA area while still reviewing product reference, 8-neighbor pixel clusters, coherence across multiple dates and valid AOI geometry; do not infer subsidence or risk from single-pair quality."
+}
