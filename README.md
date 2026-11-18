@@ -1,3 +1,30 @@
+## Historical GNSS CSEM / CPKL — research comparison panel (19 Nov 2026)
+
+**UI:** [Multi-GNSS Center → Historical trends](gnss-center.html#historical-trends). The [Ranking Center](ranking-center.html) keeps the **published** Table 2 velocities for all 20 stations unchanged, with a cross-link for CSEM and CPKL. This separate panel shows **published 2010–2021 station rates alongside BARUNA's secondary OLS + annual/semiannual research-series fit**, never current readings or operational subsidence risk.
+
+Source comparison (from operator's verified Mac Helpes run after 8/8 tests PASS, 21/21 Zenodo source checksums verified):
+
+| Station | Observed series | Published Table 2 | BARUNA secondary seasonal OLS | OLS minus paper | Review |
+| --- | --- | ---: | ---: | ---: | --- |
+| CSEM | 2010-01-13–2021-12-31 · 3,561 epochs | −0.8 mm/y | **−0.728 mm/y** | +0.072 mm/y | Close; not independent validation |
+| CPKL | 2010-11-11–2021-12-31 · 3,989 epochs | −107.0 mm/y | **−115.938 mm/y** | −8.938 mm/y | Method discrepancy **unresolved** |
+
+Original processed GNSS research: [Zenodo 7775016](https://doi.org/10.5281/zenodo.7775016), [Susilo et al. (2023)](https://doi.org/10.1038/s41597-023-02274-0). Method boundaries and CPKL discrepancy: [BARUNA Helpes historical science gate](https://github.com/khalidalhabibie/sentinel-helpes/blob/main/docs/GNSS_HISTORICAL_SCIENCE_GATE_20261119.md). These are **historical, externally processed GNSS research time series**; the BARUNA fit does not reproduce the upstream GAMIT/GLOBK geodetic solution or the authors' exact velocity estimator. This **does not validate November 2026 CSEM RTKLIB PPP**, is not an independent measurement of current subsidence and cannot be projected onto Tanjung Emas assets. The chart bars are **scaled separately for each station**, not across stations, and do not represent a station hazard ranking.
+
+Implementation: curated public comparison is in \`data/gnss-historical-csem-cpkl-review.json\`. Its precise published and reproduced values, full date ranges, public-source MD5 fingerprints, scientific limits, and URL provenance are verified by \`src/gnss-historical-review.js\`. The UI is embedded in \`src/saas-app.js\` and styled in \`saas.css\` consistent with the existing blue BARUNA shell. Unknown schema, unexpected method or scientific-claim mutation fails closed: the UI does **not** substitute synthetic values. \`src/gnss-historical-review.test.js\` covers provenance, tamper rejection, numeric labels, and HTML escaping; \`scripts/saas-smoke.mjs\` covers the browser research panel. The exact build allowlist contains both the public JSON and source module.
+
+\`\`\`bash
+npm test
+npm run build
+# Smoke with a running local server, installed Playwright and Chromium:
+node scripts/saas-smoke.mjs
+node scripts/ranking-center-smoke.mjs
+\`\`\`
+
+**Deployment:** pushing to \`main\` triggers connected Git/Vercel workflows. A GitHub file update is not itself proof that the production domain serves the new assets; confirm both \`gnss-center.html\` and \`data/gnss-historical-csem-cpkl-review.json\` are accessible in the target deployment before claiming live availability.
+
+---
+
 # BARUNA Sentinel — BIG Bhumireka 2026
 
 ## Active execution handoff — Semarang AOI / InSAR (18 Nov 2026)
