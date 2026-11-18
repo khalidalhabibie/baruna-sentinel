@@ -27,7 +27,7 @@ export function catalogCategories(record){
  return {checked:true,count:Number(s1)+Number(s2),s1,s2};
 }
 function orderedRanks(entries){
- const result=[...entries].sort((a,b)=>b.coverage-b.coverage||b.checkedCount-a.checkedCount||a.name.localeCompare(b.name,"id"));
+ const result=[...entries].sort((a,b)=>b.coverage-a.coverage||b.checkedCount-a.checkedCount||a.name.localeCompare(b.name,"id"));
  let rank=0,previousKey=null;
  return result.map((row,i)=>{
   const eligible=row.coverage>0;
