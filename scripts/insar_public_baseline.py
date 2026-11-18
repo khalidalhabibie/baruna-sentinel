@@ -99,7 +99,7 @@ def evaluate(source_names,products,stack):
         report["temporalBaselineDays"]=pair["temporalBaselineDays"]
     t=report["temporalBaselineDays"]
     report["scientificGates"]["sourcePerpendicularBaselineNumeric"]=(report["perpendicularBaselineMeters"] is not None)
-    accepted=(report["sourcePerpendicularBaselineNumeric"] and report["secondaryInStack"]
+    accepted=(report["scientificGates"]["sourcePerpendicularBaselineNumeric"] and report["secondaryInStack"]
          and t is not None and abs(abs(t)-12)<=1.5
          and report["scientificGates"]["sameFullBurstIdFromCatalog"])
     report["status"]="BASELINE_METRICS_AVAILABLE_REVIEW_REQUIRED" if accepted else "BLOCKED_BASELINE_METADATA_INCOMPLETE"
