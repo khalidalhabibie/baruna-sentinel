@@ -6,6 +6,8 @@ import {
 } from "./aoi-registry-model.js";
 import {historyEvent,appendHistory,choosePublishedCatalog} from "./aoi-monitor-client.js";
 import {makeLocalBackup,parseLocalBackup,mergeLocalBackup,BACKUP_MAX_BYTES} from "./aoi-local-backup.js";
+import {SEED_MARKER,mergeInfrastructureSeeds,rankAoiEvidenceCoverage} from "./aoi-infrastructure-cases.js";
+import {INFRA_WORKSPACES,groupForAoi,groupName} from "./workspace-ranking-model.js";
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -22,11 +24,11 @@ function applyStored(recordsNext){
  catch(error){storageError(error);throw error;}
 }
 function newAoi(){selectedId=null;draft=null;drawing=false;drawPoints=[];geometry=null;boundarySource=null;
- $("aoi-form").reset();$("aoi-name").value="";$("aoi-purpose").value="evidence_review";
+ $("aoi-form").reset();$("aoi-name").value="";$("aoi-purpose").value="evidence_review";$("aoi-infra-workspace").value="semarang-general";
  drawMap();render();message("Area baru: gambar polygon di peta atau impor satu GeoJSON WGS84.");}
 function loadAoi(id){const item=records.find(r=>r.id===id);if(!item)return;
  selectedId=item.id;draft=null;drawing=false;drawPoints=[];geometry=item.geometry;boundarySource=item.boundarySource;
- $("aoi-name").value=item.name;$("aoi-purpose").value=item.purpose;
+ $("aoi-name").value=item.name;$("aoi-purpose").value=item.purpose;$("aoi-infra-workspace").value=groupForAoi(item);
  drawMap();render();message("AOI "+item.name+" dibuka dari penyimpanan browser.");
  if(map){const coords=geometry.coordinates[0].map(([lon,lat])=>[lat,lon]);map.fitBounds(window.L.latLngBounds(coords).pad(.35),{maxZoom:14});}
 }
@@ -41,7 +43,7 @@ function drawMap(){
   vertices=L.layerGroup(drawPoints.map(c=>L.circleMarker([c[1],c[0]],{radius:4,color:"#fff",weight:2,fillColor:"#206e58",fillOpacity:1}))).addTo(map);
  }
  $("vertex-count").textContent=drawPoints.length+" titik";
- $("boundary-provenance").textContent=boundarySource==="USER_DRAWN_UNVERIFIED"?"Digambar pengguna (unverified)":boundarySource==="USER_IMPORTED_UNVERIFIED"?"GeoJSON diimpor (unverified)":"Belum digambar / diimpor";
+ $("boundary-provenance").textContent=boundarySource==="USER_DRAWN_UNVERIFIED"?"Digambar pengguna (unverified)":boundarySource==="USER_IMPORTED_UNVERIFIED"?"GeoJSON diimpor (unverified)":boundarySource==="ILLUSTRATIVE_BOUNDARY_UNVERIFIED"?"Contoh polygon ilustratif (bukan batas resmi)":"Belum digambar / diimpor";
  $("undo-point").disabled=!drawing||!drawPoints.length;
  $("finish-draw").disabled=!drawing||drawPoints.length<3;
  $("start-draw").setAttribute("aria-pressed",String(drawing));
@@ -74,7 +76,9 @@ function save(event){event.preventDefault();try{
  const name=$("aoi-name").value.trim();
  const current=selected();const changed=current?JSON.stringify(current.geometry.coordinates)!==JSON.stringify(geometry.coordinates):true;
  const id=current?.id||( "aoi-"+crypto.randomUUID());
- const next={id,name,purpose:$("aoi-purpose").value,createdAt:current?.createdAt||new Date().toISOString(),
+ const next={id,name,purpose:$("aoi-purpose").value,infraWorkspaceId:$("aoi-infra-workspace").value,
+  seedCase:current?.seedCase===true&&!changed,infrastructureType:current?.infrastructureType??null,
+  researchUrl:current?.researchUrl??null,createdAt:current?.createdAt||new Date().toISOString(),
   geometry,boundarySource,sourceStatus:"USER_DECLARED_UNVERIFIED",workspaceId:"semarang-coastal",regionId:"semarang",
   lastEvidenceCheck:changed?null:(current?.lastEvidenceCheck||null),lastChange:changed?null:(current?.lastChange||null),
   monitorHistory:changed?[]:(current?.monitorHistory||[]),cloudId:current?.cloudId||null};
@@ -88,7 +92,7 @@ function deleteSelected(){const item=selected();if(!item)return;
  try{applyStored(records.filter(x=>x.id!==item.id));newAoi();message("AOI dihapus dari browser ini.");}
  catch(e){message("Gagal menghapus: "+e.message,true);}}
 function renderList(){const list=$("aoi-list");if(!records.length){list.innerHTML='<p class="empty-short">Belum ada AOI terdaftar di browser ini.</p>';return;}
- list.innerHTML=records.map(r=>'<button type="button" class="area-item" data-aoi-id="'+esc(r.id)+'" aria-pressed="'+(r.id===selectedId)+'"><strong>'+esc(r.name)+'</strong><span>'+r.geometry.areaKm2.toLocaleString("id-ID")+' km² · '+(r.lastEvidenceCheck?'dicek '+esc(dateShort(r.lastEvidenceCheck.checkedAt)):'belum dicek')+'</span></button>').join("");}
+ list.innerHTML=records.map(r=>'<button type="button" class="area-item" data-aoi-id="'+esc(r.id)+'" aria-pressed="'+(r.id===selectedId)+'"><strong>'+esc(r.name)+'</strong><span class="area-category">'+esc(groupName(groupForAoi(r)))+" · "+(r.seedCase?"CONTOH · ILUSTRATIF":"AOI LOKAL")+"</span><span>"+r.geometry.areaKm2.toLocaleString("id-ID")+' km² · '+(r.lastEvidenceCheck?'dicek '+esc(dateShort(r.lastEvidenceCheck.checkedAt)):'belum dicek')+'</span></button>').join("");}
 function renderMonitorHistory(history){
  if(!Array.isArray(history)||!history.length)return '<div class="monitor-empty">Riwayat belum tersedia. Klik Check Evidence untuk mencatat pemeriksaan pertama.</div>';
  return '<div class="monitor-history"><strong>RIWAYAT PEMERIKSAAN · MAKSIMAL 20</strong>'+history.slice(0,20).map(e=>
@@ -110,7 +114,18 @@ function renderQueue(){const root=$("queue-content"),item=selected();if(!item){r
  root.innerHTML='<div class="queue-lead"><strong>DATA INSUFFICIENT · 0 aset memenuhi ranking</strong><p>Ini daftar kebutuhan data. Bukan urutan risiko struktural, prediksi bencana, atau prioritas inspeksi yang telah disetujui operator.</p></div>'+ 
   '<div class="queue-list">'+tasks.map((t,i)=>'<div class="queue-item"><span class="queue-index">'+String(i+1).padStart(2,"0")+'</span><div><strong>'+esc(t.label)+'</strong><p>'+esc(t.detail)+'</p><small>Penanggung jawab: '+esc(t.responsible)+'</small></div></div>').join("")+'</div>';
 }
-function render(){const item=selected();renderList();
+function renderEvidenceRanking(){
+ const root=$("research-ranking-list");
+ if(!root)return;
+ const rows=rankAoiEvidenceCoverage(records);
+ if(!rows.length){root.innerHTML='<p class="research-empty">Belum ada AOI tersimpan.</p>';return;}
+ root.innerHTML=rows.map(r=>
+  '<button type="button" class="research-rank-row" data-aoi-rank="'+esc(r.id)+'" aria-pressed="'+String(r.id===selectedId)+'">'+
+  '<span class="research-rank-number">'+(r.rank?"#"+r.rank:"—")+'</span>'+
+  '<span class="research-rank-label"><strong>'+esc(r.name)+'</strong><small>'+esc(r.status)+'</small></span>'+
+  '<span class="research-rank-unranked">Risiko: belum dapat dinilai</span></button>').join("");
+}
+function render(){const item=selected();renderList();renderEvidenceRanking();
  $("stat-areas").textContent=String(records.length);
  $("stat-area-size").textContent=(geometry?.areaKm2??item?.geometry?.areaKm2)?.toLocaleString("id-ID")||"—";
  $("stat-check").textContent=item?.lastEvidenceCheck?dateShort(item.lastEvidenceCheck.checkedAt):"Belum";
@@ -190,8 +205,21 @@ async function restoreLocalBackup(file){
  finally{$("restore-local").value="";}
 }
 function initialize(){
- try{records=readRegistry(window.localStorage);}catch(e){storageError(e);records=[];}
+ const groupSelect=$("aoi-infra-workspace");
+ groupSelect.innerHTML=INFRA_WORKSPACES.map(w=>'<option value="'+esc(w.id)+'">'+esc(w.name)+'</option>').join("");
+ groupSelect.value="semarang-general";
+ let newlySeeded=0;
+ try{
+  records=readRegistry(window.localStorage);
+  if(window.localStorage.getItem(SEED_MARKER)!=="1"){
+   const withExamples=mergeInfrastructureSeeds(records);
+   newlySeeded=withExamples.length-records.length;
+   if(newlySeeded>0)records=writeRegistry(window.localStorage,withExamples);
+   window.localStorage.setItem(SEED_MARKER,"1");
+  }
+ }catch(e){storageError(e);records=[];}
  $("aoi-list").addEventListener("click",e=>{const target=e.target.closest("[data-aoi-id]");if(target)loadAoi(target.dataset.aoiId);});
+ $("research-ranking-list")?.addEventListener("click",e=>{const target=e.target.closest("[data-aoi-rank]");if(target)loadAoi(target.dataset.aoiRank);});
  $("new-aoi").addEventListener("click",newAoi);
  $("aoi-name").addEventListener("input",render);
  $("aoi-form").addEventListener("submit",save);
@@ -205,6 +233,8 @@ function initialize(){
  $("export-brief").addEventListener("click",exportBrief);
  $("backup-local").addEventListener("click",exportLocalBackup);
  $("restore-local").addEventListener("change",event=>restoreLocalBackup(event.target.files?.[0]));
- initMap();render();
+ initMap();
+ if(newlySeeded>0){const first=records.find(r=>r.seedCase);if(first)loadAoi(first.id);else render();}
+ else render();
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});else initialize();

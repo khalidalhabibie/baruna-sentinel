@@ -6,7 +6,9 @@ function cleaned(r){
  const a=validateRecord(r);
  return {id:a.id,name:a.name,purpose:a.purpose,createdAt:a.createdAt,
   geometry:a.geometry,boundarySource:a.boundarySource,sourceStatus:'USER_DECLARED_UNVERIFIED',
-  regionId:'semarang',workspaceId:'semarang-coastal',
+  regionId:'semarang',workspaceId:'semarang-coastal',infraWorkspaceId:a.infraWorkspaceId,
+  seedCase:a.seedCase===true,infrastructureType:typeof a.infrastructureType==='string'?a.infrastructureType.slice(0,80):null,
+  researchUrl:typeof a.researchUrl==='string'&&/^https:\/\//.test(a.researchUrl)?a.researchUrl.slice(0,350):null,
   lastEvidenceCheck:a.lastEvidenceCheck||null,lastChange:a.lastChange||null,
   monitorHistory:Array.isArray(a.monitorHistory)?a.monitorHistory.slice(0,20):[]};
 }

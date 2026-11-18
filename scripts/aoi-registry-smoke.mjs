@@ -13,7 +13,10 @@ await page.route("https://tile.openstreetmap.org/**",route=>route.fulfill({statu
 try{
  assert.equal((await page.goto(BASE+"/aoi-registry.html",{waitUntil:"networkidle",timeout:30000})).status(),200);
  await page.locator(".leaflet-container").waitFor({state:"visible",timeout:15000});
- assert.equal(await page.locator("#stat-areas").innerText(),"0");
+ assert.equal(await page.locator("#stat-areas").innerText(),"3");
+ assert.equal(await page.locator(".area-item").count(),3);
+ assert.equal(await page.locator("#aoi-infra-workspace").count(),1);
+ await page.locator("#new-aoi").click();
  assert.equal(await page.locator("#check-evidence").isDisabled(),true);
  await page.screenshot({path:"reports/baruna-aoi-registry-empty.png",fullPage:false});
  const testGeoJSON={type:"FeatureCollection",features:[{type:"Feature",properties:{},geometry:{type:"Polygon",coordinates:[[
@@ -22,9 +25,10 @@ try{
  await page.locator("#upload-geojson").setInputFiles({name:"semarang-aoi.geojson",mimeType:"application/geo+json",buffer:Buffer.from(JSON.stringify(testGeoJSON))});
  assert.match(await page.locator("#map-hint").innerText(),/berhasil diimpor/);
  await page.locator("#aoi-name").fill("Tanjung Emas · AOI Pilot");
+ await page.locator("#aoi-infra-workspace").selectOption("port-logistics");
  await page.locator("#save-aoi").click();
- assert.equal(await page.locator("#stat-areas").innerText(),"1");
- assert.equal(await page.locator(".area-item").count(),1);
+ assert.equal(await page.locator("#stat-areas").innerText(),"4");
+ assert.equal(await page.locator(".area-item").count(),4);
  // Browser-local AOI backup includes no cloud credentials and can restore a deleted polygon.
  const backupPromise=page.waitForEvent("download");
  await page.locator("#backup-local").click();
@@ -33,7 +37,8 @@ try{
  const backupBytes=await readFile(await backupDownload.path());
  const backupPayload=JSON.parse(backupBytes.toString("utf8"));
  assert.equal(backupPayload.schema,"baruna-local-aoi-backup-v1");
- assert.equal(backupPayload.records.length,1);
+ assert.equal(backupPayload.records.length,4);
+ assert.equal(backupPayload.records.find(x=>x.name==="Tanjung Emas · AOI Pilot").infraWorkspaceId,"port-logistics");
  assert.equal(backupPayload.containsOperationalRanking,false);
  assert.equal(await page.locator("#cloud-console").count(),0);
  
@@ -52,18 +57,18 @@ try{
  await page.locator("#export-brief").click();
  const download=await dl;assert.match(download.suggestedFilename(),/verification-brief\.json$/);
  await page.reload({waitUntil:"networkidle"});
- await page.locator(".area-item").waitFor({state:"visible"});
- assert.equal(await page.locator("#stat-areas").innerText(),"1");
- await page.locator(".area-item").click();
+ await page.locator(".area-item").first().waitFor({state:"visible"});
+ assert.equal(await page.locator("#stat-areas").innerText(),"4");
+ await page.locator(".area-item").filter({hasText:"Tanjung Emas · AOI Pilot"}).click();
  assert.equal(await page.locator("#evidence-content .scene-summary").count(),1);
  assert.match(await page.locator("#queue-content").innerText(),/DATA INSUFFICIENT/);
  // Delete the local record, then restore from downloaded JSON.
  page.on("dialog",dialog=>dialog.accept());
  await page.locator("#delete-aoi").click();
- assert.equal(await page.locator("#stat-areas").innerText(),"0");
+ assert.equal(await page.locator("#stat-areas").innerText(),"3");
  await page.locator("#restore-local").setInputFiles({name:"BARUNA_Semarang_AOI_Backup.json",mimeType:"application/json",buffer:backupBytes});
- await page.locator(".area-item").waitFor({state:"visible"});
- assert.equal(await page.locator("#stat-areas").innerText(),"1");
+ await page.locator(".area-item").first().waitFor({state:"visible"});
+ assert.equal(await page.locator("#stat-areas").innerText(),"4");
  assert.match(await page.locator("#map-hint").innerText(),/Restore selesai/);
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
  mobile.on("pageerror",e=>errors.push(e.message));

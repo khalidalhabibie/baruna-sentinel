@@ -1,5 +1,19 @@
 # BARUNA Sentinel — BIG Bhumireka 2026
 
+## Research Ranking Center — multi-scope workspaces & historical GNSS (18 Nov 2026)
+
+**Open [Ranking Center](ranking-center.html)** and [AOI Registry](aoi-registry.html). This is a source-attributed demonstration with **three Semarang infrastructure sub-workspaces**, not a multi-city subsidence risk league. The rest of BARUNA's regional portfolio (Jakarta / Surabaya) remains explicitly without sufficient registered evidence.
+
+- **Across workspaces:** compare proportion of two **catalog metadata categories** found inside manually checked AOIs; port/logistics, coastal industry, transport corridors, plus general AOIs. Denominator = 2 × AOI count. This is **not** satellite deformation, science QA completeness, physical exposure, or operational risk.
+- **Inside one workspace:** compare catalog category presence for its individual AOIs, with tied ranks and unranked areas whose evidence checks are missing or have zero catalog categories.
+- **Specific AOI:** show its declared study polygon, catalog evidence status, the geographically nearest published GNSS station, approximate distance, period, and source; **do not** use that station's rate as AOI displacement.
+- **Independent GNSS station leaderboard:** 20 published vertical velocities with publication-reported uncertainties, period **2010–2021**, from Susilo et al. (2023) *Scientific Data*, [Table 2](https://doi.org/10.1038/s41597-023-02274-0), public source [Zenodo 7775016](https://doi.org/10.5281/zenodo.7775016). Local static source `data/gnss-published-2023-stations.geojson` was carried over from the research helper. CPKL is published at −107.0 mm/year and CSEM at −0.8 mm/year; **these are station observations**, not BARUNA's new 2026 Multi-GNSS results.
+- **Separate publication:** UGM 2021–2023 PPP contrasts CSMG and CSEM, displayed as independent context. The two papers cannot be merged into one site-risk metric without aligning method, reference frame, period, and uncertainties.
+- **Storage:** 3 example AOIs use clearly marked **illustrative rectangles**. Added/user-edited AOIs belong to a chosen Semarang infrastructure sub-workspace and persist in `localStorage` under the existing registry key; backup/restore JSON retains workspace assignment. No cross-device sync. No survey-grade asset geometries are claimed.
+- **Future scientific gate:** operational AOI deformation/risk ranks remain `null` until temporally and spatially comparable, validated InSAR/levelling/GNSS evidence plus owner-approved asset geometry and criticality exist. **More source categories alone never unlock risk ranking.**
+
+Implementation: `src/workspace-ranking-model.js`, `src/ranking-center.js`, `src/aoi-registry-model.js`, `src/aoi-infrastructure-cases.js`; scientific tests in `src/workspace-ranking-model.test.js`; browser QA in `scripts/ranking-center-smoke.mjs`, `scripts/aoi-registry-smoke.mjs` and targeted workflow `.github/workflows/ranking-center-qa.yml`. Deployment review is separate: creating the PR does not deploy production.
+
 ## Multi-GNSS-first Intelligence / evidence priorities (18 Nov 2026)
 
 **Product scope:** BARUNA Sentinel's primary technical workflow is now Multi-GNSS evidence readiness for the Pusat Multi-GNSS-oriented demonstration, not an invented 2026 port asset-risk ranking. The new [Multi-GNSS Center](gnss-center.html) can be opened from the main SaaS sidebar, Portfolio Overview, or Semarang workspace. The Area Intelligence ranking pane links to the same *Evidence Review Priority* queue before showing a gated, unavailable asset risk ranking.

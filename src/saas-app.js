@@ -19,7 +19,7 @@ const LINKS=Object.freeze({
  area:"./area-tanjung-emas.html",catalog:"./data-catalog.html",
  advanced:"./real-workspace.html",subsidence:"./subsidence-evidence.html",
  evidence:"./evidence-brief-coaster.html",legacy:"./evidence-lab.html",
- aoi:"./aoi-registry.html",demo:"./workspace-demo.html",gnss:"./gnss-center.html"
+ aoi:"./aoi-registry.html",ranking:"./ranking-center.html",demo:"./workspace-demo.html",gnss:"./gnss-center.html"
 });
 const ASSETS=Object.freeze({
  qa:"./data/semarang-real-hyp3-insar-qa.json",
@@ -39,7 +39,7 @@ function chip(text,type="neutral"){return '<span class="saas-chip'+(type==="neut
 function btn(text,url,primary=false){return '<a class="saas-btn'+(primary?" saas-btn-primary":"")+'" href="'+url+'">'+esc(text)+' <span aria-hidden="true">↗</span></a>';}
 function navLink(text,url,glyph,active=false){return '<a href="'+url+'"'+(active?' aria-current="page"':'')+'><span class="nav-glyph" aria-hidden="true">'+glyph+'</span><span>'+esc(text)+'</span></a>';}
 function renderShell(content,{title,crumbs="Overview"}={}){
- const platform=[["Overview",LINKS.home,"⌂","portfolio"],["Workspaces",LINKS.workspaces,"▣","workspaces"],["All Areas",LINKS.areas,"◇","areas"],["Multi-GNSS Center",LINKS.gnss,"◎","gnss"],["Data Catalog",LINKS.catalog,"▤","catalog"]];
+ const platform=[["Overview",LINKS.home,"⌂","portfolio"],["Workspaces",LINKS.workspaces,"▣","workspaces"],["All Areas",LINKS.areas,"◇","areas"],["Multi-GNSS Center",LINKS.gnss,"◎","gnss"],["Ranking Center",LINKS.ranking,"≡","ranking"],["Data Catalog",LINKS.catalog,"▤","catalog"]];
  const nav=platform.map(([text,url,icon,screen])=>navLink(text,url,icon,
  SCREEN===screen||((SCREEN==="workspace"||SCREEN==="demo")&&screen==="workspaces")||(SCREEN==="area"&&screen==="areas"))).join("");
  ROOT.innerHTML=
@@ -54,7 +54,7 @@ function renderShell(content,{title,crumbs="Overview"}={}){
  +'<div class="saas-divider"></div><div class="saas-section-label">RESEARCH &amp; REPORTS</div><nav class="saas-recent">'
  +'<a href="'+LINKS.advanced+'">Advanced GIS</a>'
  +'<a href="'+LINKS.subsidence+'">Subsidence Evidence</a>'
- +'<a href="'+LINKS.legacy+'?page=analyst">GNSS / Evidence Lab</a><a href="./spatial-demo.html#ranking">Scenario Lab · Simulated</a></nav>'
+ +'<a href="'+LINKS.legacy+'?page=analyst">GNSS / Evidence Lab</a><a href="'+LINKS.ranking+'">Ranking · GNSS published</a><a href="./spatial-demo.html#ranking">Scenario Lab · Simulated</a></nav>'
  +'<div class="saas-org"><a class="saas-org-brand" href="https://ourdo.id/" target="_blank" rel="noopener noreferrer" aria-label="Ourdo Indonesia official website"><span class="saas-org-credit">A PRODUCT BY</span><span class="saas-org-identity"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="Ourdo Indonesia" width="116" height="33"><small>INDONESIA</small></span></a></div>'
  +'</aside><div class="saas-main">'
  +'<header class="saas-topbar"><button class="saas-mobile-nav-toggle" id="saas-menu-toggle" type="button" aria-expanded="false" aria-controls="saas-sidebar" aria-label="Buka menu navigasi">☰</button>'
@@ -85,6 +85,7 @@ function bindCommon(){
   {name:"Tanjung Emas",detail:"Area Explorer · InSAR QA",url:LINKS.area},
   {name:"All Areas",detail:"Areas across workspaces",url:LINKS.areas},
   {name:"Multi-GNSS Center",detail:"CSEM · CSMG · BAKO evidence review",url:LINKS.gnss},
+  {name:"Ranking Center",detail:"GNSS historical 20 stations and infrastructure AOI metadata coverage",url:LINKS.ranking},
   {name:"Data Catalog",detail:"Source provenance and evidence",url:LINKS.catalog},
   {name:"Jakarta Coastal",detail:"Demo · No datasets",url:LINKS.demo+"?city=jakarta"},
   {name:"Surabaya Coastal",detail:"Demo · No datasets",url:LINKS.demo+"?city=surabaya"}

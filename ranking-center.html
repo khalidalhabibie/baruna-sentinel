@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="id">
+<head>
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#0b2138">
+ <meta name="description" content="BARUNA Multi-Scope Ranking — bandingkan cakupan katalog AOI antar-workspace dan analisis ranking historis 20 stasiun GNSS yang dipublikasikan.">
+ <title>Ranking Center · BARUNA Spatial Intelligence</title>
+ <link rel="icon" href="./assets/ourdo-official-tail-icon.svg" type="image/svg+xml">
+ <link rel="stylesheet" href="./vendor/leaflet/leaflet.css">
+ <link rel="stylesheet" href="./aoi-registry.css">
+ <link rel="stylesheet" href="./ranking-center.css">
+ <script defer src="./vendor/leaflet/leaflet.js"></script>
+ <script type="module" src="./src/ranking-center.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Lewati navigasi</a>
+<header class="header">
+ <div class="header-left">
+  <a class="brand" href="./workspaces.html"><img src="./assets/ourdo-tail-curve-wordmark.svg" alt="OURDO INDONESIA" width="104" height="38"><span></span><strong>BARUNA <b>SPATIAL</b></strong></a>
+  <nav aria-label="Navigasi"><a href="./">Portfolio</a><a href="./aoi-registry.html">AOI Registry</a><a class="active" href="./ranking-center.html" aria-current="page">Ranking Center</a><a href="./gnss-center.html">Multi-GNSS Center</a></nav>
+ </div>
+ <span class="header-tag">RESEARCH · SOURCE-TRACEABLE</span>
+</header>
+<main id="main" class="rk-shell">
+ <div class="breadcrumb"><a href="./workspaces.html">Workspaces</a><span>/</span><a href="./aoi-registry.html">Semarang AOIs</a><span>/</span><strong>Ranking Center</strong></div>
+ <section class="rk-hero">
+  <div>
+   <span class="overline">BARUNA / MULTI-SCOPE RESEARCH INTELLIGENCE</span>
+   <h1>Ranking yang dapat ditelusuri. <em>Bukan skor risiko buatan.</em></h1>
+   <p>Bandingkan cakupan metadata evidence antar-workspace dan antar-AOI. Jelajahi ranking vertikal <b>20 stasiun GNSS historis dari publikasi ilmiah</b> secara terpisah dari kondisi aset.</p>
+   <div class="rk-hero-links"><a href="./aoi-registry.html">+ Kelola / tambah AOI</a><a href="https://doi.org/10.1038/s41597-023-02274-0" target="_blank" rel="noopener noreferrer">Sumber GNSS · Scientific Data ↗</a></div>
+  </div>
+  <div class="rk-hero-icon" aria-hidden="true"><span>GNSS</span><strong>20</strong><small>HISTORICAL STATIONS</small></div>
+ </section>
+ <section class="rk-metrics" aria-label="Status sumber">
+  <div><span>SUB-WORKSPACE AKTIF</span><strong id="rk-workspace-count">—</strong><small>Semarang, bukan peringkat antarkota</small></div>
+  <div><span>AOI TERSIMPAN</span><strong id="rk-aoi-count">—</strong><small>localStorage perangkat ini</small></div>
+  <div><span>GNSS PUBLISHED</span><strong id="rk-station-count">—</strong><small>2010–2021 · 20 stasiun</small></div>
+  <div><span>RANKING RISIKO ASET</span><strong class="rk-pending">Belum tersedia</strong><small>Memerlukan pengukuran spesifik AOI</small></div>
+ </section>
+ <section class="rk-board" aria-labelledby="rk-board-title">
+  <div class="rk-board-top">
+   <div><span class="overline">01 / INFRASTRUCTURE EVIDENCE COVERAGE</span><h2 id="rk-board-title">Perbandingan workspace dan AOI</h2><p>Urutan berdasarkan irisan metadata Sentinel-1 GRD dan Sentinel-2 L2A yang telah dicek; tidak mengukur deformasi.</p></div>
+   <div class="rk-controls">
+    <label for="rk-scope">Tingkat analisis</label>
+    <select id="rk-scope"><option value="all">Antar-workspace</option><option value="workspace">Dalam workspace</option><option value="aoi">Detail AOI</option></select>
+    <label for="rk-group">Workspace</label>
+    <select id="rk-group" aria-label="Pilih workspace infrastruktur"></select>
+    <label for="rk-aoi">Area spesifik</label>
+    <select id="rk-aoi" aria-label="Pilih AOI spesifik"></select>
+   </div>
+  </div>
+  <div class="rk-board-body">
+   <section class="rk-leaderboard" aria-label="Ranking cakupan katalog">
+    <div class="rk-list-top"><strong id="rk-list-title">Antar-workspace</strong><span>CATALOG COVERAGE ONLY</span></div>
+    <div id="rk-scope-list" class="rk-scope-list" aria-live="polite"><p>Memuat daftar AOI…</p></div>
+    <div class="rk-list-foot"><strong>Interpretasi</strong><p>Area yang belum diperiksa tetap <b>unranked</b>. Angka 2/2 hanya berarti dua jenis metadata katalog ditemukan, bukan dua bukti gerakan tanah. Tidak ada skor keselamatan.</p></div>
+   </section>
+   <section class="rk-specific" aria-labelledby="rk-specific-title">
+    <div class="rk-detail-head"><span class="overline">02 / SPECIFIC INFRASTRUCTURE AOI</span><h2 id="rk-specific-title">Area terpilih</h2></div>
+    <div id="rk-aoi-detail" class="rk-aoi-detail" aria-live="polite">Memuat area…</div>
+    <div class="rk-map-head"><span>Lokasi AOI dan stasiun GNSS terdekat</span><small>Jarak geografis, bukan jangkauan validasi deformasi</small></div>
+    <div id="rk-map" role="region" aria-label="Peta AOI dan posisi stasiun GNSS"></div>
+    <p class="rk-map-note">Polygon bawaan bersifat ilustratif. Marker GNSS adalah lokasi stasiun, bukan sensor pada infrastruktur.</p>
+   </section>
+  </div>
+ </section>
+ <section class="rk-station-board" aria-labelledby="rk-station-title">
+  <div class="rk-station-heading">
+   <div><span class="overline">03 / GNSS SCIENTIFIC STATION RANKING</span><h2 id="rk-station-title">20 stasiun · pergerakan vertikal historis</h2><p>Data penelitian <b>Susilo dkk. (2023)</b>, pengamatan 2010–2021. Nilai negatif menunjukkan pergerakan turun pada stasiun dalam kerangka referensi penelitian. Ini <b>bukan ranking infrastruktur</b> atau monitoring langsung 2026.</p></div>
+   <div class="rk-station-badge">PUBLISHED · 2010–2021</div>
+  </div>
+  <div class="rk-station-content">
+   <div class="rk-station-table-wrap">
+    <table class="rk-station-table">
+     <thead><tr><th>Rank</th><th>Stasiun</th><th>Kecepatan vertikal</th><th>Ketidakpastian terbitan</th></tr></thead>
+     <tbody id="rk-station-body"><tr><td colspan="4">Memuat sumber publikasi GNSS…</td></tr></tbody>
+    </table>
+   </div>
+   <aside class="rk-gnss-context">
+    <span class="overline">REFERENCE / SCIENTIFIC CONTEXT</span>
+    <div id="rk-selected-station" aria-live="polite">Pilih stasiun untuk melihat provenance.</div>
+    <div class="rk-compare">
+     <strong>Studi PPP terpisah · 2021–2023</strong>
+     <p>Publikasi UGM mencatat CSMG dan CSEM dengan periode/metode berbeda. Jangan gabungkan langsung dengan ranking 2010–2021.</p>
+     <div id="rk-ppp-contrast"></div>
+     <a href="https://doi.org/10.22146/jgise.95957" target="_blank" rel="noopener noreferrer">Baca studi PPP UGM ↗</a>
+    </div>
+   </aside>
+  </div>
+ </section>
+ <section class="rk-science-gate"><div><span class="overline">QUALITY GATES / NEXT ITERATION</span><h2>Kapan ranking risiko infrastruktur boleh aktif?</h2><p>Setelah tersedia deformasi InSAR multitemporal yang valid pada AOI, referensi GNSS/levelling yang sebanding, geometri aset terverifikasi, data paparan, dan kebijakan prioritas yang disepakati operator. Hingga saat itu BARUNA menunjukkan <b>insufficient evidence</b>, bukan risiko rendah.</p></div><a href="./aoi-registry.html">Kelola AOI ↗</a></section>
+ <footer><span>OURDO INDONESIA · BARUNA SPATIAL INTELLIGENCE</span><span>Research screening · Browser-local AOIs · No live hazard scoring</span></footer>
+</main>
+</body>
+</html>

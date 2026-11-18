@@ -1,0 +1,416 @@
+{
+  "type": "FeatureCollection",
+  "name": "BARUNA peer-reviewed historical GNSS station vertical velocities",
+  "metadata": {
+    "source_title": "GNSS land subsidence observations along the northern coastline of Java, Indonesia",
+    "source_authors": "Susilo et al.",
+    "source_doi": "10.1038/s41597-023-02274-0",
+    "dataset_doi": "10.5281/zenodo.7775016",
+    "source_table": "Table 2",
+    "license": "CC BY 4.0",
+    "validity": "HISTORICAL_PUBLISHED_2010_2021",
+    "scientific_limit": "Station-only velocity; not 2026, not asset-level risk; cross-region geodynamics and uncertainty matter"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.6694425263,
+          -6.8870135368
+        ]
+      },
+      "properties": {
+        "station": "CPKL",
+        "rank_by_descending_rate": 1,
+        "vertical_velocity_mm_year": -107,
+        "published_uncertainty_mm_year": 0.202,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.9845915566,
+          -6.3125479446
+        ]
+      },
+      "properties": {
+        "station": "CROL",
+        "rank_by_descending_rate": 2,
+        "vertical_velocity_mm_year": -15.9,
+        "published_uncertainty_mm_year": 0.045,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.1360693947,
+          -6.8711884131
+        ]
+      },
+      "properties": {
+        "station": "CTGL",
+        "rank_by_descending_rate": 3,
+        "vertical_velocity_mm_year": -12.5,
+        "published_uncertainty_mm_year": 0.043,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8845313238,
+          -6.1101105079
+        ]
+      },
+      "properties": {
+        "station": "CJKT",
+        "rank_by_descending_rate": 4,
+        "vertical_velocity_mm_year": -6.4,
+        "published_uncertainty_mm_year": 0.043,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.326522914,
+          -7.0925963488
+        ]
+      },
+      "properties": {
+        "station": "CLMG",
+        "rank_by_descending_rate": 5,
+        "vertical_velocity_mm_year": -4.9,
+        "published_uncertainty_mm_year": 0.041,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.5304198078,
+          -7.7187532984
+        ]
+      },
+      "properties": {
+        "station": "CPAI",
+        "rank_by_descending_rate": 6,
+        "vertical_velocity_mm_year": -3.5,
+        "published_uncertainty_mm_year": 0.039,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.6638042672,
+          -6.2908318536
+        ]
+      },
+      "properties": {
+        "station": "CTGR",
+        "rank_by_descending_rate": 7,
+        "vertical_velocity_mm_year": -2.9,
+        "published_uncertainty_mm_year": 0.049,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.6667548473,
+          -6.5962014286
+        ]
+      },
+      "properties": {
+        "station": "CJPR",
+        "rank_by_descending_rate": 8,
+        "vertical_velocity_mm_year": -2.7,
+        "published_uncertainty_mm_year": 0.056,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          108.5609075805,
+          -6.7161351697
+        ]
+      },
+      "properties": {
+        "station": "CCIR",
+        "rank_by_descending_rate": 9,
+        "vertical_velocity_mm_year": -2.3,
+        "published_uncertainty_mm_year": 0.041,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.7243661267,
+          -7.3343349621
+        ]
+      },
+      "properties": {
+        "station": "CSBY",
+        "rank_by_descending_rate": 10,
+        "vertical_velocity_mm_year": -2.2,
+        "published_uncertainty_mm_year": 0.039,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.4403462691,
+          -7.8382992108
+        ]
+      },
+      "properties": {
+        "station": "CBRN",
+        "rank_by_descending_rate": 11,
+        "vertical_velocity_mm_year": -2.1,
+        "published_uncertainty_mm_year": 0.082,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.9010362441,
+          -7.6514075145
+        ]
+      },
+      "properties": {
+        "station": "CPAS",
+        "rank_by_descending_rate": 12,
+        "vertical_velocity_mm_year": -1.4,
+        "published_uncertainty_mm_year": 0.033,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.441614888,
+          -7.4655791581
+        ]
+      },
+      "properties": {
+        "station": "CMJT",
+        "rank_by_descending_rate": 13,
+        "vertical_velocity_mm_year": -1.3,
+        "published_uncertainty_mm_year": 0.042,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.9142069526,
+          -7.0960795406
+        ]
+      },
+      "properties": {
+        "station": "CPWD",
+        "rank_by_descending_rate": 14,
+        "vertical_velocity_mm_year": -1.1,
+        "published_uncertainty_mm_year": 0.044,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.8336208077,
+          -6.2260140769
+        ]
+      },
+      "properties": {
+        "station": "CPSR",
+        "rank_by_descending_rate": 15,
+        "vertical_velocity_mm_year": -1,
+        "published_uncertainty_mm_year": 0.052,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.3769383426,
+          -6.9872694696
+        ]
+      },
+      "properties": {
+        "station": "CSEM",
+        "rank_by_descending_rate": 16,
+        "vertical_velocity_mm_year": -0.8,
+        "published_uncertainty_mm_year": 0.038,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.0963704253,
+          -6.3083191942
+        ]
+      },
+      "properties": {
+        "station": "CBTU",
+        "rank_by_descending_rate": 17,
+        "vertical_velocity_mm_year": -0.5,
+        "published_uncertainty_mm_year": 0.044,
+        "interpretation": "descending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.052246546,
+          -6.0207728122
+        ]
+      },
+      "properties": {
+        "station": "CGON",
+        "rank_by_descending_rate": 18,
+        "vertical_velocity_mm_year": 0,
+        "published_uncertainty_mm_year": 0.043,
+        "interpretation": "near_zero",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.0128821943,
+          -7.703318469
+        ]
+      },
+      "properties": {
+        "station": "CSIT",
+        "rank_by_descending_rate": 19,
+        "vertical_velocity_mm_year": 0.1,
+        "published_uncertainty_mm_year": 0.041,
+        "interpretation": "ascending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          111.9864350069,
+          -6.8722544174
+        ]
+      },
+      "properties": {
+        "station": "CTBN",
+        "rank_by_descending_rate": 20,
+        "vertical_velocity_mm_year": 0.4,
+        "published_uncertainty_mm_year": 0.042,
+        "interpretation": "ascending",
+        "observation_period": "2010-2021",
+        "source_doi": "10.1038/s41597-023-02274-0",
+        "analysis_status": "PEER_REVIEWED_HISTORICAL_STATION_VELOCITY_NOT_ASSET"
+      }
+    }
+  ]
+}
