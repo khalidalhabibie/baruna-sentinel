@@ -1,0 +1,127 @@
+{
+  "schema": "baruna-hyp3-phase-spatial-continuity-qa-v1",
+  "asOf": "2026-11-18",
+  "source": {
+    "product": "S1_162214_IW2_20261002_20261014_VV_INT80_5087",
+    "acquisitionDates": [
+      "2026-10-02",
+      "2026-10-14"
+    ],
+    "fullBurstID": "076_162214_IW2",
+    "processing": "ASF HyP3 hyp3_isce2 / ISCE2, single 12-day interferogram",
+    "geocodedEPSG": 32749,
+    "nominalPixelSpacingMeters": 80,
+    "rasterRows": 541,
+    "rasterColumns": 1312,
+    "inputGeoTIFFSha256": {
+      "corr.tif": "618ee3a60695c16f2b975a33cc7f14da2675db81bcdda04fd570ef904dd20df7",
+      "unw_phase.tif": "5dc1cd27676361fb2e4abb26a9d697c645c1f779accbfdad301be352e5792681",
+      "conncomp.tif": "b61989cdc87a83d4de63e98141f7df7768fd762dfb3dd788b071617db3860e64",
+      "water_mask.tif": "dae5a120d3c481abca507eef250ca654c47933e9cb0eb24971926f71617e4c4b"
+    },
+    "sourceFilesCommitted": false
+  },
+  "method": {
+    "landDefinition": "raster valid water_mask==1",
+    "qualifiedDefinition": "land, valid coherence and phase, conncomp>0, coherence>=0.7",
+    "polygon": "pixel-center inclusion after EPSG4326->EPSG32749 transform; 3 illustrative seeded polygons",
+    "adjacency": "4-neighbor edges with both pixels eligible and same SNAPHU connected component ID",
+    "phaseDifference": "absolute difference between adjacent geocoded unwrapped phase samples in radians",
+    "thresholdFlag": "abs difference > pi is a heuristic edge jump flag, not automatic error certification",
+    "independentUnwrappingCheck": false
+  },
+  "results": [
+    {
+      "aoiId": "aoi-seed-tanjung-emas",
+      "aoiName": "Pelabuhan Tanjung Emas (contoh)",
+      "boundaryStatus": "ILLUSTRATIVE_UNVERIFIED",
+      "landPixelCenters": 149,
+      "qualifiedResearchPixelsCoherenceGe07": 74,
+      "qualityEightNeighborSpatialClusters": 4,
+      "largestQualitySpatialClusterPixels": 54,
+      "snaphuConnectedComponentIdCounts": [
+        {
+          "id": 1,
+          "pixels": 74
+        }
+      ],
+      "phaseEdgeConsistency": {
+        "sameSnaphuComponentFourNeighborEdges": 93,
+        "absoluteUnwrappedPhaseDifferenceRadians": {
+          "median": 0.1614,
+          "p95": 0.4549,
+          "maximum": 0.8046
+        },
+        "edgesWithAbsolutePhaseDifferenceGreaterThanPi": 0,
+        "edgeInterpretation": "local spatial smoothness only; no independent unwrapping/geodetic accuracy validation"
+      }
+    },
+    {
+      "aoiId": "aoi-seed-terboyo-industry",
+      "aoiName": "Kawasan Industri Terboyo (contoh)",
+      "boundaryStatus": "ILLUSTRATIVE_UNVERIFIED",
+      "landPixelCenters": 190,
+      "qualifiedResearchPixelsCoherenceGe07": 99,
+      "qualityEightNeighborSpatialClusters": 2,
+      "largestQualitySpatialClusterPixels": 89,
+      "snaphuConnectedComponentIdCounts": [
+        {
+          "id": 1,
+          "pixels": 99
+        }
+      ],
+      "phaseEdgeConsistency": {
+        "sameSnaphuComponentFourNeighborEdges": 138,
+        "absoluteUnwrappedPhaseDifferenceRadians": {
+          "median": 0.136,
+          "p95": 0.6816,
+          "maximum": 0.9832
+        },
+        "edgesWithAbsolutePhaseDifferenceGreaterThanPi": 0,
+        "edgeInterpretation": "local spatial smoothness only; no independent unwrapping/geodetic accuracy validation"
+      }
+    },
+    {
+      "aoiId": "aoi-seed-kaligawe-road",
+      "aoiName": "Koridor Jalan Kaligawe (contoh)",
+      "boundaryStatus": "ILLUSTRATIVE_UNVERIFIED",
+      "landPixelCenters": 178,
+      "qualifiedResearchPixelsCoherenceGe07": 173,
+      "qualityEightNeighborSpatialClusters": 1,
+      "largestQualitySpatialClusterPixels": 173,
+      "snaphuConnectedComponentIdCounts": [
+        {
+          "id": 1,
+          "pixels": 173
+        }
+      ],
+      "phaseEdgeConsistency": {
+        "sameSnaphuComponentFourNeighborEdges": 313,
+        "absoluteUnwrappedPhaseDifferenceRadians": {
+          "median": 0.0988,
+          "p95": 0.4145,
+          "maximum": 1.1125
+        },
+        "edgesWithAbsolutePhaseDifferenceGreaterThanPi": 0,
+        "edgeInterpretation": "local spatial smoothness only; no independent unwrapping/geodetic accuracy validation"
+      }
+    }
+  ],
+  "scientificGates": {
+    "rawSourcePixelsAnalyzed": true,
+    "singlePairOnly": true,
+    "stableReferenceValidated": false,
+    "atmosphericCorrectionsValidated": false,
+    "phaseUnwrappingIndependentlyValidated": false,
+    "multiTemporalLOSValidated": false,
+    "annualVerticalMotionAvailable": false,
+    "assetRiskRankingAllowed": false
+  },
+  "limitations": [
+    "All counts are derived from one 12-day HyP3 interferogram, not a validated geodetic time series",
+    "A high coherence or a smooth phase field cannot independently confirm correct phase unwrapping",
+    "The SNAPHU connected-component ID does not itself certify stable geodetic reference or atmospheric correction",
+    "Illustrative AOIs do not establish surveyed infrastructure or asset-specific deformation",
+    "No displacement, annual rate, flood depth, or operational safety risk is calculated"
+  ]
+}
