@@ -75,6 +75,19 @@
 
 **Time expectations:** original ZIP checksum/inventory is a lightweight local audit, but waiting for new HyP3 products, stacking multiple interferograms, MintPy geodetic/atmosphere/mask QA and independent GNSS processing may be substantial or require revisiting bad coastal coherence. Never promise the entire time series can be validated in one evening.
 
+## One-paste Mac audit and local extraction (18 Nov 2026)
+
+Helper [PR #18](https://github.com/khalidalhabibie/sentinel-helpes/pull/18) merged `--extract-safe` to main. When user has Mac, execute one combined block with local unit safety tests **before** extraction:
+
+```bash
+cd /Users/macpro/Code/bhimerka/sentinel-helpes &&
+git pull --ff-only origin main &&
+python3 -m unittest discover -s tests -p 'test_insar_archive_audit.py' -v &&
+bash run.command --insar-archive-audit --extract-safe
+```
+
+The command hashes the original ZIP against the recorded QA digest, verifies CRC, prints all member filenames, prints missing ASF suffixes and **extracts into** `.local/insar/hyp3/extracted/S1_162214_IW2_20261002_20261014_VV_INT80_5087/` if both SHA and CRC pass. ZIP remains unchanged; destination is Git-ignored, staged with no overwrites, traversal/symlink/zip bomb guards and bounded disk usage. Missing required filenames keep `BLOCKED_SOURCE_VERIFICATION` and exit 2 even if extraction succeeds: **do not mistake extraction for full scientific QA**. Next: inspect user-provided missing suffix/name output; only then reconcile source filenames and check raster georeferencing. No new HyP3 job or credits.
+
 ## Operator ZIP audit result — original ZIP exists, required filename mismatch (18 Nov 2026)
 
 The operator ran `bash run.command --insar-archive-audit` on their Mac and obtained `BLOCKED_SOURCE_VERIFICATION / REQUIRED_HYP3_FILES_MISSING`. **This is not a missing ZIP:** source file was found. In the original audit implementation, `SHA256_MISMATCH_WITH_PRIOR_QA` would have blocked before the archive inventory and ZIP CRC tests; therefore reaching this later error establishes that SHA-256 compared equal to recorded QA value and `ZipFile.testzip()` found no corrupt members, **assuming the script was unmodified**.
