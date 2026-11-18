@@ -1,0 +1,206 @@
+/* BARUNA spatial shared appearance: narrow overrides, no map or data-model changes.
+   Reuse consistent navy-blue ink, focus indicators, headings and source-status cards.
+   Keep simulated/real evidence visually distinct, never encode scientific confidence by color alone. */
+:root{
+ --bs-navy:#12304c;
+ --bs-blue:#25628d;
+ --bs-teal:#1c7884;
+ --bs-ink:#23465d;
+ --bs-muted:#667f92;
+ --bs-soft:#f3f7fb;
+ --bs-line:#dce7f0;
+ --bs-panel:#fff;
+}
+body.baruna-spatial-unified{
+ background:var(--bs-soft);
+ color:var(--bs-ink);
+ font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+body.baruna-spatial-unified :is(.intro h1,.hero h1,.rk-hero h1){
+ font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+ font-weight:750;
+ letter-spacing:-.038em;
+}
+body.baruna-spatial-unified :is(.intro h2,.hero h2,.rk-board h2,.ranking-heading h2,.real-insar-head h3,.analysis-header h2){
+ letter-spacing:-.028em;
+}
+body.baruna-spatial-unified :is(.header,.app-header,.global-header){
+ background:#fff;
+ border-bottom:1px solid var(--bs-line);
+}
+body.baruna-spatial-unified :is(.brand strong,.brand-division b,.header .brand strong){
+ color:var(--bs-navy);
+}
+body.baruna-spatial-unified :is(a,button,input,select):focus-visible{
+ outline:3px solid #368ab3;
+ outline-offset:3px;
+}
+body.baruna-spatial-unified :is(.panel,.map-panel,.review-panel,.control-panel,.stat-strip,.rk-board,.rk-station-board,.rk-insar-board){
+ border-color:var(--bs-line);
+ border-radius:12px;
+}
+body.baruna-spatial-unified :is(.plain-link,.rk-insar-actions a,.ranking-back-link){
+ text-underline-offset:4px;
+}
+body.baruna-spatial-unified .scope-banner{
+ background:#f4f8fc;
+ border-color:#d8e7f0;
+}
+body.baruna-spatial-unified .scope-dot{background:var(--bs-blue)}
+body.baruna-spatial-unified .scope-banner strong{color:var(--bs-navy)}
+body.baruna-spatial-unified .scope-banner span{color:var(--bs-muted)}
+body.baruna-spatial-unified :is(.header-tag,.intro-mark small,.overline,.eyebrow){
+ color:var(--bs-blue);
+}
+/* P1: a source-gated sequence with one source product and two unprocessed candidates. */
+.rk-insar-pilot{
+ background:#f8fbff;
+ border-bottom:1px solid var(--bs-line);
+ padding:22px 26px;
+}
+.rk-insar-pilot-intro,.real-insar-pilot-heading{
+ display:flex;
+ justify-content:space-between;
+ align-items:flex-start;
+ gap:18px;
+}
+.rk-insar-pilot-intro h3{font-size:17px;line-height:1.4;color:var(--bs-navy);margin:7px 0 5px}
+.rk-insar-pilot-intro p,.real-insar-pilot-heading p{
+ margin:0;
+ color:var(--bs-muted);
+ font-size:11px;
+ line-height:1.65;
+}
+.rk-insar-pilot-progress{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:9px;
+ margin-top:17px;
+}
+.rk-insar-pilot-step{
+ padding:15px;
+ min-width:0;
+ background:#fff;
+ border:1px solid var(--bs-line);
+ border-radius:9px;
+}
+.rk-insar-pilot-marker{font-size:9px;letter-spacing:.09em;font-weight:800;color:var(--bs-blue)}
+.rk-insar-pilot-step strong{display:block;margin:8px 0 6px;font-size:13px;color:var(--bs-navy)}
+.rk-insar-pilot-step small{display:block;font-size:10px;line-height:1.6;color:var(--bs-muted)}
+.rk-insar-pilot-foot{
+ display:flex;
+ justify-content:space-between;
+ gap:14px;
+ align-items:center;
+ margin-top:15px;
+ color:var(--bs-muted);
+ font-size:10px;
+ line-height:1.6;
+}
+.rk-insar-pilot-foot a{flex-shrink:0;color:var(--bs-blue);font-weight:760;text-decoration:underline;text-underline-offset:4px}
+.real-insar-pilot{
+ margin:18px 0 20px;
+ background:#f8fbff;
+ border:1px solid var(--bs-line);
+ border-radius:10px;
+ padding:18px;
+}
+.real-insar-pilot-heading h4{font-size:16px;color:var(--bs-navy);margin:6px 0}
+.real-insar-pilot-heading > strong{
+ font-size:10px;
+ color:#315b7b;
+ background:#eaf3fb;
+ border:1px solid #c6dcec;
+ padding:8px 10px;
+ border-radius:20px;
+ white-space:nowrap;
+}
+.real-insar-pilot-numbers{display:flex;flex-wrap:wrap;gap:10px;margin:13px 0}
+.real-insar-pilot-numbers p{
+ padding:9px 11px;
+ background:#fff;
+ border:1px solid var(--bs-line);
+ border-radius:7px;
+ color:var(--bs-ink);
+ font-size:11px;
+ margin:0;
+ flex:1 1 220px;
+ line-height:1.55;
+}
+.real-insar-pilot-list{
+ display:grid;
+ grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:8px;
+ list-style:none;
+ padding:0;
+ margin:0;
+ counter-reset:stage;
+}
+.real-insar-pilot-list li{
+ font-size:10px;
+ line-height:1.6;
+ padding:12px;
+ border:1px solid var(--bs-line);
+ border-radius:8px;
+ background:#fff;
+ color:var(--bs-ink);
+}
+.real-insar-pilot-boundary{color:var(--bs-muted);font-size:10px;line-height:1.6;margin:14px 0 10px}
+.real-insar-pilot > a{font-size:11px;font-weight:750;color:var(--bs-blue);text-decoration:underline;text-underline-offset:3px}
+/* P1: make the fake ranking unmistakably separate from the source-based tools. */
+.baruna-demo-boundary{
+ margin:0 auto 17px;
+ padding:19px 23px;
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:22px;
+ background:#eaf2f9;
+ border:1px solid #cedfea;
+ border-left:4px solid var(--bs-blue);
+ border-radius:10px;
+}
+.baruna-demo-boundary strong{display:block;font-size:16px;color:var(--bs-navy);margin:5px 0}
+.baruna-demo-boundary p{margin:0;max-width:760px;font-size:11px;line-height:1.75;color:#416179}
+.baruna-demo-boundary-links{
+ display:flex;
+ flex-wrap:wrap;
+ gap:9px;
+ min-width:230px;
+ flex-direction:column;
+}
+.baruna-demo-boundary-links a{
+ background:#fff;
+ border:1px solid #c6d9e7;
+ border-radius:6px;
+ color:var(--bs-blue);
+ padding:10px 12px;
+ font-size:11px;
+ font-weight:720;
+}
+.baruna-demo-boundary-links a:hover{background:#f6fbff}
+body.baruna-spatial-unified .simulation-ribbon{
+ background:#f1e5d7;
+ color:#694a29;
+ border:1px solid #e8d3b8;
+ height:auto;
+ min-height:36px;
+}
+body.baruna-spatial-unified .ranking-note{
+ background:#f6f9fd;
+ border-left:3px solid var(--bs-blue);
+ padding:12px 15px;
+ border-radius:5px;
+}
+@media(max-width:860px){
+ .rk-insar-pilot-intro,.real-insar-pilot-heading,.baruna-demo-boundary{flex-direction:column;align-items:stretch}
+ .rk-insar-pilot-intro .rk-insar-pill,.real-insar-pilot-heading>strong{align-self:flex-start}
+ .baruna-demo-boundary-links{flex-direction:row;min-width:0}
+}
+@media(max-width:620px){
+ .rk-insar-pilot{padding:17px}
+ .rk-insar-pilot-progress,.real-insar-pilot-list{grid-template-columns:1fr}
+ .rk-insar-pilot-foot{flex-direction:column;align-items:flex-start}
+ .baruna-demo-boundary{padding:15px}
+ .baruna-demo-boundary-links{flex-direction:column}
+}
