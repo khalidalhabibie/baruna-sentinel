@@ -30,6 +30,8 @@ const publicAssets=[
   "src/ranking-center.js",
   "src/insar-network-readiness.js",
   "data/semarang-asf-burst-network-20261118.json",
+  "data/semarang-asf-15-baseline-candidates-20261118.json",
+  "data/semarang-hyp3-aoi-pixel-screening-20261118.json",
   "src/workspace-ranking-model.js",
   "data/gnss-published-2023-stations.geojson",
   "proposal-demo.html",
