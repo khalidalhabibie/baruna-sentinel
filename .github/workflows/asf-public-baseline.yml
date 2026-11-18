@@ -1,0 +1,57 @@
+name: BARUNA read-only ASF baseline research
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/insar_public_baseline.py'
+      - 'data/semarang-asf-burst-network-20261118.json'
+      - '.github/workflows/asf-public-baseline.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  asf-public-baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install official public ASF search library
+        run: |
+          python3 -m pip install 'asf_search>=8,<12'
+          python3 -m pip show asf_search | grep -E '^(Name|Version):'
+      - name: Review reference 2 Oct / 14 Oct burst baseline without HyP3
+        run: |
+          set +e
+          python3 scripts/insar_public_baseline.py
+          rc=$?
+          set -e
+          echo "ASF baseline review exit status: $rc"
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('reports/asf_public_baseline_review.json').read_text())
+          assert report['scientificGates']['baselineScientificallyAccepted'] is False
+          assert report['scientificGates']['LOSDisplacementValidated'] is False
+          assert report['scientificGates']['assetRiskAllowed'] is False
+          assert report['status'] in ('BASELINE_METRICS_AVAILABLE_REVIEW_REQUIRED', 'BLOCKED_BASELINE_METADATA_INCOMPLETE', 'BLOCKED_UNVERIFIED_ASF_STACK')
+          print('ASF_PUBLIC_BASELINE_METADATA:', json.dumps({
+              'status':report['status'],
+              'referenceInCatalog':report['referenceInCatalog'],
+              'secondaryInStack':report['secondaryInStack'],
+              'perpendicularBaselineMeters':report['perpendicularBaselineMeters'],
+              'temporalBaselineDays':report['temporalBaselineDays'],
+              'blockerType':report.get('blockerType'),
+          }))
+          PY
+      - name: Save read-only research metadata artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semarang-asf-public-baseline-review
+          path: reports/asf_public_baseline_review.json
+          if-no-files-found: ignore
