@@ -100,3 +100,34 @@ body{background:var(--rk-bg);color:var(--rk-text)}
 .rk-shell footer{background:transparent}
 @media(max-width:1150px){.rk-shell{padding:24px}.rk-board-top{flex-direction:column}.rk-controls{grid-template-columns:auto minmax(150px,1fr);width:100%;max-width:520px}.rk-controls select{max-width:none}.rk-board-body{grid-template-columns:1fr}.rk-leaderboard{border-right:0;border-bottom:1px solid var(--rk-border)}.rk-station-content{grid-template-columns:1fr}.rk-station-table-wrap{border-right:0}}
 @media(max-width:650px){.rk-shell{padding:15px}.rk-hero{padding:25px}.rk-hero-icon{display:none}.rk-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.rk-metrics>div{border-bottom:1px solid var(--rk-border)}.rk-metrics>div:nth-child(2){border-right:0}.rk-metrics>div:nth-last-child(-n+2){border-bottom:0}.rk-board-top,.rk-station-heading{padding:18px;flex-direction:column}.rk-controls{width:100%;grid-template-columns:1fr}.rk-controls label{margin-top:5px}.rk-detail-head,.rk-aoi-detail{padding-left:16px;padding-right:16px}.rk-station-table th,.rk-station-table td{padding:11px 9px;font-size:10px}.rk-station-table th{font-size:8px}.rk-station-badge{white-space:normal}.rk-science-gate{flex-direction:column;align-items:start;padding:18px}.rk-map-head{flex-direction:column}}
+
+/* Source-based InSAR readiness: metadata + archived QA, never measured AOI deformation */
+.rk-insar-board{background:#fff;border:1px solid var(--rk-border);border-radius:12px;overflow:hidden;margin:0 0 18px}
+.rk-insar-heading{display:flex;justify-content:space-between;gap:18px;align-items:center;padding:25px 27px;border-bottom:1px solid var(--rk-border)}
+.rk-insar-heading h2{font-size:21px;color:var(--rk-navy);letter-spacing:-.02em;margin:6px 0 8px}
+.rk-insar-heading p{font-size:11px;line-height:1.7;color:var(--rk-muted);margin:0;max-width:850px}
+.rk-insar-pill{background:#f2f7fc;border:1px solid #c7dcec;color:#355f81;font-size:9px;letter-spacing:.04em;font-weight:760;padding:9px 12px;border-radius:18px;white-space:nowrap}
+.rk-insar-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#f5f9fc;border-bottom:1px solid var(--rk-border)}
+.rk-insar-metrics>div{padding:19px 23px;border-right:1px solid var(--rk-border);min-width:0}
+.rk-insar-metrics>div:last-child{border-right:0}
+.rk-insar-metrics strong{display:block;font-size:27px;font-weight:800;color:var(--rk-navy);line-height:1.2}
+.rk-insar-metrics span{display:block;color:var(--rk-muted);font-size:10px;margin-top:8px;line-height:1.4}
+.rk-insar-body{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.8fr)}
+.rk-insar-network{padding:24px 26px;min-width:0}
+.rk-insar-subhead{display:flex;gap:8px;align-items:start;flex-direction:column;margin-bottom:13px}
+.rk-insar-subhead strong{font-size:12px;color:var(--rk-navy)}
+.rk-insar-subhead small{font-size:10px;color:var(--rk-muted)}
+.rk-insar-network ol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;list-style:none;margin:0;padding:0}
+.rk-insar-network li{border:1px solid #dae7ef;border-radius:8px;background:#f9fcfd;padding:12px;min-width:0}
+.rk-insar-network li span,.rk-insar-network li small{display:block}
+.rk-insar-network li span{font-size:12px;color:#274c6a;font-weight:750}
+.rk-insar-network li small{font-size:10px;line-height:1.5;color:#6d8499;margin-top:6px}
+.rk-insar-note{font-size:10px;line-height:1.7;color:var(--rk-muted);margin:18px 0 0}
+.rk-insar-verification{padding:24px 25px;border-left:1px solid var(--rk-border);background:#f9fcff}
+.rk-insar-verification>strong{font-size:14px;color:var(--rk-navy)}
+.rk-insar-verification p{font-size:11px;line-height:1.7;color:#536e84;padding:12px 0;margin:0;border-bottom:1px solid #e4ecf3}
+.rk-insar-verification .rk-insar-no-go{background:#f3f7fb;border:1px solid #d4e3ed;padding:13px;border-radius:8px;margin-top:15px;color:#31566e}
+.rk-insar-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:19px}
+.rk-insar-actions a{color:#286389;font-size:10px;font-weight:760;border-bottom:1px solid #bbd2e2;padding-bottom:3px}
+@media(max-width:1000px){.rk-insar-body{grid-template-columns:1fr}.rk-insar-verification{border-left:0;border-top:1px solid var(--rk-border)}}
+@media(max-width:650px){.rk-insar-heading{padding:18px;flex-direction:column;align-items:start}.rk-insar-pill{white-space:normal}.rk-insar-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.rk-insar-metrics>div{border-bottom:1px solid var(--rk-border)}.rk-insar-metrics>div:nth-child(even){border-right:0}.rk-insar-metrics>div:nth-last-child(-n+2){border-bottom:0}.rk-insar-network,.rk-insar-verification{padding:18px}.rk-insar-network ol{grid-template-columns:1fr}}

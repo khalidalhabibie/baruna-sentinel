@@ -1,0 +1,254 @@
+{
+  "schema": "baruna-public-asf-burst-preflight-live-snapshot-v1",
+  "retrievedOn": "2026-11-18",
+  "source": "NASA ASF SAR Search API",
+  "sourceQuery": "https://api.daac.asf.alaska.edu/services/search/param?dataset=SLC-BURST&intersectsWith=POINT%28110.420%20-6.945%29&start=2026-07-20T00%3A00%3A00Z&end=2026-11-17T23%3A59%3A59Z&output=geojson&maxResults=350",
+  "sourceResponseHttpStatus": 200,
+  "dataset": "SLC-BURST",
+  "queryPointWgs84": [
+    110.42,
+    -6.945
+  ],
+  "searchStart": "2026-07-20",
+  "searchEnd": "2026-11-17",
+  "sourceFeaturesReturned": 40,
+  "distinctTargetBurstVVRecords": 9,
+  "targetFullBurstID": "076_162214_IW2",
+  "flightDirection": "DESCENDING",
+  "polarization": "VV",
+  "platform": "SENTINEL-1D",
+  "footprintAssessment": {
+    "method": "AOI bbox center tested by point-in-polygon against 9 returned ASF scene polygons; not a full AOI overlap or coherence assessment",
+    "centers": [
+      {
+        "aoiId": "aoi-seed-tanjung-emas",
+        "name": "Pelabuhan Tanjung Emas",
+        "coordinateWgs84": [
+          110.4245,
+          -6.946
+        ],
+        "footprintsContainingCenter": 9,
+        "totalBursts": 9
+      },
+      {
+        "aoiId": "aoi-seed-terboyo-industry",
+        "name": "Kawasan Industri Terboyo",
+        "coordinateWgs84": [
+          110.467,
+          -6.9435
+        ],
+        "footprintsContainingCenter": 9,
+        "totalBursts": 9
+      },
+      {
+        "aoiId": "aoi-seed-kaligawe-road",
+        "name": "Koridor Jalan Kaligawe",
+        "coordinateWgs84": [
+          110.4605,
+          -6.9555
+        ],
+        "footprintsContainingCenter": 9,
+        "totalBursts": 9
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "date": "2026-07-22",
+      "sceneName": "S1_162214_IW2_20260722T221700_VV_16DC-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-08-03",
+      "sceneName": "S1_162214_IW2_20260803T221701_VV_2614-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-08-15",
+      "sceneName": "S1_162214_IW2_20260815T221701_VV_6487-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-08-27",
+      "sceneName": "S1_162214_IW2_20260827T221702_VV_48A3-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-09-08",
+      "sceneName": "S1_162214_IW2_20260908T221702_VV_D2C7-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-09-20",
+      "sceneName": "S1_162214_IW2_20260920T221703_VV_5D23-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-10-02",
+      "sceneName": "S1_162214_IW2_20261002T221703_VV_F470-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-10-14",
+      "sceneName": "S1_162214_IW2_20261014T221703_VV_21AC-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    },
+    {
+      "date": "2026-11-07",
+      "sceneName": "S1_162214_IW2_20261107T221702_VV_D00F-BURST",
+      "fullBurstID": "076_162214_IW2",
+      "polarization": "VV",
+      "direction": "DESCENDING",
+      "sourceRole": "PUBLIC_CATALOG_METADATA_ONLY"
+    }
+  ],
+  "adjacentCandidatePairs": [
+    {
+      "referenceDate": "2026-07-22",
+      "secondaryDate": "2026-08-03",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20260722T221700_VV_16DC-BURST",
+      "secondaryBurst": "S1_162214_IW2_20260803T221701_VV_2614-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-08-03",
+      "secondaryDate": "2026-08-15",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20260803T221701_VV_2614-BURST",
+      "secondaryBurst": "S1_162214_IW2_20260815T221701_VV_6487-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-08-15",
+      "secondaryDate": "2026-08-27",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20260815T221701_VV_6487-BURST",
+      "secondaryBurst": "S1_162214_IW2_20260827T221702_VV_48A3-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-08-27",
+      "secondaryDate": "2026-09-08",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20260827T221702_VV_48A3-BURST",
+      "secondaryBurst": "S1_162214_IW2_20260908T221702_VV_D2C7-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-09-08",
+      "secondaryDate": "2026-09-20",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20260908T221702_VV_D2C7-BURST",
+      "secondaryBurst": "S1_162214_IW2_20260920T221703_VV_5D23-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-09-20",
+      "secondaryDate": "2026-10-02",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20260920T221703_VV_5D23-BURST",
+      "secondaryBurst": "S1_162214_IW2_20261002T221703_VV_F470-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-10-02",
+      "secondaryDate": "2026-10-14",
+      "daysApart": 12,
+      "referenceBurst": "S1_162214_IW2_20261002T221703_VV_F470-BURST",
+      "secondaryBurst": "S1_162214_IW2_20261014T221703_VV_21AC-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    },
+    {
+      "referenceDate": "2026-10-14",
+      "secondaryDate": "2026-11-07",
+      "daysApart": 24,
+      "referenceBurst": "S1_162214_IW2_20261014T221703_VV_21AC-BURST",
+      "secondaryBurst": "S1_162214_IW2_20261107T221702_VV_D00F-BURST",
+      "type": "TEMPORAL_CANDIDATE_SAME_FULL_BURST_ID_ONLY",
+      "baselineValidated": false,
+      "coherenceValidated": false,
+      "processedInterferogram": false
+    }
+  ],
+  "candidateTemporalPairsWithin48Days": 25,
+  "network": {
+    "nineAcquisitions": true,
+    "eightAdjacentTemporalLinks": true,
+    "connectedByTime": true,
+    "geodeticProcessingNetworkVerified": false,
+    "shortestDaysApart": 12,
+    "longestAdjacentDaysApart": 24
+  },
+  "existingProcessedPair": {
+    "referenceDate": "2026-10-02",
+    "secondaryDate": "2026-10-14",
+    "jobId": "a96410b0-1418-4e8b-a191-ab6f40e3e615",
+    "status": "EARLIER_SINGLE_PAIR_HYP3_QA_SNAPSHOT_EXISTS_ORIGINAL_ZIP_NOT_REVERIFIED"
+  },
+  "scienceGates": {
+    "completeAsfSearchExhaustivelyVerified": false,
+    "commonFullBurstIdFromPublicAsf": true,
+    "identicalRasterGridAndOrbitValidated": false,
+    "perpendicularBaselineValidated": false,
+    "completePolygonCoverageConfirmed": false,
+    "coherenceValidated": false,
+    "timeSeriesProcessed": false,
+    "displacementValidated": false,
+    "independentGnssValidation": false,
+    "annualVerticalRateAvailable": false,
+    "assetRiskRankingAllowed": false
+  },
+  "notes": [
+    "Public 200 OK ASF scene metadata, point-intersection query; not a complete catalogue guarantee for the full geographic AOI.",
+    "25 pairs satisfy only up-to-48-day temporal spacing within 9 known acquisition dates; DO NOT submit all pairs.",
+    "Nine burst footprints contain center points of all three illustrative AOIs. This does NOT prove full polygon coverage, stable-land coherent pixels, interferometric quality, or displacement.",
+    "Original 2–14 October HyP3 ZIP availability in operator-controlled storage is not reverified; audit issue #41 remains blocked.",
+    "No new HyP3 order, processed raster, account credentials, SAR pixel download, or credit consumption was involved."
+  ]
+}
