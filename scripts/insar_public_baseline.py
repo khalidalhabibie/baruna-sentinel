@@ -132,6 +132,10 @@ def main(argv=None):
         result=report_template()
         result["blockerType"]=type(e).__name__
         result["blockerStage"]=stage
+        import traceback
+        result["blockerLine"]=next((frame.lineno for frame in reversed(traceback.extract_tb(e.__traceback__)) if frame.filename.endswith("insar_public_baseline.py")),None)
+        key=(e.args[0] if isinstance(e,KeyError) and e.args else None)
+        result["missingPublicMetadataKey"]=key if isinstance(key,str) and key.isidentifier() and len(key)<50 else None
         # No auth headers, URLs, exception repr, or sensitive bodies in public logs.
     args.output.parent.mkdir(parents=True,exist_ok=True)
     args.output.write_text(json.dumps(result,indent=2,ensure_ascii=False)+"\n",encoding="utf-8")
@@ -143,6 +147,8 @@ def main(argv=None):
     print("TEMPORAL_BASELINE_DAYS:",result["temporalBaselineDays"])
     if result.get("blockerType"):print("BLOCKER_TYPE:",result["blockerType"])
     if result.get("blockerStage"):print("BLOCKER_STAGE:",result["blockerStage"])
+    if result.get("blockerLine"):print("BLOCKER_LINE:",result["blockerLine"])
+    if result.get("missingPublicMetadataKey"):print("MISSING_PUBLIC_METADATA_KEY:",result["missingPublicMetadataKey"])
     print("No InSAR or geodetic displacement computed. No HyP3 job or credits consumed.")
     return 0 if result["status"]=="BASELINE_METRICS_AVAILABLE_REVIEW_REQUIRED" else 2
 
