@@ -10,6 +10,7 @@ import {validateHistoricalFieldEvidence} from "./historical.js";
 import {installTrueColorLayer} from "./true-color-layer.js";
 import {buildRankingReadiness} from "./insight-ranking.js";
 import {buildMultiGnssReview,GNSS_CENTER_SOURCES} from "./multi-gnss-evidence.js";
+import {HISTORICAL_GNSS_REVIEW_SOURCE,validateHistoricalGnssReview,renderHistoricalGnssReview} from "./gnss-historical-review.js";
 
 const ROOT=document.getElementById("baruna-saas-app");
 const SCREEN=document.body.dataset.saasScreen||"portfolio";
@@ -448,6 +449,10 @@ function gnss(){
  +'<article class="saas-card saas-card-section"><div class="saas-card-head"><h2>CSMG · Genuk</h2>'+chip("Site metadata","warn")+'</div><strong class="gnss-stat-value">QC pending</strong><p class="saas-hint">BIG station site log is a reference. Paired date-matched CSEM/CSMG RINEX-derived QC is not in this public SaaS build.</p><a class="saas-link" href="https://srgi.big.go.id/cors/CSMG" target="_blank" rel="noopener noreferrer">BIG Ina-CORS station log →</a></article>'
  +'<article class="saas-card saas-card-section"><div class="saas-card-head"><h2>BAKO · Cibinong</h2>'+chip("Verified RINEX QC","active")+'</div><strong class="gnss-stat-value" id="gnss-bako-epochs">Checking…</strong><p class="saas-hint" id="gnss-bako-constellations">Independent sample of observed constellations; not a Semarang position solution or accuracy comparison.</p><a class="saas-link" href="https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/43690104506" target="_blank" rel="noopener noreferrer">Verified GeoRinex run →</a></article>'
  +'</div>'
+ +'<section class="gnss-history-section section-space" id="historical-trends" aria-labelledby="gnss-historical-title">'
+ +'<div class="saas-section-head gnss-history-section-head"><div><span class="saas-eyebrow">PUBLISHED RESEARCH / 2010–2021</span><h2 id="gnss-historical-title" class="saas-section-title">Tren vertikal GNSS historis</h2><p class="saas-hint">Perbandingan CSEM dan CPKL: nilai penelitian vs hasil regresi sekunder BARUNA pada seri yang sudah diolah peneliti.</p></div>'+chip("Historical only · not 2026","blue")+'</div>'
+ +'<div class="gnss-history-intro"><strong>Analisis nyata, bukan pemantauan langsung.</strong><span>Hasil OLS bisa berbeda dari estimator publikasi. CPKL memiliki selisih yang belum terselesaikan; tidak ada klaim deformasi aset atau ranking risiko 2026.</span></div>'
+ +'<div id="gnss-history-review-content" aria-live="polite" aria-busy="true"><div class="saas-empty">Memeriksa audit tren historis CSEM dan CPKL…</div></div></section>'
  +'<section class="saas-card saas-card-section section-space"><div class="saas-card-head"><div><h2>BAKO observation context</h2><p>Counts of satellites with pseudorange available per epoch — not accuracy or precision.</p></div>'+chip("Not a displacement result","blue")+'</div>'
  +'<div class="gnss-observation-grid"><div class="gnss-observation-cell"><span>GPS-only average / epoch</span><strong id="gnss-gps-average">—</strong></div><div class="gnss-observation-cell"><span>Multi-GNSS average / epoch</span><strong id="gnss-multi-average">—</strong></div><div class="gnss-observation-cell"><span>Sampling window</span><strong id="gnss-bako-window">—</strong></div></div>'
  +'<div class="saas-note is-warning section-space">BAKO is located in Cibinong. More available pseudorange satellites do not demonstrate better position accuracy and cannot establish CSEM or CSMG movement in Semarang.</div></section>'
@@ -456,6 +461,7 @@ function gnss(){
  +'<div class="saas-cta-strip"><div><strong>Official observational QC is separate from positioning.</strong><p>The GNSS Lab supports local CSEM/CSMG QC JSON import without publishing private RINEX files. Station movement requires an independently validated geodetic solution.</p></div>'+btn("Go to GNSS Analyst",LINKS.legacy+"?page=analyst",true)+'</div>';
  renderShell(html,{title:"Multi-GNSS Center",crumbs:"Multi-GNSS Center"});
  void bootGnss();
+ void bootGnssHistorical();
 }
 
 async function bootAreaGnssPriority(){
@@ -480,6 +486,25 @@ async function bootAreaGnssPriority(){
  }catch(error){
   container.textContent="GNSS source verification unavailable. Evidence prioritization is disabled; no risk rankings have been inferred.";
   const status=$("int-gnss-status");if(status)status.textContent="Source unavailable";
+ }
+}
+
+async function bootGnssHistorical(){
+ const container=$("gnss-history-review-content");
+ if(!container)return;
+ try{
+  const response=await fetch(HISTORICAL_GNSS_REVIEW_SOURCE,{cache:"no-store"});
+  if(!response.ok)throw new Error("Historical source unavailable");
+  const review=validateHistoricalGnssReview(await response.json());
+  container.innerHTML=renderHistoricalGnssReview(review);
+  container.setAttribute("aria-busy","false");
+  document.body.dataset.gnssHistorical="ready";
+ }catch(error){
+  // Do not use mock velocities or merge this scope with the 2026 GNSS evidence.
+  container.innerHTML='<div class="saas-empty"><strong>Tren historis belum tersedia</strong>'+
+    '<p>Sumber atau audit CSEM–CPKL tidak dapat diverifikasi. Tidak ada estimasi atau risiko yang ditampilkan.</p></div>';
+  container.setAttribute("aria-busy","false");
+  document.body.dataset.gnssHistorical="unavailable";
  }
 }
 
