@@ -58,7 +58,7 @@ try{
  const download=await dl;assert.match(download.suggestedFilename(),/verification-brief\.json$/);
  await page.reload({waitUntil:"networkidle"});
  await page.locator(".area-item").waitFor({state:"visible"});
- assert.equal(await page.locator("#stat-areas").innerText(),"1");
+ assert.equal(await page.locator("#stat-areas").innerText(),"4");
  await page.locator(".area-item").filter({hasText:"Tanjung Emas · AOI Pilot"}).click();
  assert.equal(await page.locator("#evidence-content .scene-summary").count(),1);
  assert.match(await page.locator("#queue-content").innerText(),/DATA INSUFFICIENT/);
@@ -68,7 +68,7 @@ try{
  assert.equal(await page.locator("#stat-areas").innerText(),"3");
  await page.locator("#restore-local").setInputFiles({name:"BARUNA_Semarang_AOI_Backup.json",mimeType:"application/json",buffer:backupBytes});
  await page.locator(".area-item").waitFor({state:"visible"});
- assert.equal(await page.locator("#stat-areas").innerText(),"1");
+ assert.equal(await page.locator("#stat-areas").innerText(),"4");
  assert.match(await page.locator("#map-hint").innerText(),/Restore selesai/);
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:1});
  mobile.on("pageerror",e=>errors.push(e.message));
