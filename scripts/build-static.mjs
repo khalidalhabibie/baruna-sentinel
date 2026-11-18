@@ -9,6 +9,8 @@ const publicAssets=[
   "legacy-saas-bridge.css",
   "src/insight-ranking.js",
   "src/multi-gnss-evidence.js",
+  "src/gnss-historical-review.js",
+  "data/gnss-historical-csem-cpkl-review.json",
   "gnss-center.html",
   "src/saas-app.js",
   "workspace-semarang.html",
