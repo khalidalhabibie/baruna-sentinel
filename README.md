@@ -1,3 +1,5 @@
+# BARUNA Sentinel — BIG Bhumireka 2026
+
 ## Historical GNSS CSEM / CPKL — research comparison panel (19 Nov 2026)
 
 **UI:** [Multi-GNSS Center → Historical trends](gnss-center.html#historical-trends). The [Ranking Center](ranking-center.html) keeps the **published** Table 2 velocities for all 20 stations unchanged, with a cross-link for CSEM and CPKL. This separate panel shows **published 2010–2021 station rates alongside BARUNA's secondary OLS + annual/semiannual research-series fit**, never current readings or operational subsidence risk.
@@ -24,8 +26,6 @@ node scripts/ranking-center-smoke.mjs
 **Deployment:** pushing to \`main\` triggers connected Git/Vercel workflows. A GitHub file update is not itself proof that the production domain serves the new assets; confirm both \`gnss-center.html\` and \`data/gnss-historical-csem-cpkl-review.json\` are accessible in the target deployment before claiming live availability.
 
 ---
-
-# BARUNA Sentinel — BIG Bhumireka 2026
 
 ## Active execution handoff — Semarang AOI / InSAR (18 Nov 2026)
 
