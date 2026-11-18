@@ -11,7 +11,7 @@
 | Stage | Tracking | Status as of 18 Nov 2026 | Reality / blocker |
 | --- | --- | --- | --- |
 | 1. User AOIs + local registry | [#40](https://github.com/khalidalhabibie/baruna-sentinel/issues/40) | **DONE** | 3 illustrative AOIs, CRUD, import/backup and localStorage, source coverage ranks, sub-workspaces; PR #39 merged to `main` |
-| 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **NEXT / BLOCKED on re-verifying original ZIP availability** | Historical source SHA and prior QA exist; current original ZIP location & checksum not freshly verified |
+| 2. Original HyP3 archive audit | [#41](https://github.com/khalidalhabibie/baruna-sentinel/issues/41) | **AUDIT TOOL DONE / ORIGINAL ZIP BLOCKED** | New read-only local audit CLI merged in helper [PR #16](https://github.com/khalidalhabibie/sentinel-helpes/pull/16). 9/9 offline synthetic tests passed locally; original ZIP is not available in this ChatGPT execution environment, so fresh original checksum/raster QA remain pending. Helper Actions runner starts zero steps (including pre-existing main workflows); remote CI is NOT green. |
 | 3. Compatible burst/SBAS network | [#42](https://github.com/khalidalhabibie/baruna-sentinel/issues/42) | **NOT DONE** | 19 scenes/48 candidate pairs are metadata-only snapshot; full burst/baseline compatibility and continuous network not proven |
 | 4. MintPy LOS time series | [#43](https://github.com/khalidalhabibie/baruna-sentinel/issues/43) | **BLOCKED by stage 3 and processed stack** | One 12-day interferogram ≠ time series or annual motion |
 | 5. AOI screening + GNSS validation | [#44](https://github.com/khalidalhabibie/baruna-sentinel/issues/44) | **BLOCKED by stage 4 QA** | Current AOI ranking = catalog coverage only, GNSS station ranking = historical station-only, infrastructure risk ranking = unavailable |
@@ -64,18 +64,29 @@
 
 **Outcome:** Either (a) original ZIP re-verified and locally inventoried, or (b) documented access blocker with legitimate recovery path. No need to redownload data blindly.
 
-Run on the machine that holds the source archive (Mac command examples):
+Read-only archive auditor is now implemented in `sentinel-helpes` `main` as `bash run.command --insar-archive-audit`. **Do not redownload or submit another job before checking your existing archive.** The auditor never reads an Earthdata token or spends HyP3 credits.
+
+Run on the Mac containing your project and ZIP:
 
 ```bash
 cd /Users/macpro/Code/bhimerka/sentinel-helpes
 git pull origin main
-bash run.command --insar-job status
-# Search for the already-downloaded filename in your own authorized project/download folder.
-find .local/insar ~/Downloads -name 'S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip' -type f 2>/dev/null
-# Only after you have the exact filepath, check its byte-level integrity.
-shasum -a 256 "/absolute/path/to/S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip"
-unzip -l "/absolute/path/to/S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip" | head -80
+
+# Check exact known ZIP in .local/insar/hyp3/products or ~/Downloads.
+bash run.command --insar-archive-audit
+
+# If ZIP exists elsewhere, supply its full path:
+bash run.command --insar-archive-audit \
+  --archive "/your/local/path/S1_162214_IW2_20261002_20261014_VV_INT80_5087.zip"
+
+# Optionally audit EPSG:32749, 80 m, and common GeoTIFF grid.
+# Requires rasterio in the helper's Python venv.
+bash run.command --insar-archive-audit --raster-qa
 ```
+
+Output: private `.local/insar/hyp3/source-audit.json` with `PASS_ARCHIVE_INTEGRITY_ONLY`, `PASS_ARCHIVE_INTEGRITY_AND_RASTER_METADATA`, `BLOCKED_SOURCE_UNAVAILABLE`, `BLOCKED_SOURCE_VERIFICATION`, or `BLOCKED_RASTER_METADATA`. A PASS proves ZIP/file integrity and (if requested) raster *metadata*, **not** validated scientific displacement. If missing, consult the existing ASF job in Vertex; previous attempts at `--insar-job download` returned generic `ValueError`, so troubleshoot the authenticated file manifest without bypassing URL host safety checks or exposing signed URLs/tokens. See [full recovery guide](https://github.com/khalidalhabibie/sentinel-helpes/blob/main/docs/HYP3_ORIGINAL_ARCHIVE_AUDIT.md).
+
+**Verified activity on 18 November 2026:** ChatGPT runtime looked for the exact ZIP in current available files; only an unrelated GNSS toolkit was accessible. Local audit of a missing target returned exit code 2 / `BLOCKED_SOURCE_UNAVAILABLE`. This is **not proof the user's Mac or ASF no longer has the ZIP**. Synthetic 9/9 test suite passed in the local execution container; helper GitHub Actions could not run any steps on both baseline and new workflows. The original ZIP has not been freshly checked.
 
 Expected manifest SHA must match the archived value above; if mismatched **do not trust** file without investigation. Do not send Earthdata tokens, `.env`, RINEX archives, or private source assets in GitHub issues. If file is absent, consult job receipt and official HyP3 retention/availability; a different pair must be treated as a **new product** with separate provenance.
 
