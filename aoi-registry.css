@@ -10,3 +10,22 @@
 @media(max-width:710px){.cloud-console{padding:13px 14px}.cloud-intro{align-items:flex-start;flex-direction:column;gap:10px}.monitor-event{flex-wrap:wrap}}
 
 .backup-actions{display:flex;flex-wrap:wrap;gap:8px;padding-top:12px;margin-top:12px;border-top:1px solid #e0e9e3}.backup-actions button,.backup-actions label{display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid #bfd9ca;background:#eaf5ed;color:#24735a;border-radius:7px;padding:9px 12px;font-size:10px;font-weight:800}.backup-actions button:hover,.backup-actions label:hover{background:#d9ebdc}.backup-note{display:block;color:#788e83;font-size:10px;line-height:1.65;margin-top:9px}
+
+/* Source-coverage ordering, deliberately separate from physical-risk scoring. */
+.research-ranking{margin:17px 0;background:#fff;border:1px solid #e0eae4;border-radius:10px;overflow:hidden}
+.research-ranking-heading{padding:19px 21px;border-bottom:1px solid #e8efea;display:flex;gap:15px;justify-content:space-between;align-items:start}
+.research-ranking-heading h2{margin:6px 0;font-size:18px;color:#284f42;letter-spacing:-.015em}
+.research-ranking-heading p{font-size:11px;color:#728f81;max-width:870px;margin:7px 0 0;line-height:1.6}
+.research-rank-tag{flex:none;font-size:9px;font-weight:800;letter-spacing:.07em;border:1px solid #deeadf;border-radius:16px;padding:7px 10px;color:#618874;background:#f3f8f3}
+.research-ranking-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:13px}
+.research-rank-row{width:100%;min-width:0;background:#f8faf8;border:1px solid #e2ede5;padding:12px;text-align:left;border-radius:8px;display:grid;grid-template-columns:35px 1fr;align-items:center;gap:8px}
+.research-rank-row:hover,.research-rank-row[aria-pressed="true"]{border-color:#77b4a0;background:#f0f8f3}
+.research-rank-number{font-weight:800;font-size:14px;color:#28715e}
+.research-rank-label{min-width:0}
+.research-rank-label strong{display:block;color:#365f50;font-size:11px;line-height:1.45}
+.research-rank-label small{display:block;font-size:10px;color:#718e82;padding-top:3px}
+.research-rank-unranked{grid-column:2;font-size:9px;color:#9b7768;line-height:1.4}
+.research-empty{grid-column:1/-1;font-size:11px;color:#789286;margin:10px}
+.area-item .area-category{display:block;color:#698978;font-weight:770;font-size:9px;letter-spacing:.04em;padding:3px 0}
+@media(max-width:950px){.research-ranking-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.research-ranking-heading{flex-direction:column}.research-ranking-list{grid-template-columns:1fr}}
