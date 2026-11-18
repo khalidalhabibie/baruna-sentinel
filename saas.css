@@ -144,3 +144,49 @@
  .intel-ranking-nogo{flex-direction:column;align-items:flex-start;gap:5px}
  .intel-ranking-nogo strong{white-space:normal}
 }
+
+/* GNSS historical station comparison — source-backed, not 2026 risk. */
+#historical-trends{scroll-margin-top:24px}
+.gnss-history-section{min-width:0}
+.gnss-history-section-head{align-items:flex-start;margin-bottom:13px}
+.gnss-history-section-head .saas-section-title{margin:5px 0 6px;font-size:20px}
+.gnss-history-section-head .saas-hint{max-width:760px;line-height:1.7;margin:0}
+.gnss-history-intro{display:flex;align-items:flex-start;gap:15px;border:1px solid #d6e6f0;background:#eef5fa;color:#425f77;border-radius:9px;padding:13px 17px;margin-bottom:14px;font-size:11px;line-height:1.75}
+.gnss-history-intro strong{color:#234c70;font-size:12px;min-width:205px}
+.gnss-history-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.gnss-history-card{background:#fff;border:1px solid var(--b-line);border-radius:10px;padding:20px 21px;min-width:0}
+.gnss-history-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
+.gnss-history-card h3{font-size:17px;font-weight:750;letter-spacing:-.025em;margin:3px 0 0;color:var(--b-navy)}
+.gnss-history-status{font-size:10px;font-weight:700;border:1px solid #e3e9ef;background:#f7f9fb;color:#607e94;border-radius:6px;padding:5px 8px;line-height:1.3}
+.gnss-history-status.is-review{border-color:#eadbc7;background:#fcf6ec;color:#866139}
+.gnss-history-main{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:15px;border-bottom:1px solid #edf2f5}
+.gnss-history-main>strong{font-variant-numeric:tabular-nums;font-size:clamp(26px,3vw,34px);letter-spacing:-.045em;line-height:1.15;color:#163b62;font-weight:760;white-space:nowrap}
+.gnss-history-main>span{font-size:12px;color:#435e75}
+.gnss-history-main small{display:block;color:#7891a4;font-size:10px}
+.gnss-history-bars{display:grid;gap:11px;padding:17px 0 18px}
+.gnss-history-bar-row{display:grid;grid-template-columns:89px minmax(30px,1fr) 80px;align-items:center;gap:11px}
+.gnss-history-bar-label{font-size:11px;color:#58748b}
+.gnss-history-bar-track{height:11px;border-radius:3px;background:#e8eff5;overflow:hidden}
+.gnss-history-bar-fill{display:block;height:100%;min-width:2px;border-radius:3px;transition:width .2s ease}
+.gnss-history-bar-fill.is-published{background:#7299b9}
+.gnss-history-bar-fill.is-reproduced{background:#17659f}
+.gnss-history-bar-number{font-size:11px;font-weight:750;color:#344e65;text-align:right;font-variant-numeric:tabular-nums}
+.gnss-history-stats{display:grid;grid-template-columns:1fr 1fr;gap:15px 18px;padding:16px 0;border-top:1px solid #edf2f5}
+.gnss-history-stats>div:first-child{grid-column:1/-1}
+.gnss-history-stats span{display:block;font-size:10px;color:#7d92a4}
+.gnss-history-stats strong{font-size:12px;font-weight:700;color:#344f68;font-variant-numeric:tabular-nums}
+.gnss-history-warning,.gnss-history-card-note{font-size:11px;line-height:1.65;color:#7e623e;background:#fcf7ef;border-radius:6px;padding:11px 12px;margin:1px 0 0}
+.gnss-history-card-note{color:#617c92;background:#f3f7fa}
+.gnss-history-foot{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-top:13px;padding:18px 20px;border:1px solid var(--b-line);border-radius:9px;background:#fff}
+.gnss-history-foot>div{min-width:0;max-width:780px}
+.gnss-history-foot strong{font-size:12px;color:#284a67}
+.gnss-history-foot p{font-size:11px;color:#71889c;line-height:1.7;margin:6px 0 0}
+.gnss-history-details{flex:0 0 230px;max-width:100%;padding:10px 12px;border-radius:7px;background:#f7fafc;border:1px solid #e3ebf1;font-size:11px}
+.gnss-history-details summary{font-weight:700;color:var(--b-blue);cursor:pointer}
+.gnss-history-details p{margin:10px 0 8px;line-height:1.7}
+.gnss-history-sources{display:grid;gap:6px}
+.gnss-history-sources a{color:var(--b-blue);font-size:11px;font-weight:700}
+.gnss-history-sources a:hover{text-decoration:underline}
+@media(max-width:1050px){.gnss-history-grid{grid-template-columns:1fr}.gnss-history-foot{flex-direction:column}.gnss-history-details{flex:none;width:100%}}
+@media(max-width:670px){.gnss-history-section-head{flex-direction:column;gap:10px}.gnss-history-intro{flex-direction:column;gap:3px}.gnss-history-intro strong{min-width:0}.gnss-history-card{padding:16px}.gnss-history-card-head{flex-direction:column;gap:7px}.gnss-history-main>strong{font-size:29px}.gnss-history-bar-row{grid-template-columns:83px minmax(30px,1fr) 75px;gap:7px}.gnss-history-foot{padding:15px}.gnss-history-stats{grid-template-columns:1fr}.gnss-history-stats>div:first-child{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){.gnss-history-bar-fill{transition:none}}
