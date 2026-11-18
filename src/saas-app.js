@@ -462,6 +462,9 @@ function gnss(){
  renderShell(html,{title:"Multi-GNSS Center",crumbs:"Multi-GNSS Center"});
  void bootGnss();
  void bootGnssHistorical();
+ // This panel is created by the client-side shell, after initial URL hash parsing.
+ if(location.hash==="#historical-trends")
+  requestAnimationFrame(()=>$("historical-trends")?.scrollIntoView({block:"start"}));
 }
 
 async function bootAreaGnssPriority(){
