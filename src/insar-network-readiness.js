@@ -221,7 +221,7 @@ function renderKaligawePilot(baselines,qa,root){
  const [first,existing,second]=pilot.threeTemporalEdges;
  const delta=edge=>(edge.asfPerpendicularBaselineMeters>0?"+":"")+
     edge.asfPerpendicularBaselineMeters+" m";
- put(root,"rk-insar-pilot-status","1 HY P3 PAIR · 2 PROCESSING PENDING".replace("HY P3","HyP3"));
+ put(root,"rk-insar-pilot-status","1 HyP3 PAIR · 2 PROCESSING PENDING");
  put(root,"rk-insar-existing","Produk HyP3 tersedia · ASF B⊥ "+delta(existing)+" · QA satu pasangan");
  put(root,"rk-insar-next-one","ASF B⊥ "+delta(first)+" · metadata tersedia, job belum diproses");
  put(root,"rk-insar-next-two","ASF B⊥ "+delta(second)+" · metadata tersedia, job belum diproses");
