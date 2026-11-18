@@ -62,6 +62,19 @@
 - QA: 15,105 / 16,542 land raster centers with valid phase and coherence passed the earlier ≥0.7 research screening criterion (91.31% of that *subset*, not of total AOI). At BIG RBI Tanjung Emas point: coherence ≈0.342; phase NoData; 500m radius: 0/122 qualified; 1km radius: 3/489. The port point is cartographic, **not surveyed asset**.
 - Those thresholds and QA metrics are *research diagnostics*, not a geodetic accuracy certificate; port/coastal masked conditions make this use case hard.
 
+## Product readiness update — 18 Nov 2026 (pre-data work)
+
+**Completed:** [PR #45](https://github.com/khalidalhabibie/baruna-sentinel/pull/45) merged into `main` (`4755c4f396a10b260ca087de29ada6cadaf736e3`). The live `ranking-center.html` implementation now includes section **04 / Real Sentinel-1 Source Readiness**, sourced from the public [ASF 18 Nov preflight JSON](../data/semarang-asf-burst-network-20261118.json) and previously archived [HyP3 QA manifest](../data/semarang-real-hyp3-insar-qa.json). The public site itself is **not confirmed deployed** by this GitHub merge.
+
+- Shows **9 exact acquisition burst dates / 8 adjacent temporal candidate pairs**, **3 illustrative AOI polygon centers inside the retrieved footprint polygons**, and **one historical QA summary** for 2–14 Oct 2026; the original HyP3 ZIP remains unreverified.
+- Highlights **Tanjung Emas coherence approximately 0.342, unwrapped phase NoData at the cartographic locator and 0/122 candidates within 500 m passing prior research QC**.
+- Keeps **validated multitemporal LOS time series, 2026 GNSS validation, annual vertical rate, deformation risk ranking all blocked** until genuine processing/QA. It does not claim full AOI footprint pixel coherence.
+- Strict validator in `src/insar-network-readiness.js` cross-checks exact sourced dates, burst IDs, adjacent edges, provenance, prior HyP3 job identity and NO-GO science gates. A broken/missing source displays SOURCE UNAVAILABLE rather than fabricated metrics.
+- **QA:** dedicated [run 44235774968](https://github.com/khalidalhabibie/baruna-sentinel/actions/runs/44235774968) **SUCCESS**, source tests, existing AOI/GNSS gates, static build, desktop/mobile browser smoke all passed. Legacy global MVP checks have their own previous failures; do not conflate them with this focused QA.
+- Operationally, when the source ZIP becomes accessible, first use `sentinel-helpes` `bash run.command --insar-archive-audit --raster-qa` and attach the sanitized report to issue #41. Do **not** treat the eight catalog links as processed interferograms. Review perpendicular baseline and choose a small authorized stack in issue #42 before issuing additional HyP3 orders.
+
+**Time expectations:** original ZIP checksum/inventory is a lightweight local audit, but waiting for new HyP3 products, stacking multiple interferograms, MintPy geodetic/atmosphere/mask QA and independent GNSS processing may be substantial or require revisiting bad coastal coherence. Never promise the entire time series can be validated in one evening.
+
 ## Public ASF preflight completed without user's laptop (18 Nov 2026)
 
 Read-only catalog request (HTTP 200) using dataset `SLC-BURST`, point [110.420, -6.945] and window **20 Jul–17 Nov 2026** returned **40 public feature records**. Source filtering by actual `burst.fullBurstID=076_162214_IW2`, `VV`, `DESCENDING` and `SENTINEL-1D` yielded **9 acquisitions**: 22 Jul, 3/15/27 Aug, 8/20 Sep, 2/14 Oct and 7 Nov. All are candidate-compatible by **shared Full Burst ID**, not validated perpendicular baseline.
