@@ -40,7 +40,7 @@ function chip(text,type="neutral"){return '<span class="saas-chip'+(type==="neut
 function btn(text,url,primary=false){return '<a class="saas-btn'+(primary?" saas-btn-primary":"")+'" href="'+url+'">'+esc(text)+' <span aria-hidden="true">↗</span></a>';}
 function navLink(text,url,glyph,active=false){return '<a href="'+url+'"'+(active?' aria-current="page"':'')+'><span class="nav-glyph" aria-hidden="true">'+glyph+'</span><span>'+esc(text)+'</span></a>';}
 function renderShell(content,{title,crumbs="Overview"}={}){
- const platform=[["Overview",LINKS.home,"⌂","portfolio"],["Workspaces",LINKS.workspaces,"▣","workspaces"],["All Areas",LINKS.areas,"◇","areas"],["Multi-GNSS Center",LINKS.gnss,"◎","gnss"],["Ranking Center",LINKS.ranking,"≡","ranking"],["Data Catalog",LINKS.catalog,"▤","catalog"]];
+ const platform=[["Overview",LINKS.home,"⌂","portfolio"],["Workspaces",LINKS.workspaces,"▣","workspaces"],["All Areas",LINKS.areas,"◇","areas"],["Multi-GNSS Center",LINKS.gnss,"◎","gnss"],["Ranking Center",LINKS.ranking,"≡","ranking"],["Data Catalog",LINKS.catalog,"▤","catalog"],["Methodology","./methodology.html","◇","methodology"]];
  const nav=platform.map(([text,url,icon,screen])=>navLink(text,url,icon,
  SCREEN===screen||((SCREEN==="workspace"||SCREEN==="demo")&&screen==="workspaces")||(SCREEN==="area"&&screen==="areas"))).join("");
  ROOT.innerHTML=
