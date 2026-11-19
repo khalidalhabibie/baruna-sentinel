@@ -1,5 +1,16 @@
 # BARUNA Sentinel — BIG Bhumireka 2026
 
+## BARUNA Methodology — booth showcase (19 Nov 2026)
+
+**Production page:** [How BARUNA Works](methodology.html). This isolated, editorial-style showcase follows the approved RGPD proposal: coastal-inspection problem → four-factor evidence assessment → actual GNSS/Sentinel observations → proposed pilot → interactive technical methodology.
+
+- Six-stage guided tour advances every 10 seconds; Pause/Resume, manual navigation, reduced-motion controls, and technical drawers are client-side. No 10-second API polling.
+- Official Ourdo SVG comes from `assets/ourdo-tail-curve-wordmark.svg`. The Sentinel-2 true-color RGB preview (14 Oct 2026) is embedded from validated `data/semarang-true-color-preview.json` as a **real image**, providing a fallback for offline booths. This bundled image does **not** require live API access.
+- The aerial Tanjung Emas photograph (KSOP, 14 Feb 2020) is **still externally loaded** from [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Tanjung_Emas_Aerial.jpg), and falls back to the genuine Sentinel-2 preview if it cannot load. Do not claim the aerial image itself is bundled.
+- Source-backed historical GNSS and radar QA are research evidence, not established asset-level inspection rankings. No analytical backend or existing station ranks were changed.
+
+
+
 ## Historical GNSS CSEM / CPKL — research comparison panel (19 Nov 2026)
 
 **UI:** [Multi-GNSS Center → Historical trends](gnss-center.html#historical-trends). The [Ranking Center](ranking-center.html) keeps the **published** Table 2 velocities for all 20 stations unchanged, with a cross-link for CSEM and CPKL. This separate panel shows **published 2010–2021 station rates alongside BARUNA's secondary OLS + annual/semiannual research-series fit**, never current readings or operational subsidence risk.
